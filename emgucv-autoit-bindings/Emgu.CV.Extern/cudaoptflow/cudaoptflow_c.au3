@@ -1,0 +1,533 @@
+#include-once
+#include <..\..\CVEUtils.au3>
+
+Func _cudaDenseOpticalFlowCalc(ByRef $opticalFlow, ByRef $I0, ByRef $I1, ByRef $flow, ByRef $stream)
+    ; CVAPI(void) cudaDenseOpticalFlowCalc(cv::cuda::DenseOpticalFlow* opticalFlow, cv::_InputArray* I0, cv::_InputArray* I1, cv::_InputOutputArray* flow, cv::cuda::Stream* stream);
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDenseOpticalFlowCalc", "ptr", $opticalFlow, "ptr", $I0, "ptr", $I1, "ptr", $flow, "ptr", $stream), "cudaDenseOpticalFlowCalc", @error)
+EndFunc   ;==>_cudaDenseOpticalFlowCalc
+
+Func _cudaDenseOpticalFlowCalcMat(ByRef $opticalFlow, ByRef $matI0, ByRef $matI1, ByRef $matFlow, ByRef $stream)
+    ; cudaDenseOpticalFlowCalc using cv::Mat instead of _*Array
+
+    Local $iArrI0, $vectorOfMatI0, $iArrI0Size
+    Local $bI0IsArray = VarGetType($matI0) == "Array"
+
+    If $bI0IsArray Then
+        $vectorOfMatI0 = _VectorOfMatCreate()
+
+        $iArrI0Size = UBound($matI0)
+        For $i = 0 To $iArrI0Size - 1
+            _VectorOfMatPush($vectorOfMatI0, $matI0[$i])
+        Next
+
+        $iArrI0 = _cveInputArrayFromVectorOfMat($vectorOfMatI0)
+    Else
+        $iArrI0 = _cveInputArrayFromMat($matI0)
+    EndIf
+
+    Local $iArrI1, $vectorOfMatI1, $iArrI1Size
+    Local $bI1IsArray = VarGetType($matI1) == "Array"
+
+    If $bI1IsArray Then
+        $vectorOfMatI1 = _VectorOfMatCreate()
+
+        $iArrI1Size = UBound($matI1)
+        For $i = 0 To $iArrI1Size - 1
+            _VectorOfMatPush($vectorOfMatI1, $matI1[$i])
+        Next
+
+        $iArrI1 = _cveInputArrayFromVectorOfMat($vectorOfMatI1)
+    Else
+        $iArrI1 = _cveInputArrayFromMat($matI1)
+    EndIf
+
+    Local $ioArrFlow, $vectorOfMatFlow, $iArrFlowSize
+    Local $bFlowIsArray = VarGetType($matFlow) == "Array"
+
+    If $bFlowIsArray Then
+        $vectorOfMatFlow = _VectorOfMatCreate()
+
+        $iArrFlowSize = UBound($matFlow)
+        For $i = 0 To $iArrFlowSize - 1
+            _VectorOfMatPush($vectorOfMatFlow, $matFlow[$i])
+        Next
+
+        $ioArrFlow = _cveInputOutputArrayFromVectorOfMat($vectorOfMatFlow)
+    Else
+        $ioArrFlow = _cveInputOutputArrayFromMat($matFlow)
+    EndIf
+
+    _cudaDenseOpticalFlowCalc($opticalFlow, $iArrI0, $iArrI1, $ioArrFlow, $stream)
+
+    If $bFlowIsArray Then
+        _VectorOfMatRelease($vectorOfMatFlow)
+    EndIf
+
+    _cveInputOutputArrayRelease($ioArrFlow)
+
+    If $bI1IsArray Then
+        _VectorOfMatRelease($vectorOfMatI1)
+    EndIf
+
+    _cveInputArrayRelease($iArrI1)
+
+    If $bI0IsArray Then
+        _VectorOfMatRelease($vectorOfMatI0)
+    EndIf
+
+    _cveInputArrayRelease($iArrI0)
+EndFunc   ;==>_cudaDenseOpticalFlowCalcMat
+
+Func _cudaSparseOpticalFlowCalc(ByRef $opticalFlow, ByRef $prevImg, ByRef $nextImg, ByRef $prevPts, ByRef $nextPts, ByRef $status, ByRef $err, ByRef $stream)
+    ; CVAPI(void) cudaSparseOpticalFlowCalc(cv::cuda::SparseOpticalFlow* opticalFlow, cv::_InputArray* prevImg, cv::_InputArray* nextImg, cv::_InputArray* prevPts, cv::_InputOutputArray* nextPts, cv::_OutputArray* status, cv::_OutputArray* err, cv::cuda::Stream* stream);
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaSparseOpticalFlowCalc", "ptr", $opticalFlow, "ptr", $prevImg, "ptr", $nextImg, "ptr", $prevPts, "ptr", $nextPts, "ptr", $status, "ptr", $err, "ptr", $stream), "cudaSparseOpticalFlowCalc", @error)
+EndFunc   ;==>_cudaSparseOpticalFlowCalc
+
+Func _cudaSparseOpticalFlowCalcMat(ByRef $opticalFlow, ByRef $matPrevImg, ByRef $matNextImg, ByRef $matPrevPts, ByRef $matNextPts, ByRef $matStatus, ByRef $matErr, ByRef $stream)
+    ; cudaSparseOpticalFlowCalc using cv::Mat instead of _*Array
+
+    Local $iArrPrevImg, $vectorOfMatPrevImg, $iArrPrevImgSize
+    Local $bPrevImgIsArray = VarGetType($matPrevImg) == "Array"
+
+    If $bPrevImgIsArray Then
+        $vectorOfMatPrevImg = _VectorOfMatCreate()
+
+        $iArrPrevImgSize = UBound($matPrevImg)
+        For $i = 0 To $iArrPrevImgSize - 1
+            _VectorOfMatPush($vectorOfMatPrevImg, $matPrevImg[$i])
+        Next
+
+        $iArrPrevImg = _cveInputArrayFromVectorOfMat($vectorOfMatPrevImg)
+    Else
+        $iArrPrevImg = _cveInputArrayFromMat($matPrevImg)
+    EndIf
+
+    Local $iArrNextImg, $vectorOfMatNextImg, $iArrNextImgSize
+    Local $bNextImgIsArray = VarGetType($matNextImg) == "Array"
+
+    If $bNextImgIsArray Then
+        $vectorOfMatNextImg = _VectorOfMatCreate()
+
+        $iArrNextImgSize = UBound($matNextImg)
+        For $i = 0 To $iArrNextImgSize - 1
+            _VectorOfMatPush($vectorOfMatNextImg, $matNextImg[$i])
+        Next
+
+        $iArrNextImg = _cveInputArrayFromVectorOfMat($vectorOfMatNextImg)
+    Else
+        $iArrNextImg = _cveInputArrayFromMat($matNextImg)
+    EndIf
+
+    Local $iArrPrevPts, $vectorOfMatPrevPts, $iArrPrevPtsSize
+    Local $bPrevPtsIsArray = VarGetType($matPrevPts) == "Array"
+
+    If $bPrevPtsIsArray Then
+        $vectorOfMatPrevPts = _VectorOfMatCreate()
+
+        $iArrPrevPtsSize = UBound($matPrevPts)
+        For $i = 0 To $iArrPrevPtsSize - 1
+            _VectorOfMatPush($vectorOfMatPrevPts, $matPrevPts[$i])
+        Next
+
+        $iArrPrevPts = _cveInputArrayFromVectorOfMat($vectorOfMatPrevPts)
+    Else
+        $iArrPrevPts = _cveInputArrayFromMat($matPrevPts)
+    EndIf
+
+    Local $ioArrNextPts, $vectorOfMatNextPts, $iArrNextPtsSize
+    Local $bNextPtsIsArray = VarGetType($matNextPts) == "Array"
+
+    If $bNextPtsIsArray Then
+        $vectorOfMatNextPts = _VectorOfMatCreate()
+
+        $iArrNextPtsSize = UBound($matNextPts)
+        For $i = 0 To $iArrNextPtsSize - 1
+            _VectorOfMatPush($vectorOfMatNextPts, $matNextPts[$i])
+        Next
+
+        $ioArrNextPts = _cveInputOutputArrayFromVectorOfMat($vectorOfMatNextPts)
+    Else
+        $ioArrNextPts = _cveInputOutputArrayFromMat($matNextPts)
+    EndIf
+
+    Local $oArrStatus, $vectorOfMatStatus, $iArrStatusSize
+    Local $bStatusIsArray = VarGetType($matStatus) == "Array"
+
+    If $bStatusIsArray Then
+        $vectorOfMatStatus = _VectorOfMatCreate()
+
+        $iArrStatusSize = UBound($matStatus)
+        For $i = 0 To $iArrStatusSize - 1
+            _VectorOfMatPush($vectorOfMatStatus, $matStatus[$i])
+        Next
+
+        $oArrStatus = _cveOutputArrayFromVectorOfMat($vectorOfMatStatus)
+    Else
+        $oArrStatus = _cveOutputArrayFromMat($matStatus)
+    EndIf
+
+    Local $oArrErr, $vectorOfMatErr, $iArrErrSize
+    Local $bErrIsArray = VarGetType($matErr) == "Array"
+
+    If $bErrIsArray Then
+        $vectorOfMatErr = _VectorOfMatCreate()
+
+        $iArrErrSize = UBound($matErr)
+        For $i = 0 To $iArrErrSize - 1
+            _VectorOfMatPush($vectorOfMatErr, $matErr[$i])
+        Next
+
+        $oArrErr = _cveOutputArrayFromVectorOfMat($vectorOfMatErr)
+    Else
+        $oArrErr = _cveOutputArrayFromMat($matErr)
+    EndIf
+
+    _cudaSparseOpticalFlowCalc($opticalFlow, $iArrPrevImg, $iArrNextImg, $iArrPrevPts, $ioArrNextPts, $oArrStatus, $oArrErr, $stream)
+
+    If $bErrIsArray Then
+        _VectorOfMatRelease($vectorOfMatErr)
+    EndIf
+
+    _cveOutputArrayRelease($oArrErr)
+
+    If $bStatusIsArray Then
+        _VectorOfMatRelease($vectorOfMatStatus)
+    EndIf
+
+    _cveOutputArrayRelease($oArrStatus)
+
+    If $bNextPtsIsArray Then
+        _VectorOfMatRelease($vectorOfMatNextPts)
+    EndIf
+
+    _cveInputOutputArrayRelease($ioArrNextPts)
+
+    If $bPrevPtsIsArray Then
+        _VectorOfMatRelease($vectorOfMatPrevPts)
+    EndIf
+
+    _cveInputArrayRelease($iArrPrevPts)
+
+    If $bNextImgIsArray Then
+        _VectorOfMatRelease($vectorOfMatNextImg)
+    EndIf
+
+    _cveInputArrayRelease($iArrNextImg)
+
+    If $bPrevImgIsArray Then
+        _VectorOfMatRelease($vectorOfMatPrevImg)
+    EndIf
+
+    _cveInputArrayRelease($iArrPrevImg)
+EndFunc   ;==>_cudaSparseOpticalFlowCalcMat
+
+Func _cudaBroxOpticalFlowCreate($alpha, $gamma, $scaleFactor, $innerIterations, $outerIterations, $solverIterations, ByRef $denseFlow, ByRef $algorithm, ByRef $sharedPtr)
+    ; CVAPI(cv::cuda::BroxOpticalFlow*) cudaBroxOpticalFlowCreate(double alpha, double gamma, double scaleFactor, int innerIterations, int outerIterations, int solverIterations, cv::cuda::DenseOpticalFlow** denseFlow, cv::Algorithm** algorithm, cv::Ptr<cv::cuda::BroxOpticalFlow>** sharedPtr);
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaBroxOpticalFlowCreate", "double", $alpha, "double", $gamma, "double", $scaleFactor, "int", $innerIterations, "int", $outerIterations, "int", $solverIterations, "ptr*", $denseFlow, "ptr*", $algorithm, "ptr*", $sharedPtr), "cudaBroxOpticalFlowCreate", @error)
+EndFunc   ;==>_cudaBroxOpticalFlowCreate
+
+Func _cudaBroxOpticalFlowRelease(ByRef $flow)
+    ; CVAPI(void) cudaBroxOpticalFlowRelease(cv::Ptr<cv::cuda::BroxOpticalFlow>** flow);
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaBroxOpticalFlowRelease", "ptr*", $flow), "cudaBroxOpticalFlowRelease", @error)
+EndFunc   ;==>_cudaBroxOpticalFlowRelease
+
+Func _cudaDensePyrLKOpticalFlowCreate(ByRef $winSize, $maxLevel, $iters, $useInitialFlow, ByRef $denseFlow, ByRef $algorithm, ByRef $sharedPtr)
+    ; CVAPI(cv::cuda::DensePyrLKOpticalFlow *) cudaDensePyrLKOpticalFlowCreate(CvSize* winSize, int maxLevel, int iters, bool useInitialFlow, cv::cuda::DenseOpticalFlow** denseFlow, cv::Algorithm** algorithm, cv::Ptr<cv::cuda::DensePyrLKOpticalFlow>** sharedPtr);
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaDensePyrLKOpticalFlowCreate", "struct*", $winSize, "int", $maxLevel, "int", $iters, "boolean", $useInitialFlow, "ptr*", $denseFlow, "ptr*", $algorithm, "ptr*", $sharedPtr), "cudaDensePyrLKOpticalFlowCreate", @error)
+EndFunc   ;==>_cudaDensePyrLKOpticalFlowCreate
+
+Func _cudaDensePyrLKOpticalFlowRelease(ByRef $flow)
+    ; CVAPI(void) cudaDensePyrLKOpticalFlowRelease(cv::Ptr<cv::cuda::DensePyrLKOpticalFlow>** flow);
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDensePyrLKOpticalFlowRelease", "ptr*", $flow), "cudaDensePyrLKOpticalFlowRelease", @error)
+EndFunc   ;==>_cudaDensePyrLKOpticalFlowRelease
+
+Func _cudaSparsePyrLKOpticalFlowCreate(ByRef $winSize, $maxLevel, $iters, $useInitialFlow, ByRef $sparseFlow, ByRef $algorithm, ByRef $sharedPtr)
+    ; CVAPI(cv::cuda::SparsePyrLKOpticalFlow *) cudaSparsePyrLKOpticalFlowCreate(CvSize* winSize, int maxLevel, int iters, bool useInitialFlow, cv::cuda::SparseOpticalFlow** sparseFlow, cv::Algorithm** algorithm, cv::Ptr<cv::cuda::SparsePyrLKOpticalFlow>** sharedPtr);
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaSparsePyrLKOpticalFlowCreate", "struct*", $winSize, "int", $maxLevel, "int", $iters, "boolean", $useInitialFlow, "ptr*", $sparseFlow, "ptr*", $algorithm, "ptr*", $sharedPtr), "cudaSparsePyrLKOpticalFlowCreate", @error)
+EndFunc   ;==>_cudaSparsePyrLKOpticalFlowCreate
+
+Func _cudaSparsePyrLKOpticalFlowRelease(ByRef $flow)
+    ; CVAPI(void) cudaSparsePyrLKOpticalFlowRelease(cv::Ptr<cv::cuda::SparsePyrLKOpticalFlow>** flow);
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaSparsePyrLKOpticalFlowRelease", "ptr*", $flow), "cudaSparsePyrLKOpticalFlowRelease", @error)
+EndFunc   ;==>_cudaSparsePyrLKOpticalFlowRelease
+
+Func _cudaFarnebackOpticalFlowCreate($numLevels, $pyrScale, $fastPyramids, $winSize, $numIters, $polyN, $polySigma, $flags, ByRef $denseFlow, ByRef $algorithm, ByRef $sharedPtr)
+    ; CVAPI(cv::cuda::FarnebackOpticalFlow*) cudaFarnebackOpticalFlowCreate(int numLevels, double pyrScale, bool fastPyramids, int winSize, int numIters, int polyN, double polySigma, int flags, cv::cuda::DenseOpticalFlow** denseFlow, cv::Algorithm** algorithm, cv::Ptr<cv::cuda::FarnebackOpticalFlow>** sharedPtr);
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaFarnebackOpticalFlowCreate", "int", $numLevels, "double", $pyrScale, "boolean", $fastPyramids, "int", $winSize, "int", $numIters, "int", $polyN, "double", $polySigma, "int", $flags, "ptr*", $denseFlow, "ptr*", $algorithm, "ptr*", $sharedPtr), "cudaFarnebackOpticalFlowCreate", @error)
+EndFunc   ;==>_cudaFarnebackOpticalFlowCreate
+
+Func _cudaFarnebackOpticalFlowRelease(ByRef $flow)
+    ; CVAPI(void) cudaFarnebackOpticalFlowRelease(cv::Ptr<cv::cuda::FarnebackOpticalFlow>** flow);
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaFarnebackOpticalFlowRelease", "ptr*", $flow), "cudaFarnebackOpticalFlowRelease", @error)
+EndFunc   ;==>_cudaFarnebackOpticalFlowRelease
+
+Func _cudaOpticalFlowDualTvl1Create($tau, $lambda, $theta, $nscales, $warps, $epsilon, $iterations, $scaleStep, $gamma, $useInitialFlow, ByRef $denseFlow, ByRef $algorithm, ByRef $sharedPtr)
+    ; CVAPI(cv::cuda::OpticalFlowDual_TVL1*) cudaOpticalFlowDualTvl1Create(double tau, double lambda, double theta, int nscales, int warps, double epsilon, int iterations, double scaleStep, double gamma, bool useInitialFlow, cv::cuda::DenseOpticalFlow** denseFlow, cv::Algorithm** algorithm, cv::Ptr<cv::cuda::OpticalFlowDual_TVL1>** sharedPtr);
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaOpticalFlowDualTvl1Create", "double", $tau, "double", $lambda, "double", $theta, "int", $nscales, "int", $warps, "double", $epsilon, "int", $iterations, "double", $scaleStep, "double", $gamma, "boolean", $useInitialFlow, "ptr*", $denseFlow, "ptr*", $algorithm, "ptr*", $sharedPtr), "cudaOpticalFlowDualTvl1Create", @error)
+EndFunc   ;==>_cudaOpticalFlowDualTvl1Create
+
+Func _cudaOpticalFlowDualTvl1Release(ByRef $flow)
+    ; CVAPI(void) cudaOpticalFlowDualTvl1Release(cv::Ptr<cv::cuda::OpticalFlowDual_TVL1>** flow);
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaOpticalFlowDualTvl1Release", "ptr*", $flow), "cudaOpticalFlowDualTvl1Release", @error)
+EndFunc   ;==>_cudaOpticalFlowDualTvl1Release
+
+Func _cudaNvidiaOpticalFlow_1_0_Create(ByRef $imageSize, $perfPreset, $enableTemporalHints, $enableExternalHints, $enableCostBuffer, $gpuId, ByRef $inputStream, ByRef $outputStream, ByRef $nHWOpticalFlow, ByRef $algorithm, ByRef $sharedPtr)
+    ; CVAPI(cv::cuda::NvidiaOpticalFlow_1_0*) cudaNvidiaOpticalFlow_1_0_Create(CvSize* imageSize, int perfPreset, bool enableTemporalHints, bool enableExternalHints, bool enableCostBuffer, int gpuId, cv::cuda::Stream* inputStream, cv::cuda::Stream* outputStream, cv::cuda::NvidiaHWOpticalFlow** nHWOpticalFlow, cv::Algorithm** algorithm, cv::Ptr<cv::cuda::NvidiaOpticalFlow_1_0>** sharedPtr);
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaNvidiaOpticalFlow_1_0_Create", "struct*", $imageSize, "int", $perfPreset, "boolean", $enableTemporalHints, "boolean", $enableExternalHints, "boolean", $enableCostBuffer, "int", $gpuId, "ptr", $inputStream, "ptr", $outputStream, "ptr*", $nHWOpticalFlow, "ptr*", $algorithm, "ptr*", $sharedPtr), "cudaNvidiaOpticalFlow_1_0_Create", @error)
+EndFunc   ;==>_cudaNvidiaOpticalFlow_1_0_Create
+
+Func _cudaNvidiaOpticalFlow_1_0_UpSampler(ByRef $nFlow, ByRef $flow, ByRef $imageSize, $gridSize, ByRef $upsampledFlow)
+    ; CVAPI(void) cudaNvidiaOpticalFlow_1_0_UpSampler(cv::cuda::NvidiaOpticalFlow_1_0* nFlow, cv::_InputArray* flow, CvSize* imageSize, int gridSize, cv::_InputOutputArray* upsampledFlow);
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaNvidiaOpticalFlow_1_0_UpSampler", "ptr", $nFlow, "ptr", $flow, "struct*", $imageSize, "int", $gridSize, "ptr", $upsampledFlow), "cudaNvidiaOpticalFlow_1_0_UpSampler", @error)
+EndFunc   ;==>_cudaNvidiaOpticalFlow_1_0_UpSampler
+
+Func _cudaNvidiaOpticalFlow_1_0_UpSamplerMat(ByRef $nFlow, ByRef $matFlow, ByRef $imageSize, $gridSize, ByRef $matUpsampledFlow)
+    ; cudaNvidiaOpticalFlow_1_0_UpSampler using cv::Mat instead of _*Array
+
+    Local $iArrFlow, $vectorOfMatFlow, $iArrFlowSize
+    Local $bFlowIsArray = VarGetType($matFlow) == "Array"
+
+    If $bFlowIsArray Then
+        $vectorOfMatFlow = _VectorOfMatCreate()
+
+        $iArrFlowSize = UBound($matFlow)
+        For $i = 0 To $iArrFlowSize - 1
+            _VectorOfMatPush($vectorOfMatFlow, $matFlow[$i])
+        Next
+
+        $iArrFlow = _cveInputArrayFromVectorOfMat($vectorOfMatFlow)
+    Else
+        $iArrFlow = _cveInputArrayFromMat($matFlow)
+    EndIf
+
+    Local $ioArrUpsampledFlow, $vectorOfMatUpsampledFlow, $iArrUpsampledFlowSize
+    Local $bUpsampledFlowIsArray = VarGetType($matUpsampledFlow) == "Array"
+
+    If $bUpsampledFlowIsArray Then
+        $vectorOfMatUpsampledFlow = _VectorOfMatCreate()
+
+        $iArrUpsampledFlowSize = UBound($matUpsampledFlow)
+        For $i = 0 To $iArrUpsampledFlowSize - 1
+            _VectorOfMatPush($vectorOfMatUpsampledFlow, $matUpsampledFlow[$i])
+        Next
+
+        $ioArrUpsampledFlow = _cveInputOutputArrayFromVectorOfMat($vectorOfMatUpsampledFlow)
+    Else
+        $ioArrUpsampledFlow = _cveInputOutputArrayFromMat($matUpsampledFlow)
+    EndIf
+
+    _cudaNvidiaOpticalFlow_1_0_UpSampler($nFlow, $iArrFlow, $imageSize, $gridSize, $ioArrUpsampledFlow)
+
+    If $bUpsampledFlowIsArray Then
+        _VectorOfMatRelease($vectorOfMatUpsampledFlow)
+    EndIf
+
+    _cveInputOutputArrayRelease($ioArrUpsampledFlow)
+
+    If $bFlowIsArray Then
+        _VectorOfMatRelease($vectorOfMatFlow)
+    EndIf
+
+    _cveInputArrayRelease($iArrFlow)
+EndFunc   ;==>_cudaNvidiaOpticalFlow_1_0_UpSamplerMat
+
+Func _cudaNvidiaOpticalFlow_1_0_Release(ByRef $flow)
+    ; CVAPI(void) cudaNvidiaOpticalFlow_1_0_Release(cv::Ptr<cv::cuda::NvidiaOpticalFlow_1_0>** flow);
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaNvidiaOpticalFlow_1_0_Release", "ptr*", $flow), "cudaNvidiaOpticalFlow_1_0_Release", @error)
+EndFunc   ;==>_cudaNvidiaOpticalFlow_1_0_Release
+
+Func _cudaNvidiaOpticalFlowCalc(ByRef $nHWOpticalFlow, ByRef $inputImage, ByRef $referenceImage, ByRef $flow, ByRef $stream, ByRef $hint, ByRef $cost)
+    ; CVAPI(void) cudaNvidiaOpticalFlowCalc(cv::cuda::NvidiaHWOpticalFlow* nHWOpticalFlow, cv::_InputArray* inputImage, cv::_InputArray* referenceImage, cv::_InputOutputArray* flow, cv::cuda::Stream* stream, cv::_InputArray* hint, cv::_OutputArray* cost);
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaNvidiaOpticalFlowCalc", "ptr", $nHWOpticalFlow, "ptr", $inputImage, "ptr", $referenceImage, "ptr", $flow, "ptr", $stream, "ptr", $hint, "ptr", $cost), "cudaNvidiaOpticalFlowCalc", @error)
+EndFunc   ;==>_cudaNvidiaOpticalFlowCalc
+
+Func _cudaNvidiaOpticalFlowCalcMat(ByRef $nHWOpticalFlow, ByRef $matInputImage, ByRef $matReferenceImage, ByRef $matFlow, ByRef $stream, ByRef $matHint, ByRef $matCost)
+    ; cudaNvidiaOpticalFlowCalc using cv::Mat instead of _*Array
+
+    Local $iArrInputImage, $vectorOfMatInputImage, $iArrInputImageSize
+    Local $bInputImageIsArray = VarGetType($matInputImage) == "Array"
+
+    If $bInputImageIsArray Then
+        $vectorOfMatInputImage = _VectorOfMatCreate()
+
+        $iArrInputImageSize = UBound($matInputImage)
+        For $i = 0 To $iArrInputImageSize - 1
+            _VectorOfMatPush($vectorOfMatInputImage, $matInputImage[$i])
+        Next
+
+        $iArrInputImage = _cveInputArrayFromVectorOfMat($vectorOfMatInputImage)
+    Else
+        $iArrInputImage = _cveInputArrayFromMat($matInputImage)
+    EndIf
+
+    Local $iArrReferenceImage, $vectorOfMatReferenceImage, $iArrReferenceImageSize
+    Local $bReferenceImageIsArray = VarGetType($matReferenceImage) == "Array"
+
+    If $bReferenceImageIsArray Then
+        $vectorOfMatReferenceImage = _VectorOfMatCreate()
+
+        $iArrReferenceImageSize = UBound($matReferenceImage)
+        For $i = 0 To $iArrReferenceImageSize - 1
+            _VectorOfMatPush($vectorOfMatReferenceImage, $matReferenceImage[$i])
+        Next
+
+        $iArrReferenceImage = _cveInputArrayFromVectorOfMat($vectorOfMatReferenceImage)
+    Else
+        $iArrReferenceImage = _cveInputArrayFromMat($matReferenceImage)
+    EndIf
+
+    Local $ioArrFlow, $vectorOfMatFlow, $iArrFlowSize
+    Local $bFlowIsArray = VarGetType($matFlow) == "Array"
+
+    If $bFlowIsArray Then
+        $vectorOfMatFlow = _VectorOfMatCreate()
+
+        $iArrFlowSize = UBound($matFlow)
+        For $i = 0 To $iArrFlowSize - 1
+            _VectorOfMatPush($vectorOfMatFlow, $matFlow[$i])
+        Next
+
+        $ioArrFlow = _cveInputOutputArrayFromVectorOfMat($vectorOfMatFlow)
+    Else
+        $ioArrFlow = _cveInputOutputArrayFromMat($matFlow)
+    EndIf
+
+    Local $iArrHint, $vectorOfMatHint, $iArrHintSize
+    Local $bHintIsArray = VarGetType($matHint) == "Array"
+
+    If $bHintIsArray Then
+        $vectorOfMatHint = _VectorOfMatCreate()
+
+        $iArrHintSize = UBound($matHint)
+        For $i = 0 To $iArrHintSize - 1
+            _VectorOfMatPush($vectorOfMatHint, $matHint[$i])
+        Next
+
+        $iArrHint = _cveInputArrayFromVectorOfMat($vectorOfMatHint)
+    Else
+        $iArrHint = _cveInputArrayFromMat($matHint)
+    EndIf
+
+    Local $oArrCost, $vectorOfMatCost, $iArrCostSize
+    Local $bCostIsArray = VarGetType($matCost) == "Array"
+
+    If $bCostIsArray Then
+        $vectorOfMatCost = _VectorOfMatCreate()
+
+        $iArrCostSize = UBound($matCost)
+        For $i = 0 To $iArrCostSize - 1
+            _VectorOfMatPush($vectorOfMatCost, $matCost[$i])
+        Next
+
+        $oArrCost = _cveOutputArrayFromVectorOfMat($vectorOfMatCost)
+    Else
+        $oArrCost = _cveOutputArrayFromMat($matCost)
+    EndIf
+
+    _cudaNvidiaOpticalFlowCalc($nHWOpticalFlow, $iArrInputImage, $iArrReferenceImage, $ioArrFlow, $stream, $iArrHint, $oArrCost)
+
+    If $bCostIsArray Then
+        _VectorOfMatRelease($vectorOfMatCost)
+    EndIf
+
+    _cveOutputArrayRelease($oArrCost)
+
+    If $bHintIsArray Then
+        _VectorOfMatRelease($vectorOfMatHint)
+    EndIf
+
+    _cveInputArrayRelease($iArrHint)
+
+    If $bFlowIsArray Then
+        _VectorOfMatRelease($vectorOfMatFlow)
+    EndIf
+
+    _cveInputOutputArrayRelease($ioArrFlow)
+
+    If $bReferenceImageIsArray Then
+        _VectorOfMatRelease($vectorOfMatReferenceImage)
+    EndIf
+
+    _cveInputArrayRelease($iArrReferenceImage)
+
+    If $bInputImageIsArray Then
+        _VectorOfMatRelease($vectorOfMatInputImage)
+    EndIf
+
+    _cveInputArrayRelease($iArrInputImage)
+EndFunc   ;==>_cudaNvidiaOpticalFlowCalcMat
+
+Func _cudaNvidiaOpticalFlowCollectGarbage(ByRef $nHWOpticalFlow)
+    ; CVAPI(void) cudaNvidiaOpticalFlowCollectGarbage(cv::cuda::NvidiaHWOpticalFlow* nHWOpticalFlow);
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaNvidiaOpticalFlowCollectGarbage", "ptr", $nHWOpticalFlow), "cudaNvidiaOpticalFlowCollectGarbage", @error)
+EndFunc   ;==>_cudaNvidiaOpticalFlowCollectGarbage
+
+Func _cudaNvidiaOpticalFlowGetGridSize(ByRef $nHWOpticalFlow)
+    ; CVAPI(int) cudaNvidiaOpticalFlowGetGridSize(cv::cuda::NvidiaHWOpticalFlow* nHWOpticalFlow);
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cudaNvidiaOpticalFlowGetGridSize", "ptr", $nHWOpticalFlow), "cudaNvidiaOpticalFlowGetGridSize", @error)
+EndFunc   ;==>_cudaNvidiaOpticalFlowGetGridSize
+
+Func _cudaNvidiaOpticalFlow_2_0_Create(ByRef $imageSize, $perfPreset, $outputGridSize, $hintGridSize, $enableTemporalHints, $enableExternalHints, $enableCostBuffer, $gpuId, ByRef $inputStream, ByRef $outputStream, ByRef $nHWOpticalFlow, ByRef $algorithm, ByRef $sharedPtr)
+    ; CVAPI(cv::cuda::NvidiaOpticalFlow_2_0*) cudaNvidiaOpticalFlow_2_0_Create(CvSize* imageSize, int perfPreset, int outputGridSize, int hintGridSize, bool enableTemporalHints, bool enableExternalHints, bool enableCostBuffer, int gpuId, cv::cuda::Stream* inputStream, cv::cuda::Stream* outputStream, cv::cuda::NvidiaHWOpticalFlow** nHWOpticalFlow, cv::Algorithm** algorithm, cv::Ptr<cv::cuda::NvidiaOpticalFlow_2_0>** sharedPtr);
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaNvidiaOpticalFlow_2_0_Create", "struct*", $imageSize, "int", $perfPreset, "int", $outputGridSize, "int", $hintGridSize, "boolean", $enableTemporalHints, "boolean", $enableExternalHints, "boolean", $enableCostBuffer, "int", $gpuId, "ptr", $inputStream, "ptr", $outputStream, "ptr*", $nHWOpticalFlow, "ptr*", $algorithm, "ptr*", $sharedPtr), "cudaNvidiaOpticalFlow_2_0_Create", @error)
+EndFunc   ;==>_cudaNvidiaOpticalFlow_2_0_Create
+
+Func _cudaNvidiaOpticalFlow_2_0_ConvertToFloat(ByRef $nvof, ByRef $flow, ByRef $floatFlow)
+    ; CVAPI(void) cudaNvidiaOpticalFlow_2_0_ConvertToFloat(cv::cuda::NvidiaOpticalFlow_2_0* nvof, cv::_InputArray* flow, cv::_InputOutputArray* floatFlow);
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaNvidiaOpticalFlow_2_0_ConvertToFloat", "ptr", $nvof, "ptr", $flow, "ptr", $floatFlow), "cudaNvidiaOpticalFlow_2_0_ConvertToFloat", @error)
+EndFunc   ;==>_cudaNvidiaOpticalFlow_2_0_ConvertToFloat
+
+Func _cudaNvidiaOpticalFlow_2_0_ConvertToFloatMat(ByRef $nvof, ByRef $matFlow, ByRef $matFloatFlow)
+    ; cudaNvidiaOpticalFlow_2_0_ConvertToFloat using cv::Mat instead of _*Array
+
+    Local $iArrFlow, $vectorOfMatFlow, $iArrFlowSize
+    Local $bFlowIsArray = VarGetType($matFlow) == "Array"
+
+    If $bFlowIsArray Then
+        $vectorOfMatFlow = _VectorOfMatCreate()
+
+        $iArrFlowSize = UBound($matFlow)
+        For $i = 0 To $iArrFlowSize - 1
+            _VectorOfMatPush($vectorOfMatFlow, $matFlow[$i])
+        Next
+
+        $iArrFlow = _cveInputArrayFromVectorOfMat($vectorOfMatFlow)
+    Else
+        $iArrFlow = _cveInputArrayFromMat($matFlow)
+    EndIf
+
+    Local $ioArrFloatFlow, $vectorOfMatFloatFlow, $iArrFloatFlowSize
+    Local $bFloatFlowIsArray = VarGetType($matFloatFlow) == "Array"
+
+    If $bFloatFlowIsArray Then
+        $vectorOfMatFloatFlow = _VectorOfMatCreate()
+
+        $iArrFloatFlowSize = UBound($matFloatFlow)
+        For $i = 0 To $iArrFloatFlowSize - 1
+            _VectorOfMatPush($vectorOfMatFloatFlow, $matFloatFlow[$i])
+        Next
+
+        $ioArrFloatFlow = _cveInputOutputArrayFromVectorOfMat($vectorOfMatFloatFlow)
+    Else
+        $ioArrFloatFlow = _cveInputOutputArrayFromMat($matFloatFlow)
+    EndIf
+
+    _cudaNvidiaOpticalFlow_2_0_ConvertToFloat($nvof, $iArrFlow, $ioArrFloatFlow)
+
+    If $bFloatFlowIsArray Then
+        _VectorOfMatRelease($vectorOfMatFloatFlow)
+    EndIf
+
+    _cveInputOutputArrayRelease($ioArrFloatFlow)
+
+    If $bFlowIsArray Then
+        _VectorOfMatRelease($vectorOfMatFlow)
+    EndIf
+
+    _cveInputArrayRelease($iArrFlow)
+EndFunc   ;==>_cudaNvidiaOpticalFlow_2_0_ConvertToFloatMat
+
+Func _cudaNvidiaOpticalFlow_2_0_Release(ByRef $flow)
+    ; CVAPI(void) cudaNvidiaOpticalFlow_2_0_Release(cv::Ptr<cv::cuda::NvidiaOpticalFlow_2_0>** flow);
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaNvidiaOpticalFlow_2_0_Release", "ptr*", $flow), "cudaNvidiaOpticalFlow_2_0_Release", @error)
+EndFunc   ;==>_cudaNvidiaOpticalFlow_2_0_Release
