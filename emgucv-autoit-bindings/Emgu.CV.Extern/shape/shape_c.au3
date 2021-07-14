@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveNormHistogramCostExtractorCreate($flag, $nDummies, $defaultCost, ByRef $sharedPtr)
     ; CVAPI(cv::HistogramCostExtractor*) cveNormHistogramCostExtractorCreate(int flag, int nDummies, float defaultCost, cv::Ptr<cv::HistogramCostExtractor>** sharedPtr);

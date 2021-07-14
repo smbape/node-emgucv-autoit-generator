@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveSVMSGDGetType(ByRef $obj)
     ; CVAPI(int) cveSVMSGDGetType(cv::ml::SVMSGD* obj);

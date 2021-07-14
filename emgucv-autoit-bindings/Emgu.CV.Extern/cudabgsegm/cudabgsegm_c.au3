@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cudaBackgroundSubtractorMOGCreate($history, $nmixtures, $backgroundRatio, $noiseSigma, ByRef $bgSubtractor, ByRef $algorithm, ByRef $sharedPtr)
     ; CVAPI(cv::cuda::BackgroundSubtractorMOG*) cudaBackgroundSubtractorMOGCreate(int history, int nmixtures, double backgroundRatio, double noiseSigma, cv::BackgroundSubtractor** bgSubtractor, cv::Algorithm** algorithm, cv::Ptr<cv::cuda::BackgroundSubtractorMOG>** sharedPtr);

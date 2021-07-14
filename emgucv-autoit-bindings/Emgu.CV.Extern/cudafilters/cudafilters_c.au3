@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cudaCreateSobelFilter($srcType, $dstType, $dx, $dy, $ksize, $scale, $rowBorderType, $columnBorderType, ByRef $sharedPtr)
     ; CVAPI(cv::cuda::Filter*) cudaCreateSobelFilter(int srcType, int dstType, int dx, int dy, int ksize, double scale, int rowBorderType, int columnBorderType, cv::Ptr<cv::cuda::Filter>** sharedPtr);

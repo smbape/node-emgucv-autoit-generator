@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveMomentsGetM00(ByRef $obj)
     ; CVAPI(double) cveMomentsGetM00(cv::Moments* obj);

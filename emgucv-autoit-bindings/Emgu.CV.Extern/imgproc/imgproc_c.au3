@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cvGetImageSubRect(ByRef $image, ByRef $rect)
     ; CVAPI(IplImage*) cvGetImageSubRect(IplImage* image, CvRect* rect);

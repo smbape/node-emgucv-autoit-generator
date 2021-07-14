@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveTextDetectionModel_DBGetBinaryThreshold(ByRef $obj)
     ; CVAPI(float) cveTextDetectionModel_DBGetBinaryThreshold(cv::dnn::TextDetectionModel_DB* obj);

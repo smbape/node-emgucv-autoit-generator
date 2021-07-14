@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveImshow($winname, ByRef $mat)
     ; CVAPI(void) cveImshow(cv::String* winname, cv::_InputArray* mat);

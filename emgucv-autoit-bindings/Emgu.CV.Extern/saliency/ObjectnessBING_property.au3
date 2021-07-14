@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveObjectnessBINGGetW(ByRef $obj)
     ; CVAPI(int) cveObjectnessBINGGetW(cv::saliency::ObjectnessBING* obj);

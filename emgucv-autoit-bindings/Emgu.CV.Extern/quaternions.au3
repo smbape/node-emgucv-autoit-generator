@@ -1,5 +1,5 @@
 #include-once
-#include <..\CVEUtils.au3>
+#include "..\CVEUtils.au3"
 
 Func _eulerToQuaternions($x, $y, $z, ByRef $quaternions)
     ; CVAPI(void) eulerToQuaternions(double x, double y, double z, Quaternions* quaternions);

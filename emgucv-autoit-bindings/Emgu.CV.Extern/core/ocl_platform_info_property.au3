@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cvePlatformInfoName(ByRef $obj, $str)
     ; CVAPI(void) cvePlatformInfoName(cv::ocl::PlatformInfo* obj, cv::String* str);

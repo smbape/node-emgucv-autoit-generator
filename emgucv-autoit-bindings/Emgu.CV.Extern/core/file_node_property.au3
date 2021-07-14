@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveFileNodeIsNamed(ByRef $obj)
     ; CVAPI(bool) cveFileNodeIsNamed(cv::FileNode* obj);

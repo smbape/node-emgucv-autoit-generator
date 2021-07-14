@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveFrameMetadataGetCameraName(ByRef $obj, $val)
     ; CVAPI(void) cveFrameMetadataGetCameraName(FrameMetadata* obj, cv::String* val);

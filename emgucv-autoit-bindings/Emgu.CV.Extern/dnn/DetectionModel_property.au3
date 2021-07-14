@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveDetectionModelGetNmsAcrossClasses(ByRef $obj)
     ; CVAPI(bool) cveDetectionModelGetNmsAcrossClasses(cv::dnn::DetectionModel* obj);

@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveVariationalRefinementGetFixedPointIterations(ByRef $obj)
     ; CVAPI(int) cveVariationalRefinementGetFixedPointIterations(cv::VariationalRefinement* obj);

@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveHostDataPacketGetStreamName(ByRef $obj, $str)
     ; CVAPI(void) cveHostDataPacketGetStreamName(HostDataPacket* obj, cv::String* str);

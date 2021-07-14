@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveTextRecognitionModelGetDecodeType(ByRef $obj, $str)
     ; CVAPI(void) cveTextRecognitionModelGetDecodeType(cv::dnn::TextRecognitionModel* obj, cv::String* str);

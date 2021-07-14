@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveERFilterNM1Create($classifier, $thresholdDelta, $minArea, $maxArea, $minProbability, $nonMaxSuppression, $minProbabilityDiff, ByRef $sharedPtr)
     ; CVAPI(cv::text::ERFilter*) cveERFilterNM1Create(cv::String* classifier, int thresholdDelta, float minArea, float maxArea, float minProbability, bool nonMaxSuppression, float minProbabilityDiff, cv::Ptr<cv::text::ERFilter>** sharedPtr);

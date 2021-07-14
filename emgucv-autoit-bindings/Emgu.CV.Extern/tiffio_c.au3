@@ -1,5 +1,5 @@
 #include-once
-#include <..\CVEUtils.au3>
+#include "..\CVEUtils.au3"
 
 Func _tiffWriterOpen(ByRef $fileName)
     ; CVAPI(TIFF*) tiffWriterOpen(char* fileName);

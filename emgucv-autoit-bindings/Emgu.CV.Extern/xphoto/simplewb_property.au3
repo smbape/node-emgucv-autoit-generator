@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveSimpleWBGetInputMin(ByRef $obj)
     ; CVAPI(float) cveSimpleWBGetInputMin(cv::xphoto::SimpleWB* obj);

@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveLearningBasedWBGetRangeMaxVal(ByRef $obj)
     ; CVAPI(int) cveLearningBasedWBGetRangeMaxVal(cv::xphoto::LearningBasedWB* obj);

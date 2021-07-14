@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveQuasiDenseStereoCreate(ByRef $monoImgSize, $paramFilepath, ByRef $sharedPtr)
     ; CVAPI(cv::stereo::QuasiDenseStereo*) cveQuasiDenseStereoCreate(CvSize* monoImgSize, cv::String* paramFilepath, cv::Ptr<cv::stereo::QuasiDenseStereo>** sharedPtr);

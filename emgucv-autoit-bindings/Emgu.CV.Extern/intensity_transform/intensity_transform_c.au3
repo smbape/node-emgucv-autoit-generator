@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveLogTransform(ByRef $input, ByRef $output)
     ; CVAPI(void) cveLogTransform(cv::Mat* input, cv::Mat* output);

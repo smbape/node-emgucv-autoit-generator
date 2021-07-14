@@ -305,6 +305,23 @@ const parser = new ExportsParser(true, options);
 // });
 // return;
 
+[
+    "CV_EXPORTS_W int waitKey(int delay = 0);",
+    `CV_EXPORTS_W void resize( InputArray src, OutputArray dst,
+                          Size dsize, double fx = 0, double fy = 0,
+                          int interpolation = INTER_LINEAR );`,
+    `CV_EXPORTS_W void accumulateWeighted( InputArray src, InputOutputArray dst,
+                                      double alpha, InputArray mask = noArray() );`,
+].forEach(expr => {
+    parser.noexception = false;
+    parser.options.exports.start = "CV_EXPORTS_W ";
+    parser.options.exports.end = " ";
+    parser.init(parser.options);
+    parser.parse(Buffer.from(expr), 0);
+    console.log(parser.returnType, parser.name, parser.args);
+});
+return;
+
 const convertFile = (localFile, remoteFile, remotePath, remoteBaseDir, remoteSep, cb) => {
     const remoteFileDir = sysPath.dirname(remoteFile);
 
@@ -328,7 +345,7 @@ const convertFile = (localFile, remoteFile, remotePath, remoteBaseDir, remoteSep
         (api, performed, next) => {
             const header = `
                 #include-once
-                #include <${ sysPath.relative(remoteFileDir, remoteBaseDir) }\\CVEUtils.au3>
+                #include "${ sysPath.relative(remoteFileDir, remoteBaseDir) }\\CVEUtils.au3"
             `.replace(/^ +/mg, "").trim();
             fs.writeFile(remoteFile, eol.crlf(`${ header }\n\n${ convertToAutoIt(api, options) }`), next);
         }
@@ -433,7 +450,7 @@ waterfall([
             const fileparts = localBaseFile.split(localSep);
             const remoteFile = [remotePath].concat(fileparts).join(remoteSep).replace(".h", ".au3");
 
-            const include = `#include <${ remoteBase }\\${ remoteFile.slice(remoteIndex) }>`;
+            const include = `#include "${ remoteBase }\\${ remoteFile.slice(remoteIndex) }"`;
 
             if (!core_excluded.some(value => {
                 if (typeof value === "string") {

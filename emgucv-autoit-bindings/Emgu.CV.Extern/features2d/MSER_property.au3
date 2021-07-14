@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveMSERGetPass2Only(ByRef $obj)
     ; CVAPI(bool) cveMSERGetPass2Only(cv::MSER* obj);

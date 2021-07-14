@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveUMatCreate($flags)
     ; CVAPI(cv::UMat*) cveUMatCreate(cv::UMatUsageFlags flags);

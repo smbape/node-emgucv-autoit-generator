@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveRLOFOpticalFlowParameterGetNormSigma0(ByRef $obj)
     ; CVAPI(float) cveRLOFOpticalFlowParameterGetNormSigma0(cv::optflow::RLOFOpticalFlowParameter* obj);

@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveEMGetClustersNumber(ByRef $obj)
     ; CVAPI(int) cveEMGetClustersNumber(cv::ml::EM* obj);

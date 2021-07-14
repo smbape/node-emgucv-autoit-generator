@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveTonemapDurandGetSaturation(ByRef $obj)
     ; CVAPI(float) cveTonemapDurandGetSaturation(cv::xphoto::TonemapDurand* obj);

@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveQRCodeDetectorSetEpsX(ByRef $obj, $value)
     ; CVAPI(void) cveQRCodeDetectorSetEpsX(cv::QRCodeDetector* obj, double value);

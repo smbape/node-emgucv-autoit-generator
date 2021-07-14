@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveLogisticRegressionGetLearningRate(ByRef $obj)
     ; CVAPI(double) cveLogisticRegressionGetLearningRate(cv::ml::LogisticRegression* obj);

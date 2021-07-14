@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveTonemapReinhardGetIntensity(ByRef $obj)
     ; CVAPI(float) cveTonemapReinhardGetIntensity(cv::TonemapReinhard* obj);

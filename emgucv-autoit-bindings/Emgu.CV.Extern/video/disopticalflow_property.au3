@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveDISOpticalFlowGetFinestScale(ByRef $obj)
     ; CVAPI(int) cveDISOpticalFlowGetFinestScale(cv::DISOpticalFlow* obj);

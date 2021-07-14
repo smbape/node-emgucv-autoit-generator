@@ -2,8 +2,8 @@
 #include <CVEConstants.au3>
 #include <CVEtypes_c.au3>
 
-Global $_h_cvextern_dll
 Global $_cve_debug = 0
+Global $_h_cvextern_dll
 
 Func _DebugMsg($msg)
 	If BitAND($_cve_debug, 1) Then

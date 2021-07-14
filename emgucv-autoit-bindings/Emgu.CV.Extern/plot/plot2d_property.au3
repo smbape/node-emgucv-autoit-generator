@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cvePlot2dSetMinX(ByRef $obj, $value)
     ; CVAPI(void) cvePlot2dSetMinX(cv::plot::Plot2d* obj, double value);

@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveViz3dCreate($s)
     ; CVAPI(cv::viz::Viz3d*) cveViz3dCreate(cv::String* s);

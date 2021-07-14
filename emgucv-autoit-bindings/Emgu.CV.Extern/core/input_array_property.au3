@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveInputArrayIsMat(ByRef $obj)
     ; CVAPI(bool) cveInputArrayIsMat(cv::_InputArray* obj);

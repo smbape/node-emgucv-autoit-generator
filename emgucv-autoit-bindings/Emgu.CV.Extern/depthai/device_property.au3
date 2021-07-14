@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveDeviceIsUsb3(ByRef $obj)
     ; CVAPI(bool) cveDeviceIsUsb3(Device* obj);

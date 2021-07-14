@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveBackgroundSubtractorMOG2GetHistory(ByRef $obj)
     ; CVAPI(int) cveBackgroundSubtractorMOG2GetHistory(cv::BackgroundSubtractorMOG2* obj);

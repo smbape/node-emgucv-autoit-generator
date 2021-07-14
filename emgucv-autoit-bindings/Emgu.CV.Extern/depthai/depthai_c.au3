@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _depthaiDeviceCreate($usb_device, $usb2_mode)
     ; CVAPI(Device*) depthaiDeviceCreate(cv::String* usb_device, bool usb2_mode);

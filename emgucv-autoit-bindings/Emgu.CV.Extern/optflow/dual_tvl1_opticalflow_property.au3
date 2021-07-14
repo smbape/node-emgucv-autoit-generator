@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveDualTVL1OpticalFlowGetTau(ByRef $obj)
     ; CVAPI(double) cveDualTVL1OpticalFlowGetTau(cv::optflow::DualTVL1OpticalFlow* obj);

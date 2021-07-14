@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveSimpleBlobDetectorParamsGetThresholdStep(ByRef $obj)
     ; CVAPI(float) cveSimpleBlobDetectorParamsGetThresholdStep(cv::SimpleBlobDetector::Params* obj);

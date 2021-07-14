@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveCudaHOGGetGammaCorrection(ByRef $obj)
     ; CVAPI(bool) cveCudaHOGGetGammaCorrection(void* obj);

@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveLayerGetName(ByRef $obj, $str)
     ; CVAPI(void) cveLayerGetName(cv::dnn::Layer* obj, cv::String* str);

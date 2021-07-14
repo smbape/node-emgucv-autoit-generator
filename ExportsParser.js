@@ -33,10 +33,15 @@ const UNSINED_TYPES = [
 class ExportsParser {
     constructor(noexception = false, options = {}) {
         this.noexception = noexception;
+        this.init(options);
+    }
+
+    init(options) {
         this.options = options;
         const {start: export_start, end: export_end} = options.exports;
         this.export_start = export_start;
         this.export_end = Buffer.from(export_end);
+        this.export_end_is_space = !notSpaceRe.test(export_end);
         this.tokenizer = new RegExp(`(?:^/[/*]|^${ export_start.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&") }|#if WINAPI_FAMILY)`, "mg");
     }
 
@@ -145,6 +150,19 @@ class ExportsParser {
         }
     }
 
+    isEndOfExports() {
+        if (this.export_end_is_space) {
+            return this.pos - 1 !== -1 && !notSpaceRe.test(this.buffer[this.pos - 1]);
+        }
+        
+        if (!this.buffer.slice(this.pos, this.pos + this.export_end.length).equals(this.export_end)) {
+            return false;
+        }
+
+        this.pos++;
+        return true;
+    }
+
     mayBeReturnType() {
         if (this.pos === this.length) {
             return false;
@@ -155,8 +173,7 @@ class ExportsParser {
         this.mayBeType();
         this.mayBeSpace();
 
-        if (this.pos < this.length && this.buffer.slice(this.pos, this.pos + this.export_end.length).equals(this.export_end)) {
-            this.pos++;
+        if (this.pos < this.length && this.isEndOfExports()) {
             return true;
         }
 

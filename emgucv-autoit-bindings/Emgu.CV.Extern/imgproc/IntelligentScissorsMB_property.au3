@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveIntelligentScissorsMBSetEdgeFeatureZeroCrossingParameters(ByRef $obj, $value)
     ; CVAPI(void) cveIntelligentScissorsMBSetEdgeFeatureZeroCrossingParameters(cv::segmentation::IntelligentScissorsMB* obj, float value);

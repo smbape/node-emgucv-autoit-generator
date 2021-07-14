@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveVideoCaptureIsOpened(ByRef $obj)
     ; CVAPI(bool) cveVideoCaptureIsOpened(cv::VideoCapture* obj);

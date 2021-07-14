@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveDTreesGetMaxCategories(ByRef $obj)
     ; CVAPI(int) cveDTreesGetMaxCategories(cv::ml::DTrees* obj);

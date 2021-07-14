@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveCudaHoughLinesDetectorGetRho(ByRef $obj)
     ; CVAPI(float) cveCudaHoughLinesDetectorGetRho(void* obj);

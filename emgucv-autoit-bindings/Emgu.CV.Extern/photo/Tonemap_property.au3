@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveTonemapGetGamma(ByRef $obj)
     ; CVAPI(float) cveTonemapGetGamma(cv::Tonemap* obj);

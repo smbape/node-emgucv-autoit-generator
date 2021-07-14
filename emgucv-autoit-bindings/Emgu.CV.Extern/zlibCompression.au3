@@ -1,5 +1,5 @@
 #include-once
-#include <..\CVEUtils.au3>
+#include "..\CVEUtils.au3"
 
 Func _zlib_compress_bound($length)
     ; CVAPI(int) zlib_compress_bound(int length);

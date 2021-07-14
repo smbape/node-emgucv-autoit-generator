@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveDeviceIsNVidia(ByRef $obj)
     ; CVAPI(bool) cveDeviceIsNVidia(cv::ocl::Device* obj);

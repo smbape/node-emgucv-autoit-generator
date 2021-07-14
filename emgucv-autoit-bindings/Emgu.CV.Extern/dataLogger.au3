@@ -1,5 +1,5 @@
 #include-once
-#include <..\CVEUtils.au3>
+#include "..\CVEUtils.au3"
 
 Func _DataLoggerCreate($logLevel, $loggerId)
     ; CVAPI(emgu::DataLogger*) DataLoggerCreate(int logLevel, int loggerId);

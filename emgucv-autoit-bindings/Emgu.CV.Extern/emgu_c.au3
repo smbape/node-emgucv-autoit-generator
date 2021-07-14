@@ -1,5 +1,5 @@
 #include-once
-#include <..\CVEUtils.au3>
+#include "..\CVEUtils.au3"
 
 Func _cveGetCvStructSizes(ByRef $sizes)
     ; CVAPI(void) cveGetCvStructSizes(emgu::cvStructSizes* sizes);

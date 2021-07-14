@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveTextDetectionModel_EASTGetConfidenceThreshold(ByRef $obj)
     ; CVAPI(float) cveTextDetectionModel_EASTGetConfidenceThreshold(cv::dnn::TextDetectionModel_EAST* obj);

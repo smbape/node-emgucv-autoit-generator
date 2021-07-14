@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveUMatIsContinuous(ByRef $obj)
     ; CVAPI(bool) cveUMatIsContinuous(cv::UMat* obj);

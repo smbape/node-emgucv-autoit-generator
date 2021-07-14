@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveEigenFaceRecognizerCreate($numComponents, $threshold, ByRef $faceRecognizerPtr, ByRef $basicFaceRecognizerPtr, ByRef $sharedPtr)
     ; CVAPI(cv::face::EigenFaceRecognizer*) cveEigenFaceRecognizerCreate(int numComponents, double threshold, cv::face::FaceRecognizer** faceRecognizerPtr, cv::face::BasicFaceRecognizer** basicFaceRecognizerPtr, cv::Ptr<cv::face::EigenFaceRecognizer>** sharedPtr);

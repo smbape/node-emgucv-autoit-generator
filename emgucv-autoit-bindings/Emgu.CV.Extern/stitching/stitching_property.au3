@@ -1,5 +1,5 @@
 #include-once
-#include <..\..\CVEUtils.au3>
+#include "..\..\CVEUtils.au3"
 
 Func _cveStitcherWorkScale(ByRef $obj)
     ; CVAPI(double) cveStitcherWorkScale(cv::Stitcher* obj);
