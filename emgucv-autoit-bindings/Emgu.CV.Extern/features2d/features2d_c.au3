@@ -146,7 +146,7 @@ Func _cveSimpleBlobDetectorParamsRelease(ByRef $params)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSimpleBlobDetectorParamsRelease", "ptr*", $params), "cveSimpleBlobDetectorParamsRelease", @error)
 EndFunc   ;==>_cveSimpleBlobDetectorParamsRelease
 
-Func _drawKeypoints(ByRef $image, $keypoints, ByRef $outImage, $color, $flags)
+Func _drawKeypoints(ByRef $image, $keypoints, ByRef $outImage, $color = _cvScalarAll(-1), $flags = $CV_DRAW_MATCHES_FLAGS_DEFAULT)
     ; CVAPI(void) drawKeypoints(cv::_InputArray* image, const std::vector<cv::KeyPoint>* keypoints, cv::_InputOutputArray* outImage, const CvScalar* color, int flags);
 
     Local $vecKeypoints, $iArrKeypointsSize
@@ -170,7 +170,7 @@ Func _drawKeypoints(ByRef $image, $keypoints, ByRef $outImage, $color, $flags)
     EndIf
 EndFunc   ;==>_drawKeypoints
 
-Func _drawKeypointsMat(ByRef $matImage, $keypoints, ByRef $matOutImage, $color, $flags)
+Func _drawKeypointsMat(ByRef $matImage, $keypoints, ByRef $matOutImage, $color = _cvScalarAll(-1), $flags = $CV_DRAW_MATCHES_FLAGS_DEFAULT)
     ; drawKeypoints using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize

@@ -9,11 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ffi-packager/libclang": "github:node-ffi-packager/node-libclang#semver:v2.0.2",
     "async": "^3.2.0",
     "eol": "^0.9.1",
     "fs-explorer": "^1.4.2",
     "mkdirp": "^1.0.4"
   },
-  "devDependencies": {},
   "description": ""
 }

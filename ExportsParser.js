@@ -3,17 +3,19 @@ const IF_DEF_WINAPI_FAMILY = "#if WINAPI_FAMILY";
 const ENDIF = "#endif";
 const BLOC_COMMENT_START = "/*";
 const BLOC_COMMENT_END = "*/";
-const OPEN_PARENTHESIS = "(".charCodeAt(0);
-const CLOSE_PARENTHESIS = ")".charCodeAt(0);
-const COLON = ":".charCodeAt(0);
-const COMMA = ",".charCodeAt(0);
-const GT = ">".charCodeAt(0);
-const LT = "<".charCodeAt(0);
-const SEMICOLON = ";".charCodeAt(0);
-const STAR = "*".charCodeAt(0);
-const EQUALS = "=".charCodeAt(0);
-const SLASH = "/".charCodeAt(0);
-
+const OPEN_PARENTHESIS = "(";
+const CLOSE_PARENTHESIS = ")";
+const COLON = ":";
+const COMMA = ",";
+const AMPERS_GT = ">";
+const AMPERS_LT = "<";
+const SEMICOLON = ";";
+const STAR = "*";
+const EQUALS = "=";
+const SLASH = "/";
+const AMPERS_AND = "&";
+// const MINUS = "-";
+// const DOT = ".";
 
 const crlfRe = /[\r\n]/mg;
 const notSpaceRe = /\S/mg;
@@ -28,7 +30,7 @@ const UNSINED_TYPES = [
     "long int",
     "long long",
     "long long int",
-].sort(({length: a}, {length: b}) => b - a).map(type => Buffer.from(type));
+].sort(({length: a}, {length: b}) => b - a);
 
 class ExportsParser {
     constructor(noexception = false, options = {}) {
@@ -38,14 +40,20 @@ class ExportsParser {
 
     init(options) {
         this.options = options;
+        const {lf} = options;
         const {start: export_start, end: export_end} = options.exports;
+        this.lf = lf || LF;
         this.export_start = export_start;
-        this.export_end = Buffer.from(export_end);
+        this.export_end = export_end;
         this.export_end_is_space = !notSpaceRe.test(export_end);
         this.tokenizer = new RegExp(`(?:^/[/*]|^${ export_start.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&") }|#if WINAPI_FAMILY)`, "mg");
     }
 
-    parseFile(buffer, offset = 0) {
+    parseFile(input, offset = 0) {
+        if (Buffer.isBuffer(input)) {
+            input = input.toString();
+        }
+
         const {tokenizer} = this;
 
         let match;
@@ -54,32 +62,32 @@ class ExportsParser {
 
         const api = [];
 
-        while ((match = tokenizer.exec(buffer)) !== null) {
+        while ((match = tokenizer.exec(input)) !== null) {
             if (match[0] === "//") {
-                tokenizer.lastIndex = buffer.indexOf(LF, match.index) + LF.length;
-                if (tokenizer.lastIndex - LF.length === -1) {
-                    tokenizer.lastIndex = buffer.length;
+                tokenizer.lastIndex = input.indexOf(this.lf, match.index) + this.lf.length;
+                if (tokenizer.lastIndex - this.lf.length === -1) {
+                    tokenizer.lastIndex = input.length;
                 }
                 continue;
             }
 
             if (match[0] === BLOC_COMMENT_START) {
-                tokenizer.lastIndex = buffer.indexOf(BLOC_COMMENT_END, match.index) + BLOC_COMMENT_END.length;
+                tokenizer.lastIndex = input.indexOf(BLOC_COMMENT_END, match.index) + BLOC_COMMENT_END.length;
                 if (tokenizer.lastIndex - BLOC_COMMENT_END.length === -1) {
-                    tokenizer.lastIndex = buffer.length;
+                    tokenizer.lastIndex = input.length;
                 }
                 continue;
             }
 
             if (match[0] === IF_DEF_WINAPI_FAMILY) {
-                tokenizer.lastIndex = buffer.indexOf(ENDIF, match.index) + ENDIF.length;
+                tokenizer.lastIndex = input.indexOf(ENDIF, match.index) + ENDIF.length;
                 if (tokenizer.lastIndex - ENDIF.length === -1) {
-                    tokenizer.lastIndex = buffer.length;
+                    tokenizer.lastIndex = input.length;
                 }
                 continue;
             }
 
-            this.parse(buffer, match.index);
+            this.parse(input, match.index);
 
             if (this.lastError) {
                 return null;
@@ -91,12 +99,16 @@ class ExportsParser {
         return api;
     }
 
-    parse(buffer, pos) {
+    parse(input, pos) {
+        if (Buffer.isBuffer(input)) {
+            input = input.toString();
+        }
+
         this.start = pos;
         pos += this.export_start.length;
 
-        this.buffer = buffer;
-        this.length = this.buffer.length;
+        this.input = input;
+        this.length = this.input.length;
 
         this.lastError = undefined;
         this.returnType = undefined;
@@ -132,12 +144,12 @@ class ExportsParser {
 
     unexpected() {
         crlfRe.lastIndex = this.pos;
-        const match = crlfRe.exec(this.buffer);
+        const match = crlfRe.exec(this.input);
         const eof = match === null ? this.length : match.index;
         const win = 40;
         const start = Math.max(this.start, this.pos - win);
         const end = Math.min(eof, this.pos + win);
-        const msg = `Unexpected token ${ this.buffer.slice(start, end).toString() }`;
+        const msg = `Unexpected token ${ this.input.slice(start, end) }`;
         const pad = `${ " ".repeat("Error: Unexpected token ".length + (this.pos - start)) }^`;
 
         const error = new Error(`${ msg }\n${ pad }`);
@@ -152,10 +164,10 @@ class ExportsParser {
 
     isEndOfExports() {
         if (this.export_end_is_space) {
-            return this.pos - 1 !== -1 && !notSpaceRe.test(this.buffer[this.pos - 1]);
+            return this.pos - 1 !== -1 && !notSpaceRe.test(this.input[this.pos - 1]);
         }
-        
-        if (!this.buffer.slice(this.pos, this.pos + this.export_end.length).equals(this.export_end)) {
+
+        if (!this.input.slice(this.pos, this.pos + this.export_end.length) === this.export_end) {
             return false;
         }
 
@@ -192,21 +204,21 @@ class ExportsParser {
         let trim = true;
 
         while (trim) {
-            const match = notSpaceRe.exec(this.buffer);
+            const match = notSpaceRe.exec(this.input);
             this.pos = match === null ? this.length : match.index;
             trim = false;
 
-            if (this.pos + 1 < this.length && this.buffer[this.pos] === SLASH) {
-                if (this.buffer[this.pos + 1] === SLASH) {
-                    this.pos = this.buffer.indexOf(LF, this.pos + 2) + 1;
+            if (this.pos + 1 < this.length && this.input[this.pos] === SLASH) {
+                if (this.input[this.pos + 1] === SLASH) {
+                    this.pos = this.input.indexOf(this.lf, this.pos + 2) + 1;
                     if (this.pos === 0) {
                         this.pos = this.length;
                     } else {
                         notSpaceRe.lastIndex = this.pos;
                         trim = true;
                     }
-                } else if (this.buffer[this.pos + 1] === STAR) {
-                    this.pos = this.buffer.indexOf(BLOC_COMMENT_END, this.pos + 2) + 2;
+                } else if (this.input[this.pos + 1] === STAR) {
+                    this.pos = this.input.indexOf(BLOC_COMMENT_END, this.pos + 2) + 2;
                     if (this.pos === 0) {
                         this.pos = this.length;
                     } else {
@@ -232,11 +244,57 @@ class ExportsParser {
         this.mayBeSpace();
         const start = this.pos;
         notIdenvifierRe.lastIndex = this.pos;
-        const match = notIdenvifierRe.exec(this.buffer);
+        const match = notIdenvifierRe.exec(this.input);
         this.pos = match === null ? this.length : match.index;
 
         if (this.pos !== start) {
-            this._lastIdentifier = this.buffer.slice(start, this.pos).toString();
+            this._lastIdentifier = this.input.slice(start, this.pos);
+            return true;
+        }
+
+        this.pos = pos;
+        return false;
+    }
+
+    mayBeExpression() {
+        this._lastExpression = undefined;
+
+        if (this.pos === this.length) {
+            return false;
+        }
+
+        const {pos} = this;
+
+        this.mayBeSpace();
+        const start = this.pos;
+
+        while (this.pos < this.length && this.input[this.pos] !== COMMA && this.input[this.pos] !== CLOSE_PARENTHESIS) {
+            if (this.input[this.pos] === OPEN_PARENTHESIS) {
+                this.pos++;
+
+                let opened = 1;
+                while (opened !== 0 && this.pos < this.length) {
+                    if (this.input[this.pos] === OPEN_PARENTHESIS) {
+                        opened++;
+                    } else if (this.input[this.pos] === CLOSE_PARENTHESIS) {
+                        opened--;
+                    }
+                    this.pos++;
+                }
+
+                if (opened !== 0) {
+                    this.pos = pos;
+                    return false;
+                }
+
+                this.pos--;
+            }
+
+            this.pos++;
+        }
+
+        if (this.pos !== start) {
+            this._lastExpression = this.input.slice(start, this.pos).trim();
             return true;
         }
 
@@ -254,13 +312,13 @@ class ExportsParser {
         // (std::vector< double >* v, std::vector< double >* other)
         this.mayBeSpace();
 
-        if (this.pos === this.length || this.buffer[this.pos++] !== OPEN_PARENTHESIS) {
+        if (this.pos === this.length || this.input[this.pos++] !== OPEN_PARENTHESIS) {
             this.pos = pos;
             return false;
         }
 
         this.mayBeSpace();
-        let hasMore = this.buffer[this.pos] !== CLOSE_PARENTHESIS;
+        let hasMore = this.input[this.pos] !== CLOSE_PARENTHESIS;
 
         while (hasMore) {
             if (!this.mayBeType() || !this.mayBeIdentifier()) {
@@ -274,16 +332,16 @@ class ExportsParser {
 
             this.mayBeSpace();
 
-            if (this.pos < this.length && this.buffer[this.pos] === EQUALS) {
+            if (this.pos < this.length && this.input[this.pos] === EQUALS) {
                 this.pos++;
                 this.mayBeSpace();
-                if (!this.mayBeIdentifier()) {
+                if (!this.mayBeExpression()) {
                     break;
                 }
-                arg.push(this._lastIdentifier);
+                arg.push(this._lastExpression);
             }
 
-            if (this.pos < this.length && this.buffer[this.pos] === COMMA) {
+            if (this.pos < this.length && this.input[this.pos] === COMMA) {
                 this.pos++;
                 hasMore = true;
             }
@@ -291,7 +349,7 @@ class ExportsParser {
 
         if (!hasMore) {
             this.mayBeSpace();
-            if (this.pos === this.length || this.buffer[this.pos++] !== CLOSE_PARENTHESIS) {
+            if (this.pos === this.length || this.input[this.pos++] !== CLOSE_PARENTHESIS) {
                 hasMore = true;
             }
         }
@@ -307,7 +365,7 @@ class ExportsParser {
     mayBeEnd() {
         this.mayBeSpace();
 
-        if (this.pos === this.length || this.buffer[this.pos] !== SEMICOLON) {
+        if (this.pos === this.length || this.input[this.pos] !== SEMICOLON) {
             return false;
         }
 
@@ -347,22 +405,22 @@ class ExportsParser {
 
         if (this.pos < this.length && this._lastIdentifier === "unsigned") {
             for (const type of UNSINED_TYPES) {
-                if (this.pos + type.length <= this.length && type.compare(this.buffer, this.pos, this.pos + type.length) === 0) {
+                if (this.input.startsWith(type, this.pos)) {
                     this.pos += type.length;
                     break;
                 }
             }
         }
 
-        if (this.buffer[this.pos] === COLON) {
+        if (this.input[this.pos] === COLON) {
             this.pos++;
-            if (this.pos === this.length || this.buffer[this.pos++] !== COLON || !this.mayBeType()) {
+            if (this.pos === this.length || this.input[this.pos++] !== COLON || !this.mayBeType()) {
                 this.pos = pos;
                 return false;
             }
 
             end = this.pos;
-        } else if (this.buffer[this.pos] === LT) {
+        } else if (this.input[this.pos] === AMPERS_LT) {
             this.pos++;
             if (!this.mayBeType()) {
                 this.pos = pos;
@@ -371,7 +429,7 @@ class ExportsParser {
 
             this.mayBeSpace();
 
-            if (this.pos === this.length || this.buffer[this.pos++] !== GT) {
+            if (this.pos === this.length || this.input[this.pos++] !== AMPERS_GT) {
                 this.pos = pos;
                 return false;
             }
@@ -381,16 +439,19 @@ class ExportsParser {
 
         this.mayBeSpace();
 
-        if (this.pos < this.length && this.buffer[this.pos] === STAR) {
+        if (this.pos < this.length && this.input[this.pos] === STAR) {
             end = ++this.pos;
             this.mayBeSpace();
 
-            if (this.pos < this.length && this.buffer[this.pos] === STAR) {
+            if (this.pos < this.length && this.input[this.pos] === STAR) {
                 end = ++this.pos;
             }
+        } else if (this.pos < this.length && this.input[this.pos] === AMPERS_AND) {
+            end = ++this.pos;
+            this.mayBeSpace();
         }
 
-        this._lastType = this.buffer.slice(start, end).toString().trim();
+        this._lastType = this.input.slice(start, end).trim();
         return true;
     }
 }

@@ -642,12 +642,12 @@ Func _cveMeanShiftMat(ByRef $matProbImage, ByRef $window, ByRef $criteria)
     Return $retval
 EndFunc   ;==>_cveMeanShiftMat
 
-Func _cveBuildOpticalFlowPyramid(ByRef $img, ByRef $pyramid, ByRef $winSize, $maxLevel, $withDerivatives, $pyrBorder, $derivBorder, $tryReuseInputImage)
+Func _cveBuildOpticalFlowPyramid(ByRef $img, ByRef $pyramid, ByRef $winSize, $maxLevel, $withDerivatives = true, $pyrBorder = $CV_BORDER_REFLECT_101, $derivBorder = $CV_BORDER_CONSTANT, $tryReuseInputImage = true)
     ; CVAPI(int) cveBuildOpticalFlowPyramid(cv::_InputArray* img, cv::_OutputArray* pyramid, CvSize* winSize, int maxLevel, bool withDerivatives, int pyrBorder, int derivBorder, bool tryReuseInputImage);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveBuildOpticalFlowPyramid", "ptr", $img, "ptr", $pyramid, "struct*", $winSize, "int", $maxLevel, "boolean", $withDerivatives, "int", $pyrBorder, "int", $derivBorder, "boolean", $tryReuseInputImage), "cveBuildOpticalFlowPyramid", @error)
 EndFunc   ;==>_cveBuildOpticalFlowPyramid
 
-Func _cveBuildOpticalFlowPyramidMat(ByRef $matImg, ByRef $matPyramid, ByRef $winSize, $maxLevel, $withDerivatives, $pyrBorder, $derivBorder, $tryReuseInputImage)
+Func _cveBuildOpticalFlowPyramidMat(ByRef $matImg, ByRef $matPyramid, ByRef $winSize, $maxLevel, $withDerivatives = true, $pyrBorder = $CV_BORDER_REFLECT_101, $derivBorder = $CV_BORDER_CONSTANT, $tryReuseInputImage = true)
     ; cveBuildOpticalFlowPyramid using cv::Mat instead of _*Array
 
     Local $iArrImg, $vectorOfMatImg, $iArrImgSize

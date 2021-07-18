@@ -20,10 +20,10 @@
 
 ; #Tags# ======================================================================================================================
 
-Global $tagchar = _
+Global Const $tagchar = _
    "char name[40];"
 
-Global $tagIplImage = _
+Global Const $tagIplImage = _
     "int  nSize;" & _             ;/* sizeof(IplImage) */
     "int  ID;" & _             ;                /* version (=0)*/
     "int  nChannels;" & _             ;         /* Most of OpenCV functions support 1,2,3 or 4 channels */
@@ -47,50 +47,50 @@ Global $tagIplImage = _
     "int  BorderConst[4];" & _             ;    /* Ditto.                                 */
     "ptr imageDataOrigin;"             ;  /* Pointer to very origin of image data (not necessarily aligned) - needed for correct deallocation */
 
-Global $tagIplROI = _
+Global Const $tagIplROI = _
     "int  coi;" & _             ; /* 0 - no COI (all channels are selected), 1 - 0th channel is selected ...*/
     "int  xOffset;" & _
     "int  yOffset;" & _
     "int  width;" & _
     "int  height;"
 
-Global $tagCvRect = _
+Global Const $tagCvRect = _
     "int x;" & _
     "int y;" & _
     "int width;" & _
     "int height;"
 
-Global $tagCvPoint = _
+Global Const $tagCvPoint = _
     "int x;" & _
     "int y;"
 
-Global $tagCvPoint2D32f = _
+Global Const $tagCvPoint2D32f = _
     "float x;" & _
     "float y;"
 
-Global $tagCvPoint3D32f = _
+Global Const $tagCvPoint3D32f = _
     "float x;" & _
     "float y;" & _
     "float z;"
 
-Global $tagCvPoint2D64f = _
+Global Const $tagCvPoint2D64f = _
     "double x;" & _
     "double y;"
 
-Global $tagCvPoint3D64f = _
+Global Const $tagCvPoint3D64f = _
     "double x;" & _
     "double y;" & _
     "double z;"
 
-Global $tagCvSize = _
+Global Const $tagCvSize = _
     "int width;" & _
     "int height;"
 
-Global $tagCvSize2D32f = _
+Global Const $tagCvSize2D32f = _
     "float width;" & _
     "float height;"
 
-Global $tagCvBox2D = _
+Global Const $tagCvBox2D = _
     "float x;" & _              ;/* Center of the box.      */
     "float y;"	& _
     "float width;" & _          ;/* Box width and length.      */
@@ -98,19 +98,19 @@ Global $tagCvBox2D = _
     "float angle;"              ;/* Angle between the horizontal axis     */
                                 ;/* and the first side (i.e. length) in degrees */
 
-Global $tagCvScalar = _
+Global Const $tagCvScalar = _
     "double val1;" & _
 	"double val2;" & _
 	"double val3;" & _
 	"double val4;"
 
 
-Global $tagCvTermCriteria = _
-    "int type;" & _      ;  /* may be combination of CV_TERMCRIT_ITER CV_TERMCRIT_EPS */
-    "int max_iter;" & _
-    "double epsilon;"
+Global Const $tagCvTermCriteria = _
+    "int type;" & _ ; the type of termination criteria: COUNT, EPS or COUNT + EPS
+    "int maxCount;" & _ ; the maximum number of iterations/elements
+    "double epsilon;" ; the desired accuracy
 
-Global $tagCvMat = _
+Global Const $tagCvMat = _
     "int type;" & _            ; should and with 0xFF to get type value
 	"int step;" & _
 	"int u1;" & _
@@ -119,7 +119,7 @@ Global $tagCvMat = _
 	"int rows;" & _
 	"int cols;"
 
-Global $tagCvSeq = _
+Global Const $tagCvSeq = _
     "int flags;" & _ ;sequence flags, including the sequence signature (CV_SEQ_MAGIC_VAL or CV_SET_MAGIC_VAL), type of the elements and some other information about the sequence.
     "int header_size;" & _ ;size of the sequence header. It should be sizeof(CvSeq) at minimum. See CreateSeq().
     "ptr h_next;" & _
@@ -137,7 +137,7 @@ Global $tagCvSeq = _
 	"int padding1;" & _
 	"int padding2;"
 
-Global $tagCvContour = _
+Global Const $tagCvContour = _
     "int flags;" & _ ;sequence flags, including the sequence signature (CV_SEQ_MAGIC_VAL or CV_SET_MAGIC_VAL), type of the elements and some other information about the sequence.
     "int header_size;" & _ ;size of the sequence header. It should be sizeof(CvSeq) at minimum. See CreateSeq().
     "ptr h_next;" & _
@@ -163,7 +163,7 @@ Global $tagCvContour = _
     "int padding1;" & _
 	"int padding2;"
 
-Global $tagCvSeqBlock = _
+Global Const $tagCvSeqBlock = _
     "ptr next;" & _
     "ptr prev;" & _
     "int start_index;" & _
@@ -171,6 +171,6 @@ Global $tagCvSeqBlock = _
     "ptr data;" & _ ;memory storage where the sequence resides. It can be a NULL pointer.
     "int delimiter;" ;pointer to the first data block
 
-Global $tagCvSlice = _
+Global Const $tagCvSlice = _
     "int start_index;" & _
     "int end_index;"

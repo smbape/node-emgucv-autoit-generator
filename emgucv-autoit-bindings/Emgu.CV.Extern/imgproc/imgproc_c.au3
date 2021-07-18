@@ -105,12 +105,12 @@ Func _cveGrabCutMat(ByRef $matImg, ByRef $matMask, ByRef $rect, ByRef $matBgdMod
     _cveInputArrayRelease($iArrImg)
 EndFunc   ;==>_cveGrabCutMat
 
-Func _cveFilter2D(ByRef $src, ByRef $dst, ByRef $kernel, ByRef $anchor, $delta, $borderType)
+Func _cveFilter2D(ByRef $src, ByRef $dst, ByRef $kernel, $anchor = _cvPoint(-1,-1), $delta = 0, $borderType = $CV_BORDER_DEFAULT)
     ; CVAPI(void) cveFilter2D(cv::_InputArray* src, cv::_OutputArray* dst, cv::_InputArray* kernel, CvPoint* anchor, double delta, int borderType);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFilter2D", "ptr", $src, "ptr", $dst, "ptr", $kernel, "struct*", $anchor, "double", $delta, "int", $borderType), "cveFilter2D", @error)
 EndFunc   ;==>_cveFilter2D
 
-Func _cveFilter2DMat(ByRef $matSrc, ByRef $matDst, ByRef $matKernel, ByRef $anchor, $delta, $borderType)
+Func _cveFilter2DMat(ByRef $matSrc, ByRef $matDst, ByRef $matKernel, $anchor = _cvPoint(-1,-1), $delta = 0, $borderType = $CV_BORDER_DEFAULT)
     ; cveFilter2D using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -182,12 +182,12 @@ Func _cveFilter2DMat(ByRef $matSrc, ByRef $matDst, ByRef $matKernel, ByRef $anch
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveFilter2DMat
 
-Func _cveSepFilter2D(ByRef $src, ByRef $dst, $ddepth, ByRef $kernelX, ByRef $kernelY, ByRef $anchor, $delta, $borderType)
+Func _cveSepFilter2D(ByRef $src, ByRef $dst, $ddepth, ByRef $kernelX, ByRef $kernelY, $anchor = _cvPoint(-1,-1), $delta = 0, $borderType = $CV_BORDER_DEFAULT)
     ; CVAPI(void) cveSepFilter2D(cv::_InputArray* src, cv::_OutputArray* dst, int ddepth, cv::_InputArray* kernelX, cv::_InputArray* kernelY, CvPoint* anchor, double delta, int borderType);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSepFilter2D", "ptr", $src, "ptr", $dst, "int", $ddepth, "ptr", $kernelX, "ptr", $kernelY, "struct*", $anchor, "double", $delta, "int", $borderType), "cveSepFilter2D", @error)
 EndFunc   ;==>_cveSepFilter2D
 
-Func _cveSepFilter2DMat(ByRef $matSrc, ByRef $matDst, $ddepth, ByRef $matKernelX, ByRef $matKernelY, ByRef $anchor, $delta, $borderType)
+Func _cveSepFilter2DMat(ByRef $matSrc, ByRef $matDst, $ddepth, ByRef $matKernelX, ByRef $matKernelY, $anchor = _cvPoint(-1,-1), $delta = 0, $borderType = $CV_BORDER_DEFAULT)
     ; cveSepFilter2D using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -457,12 +457,12 @@ Func _cveCLAHEMat(ByRef $matSrc, $clipLimit, ByRef $tileGridSize, ByRef $matDst)
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveCLAHEMat
 
-Func _cveErode(ByRef $src, ByRef $dst, ByRef $kernel, ByRef $anchor, $iterations, $borderType, ByRef $borderValue)
+Func _cveErode(ByRef $src, ByRef $dst, ByRef $kernel, $anchor = _cvPoint(-1,-1), $iterations = 1, $borderType = $CV_BORDER_CONSTANT, $borderValue = _cveMorphologyDefaultBorderValue())
     ; CVAPI(void) cveErode(cv::_InputArray* src, cv::_OutputArray* dst, cv::_InputArray* kernel, CvPoint* anchor, int iterations, int borderType, CvScalar* borderValue);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveErode", "ptr", $src, "ptr", $dst, "ptr", $kernel, "struct*", $anchor, "int", $iterations, "int", $borderType, "struct*", $borderValue), "cveErode", @error)
 EndFunc   ;==>_cveErode
 
-Func _cveErodeMat(ByRef $matSrc, ByRef $matDst, ByRef $matKernel, ByRef $anchor, $iterations, $borderType, ByRef $borderValue)
+Func _cveErodeMat(ByRef $matSrc, ByRef $matDst, ByRef $matKernel, $anchor = _cvPoint(-1,-1), $iterations = 1, $borderType = $CV_BORDER_CONSTANT, $borderValue = _cveMorphologyDefaultBorderValue())
     ; cveErode using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -534,12 +534,12 @@ Func _cveErodeMat(ByRef $matSrc, ByRef $matDst, ByRef $matKernel, ByRef $anchor,
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveErodeMat
 
-Func _cveDilate(ByRef $src, ByRef $dst, ByRef $kernel, ByRef $anchor, $iterations, $borderType, ByRef $borderValue)
+Func _cveDilate(ByRef $src, ByRef $dst, ByRef $kernel, $anchor = _cvPoint(-1,-1), $iterations = 1, $borderType = $CV_BORDER_CONSTANT, $borderValue = _cveMorphologyDefaultBorderValue())
     ; CVAPI(void) cveDilate(cv::_InputArray* src, cv::_OutputArray* dst, cv::_InputArray* kernel, CvPoint* anchor, int iterations, int borderType, CvScalar* borderValue);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDilate", "ptr", $src, "ptr", $dst, "ptr", $kernel, "struct*", $anchor, "int", $iterations, "int", $borderType, "struct*", $borderValue), "cveDilate", @error)
 EndFunc   ;==>_cveDilate
 
-Func _cveDilateMat(ByRef $matSrc, ByRef $matDst, ByRef $matKernel, ByRef $anchor, $iterations, $borderType, ByRef $borderValue)
+Func _cveDilateMat(ByRef $matSrc, ByRef $matDst, ByRef $matKernel, $anchor = _cvPoint(-1,-1), $iterations = 1, $borderType = $CV_BORDER_CONSTANT, $borderValue = _cveMorphologyDefaultBorderValue())
     ; cveDilate using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -611,17 +611,17 @@ Func _cveDilateMat(ByRef $matSrc, ByRef $matDst, ByRef $matKernel, ByRef $anchor
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveDilateMat
 
-Func _cveGetStructuringElement(ByRef $mat, $shape, ByRef $ksize, ByRef $anchor)
+Func _cveGetStructuringElement(ByRef $mat, $shape, ByRef $ksize, $anchor = _cvPoint(-1,-1))
     ; CVAPI(void) cveGetStructuringElement(cv::Mat* mat, int shape, CvSize* ksize, CvPoint* anchor);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetStructuringElement", "ptr", $mat, "int", $shape, "struct*", $ksize, "struct*", $anchor), "cveGetStructuringElement", @error)
 EndFunc   ;==>_cveGetStructuringElement
 
-Func _cveMorphologyEx(ByRef $src, ByRef $dst, $op, ByRef $kernel, ByRef $anchor, $iterations, $borderType, ByRef $borderValue)
+Func _cveMorphologyEx(ByRef $src, ByRef $dst, $op, ByRef $kernel, $anchor = _cvPoint(-1,-1), $iterations = 1, $borderType = $CV_BORDER_CONSTANT, $borderValue = _cveMorphologyDefaultBorderValue())
     ; CVAPI(void) cveMorphologyEx(cv::_InputArray* src, cv::_OutputArray* dst, int op, cv::_InputArray* kernel, CvPoint* anchor, int iterations, int borderType, CvScalar* borderValue);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMorphologyEx", "ptr", $src, "ptr", $dst, "int", $op, "ptr", $kernel, "struct*", $anchor, "int", $iterations, "int", $borderType, "struct*", $borderValue), "cveMorphologyEx", @error)
 EndFunc   ;==>_cveMorphologyEx
 
-Func _cveMorphologyExMat(ByRef $matSrc, ByRef $matDst, $op, ByRef $matKernel, ByRef $anchor, $iterations, $borderType, ByRef $borderValue)
+Func _cveMorphologyExMat(ByRef $matSrc, ByRef $matDst, $op, ByRef $matKernel, $anchor = _cvPoint(-1,-1), $iterations = 1, $borderType = $CV_BORDER_CONSTANT, $borderValue = _cveMorphologyDefaultBorderValue())
     ; cveMorphologyEx using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -693,12 +693,12 @@ Func _cveMorphologyExMat(ByRef $matSrc, ByRef $matDst, $op, ByRef $matKernel, By
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveMorphologyExMat
 
-Func _cveSobel(ByRef $src, ByRef $dst, $ddepth, $dx, $dy, $ksize, $scale, $delta, $borderType)
+Func _cveSobel(ByRef $src, ByRef $dst, $ddepth, $dx, $dy, $ksize = 3, $scale = 1, $delta = 0, $borderType = $CV_BORDER_DEFAULT)
     ; CVAPI(void) cveSobel(cv::_InputArray* src, cv::_OutputArray* dst, int ddepth, int dx, int dy, int ksize, double scale, double delta, int borderType);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSobel", "ptr", $src, "ptr", $dst, "int", $ddepth, "int", $dx, "int", $dy, "int", $ksize, "double", $scale, "double", $delta, "int", $borderType), "cveSobel", @error)
 EndFunc   ;==>_cveSobel
 
-Func _cveSobelMat(ByRef $matSrc, ByRef $matDst, $ddepth, $dx, $dy, $ksize, $scale, $delta, $borderType)
+Func _cveSobelMat(ByRef $matSrc, ByRef $matDst, $ddepth, $dx, $dy, $ksize = 3, $scale = 1, $delta = 0, $borderType = $CV_BORDER_DEFAULT)
     ; cveSobel using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -748,12 +748,12 @@ Func _cveSobelMat(ByRef $matSrc, ByRef $matDst, $ddepth, $dx, $dy, $ksize, $scal
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveSobelMat
 
-Func _cveSpatialGradient(ByRef $src, ByRef $dx, ByRef $dy, $ksize, $borderType)
+Func _cveSpatialGradient(ByRef $src, ByRef $dx, ByRef $dy, $ksize = 3, $borderType = $CV_BORDER_DEFAULT)
     ; CVAPI(void) cveSpatialGradient(cv::_InputArray* src, cv::_OutputArray* dx, cv::_OutputArray* dy, int ksize, int borderType);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSpatialGradient", "ptr", $src, "ptr", $dx, "ptr", $dy, "int", $ksize, "int", $borderType), "cveSpatialGradient", @error)
 EndFunc   ;==>_cveSpatialGradient
 
-Func _cveSpatialGradientMat(ByRef $matSrc, ByRef $matDx, ByRef $matDy, $ksize, $borderType)
+Func _cveSpatialGradientMat(ByRef $matSrc, ByRef $matDx, ByRef $matDy, $ksize = 3, $borderType = $CV_BORDER_DEFAULT)
     ; cveSpatialGradient using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -825,12 +825,12 @@ Func _cveSpatialGradientMat(ByRef $matSrc, ByRef $matDx, ByRef $matDy, $ksize, $
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveSpatialGradientMat
 
-Func _cveScharr(ByRef $src, ByRef $dst, $ddepth, $dx, $dy, $scale, $delta, $borderType)
+Func _cveScharr(ByRef $src, ByRef $dst, $ddepth, $dx, $dy, $scale = 1, $delta = 0, $borderType = $CV_BORDER_DEFAULT)
     ; CVAPI(void) cveScharr(cv::_InputArray* src, cv::_OutputArray* dst, int ddepth, int dx, int dy, double scale, double delta, int borderType);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveScharr", "ptr", $src, "ptr", $dst, "int", $ddepth, "int", $dx, "int", $dy, "double", $scale, "double", $delta, "int", $borderType), "cveScharr", @error)
 EndFunc   ;==>_cveScharr
 
-Func _cveScharrMat(ByRef $matSrc, ByRef $matDst, $ddepth, $dx, $dy, $scale, $delta, $borderType)
+Func _cveScharrMat(ByRef $matSrc, ByRef $matDst, $ddepth, $dx, $dy, $scale = 1, $delta = 0, $borderType = $CV_BORDER_DEFAULT)
     ; cveScharr using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -880,12 +880,12 @@ Func _cveScharrMat(ByRef $matSrc, ByRef $matDst, $ddepth, $dx, $dy, $scale, $del
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveScharrMat
 
-Func _cveLaplacian(ByRef $src, ByRef $dst, $ddepth, $ksize, $scale, $delta, $borderType)
+Func _cveLaplacian(ByRef $src, ByRef $dst, $ddepth, $ksize = 1, $scale = 1, $delta = 0, $borderType = $CV_BORDER_DEFAULT)
     ; CVAPI(void) cveLaplacian(cv::_InputArray* src, cv::_OutputArray* dst, int ddepth, int ksize, double scale, double delta, int borderType);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLaplacian", "ptr", $src, "ptr", $dst, "int", $ddepth, "int", $ksize, "double", $scale, "double", $delta, "int", $borderType), "cveLaplacian", @error)
 EndFunc   ;==>_cveLaplacian
 
-Func _cveLaplacianMat(ByRef $matSrc, ByRef $matDst, $ddepth, $ksize, $scale, $delta, $borderType)
+Func _cveLaplacianMat(ByRef $matSrc, ByRef $matDst, $ddepth, $ksize = 1, $scale = 1, $delta = 0, $borderType = $CV_BORDER_DEFAULT)
     ; cveLaplacian using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -935,12 +935,12 @@ Func _cveLaplacianMat(ByRef $matSrc, ByRef $matDst, $ddepth, $ksize, $scale, $de
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveLaplacianMat
 
-Func _cvePyrUp(ByRef $src, ByRef $dst, ByRef $size, $borderType)
+Func _cvePyrUp(ByRef $src, ByRef $dst, ByRef $size, $borderType = $CV_BORDER_DEFAULT)
     ; CVAPI(void) cvePyrUp(cv::_InputArray* src, cv::_OutputArray* dst, CvSize* size, int borderType);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePyrUp", "ptr", $src, "ptr", $dst, "struct*", $size, "int", $borderType), "cvePyrUp", @error)
 EndFunc   ;==>_cvePyrUp
 
-Func _cvePyrUpMat(ByRef $matSrc, ByRef $matDst, ByRef $size, $borderType)
+Func _cvePyrUpMat(ByRef $matSrc, ByRef $matDst, ByRef $size, $borderType = $CV_BORDER_DEFAULT)
     ; cvePyrUp using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -990,12 +990,12 @@ Func _cvePyrUpMat(ByRef $matSrc, ByRef $matDst, ByRef $size, $borderType)
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cvePyrUpMat
 
-Func _cvePyrDown(ByRef $src, ByRef $dst, ByRef $size, $borderType)
+Func _cvePyrDown(ByRef $src, ByRef $dst, ByRef $size, $borderType = $CV_BORDER_DEFAULT)
     ; CVAPI(void) cvePyrDown(cv::_InputArray* src, cv::_OutputArray* dst, CvSize* size, int borderType);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePyrDown", "ptr", $src, "ptr", $dst, "struct*", $size, "int", $borderType), "cvePyrDown", @error)
 EndFunc   ;==>_cvePyrDown
 
-Func _cvePyrDownMat(ByRef $matSrc, ByRef $matDst, ByRef $size, $borderType)
+Func _cvePyrDownMat(ByRef $matSrc, ByRef $matDst, ByRef $size, $borderType = $CV_BORDER_DEFAULT)
     ; cvePyrDown using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -1100,12 +1100,12 @@ Func _cveBuildPyramidMat(ByRef $matSrc, ByRef $matDst, $maxlevel, $borderType)
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveBuildPyramidMat
 
-Func _cveCanny(ByRef $image, ByRef $edges, $threshold1, $threshold2, $apertureSize = 3, $L2gradient = False)
+Func _cveCanny(ByRef $image, ByRef $edges, $threshold1, $threshold2, $apertureSize = 3, $L2gradient = false)
     ; CVAPI(void) cveCanny(cv::_InputArray* image, cv::_OutputArray* edges, double threshold1, double threshold2, int apertureSize, bool L2gradient);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCanny", "ptr", $image, "ptr", $edges, "double", $threshold1, "double", $threshold2, "int", $apertureSize, "boolean", $L2gradient), "cveCanny", @error)
 EndFunc   ;==>_cveCanny
 
-Func _cveCannyMat(ByRef $matImage, ByRef $matEdges, $threshold1, $threshold2, $apertureSize = 3, $L2gradient = False)
+Func _cveCannyMat(ByRef $matImage, ByRef $matEdges, $threshold1, $threshold2, $apertureSize = 3, $L2gradient = false)
     ; cveCanny using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -1232,12 +1232,12 @@ Func _cveCanny2Mat(ByRef $matDx, ByRef $matDy, ByRef $matEdges, $threshold1, $th
     _cveInputArrayRelease($iArrDx)
 EndFunc   ;==>_cveCanny2Mat
 
-Func _cveCornerHarris(ByRef $src, ByRef $dst, $blockSize, $ksize, $k, $borderType)
+Func _cveCornerHarris(ByRef $src, ByRef $dst, $blockSize, $ksize, $k, $borderType = $CV_BORDER_DEFAULT)
     ; CVAPI(void) cveCornerHarris(cv::_InputArray* src, cv::_OutputArray* dst, int blockSize, int ksize, double k, int borderType);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCornerHarris", "ptr", $src, "ptr", $dst, "int", $blockSize, "int", $ksize, "double", $k, "int", $borderType), "cveCornerHarris", @error)
 EndFunc   ;==>_cveCornerHarris
 
-Func _cveCornerHarrisMat(ByRef $matSrc, ByRef $matDst, $blockSize, $ksize, $k, $borderType)
+Func _cveCornerHarrisMat(ByRef $matSrc, ByRef $matDst, $blockSize, $ksize, $k, $borderType = $CV_BORDER_DEFAULT)
     ; cveCornerHarris using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -1509,12 +1509,12 @@ Func _cveCvtColorMat(ByRef $matSrc, ByRef $matDst, $code, $dstCn = 0)
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveCvtColorMat
 
-Func _cveCopyMakeBorder(ByRef $src, ByRef $dst, $top, $bottom, $left, $right, $borderType, ByRef $value)
+Func _cveCopyMakeBorder(ByRef $src, ByRef $dst, $top, $bottom, $left, $right, $borderType, $value = _cvScalar())
     ; CVAPI(void) cveCopyMakeBorder(cv::_InputArray* src, cv::_OutputArray* dst, int top, int bottom, int left, int right, int borderType, CvScalar* value);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCopyMakeBorder", "ptr", $src, "ptr", $dst, "int", $top, "int", $bottom, "int", $left, "int", $right, "int", $borderType, "struct*", $value), "cveCopyMakeBorder", @error)
 EndFunc   ;==>_cveCopyMakeBorder
 
-Func _cveCopyMakeBorderMat(ByRef $matSrc, ByRef $matDst, $top, $bottom, $left, $right, $borderType, ByRef $value)
+Func _cveCopyMakeBorderMat(ByRef $matSrc, ByRef $matDst, $top, $bottom, $left, $right, $borderType, $value = _cvScalar())
     ; cveCopyMakeBorder using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -1663,12 +1663,12 @@ Func _cveIntegralMat(ByRef $matSrc, ByRef $matSum, ByRef $matSqsum, ByRef $matTi
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveIntegralMat
 
-Func _cveFloodFill(ByRef $image, ByRef $mask, ByRef $seedPoint, ByRef $newVal, ByRef $rect, ByRef $loDiff, ByRef $upDiff, $flags)
+Func _cveFloodFill(ByRef $image, ByRef $mask, ByRef $seedPoint, ByRef $newVal, $rect = 0, $loDiff = _cvScalar(), $upDiff = _cvScalar(), $flags = 4)
     ; CVAPI(int) cveFloodFill(cv::_InputOutputArray* image, cv::_InputOutputArray* mask, CvPoint* seedPoint, CvScalar* newVal, CvRect* rect, CvScalar* loDiff, CvScalar* upDiff, int flags);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveFloodFill", "ptr", $image, "ptr", $mask, "struct*", $seedPoint, "struct*", $newVal, "struct*", $rect, "struct*", $loDiff, "struct*", $upDiff, "int", $flags), "cveFloodFill", @error)
 EndFunc   ;==>_cveFloodFill
 
-Func _cveFloodFillMat(ByRef $matImage, ByRef $matMask, ByRef $seedPoint, ByRef $newVal, ByRef $rect, ByRef $loDiff, ByRef $upDiff, $flags)
+Func _cveFloodFillMat(ByRef $matImage, ByRef $matMask, ByRef $seedPoint, ByRef $newVal, $rect = 0, $loDiff = _cvScalar(), $upDiff = _cvScalar(), $flags = 4)
     ; cveFloodFill using cv::Mat instead of _*Array
 
     Local $ioArrImage, $vectorOfMatImage, $iArrImageSize
@@ -1863,12 +1863,12 @@ Func _cveEqualizeHistMat(ByRef $matSrc, ByRef $matDst)
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveEqualizeHistMat
 
-Func _cveAccumulate(ByRef $src, ByRef $dst, ByRef $mask)
+Func _cveAccumulate(ByRef $src, ByRef $dst, $mask = _cveNoArray())
     ; CVAPI(void) cveAccumulate(cv::_InputArray* src, cv::_InputOutputArray* dst, cv::_InputArray* mask);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAccumulate", "ptr", $src, "ptr", $dst, "ptr", $mask), "cveAccumulate", @error)
 EndFunc   ;==>_cveAccumulate
 
-Func _cveAccumulateMat(ByRef $matSrc, ByRef $matDst, ByRef $matMask)
+Func _cveAccumulateMat(ByRef $matSrc, ByRef $matDst, $matMask = _cveNoArrayMat())
     ; cveAccumulate using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -1940,12 +1940,12 @@ Func _cveAccumulateMat(ByRef $matSrc, ByRef $matDst, ByRef $matMask)
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveAccumulateMat
 
-Func _cveAccumulateSquare(ByRef $src, ByRef $dst, ByRef $mask)
+Func _cveAccumulateSquare(ByRef $src, ByRef $dst, $mask = _cveNoArray())
     ; CVAPI(void) cveAccumulateSquare(cv::_InputArray* src, cv::_InputOutputArray* dst, cv::_InputArray* mask);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAccumulateSquare", "ptr", $src, "ptr", $dst, "ptr", $mask), "cveAccumulateSquare", @error)
 EndFunc   ;==>_cveAccumulateSquare
 
-Func _cveAccumulateSquareMat(ByRef $matSrc, ByRef $matDst, ByRef $matMask)
+Func _cveAccumulateSquareMat(ByRef $matSrc, ByRef $matDst, $matMask = _cveNoArrayMat())
     ; cveAccumulateSquare using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -2017,12 +2017,12 @@ Func _cveAccumulateSquareMat(ByRef $matSrc, ByRef $matDst, ByRef $matMask)
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveAccumulateSquareMat
 
-Func _cveAccumulateProduct(ByRef $src1, ByRef $src2, ByRef $dst, ByRef $mask)
+Func _cveAccumulateProduct(ByRef $src1, ByRef $src2, ByRef $dst, $mask = _cveNoArray())
     ; CVAPI(void) cveAccumulateProduct(cv::_InputArray* src1, cv::_InputArray* src2, cv::_InputOutputArray* dst, cv::_InputArray* mask);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAccumulateProduct", "ptr", $src1, "ptr", $src2, "ptr", $dst, "ptr", $mask), "cveAccumulateProduct", @error)
 EndFunc   ;==>_cveAccumulateProduct
 
-Func _cveAccumulateProductMat(ByRef $matSrc1, ByRef $matSrc2, ByRef $matDst, ByRef $matMask)
+Func _cveAccumulateProductMat(ByRef $matSrc1, ByRef $matSrc2, ByRef $matDst, $matMask = _cveNoArrayMat())
     ; cveAccumulateProduct using cv::Mat instead of _*Array
 
     Local $iArrSrc1, $vectorOfMatSrc1, $iArrSrc1Size
@@ -2116,12 +2116,12 @@ Func _cveAccumulateProductMat(ByRef $matSrc1, ByRef $matSrc2, ByRef $matDst, ByR
     _cveInputArrayRelease($iArrSrc1)
 EndFunc   ;==>_cveAccumulateProductMat
 
-Func _cveAccumulateWeighted(ByRef $src, ByRef $dst, $alpha, ByRef $mask)
+Func _cveAccumulateWeighted(ByRef $src, ByRef $dst, $alpha, $mask = _cveNoArray())
     ; CVAPI(void) cveAccumulateWeighted(cv::_InputArray* src, cv::_InputOutputArray* dst, double alpha, cv::_InputArray* mask);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAccumulateWeighted", "ptr", $src, "ptr", $dst, "double", $alpha, "ptr", $mask), "cveAccumulateWeighted", @error)
 EndFunc   ;==>_cveAccumulateWeighted
 
-Func _cveAccumulateWeightedMat(ByRef $matSrc, ByRef $matDst, $alpha, ByRef $matMask)
+Func _cveAccumulateWeightedMat(ByRef $matSrc, ByRef $matDst, $alpha, $matMask = _cveNoArrayMat())
     ; cveAccumulateWeighted using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -2358,12 +2358,12 @@ Func _cveResizeMat(ByRef $matSrc, ByRef $matDst, ByRef $dsize, $fx = 0, $fy = 0,
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveResizeMat
 
-Func _cveWarpAffine(ByRef $src, ByRef $dst, ByRef $m, ByRef $dsize, $flags, $borderMode, ByRef $borderValue)
+Func _cveWarpAffine(ByRef $src, ByRef $dst, ByRef $m, ByRef $dsize, $flags = $CV_INTER_LINEAR, $borderMode = $CV_BORDER_CONSTANT, $borderValue = _cvScalar())
     ; CVAPI(void) cveWarpAffine(cv::_InputArray* src, cv::_OutputArray* dst, cv::_InputArray* m, CvSize* dsize, int flags, int borderMode, CvScalar* borderValue);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWarpAffine", "ptr", $src, "ptr", $dst, "ptr", $m, "struct*", $dsize, "int", $flags, "int", $borderMode, "struct*", $borderValue), "cveWarpAffine", @error)
 EndFunc   ;==>_cveWarpAffine
 
-Func _cveWarpAffineMat(ByRef $matSrc, ByRef $matDst, ByRef $matM, ByRef $dsize, $flags, $borderMode, ByRef $borderValue)
+Func _cveWarpAffineMat(ByRef $matSrc, ByRef $matDst, ByRef $matM, ByRef $dsize, $flags = $CV_INTER_LINEAR, $borderMode = $CV_BORDER_CONSTANT, $borderValue = _cvScalar())
     ; cveWarpAffine using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -2435,12 +2435,12 @@ Func _cveWarpAffineMat(ByRef $matSrc, ByRef $matDst, ByRef $matM, ByRef $dsize, 
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveWarpAffineMat
 
-Func _cveWarpPerspective(ByRef $src, ByRef $dst, ByRef $m, ByRef $dsize, $flags, $borderMode, ByRef $borderValue)
+Func _cveWarpPerspective(ByRef $src, ByRef $dst, ByRef $m, ByRef $dsize, $flags = $CV_INTER_LINEAR, $borderMode = $CV_BORDER_CONSTANT, $borderValue = _cvScalar())
     ; CVAPI(void) cveWarpPerspective(cv::_InputArray* src, cv::_OutputArray* dst, cv::_InputArray* m, CvSize* dsize, int flags, int borderMode, CvScalar* borderValue);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWarpPerspective", "ptr", $src, "ptr", $dst, "ptr", $m, "struct*", $dsize, "int", $flags, "int", $borderMode, "struct*", $borderValue), "cveWarpPerspective", @error)
 EndFunc   ;==>_cveWarpPerspective
 
-Func _cveWarpPerspectiveMat(ByRef $matSrc, ByRef $matDst, ByRef $matM, ByRef $dsize, $flags, $borderMode, ByRef $borderValue)
+Func _cveWarpPerspectiveMat(ByRef $matSrc, ByRef $matDst, ByRef $matM, ByRef $dsize, $flags = $CV_INTER_LINEAR, $borderMode = $CV_BORDER_CONSTANT, $borderValue = _cvScalar())
     ; cveWarpPerspective using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -2622,12 +2622,12 @@ Func _cveLinearPolarMat(ByRef $matSrc, ByRef $matDst, ByRef $center, $maxRadius,
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveLinearPolarMat
 
-Func _cveRemap(ByRef $src, ByRef $dst, ByRef $map1, ByRef $map2, $interpolation, $borderMode, ByRef $borderValue)
+Func _cveRemap(ByRef $src, ByRef $dst, ByRef $map1, ByRef $map2, $interpolation, $borderMode = $CV_BORDER_CONSTANT, $borderValue = _cvScalar())
     ; CVAPI(void) cveRemap(cv::_InputArray* src, cv::_OutputArray* dst, cv::_InputArray* map1, cv::_InputArray* map2, int interpolation, int borderMode, CvScalar* borderValue);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRemap", "ptr", $src, "ptr", $dst, "ptr", $map1, "ptr", $map2, "int", $interpolation, "int", $borderMode, "struct*", $borderValue), "cveRemap", @error)
 EndFunc   ;==>_cveRemap
 
-Func _cveRemapMat(ByRef $matSrc, ByRef $matDst, ByRef $matMap1, ByRef $matMap2, $interpolation, $borderMode, ByRef $borderValue)
+Func _cveRemapMat(ByRef $matSrc, ByRef $matDst, ByRef $matMap1, ByRef $matMap2, $interpolation, $borderMode = $CV_BORDER_CONSTANT, $borderValue = _cvScalar())
     ; cveRemap using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -2776,12 +2776,12 @@ Func _cveRepeatMat(ByRef $matSrc, $ny, $nx, ByRef $matDst)
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveRepeatMat
 
-Func _cveHoughCircles(ByRef $image, ByRef $circles, $method, $dp, $minDist, $param1, $param2, $minRadius, $maxRadius)
+Func _cveHoughCircles(ByRef $image, ByRef $circles, $method, $dp, $minDist, $param1 = 100, $param2 = 100, $minRadius = 0, $maxRadius = 0)
     ; CVAPI(void) cveHoughCircles(cv::_InputArray* image, cv::_OutputArray* circles, int method, double dp, double minDist, double param1, double param2, int minRadius, int maxRadius);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHoughCircles", "ptr", $image, "ptr", $circles, "int", $method, "double", $dp, "double", $minDist, "double", $param1, "double", $param2, "int", $minRadius, "int", $maxRadius), "cveHoughCircles", @error)
 EndFunc   ;==>_cveHoughCircles
 
-Func _cveHoughCirclesMat(ByRef $matImage, ByRef $matCircles, $method, $dp, $minDist, $param1, $param2, $minRadius, $maxRadius)
+Func _cveHoughCirclesMat(ByRef $matImage, ByRef $matCircles, $method, $dp, $minDist, $param1 = 100, $param2 = 100, $minRadius = 0, $maxRadius = 0)
     ; cveHoughCircles using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -2831,12 +2831,12 @@ Func _cveHoughCirclesMat(ByRef $matImage, ByRef $matCircles, $method, $dp, $minD
     _cveInputArrayRelease($iArrImage)
 EndFunc   ;==>_cveHoughCirclesMat
 
-Func _cveHoughLines(ByRef $image, ByRef $lines, $rho, $theta, $threshold, $srn, $stn)
+Func _cveHoughLines(ByRef $image, ByRef $lines, $rho, $theta, $threshold, $srn = 0, $stn = 0)
     ; CVAPI(void) cveHoughLines(cv::_InputArray* image, cv::_OutputArray* lines, double rho, double theta, int threshold, double srn, double stn);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHoughLines", "ptr", $image, "ptr", $lines, "double", $rho, "double", $theta, "int", $threshold, "double", $srn, "double", $stn), "cveHoughLines", @error)
 EndFunc   ;==>_cveHoughLines
 
-Func _cveHoughLinesMat(ByRef $matImage, ByRef $matLines, $rho, $theta, $threshold, $srn, $stn)
+Func _cveHoughLinesMat(ByRef $matImage, ByRef $matLines, $rho, $theta, $threshold, $srn = 0, $stn = 0)
     ; cveHoughLines using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -2941,12 +2941,12 @@ Func _cveHoughLinesPMat(ByRef $matImage, ByRef $matLines, $rho, $theta, $thresho
     _cveInputArrayRelease($iArrImage)
 EndFunc   ;==>_cveHoughLinesPMat
 
-Func _cveMatchTemplate(ByRef $image, ByRef $templ, ByRef $result, $method, ByRef $mask)
+Func _cveMatchTemplate(ByRef $image, ByRef $templ, ByRef $result, $method, $mask = _cveNoArray())
     ; CVAPI(void) cveMatchTemplate(cv::_InputArray* image, cv::_InputArray* templ, cv::_OutputArray* result, int method, cv::_InputArray* mask);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatchTemplate", "ptr", $image, "ptr", $templ, "ptr", $result, "int", $method, "ptr", $mask), "cveMatchTemplate", @error)
 EndFunc   ;==>_cveMatchTemplate
 
-Func _cveMatchTemplateMat(ByRef $matImage, ByRef $matTempl, ByRef $matResult, $method, ByRef $matMask)
+Func _cveMatchTemplateMat(ByRef $matImage, ByRef $matTempl, ByRef $matResult, $method, $matMask = _cveNoArrayMat())
     ; cveMatchTemplate using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -3095,12 +3095,12 @@ Func _cveCornerSubPixMat(ByRef $matImage, ByRef $matCorners, ByRef $winSize, ByR
     _cveInputArrayRelease($iArrImage)
 EndFunc   ;==>_cveCornerSubPixMat
 
-Func _cveConvertMaps(ByRef $map1, ByRef $map2, ByRef $dstmap1, ByRef $dstmap2, $dstmap1Type, $nninterpolation)
+Func _cveConvertMaps(ByRef $map1, ByRef $map2, ByRef $dstmap1, ByRef $dstmap2, $dstmap1Type, $nninterpolation = false)
     ; CVAPI(void) cveConvertMaps(cv::_InputArray* map1, cv::_InputArray* map2, cv::_OutputArray* dstmap1, cv::_OutputArray* dstmap2, int dstmap1Type, bool nninterpolation);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveConvertMaps", "ptr", $map1, "ptr", $map2, "ptr", $dstmap1, "ptr", $dstmap2, "int", $dstmap1Type, "boolean", $nninterpolation), "cveConvertMaps", @error)
 EndFunc   ;==>_cveConvertMaps
 
-Func _cveConvertMapsMat(ByRef $matMap1, ByRef $matMap2, ByRef $matDstmap1, ByRef $matDstmap2, $dstmap1Type, $nninterpolation)
+Func _cveConvertMapsMat(ByRef $matMap1, ByRef $matMap2, ByRef $matDstmap1, ByRef $matDstmap2, $dstmap1Type, $nninterpolation = false)
     ; cveConvertMaps using cv::Mat instead of _*Array
 
     Local $iArrMap1, $vectorOfMatMap1, $iArrMap1Size
@@ -3458,7 +3458,7 @@ Func _cveEMDMat(ByRef $matSignature1, ByRef $matSignature2, $distType, ByRef $ma
     _cveInputArrayRelease($iArrSignature1)
 EndFunc   ;==>_cveEMDMat
 
-Func _cveCalcHist(ByRef $images, $channels, ByRef $mask, ByRef $hist, ByRef $histSize, ByRef $ranges, $accumulate)
+Func _cveCalcHist(ByRef $images, $channels, ByRef $mask, ByRef $hist, ByRef $histSize, ByRef $ranges, $accumulate = false)
     ; CVAPI(void) cveCalcHist(cv::_InputArray* images, const std::vector<int>* channels, cv::_InputArray* mask, cv::_OutputArray* hist, std::vector<int>* histSize, std::vector<float>* ranges, bool accumulate);
 
     Local $vecChannels, $iArrChannelsSize
@@ -3518,7 +3518,7 @@ Func _cveCalcHist(ByRef $images, $channels, ByRef $mask, ByRef $hist, ByRef $his
     EndIf
 EndFunc   ;==>_cveCalcHist
 
-Func _cveCalcHistMat(ByRef $matImages, $channels, ByRef $matMask, ByRef $matHist, ByRef $histSize, ByRef $ranges, $accumulate)
+Func _cveCalcHistMat(ByRef $matImages, $channels, ByRef $matMask, ByRef $matHist, ByRef $histSize, ByRef $ranges, $accumulate = false)
     ; cveCalcHist using cv::Mat instead of _*Array
 
     Local $iArrImages, $vectorOfMatImages, $iArrImagesSize
@@ -3794,12 +3794,12 @@ Func _cveGetRotationMatrix2DMat(ByRef $center, $angle, $scale, ByRef $matRotatio
     _cveOutputArrayRelease($oArrRotationMatrix2D)
 EndFunc   ;==>_cveGetRotationMatrix2DMat
 
-Func _cveFindContours(ByRef $image, ByRef $contours, ByRef $hierarchy, $mode, $method, ByRef $offset)
+Func _cveFindContours(ByRef $image, ByRef $contours, ByRef $hierarchy, $mode, $method, $offset = _cvPoint())
     ; CVAPI(void) cveFindContours(cv::_InputOutputArray* image, cv::_OutputArray* contours, cv::_OutputArray* hierarchy, int mode, int method, CvPoint* offset);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFindContours", "ptr", $image, "ptr", $contours, "ptr", $hierarchy, "int", $mode, "int", $method, "struct*", $offset), "cveFindContours", @error)
 EndFunc   ;==>_cveFindContours
 
-Func _cveFindContoursMat(ByRef $matImage, ByRef $matContours, ByRef $matHierarchy, $mode, $method, ByRef $offset)
+Func _cveFindContoursMat(ByRef $matImage, ByRef $matContours, ByRef $matHierarchy, $mode, $method, $offset = _cvPoint())
     ; cveFindContours using cv::Mat instead of _*Array
 
     Local $ioArrImage, $vectorOfMatImage, $iArrImageSize
@@ -3906,12 +3906,12 @@ Func _cvePointPolygonTestMat(ByRef $matContour, ByRef $pt, $measureDist)
     Return $retval
 EndFunc   ;==>_cvePointPolygonTestMat
 
-Func _cveContourArea(ByRef $contour, $oriented)
+Func _cveContourArea(ByRef $contour, $oriented = false)
     ; CVAPI(double) cveContourArea(cv::_InputArray* contour, bool oriented);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveContourArea", "ptr", $contour, "boolean", $oriented), "cveContourArea", @error)
 EndFunc   ;==>_cveContourArea
 
-Func _cveContourAreaMat(ByRef $matContour, $oriented)
+Func _cveContourAreaMat(ByRef $matContour, $oriented = false)
     ; cveContourArea using cv::Mat instead of _*Array
 
     Local $iArrContour, $vectorOfMatContour, $iArrContourSize
@@ -3976,12 +3976,12 @@ Func _cveIsContourConvexMat(ByRef $matContour)
     Return $retval
 EndFunc   ;==>_cveIsContourConvexMat
 
-Func _cveIntersectConvexConvex(ByRef $p1, ByRef $p2, ByRef $p12, $handleNested)
+Func _cveIntersectConvexConvex(ByRef $p1, ByRef $p2, ByRef $p12, $handleNested = true)
     ; CVAPI(float) cveIntersectConvexConvex(cv::_InputArray* p1, cv::_InputArray* p2, cv::_OutputArray* p12, bool handleNested);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveIntersectConvexConvex", "ptr", $p1, "ptr", $p2, "ptr", $p12, "boolean", $handleNested), "cveIntersectConvexConvex", @error)
 EndFunc   ;==>_cveIntersectConvexConvex
 
-Func _cveIntersectConvexConvexMat(ByRef $matP1, ByRef $matP2, ByRef $matP12, $handleNested)
+Func _cveIntersectConvexConvexMat(ByRef $matP1, ByRef $matP2, ByRef $matP12, $handleNested = true)
     ; cveIntersectConvexConvex using cv::Mat instead of _*Array
 
     Local $iArrP1, $vectorOfMatP1, $iArrP1Size
@@ -4525,12 +4525,12 @@ Func _cveRotatedRectangleIntersectionMat(ByRef $rect1, ByRef $rect2, ByRef $matI
     Return $retval
 EndFunc   ;==>_cveRotatedRectangleIntersectionMat
 
-Func _cveDrawContours(ByRef $image, ByRef $contours, $contourIdx, ByRef $color, $thickness, $lineType, ByRef $hierarchy, $maxLevel, ByRef $offset)
+Func _cveDrawContours(ByRef $image, ByRef $contours, $contourIdx, ByRef $color, $thickness = 1, $lineType = $CV_LINE_8, $hierarchy = _cveNoArray(), $maxLevel = $CV_INT_MAX, $offset = _cvPoint())
     ; CVAPI(void) cveDrawContours(cv::_InputOutputArray* image, cv::_InputArray* contours, int contourIdx, CvScalar* color, int thickness, int lineType, cv::_InputArray* hierarchy, int maxLevel, CvPoint* offset);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDrawContours", "ptr", $image, "ptr", $contours, "int", $contourIdx, "struct*", $color, "int", $thickness, "int", $lineType, "ptr", $hierarchy, "int", $maxLevel, "struct*", $offset), "cveDrawContours", @error)
 EndFunc   ;==>_cveDrawContours
 
-Func _cveDrawContoursMat(ByRef $matImage, ByRef $matContours, $contourIdx, ByRef $color, $thickness, $lineType, ByRef $matHierarchy, $maxLevel, ByRef $offset)
+Func _cveDrawContoursMat(ByRef $matImage, ByRef $matContours, $contourIdx, ByRef $color, $thickness = 1, $lineType = $CV_LINE_8, $matHierarchy = _cveNoArrayMat(), $maxLevel = $CV_INT_MAX, $offset = _cvPoint())
     ; cveDrawContours using cv::Mat instead of _*Array
 
     Local $ioArrImage, $vectorOfMatImage, $iArrImageSize
@@ -4657,12 +4657,12 @@ Func _cveApproxPolyDPMat(ByRef $matCurve, ByRef $matApproxCurve, $epsilon, $clos
     _cveInputArrayRelease($iArrCurve)
 EndFunc   ;==>_cveApproxPolyDPMat
 
-Func _cveConvexHull(ByRef $points, ByRef $hull, $clockwise, $returnPoints)
+Func _cveConvexHull(ByRef $points, ByRef $hull, $clockwise = false, $returnPoints = true)
     ; CVAPI(void) cveConvexHull(cv::_InputArray* points, cv::_OutputArray* hull, bool clockwise, bool returnPoints);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveConvexHull", "ptr", $points, "ptr", $hull, "boolean", $clockwise, "boolean", $returnPoints), "cveConvexHull", @error)
 EndFunc   ;==>_cveConvexHull
 
-Func _cveConvexHullMat(ByRef $matPoints, ByRef $matHull, $clockwise, $returnPoints)
+Func _cveConvexHullMat(ByRef $matPoints, ByRef $matHull, $clockwise = false, $returnPoints = true)
     ; cveConvexHull using cv::Mat instead of _*Array
 
     Local $iArrPoints, $vectorOfMatPoints, $iArrPointsSize
@@ -4789,12 +4789,12 @@ Func _cveConvexityDefectsMat(ByRef $matContour, ByRef $matConvexhull, ByRef $mat
     _cveInputArrayRelease($iArrContour)
 EndFunc   ;==>_cveConvexityDefectsMat
 
-Func _cveGaussianBlur(ByRef $src, ByRef $dst, ByRef $ksize, $sigmaX, $sigmaY, $borderType)
+Func _cveGaussianBlur(ByRef $src, ByRef $dst, ByRef $ksize, $sigmaX, $sigmaY = 0, $borderType = $CV_BORDER_DEFAULT)
     ; CVAPI(void) cveGaussianBlur(cv::_InputArray* src, cv::_OutputArray* dst, CvSize* ksize, double sigmaX, double sigmaY, int borderType);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGaussianBlur", "ptr", $src, "ptr", $dst, "struct*", $ksize, "double", $sigmaX, "double", $sigmaY, "int", $borderType), "cveGaussianBlur", @error)
 EndFunc   ;==>_cveGaussianBlur
 
-Func _cveGaussianBlurMat(ByRef $matSrc, ByRef $matDst, ByRef $ksize, $sigmaX, $sigmaY, $borderType)
+Func _cveGaussianBlurMat(ByRef $matSrc, ByRef $matDst, ByRef $ksize, $sigmaX, $sigmaY = 0, $borderType = $CV_BORDER_DEFAULT)
     ; cveGaussianBlur using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -4844,12 +4844,12 @@ Func _cveGaussianBlurMat(ByRef $matSrc, ByRef $matDst, ByRef $ksize, $sigmaX, $s
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveGaussianBlurMat
 
-Func _cveBlur(ByRef $src, ByRef $dst, ByRef $kSize, ByRef $anchor, $borderType)
+Func _cveBlur(ByRef $src, ByRef $dst, ByRef $kSize, $anchor = _cvPoint(-1,-1), $borderType = $CV_BORDER_DEFAULT)
     ; CVAPI(void) cveBlur(cv::_InputArray* src, cv::_OutputArray* dst, CvSize* kSize, CvPoint* anchor, int borderType);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBlur", "ptr", $src, "ptr", $dst, "struct*", $kSize, "struct*", $anchor, "int", $borderType), "cveBlur", @error)
 EndFunc   ;==>_cveBlur
 
-Func _cveBlurMat(ByRef $matSrc, ByRef $matDst, ByRef $kSize, ByRef $anchor, $borderType)
+Func _cveBlurMat(ByRef $matSrc, ByRef $matDst, ByRef $kSize, $anchor = _cvPoint(-1,-1), $borderType = $CV_BORDER_DEFAULT)
     ; cveBlur using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -4954,12 +4954,12 @@ Func _cveMedianBlurMat(ByRef $matSrc, ByRef $matDst, $ksize)
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveMedianBlurMat
 
-Func _cveBoxFilter(ByRef $src, ByRef $dst, $ddepth, ByRef $ksize, ByRef $anchor, $normailize, $borderType)
+Func _cveBoxFilter(ByRef $src, ByRef $dst, $ddepth, ByRef $ksize, ByRef $anchor, $normailize, $borderType = $CV_BORDER_DEFAULT)
     ; CVAPI(void) cveBoxFilter(cv::_InputArray* src, cv::_OutputArray* dst, int ddepth, CvSize* ksize, CvPoint* anchor, bool normailize, int borderType);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBoxFilter", "ptr", $src, "ptr", $dst, "int", $ddepth, "struct*", $ksize, "struct*", $anchor, "boolean", $normailize, "int", $borderType), "cveBoxFilter", @error)
 EndFunc   ;==>_cveBoxFilter
 
-Func _cveBoxFilterMat(ByRef $matSrc, ByRef $matDst, $ddepth, ByRef $ksize, ByRef $anchor, $normailize, $borderType)
+Func _cveBoxFilterMat(ByRef $matSrc, ByRef $matDst, $ddepth, ByRef $ksize, ByRef $anchor, $normailize, $borderType = $CV_BORDER_DEFAULT)
     ; cveBoxFilter using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -5009,12 +5009,12 @@ Func _cveBoxFilterMat(ByRef $matSrc, ByRef $matDst, $ddepth, ByRef $ksize, ByRef
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveBoxFilterMat
 
-Func _cveSqrBoxFilter(ByRef $_src, ByRef $_dst, $ddepth, ByRef $ksize, ByRef $anchor, $normalize, $borderType)
+Func _cveSqrBoxFilter(ByRef $_src, ByRef $_dst, $ddepth, ByRef $ksize, $anchor = _cvPoint(-1, -1), $normalize = true, $borderType = $CV_BORDER_DEFAULT)
     ; CVAPI(void) cveSqrBoxFilter(cv::_InputArray* _src, cv::_OutputArray* _dst, int ddepth, CvSize* ksize, CvPoint* anchor, bool normalize, int borderType);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSqrBoxFilter", "ptr", $_src, "ptr", $_dst, "int", $ddepth, "struct*", $ksize, "struct*", $anchor, "boolean", $normalize, "int", $borderType), "cveSqrBoxFilter", @error)
 EndFunc   ;==>_cveSqrBoxFilter
 
-Func _cveSqrBoxFilterMat(ByRef $mat_src, ByRef $mat_dst, $ddepth, ByRef $ksize, ByRef $anchor, $normalize, $borderType)
+Func _cveSqrBoxFilterMat(ByRef $mat_src, ByRef $mat_dst, $ddepth, ByRef $ksize, $anchor = _cvPoint(-1, -1), $normalize = true, $borderType = $CV_BORDER_DEFAULT)
     ; cveSqrBoxFilter using cv::Mat instead of _*Array
 
     Local $iArr_src, $vectorOfMat_src, $iArr_srcSize
@@ -5064,12 +5064,12 @@ Func _cveSqrBoxFilterMat(ByRef $mat_src, ByRef $mat_dst, $ddepth, ByRef $ksize, 
     _cveInputArrayRelease($iArr_src)
 EndFunc   ;==>_cveSqrBoxFilterMat
 
-Func _cveBilateralFilter(ByRef $src, ByRef $dst, $d, $sigmaColor, $sigmaSpace, $borderType)
+Func _cveBilateralFilter(ByRef $src, ByRef $dst, $d, $sigmaColor, $sigmaSpace, $borderType = $CV_BORDER_DEFAULT)
     ; CVAPI(void) cveBilateralFilter(cv::_InputArray* src, cv::_OutputArray* dst, int d, double sigmaColor, double sigmaSpace, int borderType);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBilateralFilter", "ptr", $src, "ptr", $dst, "int", $d, "double", $sigmaColor, "double", $sigmaSpace, "int", $borderType), "cveBilateralFilter", @error)
 EndFunc   ;==>_cveBilateralFilter
 
-Func _cveBilateralFilterMat(ByRef $matSrc, ByRef $matDst, $d, $sigmaColor, $sigmaSpace, $borderType)
+Func _cveBilateralFilterMat(ByRef $matSrc, ByRef $matDst, $d, $sigmaColor, $sigmaSpace, $borderType = $CV_BORDER_DEFAULT)
     ; cveBilateralFilter using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -5282,12 +5282,12 @@ Func _cveLineIteratorSampleLine(ByRef $img, ByRef $pt1, ByRef $pt2, $connectivit
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLineIteratorSampleLine", "ptr", $img, "struct*", $pt1, "struct*", $pt2, "int", $connectivity, "boolean", $leftToRight, "ptr", $result), "cveLineIteratorSampleLine", @error)
 EndFunc   ;==>_cveLineIteratorSampleLine
 
-Func _cveLine(ByRef $img, ByRef $p1, ByRef $p2, ByRef $color, $thickness, $lineType, $shift)
+Func _cveLine(ByRef $img, ByRef $p1, ByRef $p2, ByRef $color, $thickness = 1, $lineType = $CV_LINE_8, $shift = 0)
     ; CVAPI(void) cveLine(cv::_InputOutputArray* img, CvPoint* p1, CvPoint* p2, CvScalar* color, int thickness, int lineType, int shift);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLine", "ptr", $img, "struct*", $p1, "struct*", $p2, "struct*", $color, "int", $thickness, "int", $lineType, "int", $shift), "cveLine", @error)
 EndFunc   ;==>_cveLine
 
-Func _cveLineMat(ByRef $matImg, ByRef $p1, ByRef $p2, ByRef $color, $thickness, $lineType, $shift)
+Func _cveLineMat(ByRef $matImg, ByRef $p1, ByRef $p2, ByRef $color, $thickness = 1, $lineType = $CV_LINE_8, $shift = 0)
     ; cveLine using cv::Mat instead of _*Array
 
     Local $ioArrImg, $vectorOfMatImg, $iArrImgSize
@@ -5315,12 +5315,12 @@ Func _cveLineMat(ByRef $matImg, ByRef $p1, ByRef $p2, ByRef $color, $thickness, 
     _cveInputOutputArrayRelease($ioArrImg)
 EndFunc   ;==>_cveLineMat
 
-Func _cveArrowedLine(ByRef $img, ByRef $pt1, ByRef $pt2, ByRef $color, $thickness, $lineType, $shift, $tipLength)
+Func _cveArrowedLine(ByRef $img, ByRef $pt1, ByRef $pt2, ByRef $color, $thickness, $lineType, $shift = 0, $tipLength = 0.1)
     ; CVAPI(void) cveArrowedLine(cv::_InputOutputArray* img, CvPoint* pt1, CvPoint* pt2, CvScalar* color, int thickness, int lineType, int shift, double tipLength);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArrowedLine", "ptr", $img, "struct*", $pt1, "struct*", $pt2, "struct*", $color, "int", $thickness, "int", $lineType, "int", $shift, "double", $tipLength), "cveArrowedLine", @error)
 EndFunc   ;==>_cveArrowedLine
 
-Func _cveArrowedLineMat(ByRef $matImg, ByRef $pt1, ByRef $pt2, ByRef $color, $thickness, $lineType, $shift, $tipLength)
+Func _cveArrowedLineMat(ByRef $matImg, ByRef $pt1, ByRef $pt2, ByRef $color, $thickness, $lineType, $shift = 0, $tipLength = 0.1)
     ; cveArrowedLine using cv::Mat instead of _*Array
 
     Local $ioArrImg, $vectorOfMatImg, $iArrImgSize
@@ -5348,12 +5348,12 @@ Func _cveArrowedLineMat(ByRef $matImg, ByRef $pt1, ByRef $pt2, ByRef $color, $th
     _cveInputOutputArrayRelease($ioArrImg)
 EndFunc   ;==>_cveArrowedLineMat
 
-Func _cveRectangle(ByRef $img, ByRef $rect, ByRef $color, $thickness, $lineType, $shift)
+Func _cveRectangle(ByRef $img, ByRef $rect, ByRef $color, $thickness = 1, $lineType = $CV_LINE_8, $shift = 0)
     ; CVAPI(void) cveRectangle(cv::_InputOutputArray* img, CvRect* rect, CvScalar* color, int thickness, int lineType, int shift);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRectangle", "ptr", $img, "struct*", $rect, "struct*", $color, "int", $thickness, "int", $lineType, "int", $shift), "cveRectangle", @error)
 EndFunc   ;==>_cveRectangle
 
-Func _cveRectangleMat(ByRef $matImg, ByRef $rect, ByRef $color, $thickness, $lineType, $shift)
+Func _cveRectangleMat(ByRef $matImg, ByRef $rect, ByRef $color, $thickness = 1, $lineType = $CV_LINE_8, $shift = 0)
     ; cveRectangle using cv::Mat instead of _*Array
 
     Local $ioArrImg, $vectorOfMatImg, $iArrImgSize
@@ -5381,12 +5381,12 @@ Func _cveRectangleMat(ByRef $matImg, ByRef $rect, ByRef $color, $thickness, $lin
     _cveInputOutputArrayRelease($ioArrImg)
 EndFunc   ;==>_cveRectangleMat
 
-Func _cveCircle(ByRef $img, ByRef $center, $radius, ByRef $color, $thickness, $lineType, $shift)
+Func _cveCircle(ByRef $img, ByRef $center, $radius, ByRef $color, $thickness = 1, $lineType = $CV_LINE_8, $shift = 0)
     ; CVAPI(void) cveCircle(cv::_InputOutputArray* img, CvPoint* center, int radius, CvScalar* color, int thickness, int lineType, int shift);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCircle", "ptr", $img, "struct*", $center, "int", $radius, "struct*", $color, "int", $thickness, "int", $lineType, "int", $shift), "cveCircle", @error)
 EndFunc   ;==>_cveCircle
 
-Func _cveCircleMat(ByRef $matImg, ByRef $center, $radius, ByRef $color, $thickness, $lineType, $shift)
+Func _cveCircleMat(ByRef $matImg, ByRef $center, $radius, ByRef $color, $thickness = 1, $lineType = $CV_LINE_8, $shift = 0)
     ; cveCircle using cv::Mat instead of _*Array
 
     Local $ioArrImg, $vectorOfMatImg, $iArrImgSize
@@ -5414,7 +5414,7 @@ Func _cveCircleMat(ByRef $matImg, ByRef $center, $radius, ByRef $color, $thickne
     _cveInputOutputArrayRelease($ioArrImg)
 EndFunc   ;==>_cveCircleMat
 
-Func _cvePutText(ByRef $img, $text, ByRef $org, $fontFace, $fontScale, ByRef $color, $thickness, $lineType, $bottomLeftOrigin)
+Func _cvePutText(ByRef $img, $text, ByRef $org, $fontFace, $fontScale, ByRef $color, $thickness = 1, $lineType = $CV_LINE_8, $bottomLeftOrigin = false)
     ; CVAPI(void) cvePutText(cv::_InputOutputArray* img, cv::String* text, CvPoint* org, int fontFace, double fontScale, CvScalar* color, int thickness, int lineType, bool bottomLeftOrigin);
 
     Local $bTextIsString = VarGetType($text) == "String"
@@ -5429,7 +5429,7 @@ Func _cvePutText(ByRef $img, $text, ByRef $org, $fontFace, $fontScale, ByRef $co
     EndIf
 EndFunc   ;==>_cvePutText
 
-Func _cvePutTextMat(ByRef $matImg, $text, ByRef $org, $fontFace, $fontScale, ByRef $color, $thickness, $lineType, $bottomLeftOrigin)
+Func _cvePutTextMat(ByRef $matImg, $text, ByRef $org, $fontFace, $fontScale, ByRef $color, $thickness = 1, $lineType = $CV_LINE_8, $bottomLeftOrigin = false)
     ; cvePutText using cv::Mat instead of _*Array
 
     Local $ioArrImg, $vectorOfMatImg, $iArrImgSize
@@ -5472,12 +5472,12 @@ Func _cveGetTextSize($text, $fontFace, $fontScale, $thickness, ByRef $baseLine, 
     EndIf
 EndFunc   ;==>_cveGetTextSize
 
-Func _cveFillConvexPoly(ByRef $img, ByRef $points, $color, $lineType, $shift)
+Func _cveFillConvexPoly(ByRef $img, ByRef $points, $color, $lineType = $CV_LINE_8, $shift = 0)
     ; CVAPI(void) cveFillConvexPoly(cv::_InputOutputArray* img, cv::_InputArray* points, const CvScalar* color, int lineType, int shift);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFillConvexPoly", "ptr", $img, "ptr", $points, "ptr", $color, "int", $lineType, "int", $shift), "cveFillConvexPoly", @error)
 EndFunc   ;==>_cveFillConvexPoly
 
-Func _cveFillConvexPolyMat(ByRef $matImg, ByRef $matPoints, $color, $lineType, $shift)
+Func _cveFillConvexPolyMat(ByRef $matImg, ByRef $matPoints, $color, $lineType = $CV_LINE_8, $shift = 0)
     ; cveFillConvexPoly using cv::Mat instead of _*Array
 
     Local $ioArrImg, $vectorOfMatImg, $iArrImgSize
@@ -5527,12 +5527,12 @@ Func _cveFillConvexPolyMat(ByRef $matImg, ByRef $matPoints, $color, $lineType, $
     _cveInputOutputArrayRelease($ioArrImg)
 EndFunc   ;==>_cveFillConvexPolyMat
 
-Func _cveFillPoly(ByRef $img, ByRef $pts, $color, $lineType, $shift, ByRef $offset)
+Func _cveFillPoly(ByRef $img, ByRef $pts, $color, $lineType = $CV_LINE_8, $shift = 0, $offset = _cvPoint())
     ; CVAPI(void) cveFillPoly(cv::_InputOutputArray* img, cv::_InputArray* pts, const CvScalar* color, int lineType, int shift, CvPoint* offset);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFillPoly", "ptr", $img, "ptr", $pts, "ptr", $color, "int", $lineType, "int", $shift, "struct*", $offset), "cveFillPoly", @error)
 EndFunc   ;==>_cveFillPoly
 
-Func _cveFillPolyMat(ByRef $matImg, ByRef $matPts, $color, $lineType, $shift, ByRef $offset)
+Func _cveFillPolyMat(ByRef $matImg, ByRef $matPts, $color, $lineType = $CV_LINE_8, $shift = 0, $offset = _cvPoint())
     ; cveFillPoly using cv::Mat instead of _*Array
 
     Local $ioArrImg, $vectorOfMatImg, $iArrImgSize
@@ -5582,12 +5582,12 @@ Func _cveFillPolyMat(ByRef $matImg, ByRef $matPts, $color, $lineType, $shift, By
     _cveInputOutputArrayRelease($ioArrImg)
 EndFunc   ;==>_cveFillPolyMat
 
-Func _cvePolylines(ByRef $img, ByRef $pts, $isClosed, $color, $thickness, $lineType, $shift)
+Func _cvePolylines(ByRef $img, ByRef $pts, $isClosed, $color, $thickness = 1, $lineType = $CV_LINE_8, $shift = 0)
     ; CVAPI(void) cvePolylines(cv::_InputOutputArray* img, cv::_InputArray* pts, bool isClosed, const CvScalar* color, int thickness, int lineType, int shift);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePolylines", "ptr", $img, "ptr", $pts, "boolean", $isClosed, "ptr", $color, "int", $thickness, "int", $lineType, "int", $shift), "cvePolylines", @error)
 EndFunc   ;==>_cvePolylines
 
-Func _cvePolylinesMat(ByRef $matImg, ByRef $matPts, $isClosed, $color, $thickness, $lineType, $shift)
+Func _cvePolylinesMat(ByRef $matImg, ByRef $matPts, $isClosed, $color, $thickness = 1, $lineType = $CV_LINE_8, $shift = 0)
     ; cvePolylines using cv::Mat instead of _*Array
 
     Local $ioArrImg, $vectorOfMatImg, $iArrImgSize
@@ -5637,12 +5637,12 @@ Func _cvePolylinesMat(ByRef $matImg, ByRef $matPts, $isClosed, $color, $thicknes
     _cveInputOutputArrayRelease($ioArrImg)
 EndFunc   ;==>_cvePolylinesMat
 
-Func _cveEllipse(ByRef $img, ByRef $center, ByRef $axes, $angle, $startAngle, $endAngle, $color, $thickness, $lineType, $shift)
+Func _cveEllipse(ByRef $img, ByRef $center, ByRef $axes, $angle, $startAngle, $endAngle, $color, $thickness = 1, $lineType = $CV_LINE_8, $shift = 0)
     ; CVAPI(void) cveEllipse(cv::_InputOutputArray* img, CvPoint* center, CvSize* axes, double angle, double startAngle, double endAngle, const CvScalar* color, int thickness, int lineType, int shift);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEllipse", "ptr", $img, "struct*", $center, "struct*", $axes, "double", $angle, "double", $startAngle, "double", $endAngle, "ptr", $color, "int", $thickness, "int", $lineType, "int", $shift), "cveEllipse", @error)
 EndFunc   ;==>_cveEllipse
 
-Func _cveEllipseMat(ByRef $matImg, ByRef $center, ByRef $axes, $angle, $startAngle, $endAngle, $color, $thickness, $lineType, $shift)
+Func _cveEllipseMat(ByRef $matImg, ByRef $center, ByRef $axes, $angle, $startAngle, $endAngle, $color, $thickness = 1, $lineType = $CV_LINE_8, $shift = 0)
     ; cveEllipse using cv::Mat instead of _*Array
 
     Local $ioArrImg, $vectorOfMatImg, $iArrImgSize
@@ -5890,12 +5890,12 @@ Func _cveDistanceTransformMat(ByRef $matSrc, ByRef $matDst, ByRef $matLabels, $d
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveDistanceTransformMat
 
-Func _cveGetRectSubPix(ByRef $image, ByRef $patchSize, ByRef $center, ByRef $patch, $patchType)
+Func _cveGetRectSubPix(ByRef $image, ByRef $patchSize, ByRef $center, ByRef $patch, $patchType = -1)
     ; CVAPI(void) cveGetRectSubPix(cv::_InputArray* image, CvSize* patchSize, CvPoint2D32f* center, cv::_OutputArray* patch, int patchType);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetRectSubPix", "ptr", $image, "struct*", $patchSize, "struct*", $center, "ptr", $patch, "int", $patchType), "cveGetRectSubPix", @error)
 EndFunc   ;==>_cveGetRectSubPix
 
-Func _cveGetRectSubPixMat(ByRef $matImage, ByRef $patchSize, ByRef $center, ByRef $matPatch, $patchType)
+Func _cveGetRectSubPixMat(ByRef $matImage, ByRef $patchSize, ByRef $center, ByRef $matPatch, $patchType = -1)
     ; cveGetRectSubPix using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -6341,12 +6341,12 @@ Func _cveGetGaussianKernel($ksize, $sigma, $ktype, ByRef $result)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetGaussianKernel", "int", $ksize, "double", $sigma, "int", $ktype, "ptr", $result), "cveGetGaussianKernel", @error)
 EndFunc   ;==>_cveGetGaussianKernel
 
-Func _cveGetDerivKernels(ByRef $kx, ByRef $ky, $dx, $dy, $ksize, $normalize, $ktype)
+Func _cveGetDerivKernels(ByRef $kx, ByRef $ky, $dx, $dy, $ksize, $normalize = false, $ktype = $CV_32F)
     ; CVAPI(void) cveGetDerivKernels(cv::_OutputArray* kx, cv::_OutputArray* ky, int dx, int dy, int ksize, bool normalize, int ktype);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetDerivKernels", "ptr", $kx, "ptr", $ky, "int", $dx, "int", $dy, "int", $ksize, "boolean", $normalize, "int", $ktype), "cveGetDerivKernels", @error)
 EndFunc   ;==>_cveGetDerivKernels
 
-Func _cveGetDerivKernelsMat(ByRef $matKx, ByRef $matKy, $dx, $dy, $ksize, $normalize, $ktype)
+Func _cveGetDerivKernelsMat(ByRef $matKx, ByRef $matKy, $dx, $dy, $ksize, $normalize = false, $ktype = $CV_32F)
     ; cveGetDerivKernels using cv::Mat instead of _*Array
 
     Local $oArrKx, $vectorOfMatKx, $iArrKxSize

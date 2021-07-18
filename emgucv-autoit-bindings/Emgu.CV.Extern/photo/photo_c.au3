@@ -78,12 +78,12 @@ Func _cveInpaintMat(ByRef $matSrc, ByRef $matInpaintMask, ByRef $matDst, $inpain
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveInpaintMat
 
-Func _cveFastNlMeansDenoising(ByRef $src, ByRef $dst, $h, $templateWindowSize, $searchWindowSize)
+Func _cveFastNlMeansDenoising(ByRef $src, ByRef $dst, $h = 3, $templateWindowSize = 7, $searchWindowSize = 21)
     ; CVAPI(void) cveFastNlMeansDenoising(cv::_InputArray* src, cv::_OutputArray* dst, float h, int templateWindowSize, int searchWindowSize);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFastNlMeansDenoising", "ptr", $src, "ptr", $dst, "float", $h, "int", $templateWindowSize, "int", $searchWindowSize), "cveFastNlMeansDenoising", @error)
 EndFunc   ;==>_cveFastNlMeansDenoising
 
-Func _cveFastNlMeansDenoisingMat(ByRef $matSrc, ByRef $matDst, $h, $templateWindowSize, $searchWindowSize)
+Func _cveFastNlMeansDenoisingMat(ByRef $matSrc, ByRef $matDst, $h = 3, $templateWindowSize = 7, $searchWindowSize = 21)
     ; cveFastNlMeansDenoising using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -133,12 +133,12 @@ Func _cveFastNlMeansDenoisingMat(ByRef $matSrc, ByRef $matDst, $h, $templateWind
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveFastNlMeansDenoisingMat
 
-Func _cveFastNlMeansDenoisingColored(ByRef $src, ByRef $dst, $h, $hColor, $templateWindowSize, $searchWindowSize)
+Func _cveFastNlMeansDenoisingColored(ByRef $src, ByRef $dst, $h = 3, $hColor = 3, $templateWindowSize = 7, $searchWindowSize = 21)
     ; CVAPI(void) cveFastNlMeansDenoisingColored(cv::_InputArray* src, cv::_OutputArray* dst, float h, float hColor, int templateWindowSize, int searchWindowSize);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFastNlMeansDenoisingColored", "ptr", $src, "ptr", $dst, "float", $h, "float", $hColor, "int", $templateWindowSize, "int", $searchWindowSize), "cveFastNlMeansDenoisingColored", @error)
 EndFunc   ;==>_cveFastNlMeansDenoisingColored
 
-Func _cveFastNlMeansDenoisingColoredMat(ByRef $matSrc, ByRef $matDst, $h, $hColor, $templateWindowSize, $searchWindowSize)
+Func _cveFastNlMeansDenoisingColoredMat(ByRef $matSrc, ByRef $matDst, $h = 3, $hColor = 3, $templateWindowSize = 7, $searchWindowSize = 21)
     ; cveFastNlMeansDenoisingColored using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -512,12 +512,12 @@ Func _cveColorChangeMat(ByRef $matSrc, ByRef $matMask, ByRef $matDst, $redMul, $
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveColorChangeMat
 
-Func _cveIlluminationChange(ByRef $src, ByRef $mask, ByRef $dst, $alpha, $beta)
+Func _cveIlluminationChange(ByRef $src, ByRef $mask, ByRef $dst, $alpha = 0.2, $beta = 0.4)
     ; CVAPI(void) cveIlluminationChange(cv::_InputArray* src, cv::_InputArray* mask, cv::_OutputArray* dst, float alpha, float beta);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveIlluminationChange", "ptr", $src, "ptr", $mask, "ptr", $dst, "float", $alpha, "float", $beta), "cveIlluminationChange", @error)
 EndFunc   ;==>_cveIlluminationChange
 
-Func _cveIlluminationChangeMat(ByRef $matSrc, ByRef $matMask, ByRef $matDst, $alpha, $beta)
+Func _cveIlluminationChangeMat(ByRef $matSrc, ByRef $matMask, ByRef $matDst, $alpha = 0.2, $beta = 0.4)
     ; cveIlluminationChange using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize

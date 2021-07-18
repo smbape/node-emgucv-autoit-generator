@@ -2,7 +2,7 @@
 #include <CVTag.au3>
 
 ;~ opencv\sources\modules\core\include\opencv2\core\types_c.h
-Func _cvSize($width, $height)
+Func _cvSize($width = 0, $height = 0)
 	Local $cvSize = DllStructCreate($tagCvSize)
 	DllStructSetData($cvSize, "width", $width)
 	DllStructSetData($cvSize, "height", $height)
@@ -16,30 +16,25 @@ Func _cvRange($start, $end)
 	Return $cvRange
 EndFunc   ;==>_cvRange
 
-Func _cvPoint($x, $y)
+Func _cvPoint($x = 0, $y = 0)
 	Local $cvPoint = DllStructCreate($tagCvPoint)
 	DllStructSetData($cvPoint, "x", $x)
 	DllStructSetData($cvPoint, "y", $y)
 	Return $cvPoint
 EndFunc   ;==>_cvPoint
 
-Func _cvScalar($value)
+Func _cvScalar($v0 = 0, $v1 = 0, $v2 = 0, $v3 = 0)
 	Local $cvScalar = DllStructCreate($tagCvScalar)
-
-	If VarGetType($value) = "Array" Then
-		DllStructSetData($cvScalar, 1, $value[0])
-		DllStructSetData($cvScalar, 2, $value[1])
-		DllStructSetData($cvScalar, 3, $value[2])
-		DllStructSetData($cvScalar, 4, $value[3])
-	Else
-		DllStructSetData($cvScalar, 1, $value)
-		DllStructSetData($cvScalar, 2, $value)
-		DllStructSetData($cvScalar, 3, $value)
-		DllStructSetData($cvScalar, 4, $value)
-	EndIf
-
+	DllStructSetData($cvScalar, 1, $v0)
+	DllStructSetData($cvScalar, 2, $v1)
+	DllStructSetData($cvScalar, 3, $v2)
+	DllStructSetData($cvScalar, 4, $v3)
 	Return $cvScalar
 EndFunc   ;==>_cvScalar
+
+Func _cvScalarAll($v0)
+	Return _cvScalar($v0, $v0, $v0, $v0)
+EndFunc   ;==>_cvScalarAll
 
 Func _cvRect($x, $y, $width, $height)
 	Local $cvRect = DllStructCreate($tagCvRect)
@@ -66,3 +61,11 @@ Func _cvNativeType($type, $value)
 	DllStructSetData($tStruct, 1, $value)
 	Return $tStruct
 EndFunc   ;==>_cvNativeType
+
+Func _cvTermCriteria($type, $maxCount, $epsilon = _cvScalar())
+	Local $tStruct = DllStructCreate($tagCvTermCriteria)
+	DllStructSetData($tStruct, "type", $type)
+	DllStructSetData($tStruct, "maxCount", $maxCount)
+	DllStructSetData($tStruct, "epsilon", $epsilon)
+	Return $tStruct
+EndFunc   ;==>_cvTermCriteria

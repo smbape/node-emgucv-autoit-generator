@@ -188,7 +188,7 @@ Func _cveSelectROIMat($windowName, ByRef $matImg, $showCrosshair, $fromCenter, B
     _cveInputArrayRelease($iArrImg)
 EndFunc   ;==>_cveSelectROIMat
 
-Func _cveSelectROIs($windowName, ByRef $img, ByRef $boundingBoxs, $showCrosshair, $fromCenter)
+Func _cveSelectROIs($windowName, ByRef $img, ByRef $boundingBoxs, $showCrosshair = true, $fromCenter = false)
     ; CVAPI(void) cveSelectROIs(cv::String* windowName, cv::_InputArray* img, std::vector< cv::Rect >* boundingBoxs, bool showCrosshair, bool fromCenter);
 
     Local $bWindowNameIsString = VarGetType($windowName) == "String"
@@ -221,7 +221,7 @@ Func _cveSelectROIs($windowName, ByRef $img, ByRef $boundingBoxs, $showCrosshair
     EndIf
 EndFunc   ;==>_cveSelectROIs
 
-Func _cveSelectROIsMat($windowName, ByRef $matImg, ByRef $boundingBoxs, $showCrosshair, $fromCenter)
+Func _cveSelectROIsMat($windowName, ByRef $matImg, ByRef $boundingBoxs, $showCrosshair = true, $fromCenter = false)
     ; cveSelectROIs using cv::Mat instead of _*Array
 
     Local $iArrImg, $vectorOfMatImg, $iArrImgSize

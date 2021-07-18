@@ -64,6 +64,7 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
         let byRef = arg[3];
         if (byRef === undefined) {
             byRef = typeof isbyref === "function" ? isbyref(argType, arg, entry, options) : argType.endsWith("*") && !argType.startsWith("const ");
+            arg[3] = byRef;
         }
 
         const isString = /^const char\*\*?$/.test(argType);
@@ -78,12 +79,6 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
         const autoItArgName = `$${ argName }`;
         let dllArgName = autoItArgName;
 
-        autoItArgs.push((byRef && !isString ? "ByRef " : "") + autoItArgName);
-
-        if (name === "cveCvtColor" && argName === "dstCn") {
-            debugger;
-        }
-
         if (defaults !== null && typeof defaults === "object" && hasProp.call(defaults, name) && hasProp.call(defaults[name], argName)) {
             arg[2] = defaults[name][argName];
         }
@@ -95,8 +90,10 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
             }
         }
 
-        if (!byRef && arg[2] !== undefined) {
-            autoItArgs[autoItArgs.length - 1] += ` = ${ arg[2] }`;
+        if (arg[2] !== undefined) {
+            autoItArgs.push(`${ autoItArgName } = ${ arg[2] }`);
+        } else {
+            autoItArgs.push((byRef && !isString ? "ByRef " : "") + autoItArgName);
         }
 
         let autoItDllType;
@@ -121,8 +118,26 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
             autoItDllType = _getAutoItType(autoItDllType, isNativeType, arg, entry, options);
         }
 
-        dllArgs.push(`"${ autoItDllType }"`);
-        dllArgs.push(dllArgName);
+        dllArgs.push(`"${ autoItDllType }"`, dllArgName);
+    }
+
+
+    for (let i = autoItArgs.length - 1, canDefault = true; i >= 0; i--) {
+        const arg = args[i];
+        const [argType] = arg;
+        const value = autoItArgs[i];
+        const pos = value.indexOf(" = ");
+        const hasDefault = pos !== -1;
+
+        if (canDefault) {
+            canDefault = hasDefault;
+        } else if (hasDefault) {
+            autoItArgs[i] = value.slice(0, pos);
+            if (arg[3] && !/^const char\*\*?$/.test(argType)) {
+                autoItArgs[i] = `ByRef ${ autoItArgs[i] }`;
+            }
+            arg[4] = false;
+        }
     }
 
     const dllvar = typeof options.dllvar === "function" ? options.dllvar(entry, options) : options.dllvar;
