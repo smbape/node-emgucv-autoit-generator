@@ -603,8 +603,8 @@ Func _cveSetControlPic($controlID, $matImg)
 	Local $tDsize = _cvSize()
 
 	_cveMatGetSize($matImg, $tDsize)
-	$iWidth = $tDsize.width
-	$iHeight = $tDsize.height
+	Local $iWidth = $tDsize.width
+	Local $iHeight = $tDsize.height
 
 	Local $iChannels = 4
 	Local $iSize = $iWidth * $iHeight * $iChannels

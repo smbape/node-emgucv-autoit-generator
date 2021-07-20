@@ -2,6 +2,8 @@
 #AutoIt3Wrapper_UseX64=y
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
+Opt("MustDeclareVars", 1)
+
 #include <Math.au3>
 #include <ButtonConstants.au3>
 #include <EditConstants.au3>
@@ -17,12 +19,12 @@
 Local $iPicWidth = 500
 Local $iPicHeight = 500
 
-$FormGUI = GUICreate("calcHist Demo", 1063, 573, 192, 124)
-$InputSource = GUICtrlCreateInput("", 264, 24, 449, 21)
+Local $FormGUI = GUICreate("calcHist Demo", 1063, 573, 192, 124)
+Local $InputSource = GUICtrlCreateInput("", 264, 24, 449, 21)
 GUICtrlSetState(-1, $GUI_DISABLE)
-$ButtonSource = GUICtrlCreateButton("Open", 723, 22, 75, 25)
-$PicSource = GUICtrlCreatePic("", 25, 56, $iPicWidth, $iPicHeight)
-$PicHist = GUICtrlCreatePic("", 537, 56, $iPicWidth, $iPicHeight)
+Local $ButtonSource = GUICtrlCreateButton("Open", 723, 22, 75, 25)
+Local $PicSource = GUICtrlCreatePic("", 25, 56, $iPicWidth, $iPicHeight)
+Local $PicHist = GUICtrlCreatePic("", 537, 56, $iPicWidth, $iPicHeight)
 GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
@@ -39,6 +41,7 @@ Local $src
 Local $brg_planes
 Local $b_hist, $g_hist, $r_hist
 Local $histImage
+Local $nMsg
 
 While 1
 	$nMsg = GUIGetMsg()
