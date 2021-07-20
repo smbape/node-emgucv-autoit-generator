@@ -5,6 +5,7 @@
 Opt("MustDeclareVars", 1)
 
 #include <Math.au3>
+#include <FileConstants.au3>
 #include <ButtonConstants.au3>
 #include <EditConstants.au3>
 #include <GUIConstantsEx.au3>
@@ -13,13 +14,15 @@ Opt("MustDeclareVars", 1)
 #include <GDIPlus.au3>
 #include "..\..\..\emgucv-autoit-bindings\cve_extra.au3"
 
-; Source: opencv\samples\cpp\tutorial_code\Histograms_Matching\calcHist_Demo.cpp
+;~ Sources:
+;~     https://docs.opencv.org/4.5.2/d8/dbc/tutorial_histogram_calculation.html
+;~     opencv\samples\cpp\tutorial_code\Histograms_Matching\calcHist_Demo.cpp
 
 #Region ### START Koda GUI section ### Form=
 Local $iPicWidth = 500
 Local $iPicHeight = 500
 
-Local $FormGUI = GUICreate("calcHist Demo", 1063, 573, 192, 124)
+Local $FormGUI = GUICreate("Histogram Calculation", 1063, 573, 192, 124)
 Local $InputSource = GUICtrlCreateInput("", 264, 24, 449, 21)
 GUICtrlSetState(-1, $GUI_DISABLE)
 Local $ButtonSource = GUICtrlCreateButton("Open", 723, 22, 75, 25)
@@ -48,8 +51,14 @@ While 1
 			clean()
 			Exit
 		Case $ButtonSource
-			$sImage = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg)", 1)
-			onImageChange()
+			clean()
+			$sImage = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg)", $FD_FILEMUSTEXIST, $sImage)
+			If @error Then
+				$sImage = ""
+			Else
+				ControlSetText($FormGUI, "", $InputSource, $sImage)
+				onImageChange()
+			EndIf
 	EndSwitch
 WEnd
 
@@ -59,7 +68,10 @@ _GDIPlus_Shutdown()
 Func onImageChange()
 	;;! [Load image]
 	$src = _cveImreadAndCheck($sImage)
-	If @error Then Return
+	If @error Then
+		$sImage = Null
+		Return
+	EndIf
 	;;! [Load image]
 
 	;;! [Separate the image in 3 places ( B, G and R )]
@@ -174,7 +186,6 @@ Func onImageChange()
 	;;! [Display]
 	; _cveImshowMat("Source image", $src );
 	; _cveImshowMat("calcHist Demo", $histImage );
-	ControlSetText($FormGUI, "", $InputSource, $sImage)
 
 	Local $iCode = -1
 	If _cveMatNumberOfChannels($src) == 3 Then

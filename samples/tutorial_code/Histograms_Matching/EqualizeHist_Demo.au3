@@ -5,6 +5,7 @@
 Opt("MustDeclareVars", 1)
 
 #include <Math.au3>
+#include <FileConstants.au3>
 #include <ButtonConstants.au3>
 #include <EditConstants.au3>
 #include <GUIConstantsEx.au3>
@@ -13,13 +14,15 @@ Opt("MustDeclareVars", 1)
 #include <GDIPlus.au3>
 #include "..\..\..\emgucv-autoit-bindings\cve_extra.au3"
 
-; Source: opencv\samples\cpp\tutorial_code\Histograms_Matching\EqualizeHist_Demo.cpp
+;~ Sources:
+;~     https://docs.opencv.org/4.5.2/d4/d1b/tutorial_histogram_equalization.html
+;~     opencv\samples\cpp\tutorial_code\Histograms_Matching\EqualizeHist_Demo.cpp
 
 #Region ### START Koda GUI section ### Form=
 Local $iPicWidth = 500
 Local $iPicHeight = 500
 
-Local $FormGUI = GUICreate("EqualizeHist Demo", 1063, 573, 192, 124)
+Local $FormGUI = GUICreate("Histogram Equalization ", 1063, 573, 192, 124)
 Local $InputSource = GUICtrlCreateInput("", 264, 24, 449, 21)
 GUICtrlSetState(-1, $GUI_DISABLE)
 Local $ButtonSource = GUICtrlCreateButton("Open", 723, 22, 75, 25)
@@ -36,7 +39,7 @@ Local $tGreenColor = _cvScalar(0, 255, 0)
 Local $tRedColor = _cvScalar(0, 0, 255)
 Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 
-Local $sImage = Null
+Local $sImage = ""
 Local $nMsg
 
 Local $src, $dst
@@ -48,8 +51,14 @@ While 1
 			clean()
 			Exit
 		Case $ButtonSource
-			$sImage = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg)", 1)
-			onImageChange()
+			clean()
+			$sImage = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg)", $FD_FILEMUSTEXIST, $sImage)
+			If @error Then
+				$sImage = ""
+			Else
+				ControlSetText($FormGUI, "", $InputSource, $sImage)
+				onImageChange()
+			EndIf
 	EndSwitch
 WEnd
 
@@ -59,22 +68,24 @@ _GDIPlus_Shutdown()
 Func onImageChange()
 	;;! [Load image]
 	$src = _cveImreadAndCheck($sImage, $CV_IMREAD_COLOR)
-	If @error Then Return
+	If @error Then
+		$sImage = ""
+		Return
+	EndIf
 	;;! [Load image]
 
-    ;;! [Convert to grayscale]
-    _cveCvtColorMat( $src, $src, $CV_COLOR_BGR2GRAY );
-    ;;! [Convert to grayscale]
+	;;! [Convert to grayscale]
+	_cveCvtColorMat($src, $src, $CV_COLOR_BGR2GRAY)  ;
+	;;! [Convert to grayscale]
 
-    ;;! [Apply Histogram Equalization]
-    Local $dst = _cveMatCreate();
-    _cveEqualizeHistMat( $src, $dst );
-    ;;! [Apply Histogram Equalization]
+	;;! [Apply Histogram Equalization]
+	Local $dst = _cveMatCreate() ;
+	_cveEqualizeHistMat($src, $dst)  ;
+	;;! [Apply Histogram Equalization]
 
 	;;! [Display]
 	; _cveImshowMat("Source image", $src );
 	; _cveImshowMat("Equalized Image", $dst );
-	ControlSetText($FormGUI, "", $InputSource, $sImage)
 
 	Local $matSrcResized = _cveMatResizeAndCenter($src, $iPicWidth, $iPicHeight, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
 	_cveSetControlPic($PicSource, $matSrcResized)
@@ -87,9 +98,9 @@ Func onImageChange()
 EndFunc   ;==>onImageChange
 
 Func clean()
-	If $sImage == Null Then Return
+	If $sImage == "" Then Return
 
 	_cveMatRelease($dst)
 	_cveMatRelease($src)
-	$sImage = Null
+	$sImage = ""
 EndFunc   ;==>clean
