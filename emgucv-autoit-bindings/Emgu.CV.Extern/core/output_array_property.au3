@@ -1,12 +1,12 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveOutputArrayFixedSize(ByRef $obj)
+Func _cveOutputArrayFixedSize($obj)
     ; CVAPI(bool) cveOutputArrayFixedSize(cv::_OutputArray* obj);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveOutputArrayFixedSize", "ptr", $obj), "cveOutputArrayFixedSize", @error)
 EndFunc   ;==>_cveOutputArrayFixedSize
 
-Func _cveOutputArrayFixedSizeMat(ByRef $matObj)
+Func _cveOutputArrayFixedSizeMat($matObj)
     ; cveOutputArrayFixedSize using cv::Mat instead of _*Array
 
     Local $oArrObj, $vectorOfMatObj, $iArrObjSize
@@ -36,12 +36,12 @@ Func _cveOutputArrayFixedSizeMat(ByRef $matObj)
     Return $retval
 EndFunc   ;==>_cveOutputArrayFixedSizeMat
 
-Func _cveOutputArrayFixedType(ByRef $obj)
+Func _cveOutputArrayFixedType($obj)
     ; CVAPI(bool) cveOutputArrayFixedType(cv::_OutputArray* obj);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveOutputArrayFixedType", "ptr", $obj), "cveOutputArrayFixedType", @error)
 EndFunc   ;==>_cveOutputArrayFixedType
 
-Func _cveOutputArrayFixedTypeMat(ByRef $matObj)
+Func _cveOutputArrayFixedTypeMat($matObj)
     ; cveOutputArrayFixedType using cv::Mat instead of _*Array
 
     Local $oArrObj, $vectorOfMatObj, $iArrObjSize
@@ -71,12 +71,12 @@ Func _cveOutputArrayFixedTypeMat(ByRef $matObj)
     Return $retval
 EndFunc   ;==>_cveOutputArrayFixedTypeMat
 
-Func _cveOutputArrayNeeded(ByRef $obj)
+Func _cveOutputArrayNeeded($obj)
     ; CVAPI(bool) cveOutputArrayNeeded(cv::_OutputArray* obj);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveOutputArrayNeeded", "ptr", $obj), "cveOutputArrayNeeded", @error)
 EndFunc   ;==>_cveOutputArrayNeeded
 
-Func _cveOutputArrayNeededMat(ByRef $matObj)
+Func _cveOutputArrayNeededMat($matObj)
     ; cveOutputArrayNeeded using cv::Mat instead of _*Array
 
     Local $oArrObj, $vectorOfMatObj, $iArrObjSize

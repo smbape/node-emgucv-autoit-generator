@@ -1,12 +1,12 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveFtCreateKernel(ByRef $A, ByRef $B, ByRef $kernel, $chn)
+Func _cveFtCreateKernel($A, $B, $kernel, $chn)
     ; CVAPI(void) cveFtCreateKernel(cv::_InputArray* A, cv::_InputArray* B, cv::_OutputArray* kernel, int chn);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtCreateKernel", "ptr", $A, "ptr", $B, "ptr", $kernel, "int", $chn), "cveFtCreateKernel", @error)
 EndFunc   ;==>_cveFtCreateKernel
 
-Func _cveFtCreateKernelMat(ByRef $matA, ByRef $matB, ByRef $matKernel, $chn)
+Func _cveFtCreateKernelMat($matA, $matB, $matKernel, $chn)
     ; cveFtCreateKernel using cv::Mat instead of _*Array
 
     Local $iArrA, $vectorOfMatA, $iArrASize
@@ -78,12 +78,12 @@ Func _cveFtCreateKernelMat(ByRef $matA, ByRef $matB, ByRef $matKernel, $chn)
     _cveInputArrayRelease($iArrA)
 EndFunc   ;==>_cveFtCreateKernelMat
 
-Func _cveFtcreateKernelFromFunction($function, $radius, ByRef $kernel, $chn)
+Func _cveFtcreateKernelFromFunction($function, $radius, $kernel, $chn)
     ; CVAPI(void) cveFtcreateKernelFromFunction(int function, int radius, cv::_OutputArray* kernel, int chn);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtcreateKernelFromFunction", "int", $function, "int", $radius, "ptr", $kernel, "int", $chn), "cveFtcreateKernelFromFunction", @error)
 EndFunc   ;==>_cveFtcreateKernelFromFunction
 
-Func _cveFtcreateKernelFromFunctionMat($function, $radius, ByRef $matKernel, $chn)
+Func _cveFtcreateKernelFromFunctionMat($function, $radius, $matKernel, $chn)
     ; cveFtcreateKernelFromFunction using cv::Mat instead of _*Array
 
     Local $oArrKernel, $vectorOfMatKernel, $iArrKernelSize
@@ -111,12 +111,12 @@ Func _cveFtcreateKernelFromFunctionMat($function, $radius, ByRef $matKernel, $ch
     _cveOutputArrayRelease($oArrKernel)
 EndFunc   ;==>_cveFtcreateKernelFromFunctionMat
 
-Func _cveFtInpaint(ByRef $image, ByRef $mask, ByRef $output, $radius, $function, $algorithm)
+Func _cveFtInpaint($image, $mask, $output, $radius, $function, $algorithm)
     ; CVAPI(void) cveFtInpaint(cv::Mat* image, cv::Mat* mask, cv::Mat* output, int radius, int function, int algorithm);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtInpaint", "ptr", $image, "ptr", $mask, "ptr", $output, "int", $radius, "int", $function, "int", $algorithm), "cveFtInpaint", @error)
 EndFunc   ;==>_cveFtInpaint
 
-Func _cveFtFilter(ByRef $image, ByRef $kernel, ByRef $output)
+Func _cveFtFilter($image, $kernel, $output)
     ; CVAPI(void) cveFtFilter(cv::Mat* image, cv::Mat* kernel, cv::Mat* output);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtFilter", "ptr", $image, "ptr", $kernel, "ptr", $output), "cveFtFilter", @error)
 EndFunc   ;==>_cveFtFilter

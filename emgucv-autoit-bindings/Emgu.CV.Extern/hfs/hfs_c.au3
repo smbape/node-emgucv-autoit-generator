@@ -1,22 +1,44 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveHfsSegmentCreate($height, $width, $segEgbThresholdI, $minRegionSizeI, $segEgbThresholdII, $minRegionSizeII, $spatialWeight, $slicSpixelSize, $numSlicIter, ByRef $algorithmPtr, ByRef $sharedPtr)
+Func _cveHfsSegmentCreate($height, $width, $segEgbThresholdI, $minRegionSizeI, $segEgbThresholdII, $minRegionSizeII, $spatialWeight, $slicSpixelSize, $numSlicIter, $algorithmPtr, $sharedPtr)
     ; CVAPI(cv::hfs::HfsSegment*) cveHfsSegmentCreate(int height, int width, float segEgbThresholdI, int minRegionSizeI, float segEgbThresholdII, int minRegionSizeII, float spatialWeight, int slicSpixelSize, int numSlicIter, cv::Algorithm** algorithmPtr, cv::Ptr<cv::hfs::HfsSegment>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHfsSegmentCreate", "int", $height, "int", $width, "float", $segEgbThresholdI, "int", $minRegionSizeI, "float", $segEgbThresholdII, "int", $minRegionSizeII, "float", $spatialWeight, "int", $slicSpixelSize, "int", $numSlicIter, "ptr*", $algorithmPtr, "ptr*", $sharedPtr), "cveHfsSegmentCreate", @error)
+
+    Local $bAlgorithmPtrDllType
+    If VarGetType($algorithmPtr) == "DLLStruct" Then
+        $bAlgorithmPtrDllType = "struct*"
+    Else
+        $bAlgorithmPtrDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHfsSegmentCreate", "int", $height, "int", $width, "float", $segEgbThresholdI, "int", $minRegionSizeI, "float", $segEgbThresholdII, "int", $minRegionSizeII, "float", $spatialWeight, "int", $slicSpixelSize, "int", $numSlicIter, $bAlgorithmPtrDllType, $algorithmPtr, $bSharedPtrDllType, $sharedPtr), "cveHfsSegmentCreate", @error)
 EndFunc   ;==>_cveHfsSegmentCreate
 
-Func _cveHfsSegmentRelease(ByRef $hfsSegmentPtr)
+Func _cveHfsSegmentRelease($hfsSegmentPtr)
     ; CVAPI(void) cveHfsSegmentRelease(cv::Ptr<cv::hfs::HfsSegment>** hfsSegmentPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHfsSegmentRelease", "ptr*", $hfsSegmentPtr), "cveHfsSegmentRelease", @error)
+
+    Local $bHfsSegmentPtrDllType
+    If VarGetType($hfsSegmentPtr) == "DLLStruct" Then
+        $bHfsSegmentPtrDllType = "struct*"
+    Else
+        $bHfsSegmentPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHfsSegmentRelease", $bHfsSegmentPtrDllType, $hfsSegmentPtr), "cveHfsSegmentRelease", @error)
 EndFunc   ;==>_cveHfsSegmentRelease
 
-Func _cveHfsPerformSegment(ByRef $hfsSegment, ByRef $src, ByRef $dst, $ifDraw, $useGpu)
+Func _cveHfsPerformSegment($hfsSegment, $src, $dst, $ifDraw, $useGpu)
     ; CVAPI(void) cveHfsPerformSegment(cv::hfs::HfsSegment* hfsSegment, cv::_InputArray* src, cv::Mat* dst, bool ifDraw, bool useGpu);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHfsPerformSegment", "ptr", $hfsSegment, "ptr", $src, "ptr", $dst, "boolean", $ifDraw, "boolean", $useGpu), "cveHfsPerformSegment", @error)
 EndFunc   ;==>_cveHfsPerformSegment
 
-Func _cveHfsPerformSegmentMat(ByRef $hfsSegment, ByRef $matSrc, ByRef $dst, $ifDraw, $useGpu)
+Func _cveHfsPerformSegmentMat($hfsSegment, $matSrc, $dst, $ifDraw, $useGpu)
     ; cveHfsPerformSegment using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize

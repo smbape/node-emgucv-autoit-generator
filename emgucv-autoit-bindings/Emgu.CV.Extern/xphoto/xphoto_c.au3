@@ -1,12 +1,12 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveWhiteBalancerBalanceWhite(ByRef $whiteBalancer, ByRef $src, ByRef $dst)
+Func _cveWhiteBalancerBalanceWhite($whiteBalancer, $src, $dst)
     ; CVAPI(void) cveWhiteBalancerBalanceWhite(cv::xphoto::WhiteBalancer* whiteBalancer, cv::_InputArray* src, cv::_OutputArray* dst);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWhiteBalancerBalanceWhite", "ptr", $whiteBalancer, "ptr", $src, "ptr", $dst), "cveWhiteBalancerBalanceWhite", @error)
 EndFunc   ;==>_cveWhiteBalancerBalanceWhite
 
-Func _cveWhiteBalancerBalanceWhiteMat(ByRef $whiteBalancer, ByRef $matSrc, ByRef $matDst)
+Func _cveWhiteBalancerBalanceWhiteMat($whiteBalancer, $matSrc, $matDst)
     ; cveWhiteBalancerBalanceWhite using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -56,42 +56,108 @@ Func _cveWhiteBalancerBalanceWhiteMat(ByRef $whiteBalancer, ByRef $matSrc, ByRef
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveWhiteBalancerBalanceWhiteMat
 
-Func _cveSimpleWBCreate(ByRef $whiteBalancer, ByRef $sharedPtr)
+Func _cveSimpleWBCreate($whiteBalancer, $sharedPtr)
     ; CVAPI(cv::xphoto::SimpleWB*) cveSimpleWBCreate(cv::xphoto::WhiteBalancer** whiteBalancer, cv::Ptr<cv::xphoto::SimpleWB>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSimpleWBCreate", "ptr*", $whiteBalancer, "ptr*", $sharedPtr), "cveSimpleWBCreate", @error)
+
+    Local $bWhiteBalancerDllType
+    If VarGetType($whiteBalancer) == "DLLStruct" Then
+        $bWhiteBalancerDllType = "struct*"
+    Else
+        $bWhiteBalancerDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSimpleWBCreate", $bWhiteBalancerDllType, $whiteBalancer, $bSharedPtrDllType, $sharedPtr), "cveSimpleWBCreate", @error)
 EndFunc   ;==>_cveSimpleWBCreate
 
-Func _cveSimpleWBRelease(ByRef $sharedPtr)
+Func _cveSimpleWBRelease($sharedPtr)
     ; CVAPI(void) cveSimpleWBRelease(cv::Ptr<cv::xphoto::SimpleWB>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSimpleWBRelease", "ptr*", $sharedPtr), "cveSimpleWBRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSimpleWBRelease", $bSharedPtrDllType, $sharedPtr), "cveSimpleWBRelease", @error)
 EndFunc   ;==>_cveSimpleWBRelease
 
-Func _cveGrayworldWBCreate(ByRef $whiteBalancer, ByRef $sharedPtr)
+Func _cveGrayworldWBCreate($whiteBalancer, $sharedPtr)
     ; CVAPI(cv::xphoto::GrayworldWB*) cveGrayworldWBCreate(cv::xphoto::WhiteBalancer** whiteBalancer, cv::Ptr<cv::xphoto::GrayworldWB>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveGrayworldWBCreate", "ptr*", $whiteBalancer, "ptr*", $sharedPtr), "cveGrayworldWBCreate", @error)
+
+    Local $bWhiteBalancerDllType
+    If VarGetType($whiteBalancer) == "DLLStruct" Then
+        $bWhiteBalancerDllType = "struct*"
+    Else
+        $bWhiteBalancerDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveGrayworldWBCreate", $bWhiteBalancerDllType, $whiteBalancer, $bSharedPtrDllType, $sharedPtr), "cveGrayworldWBCreate", @error)
 EndFunc   ;==>_cveGrayworldWBCreate
 
-Func _cveGrayworldWBRelease(ByRef $sharedPtr)
+Func _cveGrayworldWBRelease($sharedPtr)
     ; CVAPI(void) cveGrayworldWBRelease(cv::Ptr<cv::xphoto::GrayworldWB>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGrayworldWBRelease", "ptr*", $sharedPtr), "cveGrayworldWBRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGrayworldWBRelease", $bSharedPtrDllType, $sharedPtr), "cveGrayworldWBRelease", @error)
 EndFunc   ;==>_cveGrayworldWBRelease
 
-Func _cveLearningBasedWBCreate(ByRef $whiteBalancer, ByRef $sharedPtr)
+Func _cveLearningBasedWBCreate($whiteBalancer, $sharedPtr)
     ; CVAPI(cv::xphoto::LearningBasedWB*) cveLearningBasedWBCreate(cv::xphoto::WhiteBalancer** whiteBalancer, cv::Ptr<cv::xphoto::LearningBasedWB>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveLearningBasedWBCreate", "ptr*", $whiteBalancer, "ptr*", $sharedPtr), "cveLearningBasedWBCreate", @error)
+
+    Local $bWhiteBalancerDllType
+    If VarGetType($whiteBalancer) == "DLLStruct" Then
+        $bWhiteBalancerDllType = "struct*"
+    Else
+        $bWhiteBalancerDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveLearningBasedWBCreate", $bWhiteBalancerDllType, $whiteBalancer, $bSharedPtrDllType, $sharedPtr), "cveLearningBasedWBCreate", @error)
 EndFunc   ;==>_cveLearningBasedWBCreate
 
-Func _cveLearningBasedWBRelease(ByRef $sharedPtr)
+Func _cveLearningBasedWBRelease($sharedPtr)
     ; CVAPI(void) cveLearningBasedWBRelease(cv::Ptr<cv::xphoto::LearningBasedWB>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLearningBasedWBRelease", "ptr*", $sharedPtr), "cveLearningBasedWBRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLearningBasedWBRelease", $bSharedPtrDllType, $sharedPtr), "cveLearningBasedWBRelease", @error)
 EndFunc   ;==>_cveLearningBasedWBRelease
 
-Func _cveApplyChannelGains(ByRef $src, ByRef $dst, $gainB, $gainG, $gainR)
+Func _cveApplyChannelGains($src, $dst, $gainB, $gainG, $gainR)
     ; CVAPI(void) cveApplyChannelGains(cv::_InputArray* src, cv::_OutputArray* dst, float gainB, float gainG, float gainR);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveApplyChannelGains", "ptr", $src, "ptr", $dst, "float", $gainB, "float", $gainG, "float", $gainR), "cveApplyChannelGains", @error)
 EndFunc   ;==>_cveApplyChannelGains
 
-Func _cveApplyChannelGainsMat(ByRef $matSrc, ByRef $matDst, $gainB, $gainG, $gainR)
+Func _cveApplyChannelGainsMat($matSrc, $matDst, $gainB, $gainG, $gainR)
     ; cveApplyChannelGains using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -141,22 +207,22 @@ Func _cveApplyChannelGainsMat(ByRef $matSrc, ByRef $matDst, $gainB, $gainG, $gai
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveApplyChannelGainsMat
 
-Func _cveDctDenoising($src, ByRef $dst, $sigma, $psize)
+Func _cveDctDenoising($src, $dst, $sigma, $psize)
     ; CVAPI(void) cveDctDenoising(const cv::Mat* src, cv::Mat* dst, const double sigma, const int psize);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDctDenoising", "ptr", $src, "ptr", $dst, "const double", $sigma, "const int", $psize), "cveDctDenoising", @error)
 EndFunc   ;==>_cveDctDenoising
 
-Func _cveXInpaint($src, $mask, ByRef $dst, $algorithmType)
+Func _cveXInpaint($src, $mask, $dst, $algorithmType)
     ; CVAPI(void) cveXInpaint(const cv::Mat* src, const cv::Mat* mask, cv::Mat* dst, const int algorithmType);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveXInpaint", "ptr", $src, "ptr", $mask, "ptr", $dst, "const int", $algorithmType), "cveXInpaint", @error)
 EndFunc   ;==>_cveXInpaint
 
-Func _cveBm3dDenoising1(ByRef $src, ByRef $dstStep1, ByRef $dstStep2, $h, $templateWindowSize, $searchWindowSize, $blockMatchingStep1, $blockMatchingStep2, $groupSize, $slidingStep, $beta, $normType, $step, $transformType)
+Func _cveBm3dDenoising1($src, $dstStep1, $dstStep2, $h, $templateWindowSize, $searchWindowSize, $blockMatchingStep1, $blockMatchingStep2, $groupSize, $slidingStep, $beta, $normType, $step, $transformType)
     ; CVAPI(void) cveBm3dDenoising1(cv::_InputArray* src, cv::_InputOutputArray* dstStep1, cv::_OutputArray* dstStep2, float h, int templateWindowSize, int searchWindowSize, int blockMatchingStep1, int blockMatchingStep2, int groupSize, int slidingStep, float beta, int normType, int step, int transformType);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBm3dDenoising1", "ptr", $src, "ptr", $dstStep1, "ptr", $dstStep2, "float", $h, "int", $templateWindowSize, "int", $searchWindowSize, "int", $blockMatchingStep1, "int", $blockMatchingStep2, "int", $groupSize, "int", $slidingStep, "float", $beta, "int", $normType, "int", $step, "int", $transformType), "cveBm3dDenoising1", @error)
 EndFunc   ;==>_cveBm3dDenoising1
 
-Func _cveBm3dDenoising1Mat(ByRef $matSrc, ByRef $matDstStep1, ByRef $matDstStep2, $h, $templateWindowSize, $searchWindowSize, $blockMatchingStep1, $blockMatchingStep2, $groupSize, $slidingStep, $beta, $normType, $step, $transformType)
+Func _cveBm3dDenoising1Mat($matSrc, $matDstStep1, $matDstStep2, $h, $templateWindowSize, $searchWindowSize, $blockMatchingStep1, $blockMatchingStep2, $groupSize, $slidingStep, $beta, $normType, $step, $transformType)
     ; cveBm3dDenoising1 using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -228,12 +294,12 @@ Func _cveBm3dDenoising1Mat(ByRef $matSrc, ByRef $matDstStep1, ByRef $matDstStep2
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveBm3dDenoising1Mat
 
-Func _cveBm3dDenoising2(ByRef $src, ByRef $dst, $h, $templateWindowSize, $searchWindowSize, $blockMatchingStep1, $blockMatchingStep2, $groupSize, $slidingStep, $beta, $normType, $step, $transformType)
+Func _cveBm3dDenoising2($src, $dst, $h, $templateWindowSize, $searchWindowSize, $blockMatchingStep1, $blockMatchingStep2, $groupSize, $slidingStep, $beta, $normType, $step, $transformType)
     ; CVAPI(void) cveBm3dDenoising2(cv::_InputArray* src, cv::_OutputArray* dst, float h, int templateWindowSize, int searchWindowSize, int blockMatchingStep1, int blockMatchingStep2, int groupSize, int slidingStep, float beta, int normType, int step, int transformType);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBm3dDenoising2", "ptr", $src, "ptr", $dst, "float", $h, "int", $templateWindowSize, "int", $searchWindowSize, "int", $blockMatchingStep1, "int", $blockMatchingStep2, "int", $groupSize, "int", $slidingStep, "float", $beta, "int", $normType, "int", $step, "int", $transformType), "cveBm3dDenoising2", @error)
 EndFunc   ;==>_cveBm3dDenoising2
 
-Func _cveBm3dDenoising2Mat(ByRef $matSrc, ByRef $matDst, $h, $templateWindowSize, $searchWindowSize, $blockMatchingStep1, $blockMatchingStep2, $groupSize, $slidingStep, $beta, $normType, $step, $transformType)
+Func _cveBm3dDenoising2Mat($matSrc, $matDst, $h, $templateWindowSize, $searchWindowSize, $blockMatchingStep1, $blockMatchingStep2, $groupSize, $slidingStep, $beta, $normType, $step, $transformType)
     ; cveBm3dDenoising2 using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -283,12 +349,12 @@ Func _cveBm3dDenoising2Mat(ByRef $matSrc, ByRef $matDst, $h, $templateWindowSize
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveBm3dDenoising2Mat
 
-Func _cveOilPainting(ByRef $src, ByRef $dst, $size, $dynRatio, $code)
+Func _cveOilPainting($src, $dst, $size, $dynRatio, $code)
     ; CVAPI(void) cveOilPainting(cv::_InputArray* src, cv::_OutputArray* dst, int size, int dynRatio, int code);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveOilPainting", "ptr", $src, "ptr", $dst, "int", $size, "int", $dynRatio, "int", $code), "cveOilPainting", @error)
 EndFunc   ;==>_cveOilPainting
 
-Func _cveOilPaintingMat(ByRef $matSrc, ByRef $matDst, $size, $dynRatio, $code)
+Func _cveOilPaintingMat($matSrc, $matDst, $size, $dynRatio, $code)
     ; cveOilPainting using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -338,12 +404,41 @@ Func _cveOilPaintingMat(ByRef $matSrc, ByRef $matDst, $size, $dynRatio, $code)
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveOilPaintingMat
 
-Func _cveTonemapDurandCreate($gamma, $contrast, $saturation, $sigmaSpace, $sigmaColor, ByRef $tonemap, ByRef $algorithm, ByRef $sharedPtr)
+Func _cveTonemapDurandCreate($gamma, $contrast, $saturation, $sigmaSpace, $sigmaColor, $tonemap, $algorithm, $sharedPtr)
     ; CVAPI(cv::xphoto::TonemapDurand*) cveTonemapDurandCreate(float gamma, float contrast, float saturation, float sigmaSpace, float sigmaColor, cv::Tonemap** tonemap, cv::Algorithm** algorithm, cv::Ptr<cv::xphoto::TonemapDurand>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTonemapDurandCreate", "float", $gamma, "float", $contrast, "float", $saturation, "float", $sigmaSpace, "float", $sigmaColor, "ptr*", $tonemap, "ptr*", $algorithm, "ptr*", $sharedPtr), "cveTonemapDurandCreate", @error)
+
+    Local $bTonemapDllType
+    If VarGetType($tonemap) == "DLLStruct" Then
+        $bTonemapDllType = "struct*"
+    Else
+        $bTonemapDllType = "ptr*"
+    EndIf
+
+    Local $bAlgorithmDllType
+    If VarGetType($algorithm) == "DLLStruct" Then
+        $bAlgorithmDllType = "struct*"
+    Else
+        $bAlgorithmDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTonemapDurandCreate", "float", $gamma, "float", $contrast, "float", $saturation, "float", $sigmaSpace, "float", $sigmaColor, $bTonemapDllType, $tonemap, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveTonemapDurandCreate", @error)
 EndFunc   ;==>_cveTonemapDurandCreate
 
-Func _cveTonemapDurandRelease(ByRef $sharedPtr)
+Func _cveTonemapDurandRelease($sharedPtr)
     ; CVAPI(void) cveTonemapDurandRelease(cv::Ptr<cv::xphoto::TonemapDurand>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTonemapDurandRelease", "ptr*", $sharedPtr), "cveTonemapDurandRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTonemapDurandRelease", $bSharedPtrDllType, $sharedPtr), "cveTonemapDurandRelease", @error)
 EndFunc   ;==>_cveTonemapDurandRelease

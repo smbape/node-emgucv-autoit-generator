@@ -1,17 +1,39 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveCudaDescriptorMatcherCreateBFMatcher($distType, ByRef $algorithm, ByRef $sharedPtr)
+Func _cveCudaDescriptorMatcherCreateBFMatcher($distType, $algorithm, $sharedPtr)
     ; CVAPI(cv::cuda::DescriptorMatcher*) cveCudaDescriptorMatcherCreateBFMatcher(int distType, cv::Algorithm** algorithm, cv::Ptr<cv::cuda::DescriptorMatcher>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCudaDescriptorMatcherCreateBFMatcher", "int", $distType, "ptr*", $algorithm, "ptr*", $sharedPtr), "cveCudaDescriptorMatcherCreateBFMatcher", @error)
+
+    Local $bAlgorithmDllType
+    If VarGetType($algorithm) == "DLLStruct" Then
+        $bAlgorithmDllType = "struct*"
+    Else
+        $bAlgorithmDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCudaDescriptorMatcherCreateBFMatcher", "int", $distType, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveCudaDescriptorMatcherCreateBFMatcher", @error)
 EndFunc   ;==>_cveCudaDescriptorMatcherCreateBFMatcher
 
-Func _cveCudaDescriptorMatcherRelease(ByRef $sharedPtr)
+Func _cveCudaDescriptorMatcherRelease($sharedPtr)
     ; CVAPI(void) cveCudaDescriptorMatcherRelease(cv::Ptr<cv::cuda::DescriptorMatcher>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherRelease", "ptr*", $sharedPtr), "cveCudaDescriptorMatcherRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherRelease", $bSharedPtrDllType, $sharedPtr), "cveCudaDescriptorMatcherRelease", @error)
 EndFunc   ;==>_cveCudaDescriptorMatcherRelease
 
-Func _cveCudaDescriptorMatcherAdd(ByRef $matcher, $trainDescs)
+Func _cveCudaDescriptorMatcherAdd($matcher, $trainDescs)
     ; CVAPI(void) cveCudaDescriptorMatcherAdd(cv::cuda::DescriptorMatcher* matcher, const std::vector<cv::cuda::GpuMat>* trainDescs);
 
     Local $vecTrainDescs, $iArrTrainDescsSize
@@ -35,27 +57,27 @@ Func _cveCudaDescriptorMatcherAdd(ByRef $matcher, $trainDescs)
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherAdd
 
-Func _cveCudaDescriptorMatcherIsMaskSupported(ByRef $matcher)
+Func _cveCudaDescriptorMatcherIsMaskSupported($matcher)
     ; CVAPI(bool) cveCudaDescriptorMatcherIsMaskSupported(cv::cuda::DescriptorMatcher* matcher);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveCudaDescriptorMatcherIsMaskSupported", "ptr", $matcher), "cveCudaDescriptorMatcherIsMaskSupported", @error)
 EndFunc   ;==>_cveCudaDescriptorMatcherIsMaskSupported
 
-Func _cveCudaDescriptorMatcherClear(ByRef $matcher)
+Func _cveCudaDescriptorMatcherClear($matcher)
     ; CVAPI(void) cveCudaDescriptorMatcherClear(cv::cuda::DescriptorMatcher* matcher);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherClear", "ptr", $matcher), "cveCudaDescriptorMatcherClear", @error)
 EndFunc   ;==>_cveCudaDescriptorMatcherClear
 
-Func _cveCudaDescriptorMatcherEmpty(ByRef $matcher)
+Func _cveCudaDescriptorMatcherEmpty($matcher)
     ; CVAPI(bool) cveCudaDescriptorMatcherEmpty(cv::cuda::DescriptorMatcher* matcher);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveCudaDescriptorMatcherEmpty", "ptr", $matcher), "cveCudaDescriptorMatcherEmpty", @error)
 EndFunc   ;==>_cveCudaDescriptorMatcherEmpty
 
-Func _cveCudaDescriptorMatcherTrain(ByRef $matcher)
+Func _cveCudaDescriptorMatcherTrain($matcher)
     ; CVAPI(void) cveCudaDescriptorMatcherTrain(cv::cuda::DescriptorMatcher* matcher);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherTrain", "ptr", $matcher), "cveCudaDescriptorMatcherTrain", @error)
 EndFunc   ;==>_cveCudaDescriptorMatcherTrain
 
-Func _cveCudaDescriptorMatcherMatch1(ByRef $matcher, ByRef $queryDescriptors, ByRef $trainDescriptors, ByRef $matches, ByRef $mask)
+Func _cveCudaDescriptorMatcherMatch1($matcher, $queryDescriptors, $trainDescriptors, $matches, $mask)
     ; CVAPI(void) cveCudaDescriptorMatcherMatch1(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, std::vector< cv::DMatch >* matches, cv::_InputArray* mask);
 
     Local $vecMatches, $iArrMatchesSize
@@ -79,7 +101,7 @@ Func _cveCudaDescriptorMatcherMatch1(ByRef $matcher, ByRef $queryDescriptors, By
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherMatch1
 
-Func _cveCudaDescriptorMatcherMatch1Mat(ByRef $matcher, ByRef $matQueryDescriptors, ByRef $matTrainDescriptors, ByRef $matches, ByRef $matMask)
+Func _cveCudaDescriptorMatcherMatch1Mat($matcher, $matQueryDescriptors, $matTrainDescriptors, $matches, $matMask)
     ; cveCudaDescriptorMatcherMatch1 using cv::Mat instead of _*Array
 
     Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
@@ -151,7 +173,7 @@ Func _cveCudaDescriptorMatcherMatch1Mat(ByRef $matcher, ByRef $matQueryDescripto
     _cveInputArrayRelease($iArrQueryDescriptors)
 EndFunc   ;==>_cveCudaDescriptorMatcherMatch1Mat
 
-Func _cveCudaDescriptorMatcherMatch2(ByRef $matcher, ByRef $queryDescriptors, ByRef $matches, ByRef $masks)
+Func _cveCudaDescriptorMatcherMatch2($matcher, $queryDescriptors, $matches, $masks)
     ; CVAPI(void) cveCudaDescriptorMatcherMatch2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, std::vector< cv::DMatch >* matches, std::vector< cv::cuda::GpuMat >* masks);
 
     Local $vecMatches, $iArrMatchesSize
@@ -193,7 +215,7 @@ Func _cveCudaDescriptorMatcherMatch2(ByRef $matcher, ByRef $queryDescriptors, By
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherMatch2
 
-Func _cveCudaDescriptorMatcherMatch2Mat(ByRef $matcher, ByRef $matQueryDescriptors, ByRef $matches, ByRef $masks)
+Func _cveCudaDescriptorMatcherMatch2Mat($matcher, $matQueryDescriptors, $matches, $masks)
     ; cveCudaDescriptorMatcherMatch2 using cv::Mat instead of _*Array
 
     Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
@@ -221,12 +243,12 @@ Func _cveCudaDescriptorMatcherMatch2Mat(ByRef $matcher, ByRef $matQueryDescripto
     _cveInputArrayRelease($iArrQueryDescriptors)
 EndFunc   ;==>_cveCudaDescriptorMatcherMatch2Mat
 
-Func _cveCudaDescriptorMatcherMatchAsync1(ByRef $matcher, ByRef $queryDescriptors, ByRef $trainDescriptors, ByRef $matches, ByRef $mask, ByRef $stream)
+Func _cveCudaDescriptorMatcherMatchAsync1($matcher, $queryDescriptors, $trainDescriptors, $matches, $mask, $stream)
     ; CVAPI(void) cveCudaDescriptorMatcherMatchAsync1(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, cv::_OutputArray* matches, cv::_InputArray* mask, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherMatchAsync1", "ptr", $matcher, "ptr", $queryDescriptors, "ptr", $trainDescriptors, "ptr", $matches, "ptr", $mask, "ptr", $stream), "cveCudaDescriptorMatcherMatchAsync1", @error)
 EndFunc   ;==>_cveCudaDescriptorMatcherMatchAsync1
 
-Func _cveCudaDescriptorMatcherMatchAsync1Mat(ByRef $matcher, ByRef $matQueryDescriptors, ByRef $matTrainDescriptors, ByRef $matMatches, ByRef $matMask, ByRef $stream)
+Func _cveCudaDescriptorMatcherMatchAsync1Mat($matcher, $matQueryDescriptors, $matTrainDescriptors, $matMatches, $matMask, $stream)
     ; cveCudaDescriptorMatcherMatchAsync1 using cv::Mat instead of _*Array
 
     Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
@@ -320,7 +342,7 @@ Func _cveCudaDescriptorMatcherMatchAsync1Mat(ByRef $matcher, ByRef $matQueryDesc
     _cveInputArrayRelease($iArrQueryDescriptors)
 EndFunc   ;==>_cveCudaDescriptorMatcherMatchAsync1Mat
 
-Func _cveCudaDescriptorMatcherMatchAsync2(ByRef $matcher, ByRef $queryDescriptors, ByRef $matches, ByRef $masks, ByRef $stream)
+Func _cveCudaDescriptorMatcherMatchAsync2($matcher, $queryDescriptors, $matches, $masks, $stream)
     ; CVAPI(void) cveCudaDescriptorMatcherMatchAsync2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_OutputArray* matches, std::vector< cv::cuda::GpuMat >* masks, cv::cuda::Stream* stream);
 
     Local $vecMasks, $iArrMasksSize
@@ -344,7 +366,7 @@ Func _cveCudaDescriptorMatcherMatchAsync2(ByRef $matcher, ByRef $queryDescriptor
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherMatchAsync2
 
-Func _cveCudaDescriptorMatcherMatchAsync2Mat(ByRef $matcher, ByRef $matQueryDescriptors, ByRef $matMatches, ByRef $masks, ByRef $stream)
+Func _cveCudaDescriptorMatcherMatchAsync2Mat($matcher, $matQueryDescriptors, $matMatches, $masks, $stream)
     ; cveCudaDescriptorMatcherMatchAsync2 using cv::Mat instead of _*Array
 
     Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
@@ -394,7 +416,7 @@ Func _cveCudaDescriptorMatcherMatchAsync2Mat(ByRef $matcher, ByRef $matQueryDesc
     _cveInputArrayRelease($iArrQueryDescriptors)
 EndFunc   ;==>_cveCudaDescriptorMatcherMatchAsync2Mat
 
-Func _cveCudaDescriptorMatcherMatchConvert(ByRef $matcher, ByRef $gpuMatches, ByRef $matches)
+Func _cveCudaDescriptorMatcherMatchConvert($matcher, $gpuMatches, $matches)
     ; CVAPI(void) cveCudaDescriptorMatcherMatchConvert(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* gpuMatches, std::vector< cv::DMatch >* matches);
 
     Local $vecMatches, $iArrMatchesSize
@@ -418,7 +440,7 @@ Func _cveCudaDescriptorMatcherMatchConvert(ByRef $matcher, ByRef $gpuMatches, By
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherMatchConvert
 
-Func _cveCudaDescriptorMatcherMatchConvertMat(ByRef $matcher, ByRef $matGpuMatches, ByRef $matches)
+Func _cveCudaDescriptorMatcherMatchConvertMat($matcher, $matGpuMatches, $matches)
     ; cveCudaDescriptorMatcherMatchConvert using cv::Mat instead of _*Array
 
     Local $iArrGpuMatches, $vectorOfMatGpuMatches, $iArrGpuMatchesSize
@@ -446,7 +468,7 @@ Func _cveCudaDescriptorMatcherMatchConvertMat(ByRef $matcher, ByRef $matGpuMatch
     _cveInputArrayRelease($iArrGpuMatches)
 EndFunc   ;==>_cveCudaDescriptorMatcherMatchConvertMat
 
-Func _cveCudaDescriptorMatcherKnnMatch1(ByRef $matcher, ByRef $queryDescs, ByRef $trainDescs, ByRef $matches, $k, ByRef $masks, $compactResult)
+Func _cveCudaDescriptorMatcherKnnMatch1($matcher, $queryDescs, $trainDescs, $matches, $k, $masks, $compactResult)
     ; CVAPI(void) cveCudaDescriptorMatcherKnnMatch1(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescs, cv::_InputArray* trainDescs, std::vector< std::vector< cv::DMatch > >* matches, int k, cv::_InputArray* masks, bool compactResult);
 
     Local $vecMatches, $iArrMatchesSize
@@ -470,7 +492,7 @@ Func _cveCudaDescriptorMatcherKnnMatch1(ByRef $matcher, ByRef $queryDescs, ByRef
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatch1
 
-Func _cveCudaDescriptorMatcherKnnMatch1Mat(ByRef $matcher, ByRef $matQueryDescs, ByRef $matTrainDescs, ByRef $matches, $k, ByRef $matMasks, $compactResult)
+Func _cveCudaDescriptorMatcherKnnMatch1Mat($matcher, $matQueryDescs, $matTrainDescs, $matches, $k, $matMasks, $compactResult)
     ; cveCudaDescriptorMatcherKnnMatch1 using cv::Mat instead of _*Array
 
     Local $iArrQueryDescs, $vectorOfMatQueryDescs, $iArrQueryDescsSize
@@ -542,7 +564,7 @@ Func _cveCudaDescriptorMatcherKnnMatch1Mat(ByRef $matcher, ByRef $matQueryDescs,
     _cveInputArrayRelease($iArrQueryDescs)
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatch1Mat
 
-Func _cveCudaDescriptorMatcherKnnMatch2(ByRef $matcher, ByRef $queryDescriptors, ByRef $matches, $k, ByRef $masks, $compactResult)
+Func _cveCudaDescriptorMatcherKnnMatch2($matcher, $queryDescriptors, $matches, $k, $masks, $compactResult)
     ; CVAPI(void) cveCudaDescriptorMatcherKnnMatch2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, std::vector< std::vector< cv::DMatch > >* matches, int k, std::vector< cv::cuda::GpuMat >* masks, bool compactResult);
 
     Local $vecMatches, $iArrMatchesSize
@@ -584,7 +606,7 @@ Func _cveCudaDescriptorMatcherKnnMatch2(ByRef $matcher, ByRef $queryDescriptors,
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatch2
 
-Func _cveCudaDescriptorMatcherKnnMatch2Mat(ByRef $matcher, ByRef $matQueryDescriptors, ByRef $matches, $k, ByRef $masks, $compactResult)
+Func _cveCudaDescriptorMatcherKnnMatch2Mat($matcher, $matQueryDescriptors, $matches, $k, $masks, $compactResult)
     ; cveCudaDescriptorMatcherKnnMatch2 using cv::Mat instead of _*Array
 
     Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
@@ -612,12 +634,12 @@ Func _cveCudaDescriptorMatcherKnnMatch2Mat(ByRef $matcher, ByRef $matQueryDescri
     _cveInputArrayRelease($iArrQueryDescriptors)
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatch2Mat
 
-Func _cveCudaDescriptorMatcherKnnMatchAsync1(ByRef $matcher, ByRef $queryDescriptors, ByRef $trainDescriptors, ByRef $matches, $k, ByRef $mask, ByRef $stream)
+Func _cveCudaDescriptorMatcherKnnMatchAsync1($matcher, $queryDescriptors, $trainDescriptors, $matches, $k, $mask, $stream)
     ; CVAPI(void) cveCudaDescriptorMatcherKnnMatchAsync1(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, cv::_OutputArray* matches, int k, cv::_InputArray* mask, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherKnnMatchAsync1", "ptr", $matcher, "ptr", $queryDescriptors, "ptr", $trainDescriptors, "ptr", $matches, "int", $k, "ptr", $mask, "ptr", $stream), "cveCudaDescriptorMatcherKnnMatchAsync1", @error)
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchAsync1
 
-Func _cveCudaDescriptorMatcherKnnMatchAsync1Mat(ByRef $matcher, ByRef $matQueryDescriptors, ByRef $matTrainDescriptors, ByRef $matMatches, $k, ByRef $matMask, ByRef $stream)
+Func _cveCudaDescriptorMatcherKnnMatchAsync1Mat($matcher, $matQueryDescriptors, $matTrainDescriptors, $matMatches, $k, $matMask, $stream)
     ; cveCudaDescriptorMatcherKnnMatchAsync1 using cv::Mat instead of _*Array
 
     Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
@@ -711,7 +733,7 @@ Func _cveCudaDescriptorMatcherKnnMatchAsync1Mat(ByRef $matcher, ByRef $matQueryD
     _cveInputArrayRelease($iArrQueryDescriptors)
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchAsync1Mat
 
-Func _cveCudaDescriptorMatcherKnnMatchAsync2(ByRef $matcher, ByRef $queryDescriptors, ByRef $matches, $k, ByRef $masks, ByRef $stream)
+Func _cveCudaDescriptorMatcherKnnMatchAsync2($matcher, $queryDescriptors, $matches, $k, $masks, $stream)
     ; CVAPI(void) cveCudaDescriptorMatcherKnnMatchAsync2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_OutputArray* matches, int k, std::vector< cv::cuda::GpuMat >* masks, cv::cuda::Stream* stream);
 
     Local $vecMasks, $iArrMasksSize
@@ -735,7 +757,7 @@ Func _cveCudaDescriptorMatcherKnnMatchAsync2(ByRef $matcher, ByRef $queryDescrip
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchAsync2
 
-Func _cveCudaDescriptorMatcherKnnMatchAsync2Mat(ByRef $matcher, ByRef $matQueryDescriptors, ByRef $matMatches, $k, ByRef $masks, ByRef $stream)
+Func _cveCudaDescriptorMatcherKnnMatchAsync2Mat($matcher, $matQueryDescriptors, $matMatches, $k, $masks, $stream)
     ; cveCudaDescriptorMatcherKnnMatchAsync2 using cv::Mat instead of _*Array
 
     Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
@@ -785,7 +807,7 @@ Func _cveCudaDescriptorMatcherKnnMatchAsync2Mat(ByRef $matcher, ByRef $matQueryD
     _cveInputArrayRelease($iArrQueryDescriptors)
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchAsync2Mat
 
-Func _cveCudaDescriptorMatcherKnnMatchConvert(ByRef $matcher, ByRef $gpuMatches, ByRef $matches, $compactResult)
+Func _cveCudaDescriptorMatcherKnnMatchConvert($matcher, $gpuMatches, $matches, $compactResult)
     ; CVAPI(void) cveCudaDescriptorMatcherKnnMatchConvert(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* gpuMatches, std::vector< std::vector< cv::DMatch > >* matches, bool compactResult);
 
     Local $vecMatches, $iArrMatchesSize
@@ -809,7 +831,7 @@ Func _cveCudaDescriptorMatcherKnnMatchConvert(ByRef $matcher, ByRef $gpuMatches,
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchConvert
 
-Func _cveCudaDescriptorMatcherKnnMatchConvertMat(ByRef $matcher, ByRef $matGpuMatches, ByRef $matches, $compactResult)
+Func _cveCudaDescriptorMatcherKnnMatchConvertMat($matcher, $matGpuMatches, $matches, $compactResult)
     ; cveCudaDescriptorMatcherKnnMatchConvert using cv::Mat instead of _*Array
 
     Local $iArrGpuMatches, $vectorOfMatGpuMatches, $iArrGpuMatchesSize
@@ -837,7 +859,7 @@ Func _cveCudaDescriptorMatcherKnnMatchConvertMat(ByRef $matcher, ByRef $matGpuMa
     _cveInputArrayRelease($iArrGpuMatches)
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchConvertMat
 
-Func _cveCudaDescriptorMatcherRadiusMatch1(ByRef $matcher, ByRef $queryDescriptors, ByRef $trainDescriptors, ByRef $matches, $maxDistance, ByRef $mask, $compactResult)
+Func _cveCudaDescriptorMatcherRadiusMatch1($matcher, $queryDescriptors, $trainDescriptors, $matches, $maxDistance, $mask, $compactResult)
     ; CVAPI(void) cveCudaDescriptorMatcherRadiusMatch1(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, std::vector< std::vector< cv::DMatch > >* matches, float maxDistance, cv::_InputArray* mask, bool compactResult);
 
     Local $vecMatches, $iArrMatchesSize
@@ -861,7 +883,7 @@ Func _cveCudaDescriptorMatcherRadiusMatch1(ByRef $matcher, ByRef $queryDescripto
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatch1
 
-Func _cveCudaDescriptorMatcherRadiusMatch1Mat(ByRef $matcher, ByRef $matQueryDescriptors, ByRef $matTrainDescriptors, ByRef $matches, $maxDistance, ByRef $matMask, $compactResult)
+Func _cveCudaDescriptorMatcherRadiusMatch1Mat($matcher, $matQueryDescriptors, $matTrainDescriptors, $matches, $maxDistance, $matMask, $compactResult)
     ; cveCudaDescriptorMatcherRadiusMatch1 using cv::Mat instead of _*Array
 
     Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
@@ -933,7 +955,7 @@ Func _cveCudaDescriptorMatcherRadiusMatch1Mat(ByRef $matcher, ByRef $matQueryDes
     _cveInputArrayRelease($iArrQueryDescriptors)
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatch1Mat
 
-Func _cveCudaDescriptorMatcherRadiusMatch2(ByRef $matcher, ByRef $queryDescriptors, ByRef $matches, $maxDistance, ByRef $masks, $compactResult)
+Func _cveCudaDescriptorMatcherRadiusMatch2($matcher, $queryDescriptors, $matches, $maxDistance, $masks, $compactResult)
     ; CVAPI(void) cveCudaDescriptorMatcherRadiusMatch2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, std::vector< std::vector< cv::DMatch > >* matches, float maxDistance, std::vector< cv::cuda::GpuMat >* masks, bool compactResult);
 
     Local $vecMatches, $iArrMatchesSize
@@ -975,7 +997,7 @@ Func _cveCudaDescriptorMatcherRadiusMatch2(ByRef $matcher, ByRef $queryDescripto
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatch2
 
-Func _cveCudaDescriptorMatcherRadiusMatch2Mat(ByRef $matcher, ByRef $matQueryDescriptors, ByRef $matches, $maxDistance, ByRef $masks, $compactResult)
+Func _cveCudaDescriptorMatcherRadiusMatch2Mat($matcher, $matQueryDescriptors, $matches, $maxDistance, $masks, $compactResult)
     ; cveCudaDescriptorMatcherRadiusMatch2 using cv::Mat instead of _*Array
 
     Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
@@ -1003,12 +1025,12 @@ Func _cveCudaDescriptorMatcherRadiusMatch2Mat(ByRef $matcher, ByRef $matQueryDes
     _cveInputArrayRelease($iArrQueryDescriptors)
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatch2Mat
 
-Func _cveCudaDescriptorMatcherRadiusMatchAsync1(ByRef $matcher, ByRef $queryDescriptors, ByRef $trainDescriptors, ByRef $matches, $maxDistance, ByRef $mask, ByRef $stream)
+Func _cveCudaDescriptorMatcherRadiusMatchAsync1($matcher, $queryDescriptors, $trainDescriptors, $matches, $maxDistance, $mask, $stream)
     ; CVAPI(void) cveCudaDescriptorMatcherRadiusMatchAsync1(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, cv::_OutputArray* matches, float maxDistance, cv::_InputArray* mask, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherRadiusMatchAsync1", "ptr", $matcher, "ptr", $queryDescriptors, "ptr", $trainDescriptors, "ptr", $matches, "float", $maxDistance, "ptr", $mask, "ptr", $stream), "cveCudaDescriptorMatcherRadiusMatchAsync1", @error)
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchAsync1
 
-Func _cveCudaDescriptorMatcherRadiusMatchAsync1Mat(ByRef $matcher, ByRef $matQueryDescriptors, ByRef $matTrainDescriptors, ByRef $matMatches, $maxDistance, ByRef $matMask, ByRef $stream)
+Func _cveCudaDescriptorMatcherRadiusMatchAsync1Mat($matcher, $matQueryDescriptors, $matTrainDescriptors, $matMatches, $maxDistance, $matMask, $stream)
     ; cveCudaDescriptorMatcherRadiusMatchAsync1 using cv::Mat instead of _*Array
 
     Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
@@ -1102,7 +1124,7 @@ Func _cveCudaDescriptorMatcherRadiusMatchAsync1Mat(ByRef $matcher, ByRef $matQue
     _cveInputArrayRelease($iArrQueryDescriptors)
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchAsync1Mat
 
-Func _cveCudaDescriptorMatcherRadiusMatchAsync2(ByRef $matcher, ByRef $queryDescriptors, ByRef $matches, $maxDistance, ByRef $masks, ByRef $stream)
+Func _cveCudaDescriptorMatcherRadiusMatchAsync2($matcher, $queryDescriptors, $matches, $maxDistance, $masks, $stream)
     ; CVAPI(void) cveCudaDescriptorMatcherRadiusMatchAsync2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_OutputArray* matches, float maxDistance, std::vector< cv::cuda::GpuMat >* masks, cv::cuda::Stream* stream);
 
     Local $vecMasks, $iArrMasksSize
@@ -1126,7 +1148,7 @@ Func _cveCudaDescriptorMatcherRadiusMatchAsync2(ByRef $matcher, ByRef $queryDesc
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchAsync2
 
-Func _cveCudaDescriptorMatcherRadiusMatchAsync2Mat(ByRef $matcher, ByRef $matQueryDescriptors, ByRef $matMatches, $maxDistance, ByRef $masks, ByRef $stream)
+Func _cveCudaDescriptorMatcherRadiusMatchAsync2Mat($matcher, $matQueryDescriptors, $matMatches, $maxDistance, $masks, $stream)
     ; cveCudaDescriptorMatcherRadiusMatchAsync2 using cv::Mat instead of _*Array
 
     Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
@@ -1176,7 +1198,7 @@ Func _cveCudaDescriptorMatcherRadiusMatchAsync2Mat(ByRef $matcher, ByRef $matQue
     _cveInputArrayRelease($iArrQueryDescriptors)
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchAsync2Mat
 
-Func _cveCudaDescriptorMatcherRadiusMatchConvert(ByRef $matcher, ByRef $gpu_matches, ByRef $matches, $compactResult)
+Func _cveCudaDescriptorMatcherRadiusMatchConvert($matcher, $gpu_matches, $matches, $compactResult)
     ; CVAPI(void) cveCudaDescriptorMatcherRadiusMatchConvert(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* gpu_matches, std::vector< std::vector< cv::DMatch > >* matches, bool compactResult);
 
     Local $vecMatches, $iArrMatchesSize
@@ -1200,7 +1222,7 @@ Func _cveCudaDescriptorMatcherRadiusMatchConvert(ByRef $matcher, ByRef $gpu_matc
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchConvert
 
-Func _cveCudaDescriptorMatcherRadiusMatchConvertMat(ByRef $matcher, ByRef $matGpu_matches, ByRef $matches, $compactResult)
+Func _cveCudaDescriptorMatcherRadiusMatchConvertMat($matcher, $matGpu_matches, $matches, $compactResult)
     ; cveCudaDescriptorMatcherRadiusMatchConvert using cv::Mat instead of _*Array
 
     Local $iArrGpu_matches, $vectorOfMatGpu_matches, $iArrGpu_matchesSize
@@ -1228,12 +1250,12 @@ Func _cveCudaDescriptorMatcherRadiusMatchConvertMat(ByRef $matcher, ByRef $matGp
     _cveInputArrayRelease($iArrGpu_matches)
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchConvertMat
 
-Func _cveCudaFeature2dAsyncDetectAsync(ByRef $feature2d, ByRef $image, ByRef $keypoints, ByRef $mask, ByRef $stream)
+Func _cveCudaFeature2dAsyncDetectAsync($feature2d, $image, $keypoints, $mask, $stream)
     ; CVAPI(void) cveCudaFeature2dAsyncDetectAsync(cv::cuda::Feature2DAsync* feature2d, cv::_InputArray* image, cv::_OutputArray* keypoints, cv::_InputArray* mask, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaFeature2dAsyncDetectAsync", "ptr", $feature2d, "ptr", $image, "ptr", $keypoints, "ptr", $mask, "ptr", $stream), "cveCudaFeature2dAsyncDetectAsync", @error)
 EndFunc   ;==>_cveCudaFeature2dAsyncDetectAsync
 
-Func _cveCudaFeature2dAsyncDetectAsyncMat(ByRef $feature2d, ByRef $matImage, ByRef $matKeypoints, ByRef $matMask, ByRef $stream)
+Func _cveCudaFeature2dAsyncDetectAsyncMat($feature2d, $matImage, $matKeypoints, $matMask, $stream)
     ; cveCudaFeature2dAsyncDetectAsync using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -1305,12 +1327,12 @@ Func _cveCudaFeature2dAsyncDetectAsyncMat(ByRef $feature2d, ByRef $matImage, ByR
     _cveInputArrayRelease($iArrImage)
 EndFunc   ;==>_cveCudaFeature2dAsyncDetectAsyncMat
 
-Func _cveCudaFeature2dAsyncComputeAsync(ByRef $feature2d, ByRef $image, ByRef $keypoints, ByRef $descriptors, ByRef $stream)
+Func _cveCudaFeature2dAsyncComputeAsync($feature2d, $image, $keypoints, $descriptors, $stream)
     ; CVAPI(void) cveCudaFeature2dAsyncComputeAsync(cv::cuda::Feature2DAsync* feature2d, cv::_InputArray* image, cv::_OutputArray* keypoints, cv::_OutputArray* descriptors, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaFeature2dAsyncComputeAsync", "ptr", $feature2d, "ptr", $image, "ptr", $keypoints, "ptr", $descriptors, "ptr", $stream), "cveCudaFeature2dAsyncComputeAsync", @error)
 EndFunc   ;==>_cveCudaFeature2dAsyncComputeAsync
 
-Func _cveCudaFeature2dAsyncComputeAsyncMat(ByRef $feature2d, ByRef $matImage, ByRef $matKeypoints, ByRef $matDescriptors, ByRef $stream)
+Func _cveCudaFeature2dAsyncComputeAsyncMat($feature2d, $matImage, $matKeypoints, $matDescriptors, $stream)
     ; cveCudaFeature2dAsyncComputeAsync using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -1382,12 +1404,12 @@ Func _cveCudaFeature2dAsyncComputeAsyncMat(ByRef $feature2d, ByRef $matImage, By
     _cveInputArrayRelease($iArrImage)
 EndFunc   ;==>_cveCudaFeature2dAsyncComputeAsyncMat
 
-Func _cveCudaFeature2dAsyncDetectAndComputeAsync(ByRef $feature2d, ByRef $image, ByRef $mask, ByRef $keypoints, ByRef $descriptors, $useProvidedKeypoints, ByRef $stream)
+Func _cveCudaFeature2dAsyncDetectAndComputeAsync($feature2d, $image, $mask, $keypoints, $descriptors, $useProvidedKeypoints, $stream)
     ; CVAPI(void) cveCudaFeature2dAsyncDetectAndComputeAsync(cv::cuda::Feature2DAsync* feature2d, cv::_InputArray* image, cv::_InputArray* mask, cv::_OutputArray* keypoints, cv::_OutputArray* descriptors, bool useProvidedKeypoints, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaFeature2dAsyncDetectAndComputeAsync", "ptr", $feature2d, "ptr", $image, "ptr", $mask, "ptr", $keypoints, "ptr", $descriptors, "boolean", $useProvidedKeypoints, "ptr", $stream), "cveCudaFeature2dAsyncDetectAndComputeAsync", @error)
 EndFunc   ;==>_cveCudaFeature2dAsyncDetectAndComputeAsync
 
-Func _cveCudaFeature2dAsyncDetectAndComputeAsyncMat(ByRef $feature2d, ByRef $matImage, ByRef $matMask, ByRef $matKeypoints, ByRef $matDescriptors, $useProvidedKeypoints, ByRef $stream)
+Func _cveCudaFeature2dAsyncDetectAndComputeAsyncMat($feature2d, $matImage, $matMask, $matKeypoints, $matDescriptors, $useProvidedKeypoints, $stream)
     ; cveCudaFeature2dAsyncDetectAndComputeAsync using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -1481,7 +1503,7 @@ Func _cveCudaFeature2dAsyncDetectAndComputeAsyncMat(ByRef $feature2d, ByRef $mat
     _cveInputArrayRelease($iArrImage)
 EndFunc   ;==>_cveCudaFeature2dAsyncDetectAndComputeAsyncMat
 
-Func _cveCudaFeature2dAsyncConvert(ByRef $feature2d, ByRef $gpu_keypoints, ByRef $keypoints)
+Func _cveCudaFeature2dAsyncConvert($feature2d, $gpu_keypoints, $keypoints)
     ; CVAPI(void) cveCudaFeature2dAsyncConvert(cv::cuda::Feature2DAsync* feature2d, cv::_InputArray* gpu_keypoints, std::vector<cv::KeyPoint>* keypoints);
 
     Local $vecKeypoints, $iArrKeypointsSize
@@ -1505,7 +1527,7 @@ Func _cveCudaFeature2dAsyncConvert(ByRef $feature2d, ByRef $gpu_keypoints, ByRef
     EndIf
 EndFunc   ;==>_cveCudaFeature2dAsyncConvert
 
-Func _cveCudaFeature2dAsyncConvertMat(ByRef $feature2d, ByRef $matGpu_keypoints, ByRef $keypoints)
+Func _cveCudaFeature2dAsyncConvertMat($feature2d, $matGpu_keypoints, $keypoints)
     ; cveCudaFeature2dAsyncConvert using cv::Mat instead of _*Array
 
     Local $iArrGpu_keypoints, $vectorOfMatGpu_keypoints, $iArrGpu_keypointsSize
@@ -1533,22 +1555,80 @@ Func _cveCudaFeature2dAsyncConvertMat(ByRef $feature2d, ByRef $matGpu_keypoints,
     _cveInputArrayRelease($iArrGpu_keypoints)
 EndFunc   ;==>_cveCudaFeature2dAsyncConvertMat
 
-Func _cveCudaFastFeatureDetectorCreate($threshold, $nonmaxSupression, $type, $maxPoints, ByRef $feature2D, ByRef $feature2dAsync, ByRef $sharedPtr)
+Func _cveCudaFastFeatureDetectorCreate($threshold, $nonmaxSupression, $type, $maxPoints, $feature2D, $feature2dAsync, $sharedPtr)
     ; CVAPI(cv::cuda::FastFeatureDetector*) cveCudaFastFeatureDetectorCreate(int threshold, bool nonmaxSupression, int type, int maxPoints, cv::Feature2D** feature2D, cv::cuda::Feature2DAsync** feature2dAsync, cv::Ptr<cv::cuda::FastFeatureDetector>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCudaFastFeatureDetectorCreate", "int", $threshold, "boolean", $nonmaxSupression, "int", $type, "int", $maxPoints, "ptr*", $feature2D, "ptr*", $feature2dAsync, "ptr*", $sharedPtr), "cveCudaFastFeatureDetectorCreate", @error)
+
+    Local $bFeature2DDllType
+    If VarGetType($feature2D) == "DLLStruct" Then
+        $bFeature2DDllType = "struct*"
+    Else
+        $bFeature2DDllType = "ptr*"
+    EndIf
+
+    Local $bFeature2dAsyncDllType
+    If VarGetType($feature2dAsync) == "DLLStruct" Then
+        $bFeature2dAsyncDllType = "struct*"
+    Else
+        $bFeature2dAsyncDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCudaFastFeatureDetectorCreate", "int", $threshold, "boolean", $nonmaxSupression, "int", $type, "int", $maxPoints, $bFeature2DDllType, $feature2D, $bFeature2dAsyncDllType, $feature2dAsync, $bSharedPtrDllType, $sharedPtr), "cveCudaFastFeatureDetectorCreate", @error)
 EndFunc   ;==>_cveCudaFastFeatureDetectorCreate
 
-Func _cveCudaFastFeatureDetectorRelease(ByRef $sharedPtr)
+Func _cveCudaFastFeatureDetectorRelease($sharedPtr)
     ; CVAPI(void) cveCudaFastFeatureDetectorRelease(cv::Ptr<cv::cuda::FastFeatureDetector>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaFastFeatureDetectorRelease", "ptr*", $sharedPtr), "cveCudaFastFeatureDetectorRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaFastFeatureDetectorRelease", $bSharedPtrDllType, $sharedPtr), "cveCudaFastFeatureDetectorRelease", @error)
 EndFunc   ;==>_cveCudaFastFeatureDetectorRelease
 
-Func _cveCudaORBCreate($numberOfFeatures, $scaleFactor, $nLevels, $edgeThreshold, $firstLevel, $WTA_K, $scoreType, $patchSize, $fastThreshold, $blurForDescriptor, ByRef $feature2D, ByRef $feature2dAsync, ByRef $sharedPtr)
+Func _cveCudaORBCreate($numberOfFeatures, $scaleFactor, $nLevels, $edgeThreshold, $firstLevel, $WTA_K, $scoreType, $patchSize, $fastThreshold, $blurForDescriptor, $feature2D, $feature2dAsync, $sharedPtr)
     ; CVAPI(cv::cuda::ORB*) cveCudaORBCreate(int numberOfFeatures, float scaleFactor, int nLevels, int edgeThreshold, int firstLevel, int WTA_K, int scoreType, int patchSize, int fastThreshold, bool blurForDescriptor, cv::Feature2D** feature2D, cv::cuda::Feature2DAsync** feature2dAsync, cv::Ptr<cv::cuda::ORB>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCudaORBCreate", "int", $numberOfFeatures, "float", $scaleFactor, "int", $nLevels, "int", $edgeThreshold, "int", $firstLevel, "int", $WTA_K, "int", $scoreType, "int", $patchSize, "int", $fastThreshold, "boolean", $blurForDescriptor, "ptr*", $feature2D, "ptr*", $feature2dAsync, "ptr*", $sharedPtr), "cveCudaORBCreate", @error)
+
+    Local $bFeature2DDllType
+    If VarGetType($feature2D) == "DLLStruct" Then
+        $bFeature2DDllType = "struct*"
+    Else
+        $bFeature2DDllType = "ptr*"
+    EndIf
+
+    Local $bFeature2dAsyncDllType
+    If VarGetType($feature2dAsync) == "DLLStruct" Then
+        $bFeature2dAsyncDllType = "struct*"
+    Else
+        $bFeature2dAsyncDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCudaORBCreate", "int", $numberOfFeatures, "float", $scaleFactor, "int", $nLevels, "int", $edgeThreshold, "int", $firstLevel, "int", $WTA_K, "int", $scoreType, "int", $patchSize, "int", $fastThreshold, "boolean", $blurForDescriptor, $bFeature2DDllType, $feature2D, $bFeature2dAsyncDllType, $feature2dAsync, $bSharedPtrDllType, $sharedPtr), "cveCudaORBCreate", @error)
 EndFunc   ;==>_cveCudaORBCreate
 
-Func _cveCudaORBRelease(ByRef $sharedPtr)
+Func _cveCudaORBRelease($sharedPtr)
     ; CVAPI(void) cveCudaORBRelease(cv::Ptr<cv::cuda::ORB>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaORBRelease", "ptr*", $sharedPtr), "cveCudaORBRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaORBRelease", $bSharedPtrDllType, $sharedPtr), "cveCudaORBRelease", @error)
 EndFunc   ;==>_cveCudaORBRelease

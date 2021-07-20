@@ -11,7 +11,7 @@ Func _VectorOfVectorOfByteCreateSize($size)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfVectorOfByteCreateSize", "int", $size), "VectorOfVectorOfByteCreateSize", @error)
 EndFunc   ;==>_VectorOfVectorOfByteCreateSize
 
-Func _VectorOfVectorOfByteGetSize(ByRef $v)
+Func _VectorOfVectorOfByteGetSize($v)
     ; CVAPI(int) VectorOfVectorOfByteGetSize(std::vector< std::vector< unsigned char > >* v);
 
     Local $vecV, $iArrVSize
@@ -37,7 +37,7 @@ Func _VectorOfVectorOfByteGetSize(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfVectorOfByteGetSize
 
-Func _VectorOfVectorOfBytePush(ByRef $v, ByRef $value)
+Func _VectorOfVectorOfBytePush($v, $value)
     ; CVAPI(void) VectorOfVectorOfBytePush(std::vector< std::vector< unsigned char > >* v, std::vector< unsigned char >* value);
 
     Local $vecV, $iArrVSize
@@ -79,7 +79,7 @@ Func _VectorOfVectorOfBytePush(ByRef $v, ByRef $value)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfBytePush
 
-Func _VectorOfVectorOfBytePushVector(ByRef $v, ByRef $other)
+Func _VectorOfVectorOfBytePushVector($v, $other)
     ; CVAPI(void) VectorOfVectorOfBytePushVector(std::vector< std::vector< unsigned char > >* v, std::vector< std::vector< unsigned char > >* other);
 
     Local $vecV, $iArrVSize
@@ -121,7 +121,7 @@ Func _VectorOfVectorOfBytePushVector(ByRef $v, ByRef $other)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfBytePushVector
 
-Func _VectorOfVectorOfByteGetStartAddress(ByRef $v)
+Func _VectorOfVectorOfByteGetStartAddress($v)
     ; CVAPI(std::vector< unsigned char >*) VectorOfVectorOfByteGetStartAddress(std::vector< std::vector< unsigned char > >* v);
 
     Local $vecV, $iArrVSize
@@ -147,7 +147,7 @@ Func _VectorOfVectorOfByteGetStartAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfVectorOfByteGetStartAddress
 
-Func _VectorOfVectorOfByteGetEndAddress(ByRef $v)
+Func _VectorOfVectorOfByteGetEndAddress($v)
     ; CVAPI(void*) VectorOfVectorOfByteGetEndAddress(std::vector< std::vector< unsigned char > >* v);
 
     Local $vecV, $iArrVSize
@@ -173,7 +173,7 @@ Func _VectorOfVectorOfByteGetEndAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfVectorOfByteGetEndAddress
 
-Func _VectorOfVectorOfByteClear(ByRef $v)
+Func _VectorOfVectorOfByteClear($v)
     ; CVAPI(void) VectorOfVectorOfByteClear(std::vector< std::vector< unsigned char > >* v);
 
     Local $vecV, $iArrVSize
@@ -197,7 +197,7 @@ Func _VectorOfVectorOfByteClear(ByRef $v)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfByteClear
 
-Func _VectorOfVectorOfByteRelease(ByRef $v)
+Func _VectorOfVectorOfByteRelease($v)
     ; CVAPI(void) VectorOfVectorOfByteRelease(std::vector< std::vector< unsigned char > >** v);
 
     Local $vecV, $iArrVSize
@@ -214,14 +214,21 @@ Func _VectorOfVectorOfByteRelease(ByRef $v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVectorOfByteRelease", "ptr*", $vecV), "VectorOfVectorOfByteRelease", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVectorOfByteRelease", $bVDllType, $vecV), "VectorOfVectorOfByteRelease", @error)
 
     If $bVIsArray Then
         _VectorOfVectorOfByteRelease($vecV)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfByteRelease
 
-Func _VectorOfVectorOfByteCopyData(ByRef $v, ByRef $data)
+Func _VectorOfVectorOfByteCopyData($v, $data)
     ; CVAPI(void) VectorOfVectorOfByteCopyData(std::vector< std::vector< unsigned char > >* v, std::vector< unsigned char >* data);
 
     Local $vecV, $iArrVSize
@@ -263,7 +270,7 @@ Func _VectorOfVectorOfByteCopyData(ByRef $v, ByRef $data)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfByteCopyData
 
-Func _VectorOfVectorOfByteGetItemPtr(ByRef $vec, $index, ByRef $element)
+Func _VectorOfVectorOfByteGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfVectorOfByteGetItemPtr(std::vector<  std::vector< unsigned char > >* vec, int index, std::vector< unsigned char >** element);
 
     Local $vecVec, $iArrVecSize
@@ -294,7 +301,14 @@ Func _VectorOfVectorOfByteGetItemPtr(ByRef $vec, $index, ByRef $element)
         $vecElement = $element
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVectorOfByteGetItemPtr", "ptr", $vecVec, "int", $index, "ptr*", $vecElement), "VectorOfVectorOfByteGetItemPtr", @error)
+    Local $bElementDllType
+    If VarGetType($element) == "DLLStruct" Then
+        $bElementDllType = "struct*"
+    Else
+        $bElementDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVectorOfByteGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $vecElement), "VectorOfVectorOfByteGetItemPtr", @error)
 
     If $bElementIsArray Then
         _VectorOfByteRelease($vecElement)
@@ -305,7 +319,7 @@ Func _VectorOfVectorOfByteGetItemPtr(ByRef $vec, $index, ByRef $element)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfByteGetItemPtr
 
-Func _cveInputArrayFromVectorOfVectorOfByte(ByRef $vec)
+Func _cveInputArrayFromVectorOfVectorOfByte($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfVectorOfByte(std::vector< std::vector< unsigned char > >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -331,7 +345,7 @@ Func _cveInputArrayFromVectorOfVectorOfByte(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveInputArrayFromVectorOfVectorOfByte
 
-Func _cveOutputArrayFromVectorOfVectorOfByte(ByRef $vec)
+Func _cveOutputArrayFromVectorOfVectorOfByte($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfVectorOfByte(std::vector< std::vector< unsigned char > >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -357,7 +371,7 @@ Func _cveOutputArrayFromVectorOfVectorOfByte(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveOutputArrayFromVectorOfVectorOfByte
 
-Func _cveInputOutputArrayFromVectorOfVectorOfByte(ByRef $vec)
+Func _cveInputOutputArrayFromVectorOfVectorOfByte($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfVectorOfByte(std::vector< std::vector< unsigned char > >* vec);
 
     Local $vecVec, $iArrVecSize

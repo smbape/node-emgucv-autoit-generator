@@ -1,132 +1,147 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveStitcherCreate($mode, ByRef $sharedPtr)
+Func _cveStitcherCreate($mode, $sharedPtr)
     ; CVAPI(cv::Stitcher*) cveStitcherCreate(int mode, cv::Ptr<cv::Stitcher>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveStitcherCreate", "int", $mode, "ptr*", $sharedPtr), "cveStitcherCreate", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveStitcherCreate", "int", $mode, $bSharedPtrDllType, $sharedPtr), "cveStitcherCreate", @error)
 EndFunc   ;==>_cveStitcherCreate
 
-Func _cveStitcherRelease(ByRef $sharedPtr)
+Func _cveStitcherRelease($sharedPtr)
     ; CVAPI(void) cveStitcherRelease(cv::Ptr<cv::Stitcher>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherRelease", "ptr*", $sharedPtr), "cveStitcherRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherRelease", $bSharedPtrDllType, $sharedPtr), "cveStitcherRelease", @error)
 EndFunc   ;==>_cveStitcherRelease
 
-Func _cveStitcherSetFeaturesFinder(ByRef $stitcher, ByRef $finder)
+Func _cveStitcherSetFeaturesFinder($stitcher, $finder)
     ; CVAPI(void) cveStitcherSetFeaturesFinder(cv::Stitcher* stitcher, cv::Feature2D* finder);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetFeaturesFinder", "ptr", $stitcher, "ptr", $finder), "cveStitcherSetFeaturesFinder", @error)
 EndFunc   ;==>_cveStitcherSetFeaturesFinder
 
-Func _cveStitcherSetWarper(ByRef $stitcher, ByRef $creator)
+Func _cveStitcherSetWarper($stitcher, $creator)
     ; CVAPI(void) cveStitcherSetWarper(cv::Stitcher* stitcher, cv::WarperCreator* creator);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetWarper", "ptr", $stitcher, "ptr", $creator), "cveStitcherSetWarper", @error)
 EndFunc   ;==>_cveStitcherSetWarper
 
-Func _cveStitcherSetBlender(ByRef $stitcher, ByRef $b)
+Func _cveStitcherSetBlender($stitcher, $b)
     ; CVAPI(void) cveStitcherSetBlender(cv::Stitcher* stitcher, cv::detail::Blender* b);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetBlender", "ptr", $stitcher, "ptr", $b), "cveStitcherSetBlender", @error)
 EndFunc   ;==>_cveStitcherSetBlender
 
-Func _cveStitcherSetExposureCompensator(ByRef $stitcher, ByRef $exposureComp)
+Func _cveStitcherSetExposureCompensator($stitcher, $exposureComp)
     ; CVAPI(void) cveStitcherSetExposureCompensator(cv::Stitcher* stitcher, cv::detail::ExposureCompensator* exposureComp);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetExposureCompensator", "ptr", $stitcher, "ptr", $exposureComp), "cveStitcherSetExposureCompensator", @error)
 EndFunc   ;==>_cveStitcherSetExposureCompensator
 
-Func _cveStitcherSetBundleAdjuster(ByRef $stitcher, ByRef $bundleAdjuster)
+Func _cveStitcherSetBundleAdjuster($stitcher, $bundleAdjuster)
     ; CVAPI(void) cveStitcherSetBundleAdjuster(cv::Stitcher* stitcher, cv::detail::BundleAdjusterBase* bundleAdjuster);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetBundleAdjuster", "ptr", $stitcher, "ptr", $bundleAdjuster), "cveStitcherSetBundleAdjuster", @error)
 EndFunc   ;==>_cveStitcherSetBundleAdjuster
 
-Func _cveStitcherSetSeamFinder(ByRef $stitcher, ByRef $seamFinder)
+Func _cveStitcherSetSeamFinder($stitcher, $seamFinder)
     ; CVAPI(void) cveStitcherSetSeamFinder(cv::Stitcher* stitcher, cv::detail::SeamFinder* seamFinder);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetSeamFinder", "ptr", $stitcher, "ptr", $seamFinder), "cveStitcherSetSeamFinder", @error)
 EndFunc   ;==>_cveStitcherSetSeamFinder
 
-Func _cveStitcherSetEstimator(ByRef $stitcher, ByRef $estimator)
+Func _cveStitcherSetEstimator($stitcher, $estimator)
     ; CVAPI(void) cveStitcherSetEstimator(cv::Stitcher* stitcher, cv::detail::Estimator* estimator);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetEstimator", "ptr", $stitcher, "ptr", $estimator), "cveStitcherSetEstimator", @error)
 EndFunc   ;==>_cveStitcherSetEstimator
 
-Func _cveStitcherSetFeaturesMatcher(ByRef $stitcher, ByRef $featuresMatcher)
+Func _cveStitcherSetFeaturesMatcher($stitcher, $featuresMatcher)
     ; CVAPI(void) cveStitcherSetFeaturesMatcher(cv::Stitcher* stitcher, cv::detail::FeaturesMatcher* featuresMatcher);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetFeaturesMatcher", "ptr", $stitcher, "ptr", $featuresMatcher), "cveStitcherSetFeaturesMatcher", @error)
 EndFunc   ;==>_cveStitcherSetFeaturesMatcher
 
-Func _cveStitcherSetWaveCorrection(ByRef $stitcher, $flag)
+Func _cveStitcherSetWaveCorrection($stitcher, $flag)
     ; CVAPI(void) cveStitcherSetWaveCorrection(cv::Stitcher* stitcher, bool flag);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetWaveCorrection", "ptr", $stitcher, "boolean", $flag), "cveStitcherSetWaveCorrection", @error)
 EndFunc   ;==>_cveStitcherSetWaveCorrection
 
-Func _cveStitcherGetWaveCorrection(ByRef $stitcher)
+Func _cveStitcherGetWaveCorrection($stitcher)
     ; CVAPI(bool) cveStitcherGetWaveCorrection(cv::Stitcher* stitcher);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveStitcherGetWaveCorrection", "ptr", $stitcher), "cveStitcherGetWaveCorrection", @error)
 EndFunc   ;==>_cveStitcherGetWaveCorrection
 
-Func _cveStitcherSetWaveCorrectionKind(ByRef $stitcher, $kind)
+Func _cveStitcherSetWaveCorrectionKind($stitcher, $kind)
     ; CVAPI(void) cveStitcherSetWaveCorrectionKind(cv::Stitcher* stitcher, int kind);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetWaveCorrectionKind", "ptr", $stitcher, "int", $kind), "cveStitcherSetWaveCorrectionKind", @error)
 EndFunc   ;==>_cveStitcherSetWaveCorrectionKind
 
-Func _cveStitcherGetWaveCorrectionKind(ByRef $stitcher)
+Func _cveStitcherGetWaveCorrectionKind($stitcher)
     ; CVAPI(int) cveStitcherGetWaveCorrectionKind(cv::Stitcher* stitcher);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveStitcherGetWaveCorrectionKind", "ptr", $stitcher), "cveStitcherGetWaveCorrectionKind", @error)
 EndFunc   ;==>_cveStitcherGetWaveCorrectionKind
 
-Func _cveStitcherSetPanoConfidenceThresh(ByRef $stitcher, $confThresh)
+Func _cveStitcherSetPanoConfidenceThresh($stitcher, $confThresh)
     ; CVAPI(void) cveStitcherSetPanoConfidenceThresh(cv::Stitcher* stitcher, double confThresh);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetPanoConfidenceThresh", "ptr", $stitcher, "double", $confThresh), "cveStitcherSetPanoConfidenceThresh", @error)
 EndFunc   ;==>_cveStitcherSetPanoConfidenceThresh
 
-Func _cveStitcherGetPanoConfidenceThresh(ByRef $stitcher)
+Func _cveStitcherGetPanoConfidenceThresh($stitcher)
     ; CVAPI(double) cveStitcherGetPanoConfidenceThresh(cv::Stitcher* stitcher);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveStitcherGetPanoConfidenceThresh", "ptr", $stitcher), "cveStitcherGetPanoConfidenceThresh", @error)
 EndFunc   ;==>_cveStitcherGetPanoConfidenceThresh
 
-Func _cveStitcherSetCompositingResol(ByRef $stitcher, $resolMpx)
+Func _cveStitcherSetCompositingResol($stitcher, $resolMpx)
     ; CVAPI(void) cveStitcherSetCompositingResol(cv::Stitcher* stitcher, double resolMpx);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetCompositingResol", "ptr", $stitcher, "double", $resolMpx), "cveStitcherSetCompositingResol", @error)
 EndFunc   ;==>_cveStitcherSetCompositingResol
 
-Func _cveStitcherGetCompositingResol(ByRef $stitcher)
+Func _cveStitcherGetCompositingResol($stitcher)
     ; CVAPI(double) cveStitcherGetCompositingResol(cv::Stitcher* stitcher);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveStitcherGetCompositingResol", "ptr", $stitcher), "cveStitcherGetCompositingResol", @error)
 EndFunc   ;==>_cveStitcherGetCompositingResol
 
-Func _cveStitcherSetSeamEstimationResol(ByRef $stitcher, $resolMpx)
+Func _cveStitcherSetSeamEstimationResol($stitcher, $resolMpx)
     ; CVAPI(void) cveStitcherSetSeamEstimationResol(cv::Stitcher* stitcher, double resolMpx);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetSeamEstimationResol", "ptr", $stitcher, "double", $resolMpx), "cveStitcherSetSeamEstimationResol", @error)
 EndFunc   ;==>_cveStitcherSetSeamEstimationResol
 
-Func _cveStitcherGetSeamEstimationResol(ByRef $stitcher)
+Func _cveStitcherGetSeamEstimationResol($stitcher)
     ; CVAPI(double) cveStitcherGetSeamEstimationResol(cv::Stitcher* stitcher);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveStitcherGetSeamEstimationResol", "ptr", $stitcher), "cveStitcherGetSeamEstimationResol", @error)
 EndFunc   ;==>_cveStitcherGetSeamEstimationResol
 
-Func _cveStitcherSetRegistrationResol(ByRef $stitcher, $resolMpx)
+Func _cveStitcherSetRegistrationResol($stitcher, $resolMpx)
     ; CVAPI(void) cveStitcherSetRegistrationResol(cv::Stitcher* stitcher, double resolMpx);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetRegistrationResol", "ptr", $stitcher, "double", $resolMpx), "cveStitcherSetRegistrationResol", @error)
 EndFunc   ;==>_cveStitcherSetRegistrationResol
 
-Func _cveStitcherGetRegistrationResol(ByRef $stitcher)
+Func _cveStitcherGetRegistrationResol($stitcher)
     ; CVAPI(double) cveStitcherGetRegistrationResol(cv::Stitcher* stitcher);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveStitcherGetRegistrationResol", "ptr", $stitcher), "cveStitcherGetRegistrationResol", @error)
 EndFunc   ;==>_cveStitcherGetRegistrationResol
 
-Func _cveStitcherGetInterpolationFlags(ByRef $stitcher)
+Func _cveStitcherGetInterpolationFlags($stitcher)
     ; CVAPI(int) cveStitcherGetInterpolationFlags(cv::Stitcher* stitcher);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveStitcherGetInterpolationFlags", "ptr", $stitcher), "cveStitcherGetInterpolationFlags", @error)
 EndFunc   ;==>_cveStitcherGetInterpolationFlags
 
-Func _cveStitcherSetInterpolationFlags(ByRef $stitcher, $interpFlags)
+Func _cveStitcherSetInterpolationFlags($stitcher, $interpFlags)
     ; CVAPI(void) cveStitcherSetInterpolationFlags(cv::Stitcher* stitcher, int interpFlags);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetInterpolationFlags", "ptr", $stitcher, "int", $interpFlags), "cveStitcherSetInterpolationFlags", @error)
 EndFunc   ;==>_cveStitcherSetInterpolationFlags
 
-Func _cveStitcherStitch(ByRef $stitcher, ByRef $images, ByRef $pano)
+Func _cveStitcherStitch($stitcher, $images, $pano)
     ; CVAPI(int) cveStitcherStitch(cv::Stitcher* stitcher, cv::_InputArray* images, cv::_OutputArray* pano);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveStitcherStitch", "ptr", $stitcher, "ptr", $images, "ptr", $pano), "cveStitcherStitch", @error)
 EndFunc   ;==>_cveStitcherStitch
 
-Func _cveStitcherStitchMat(ByRef $stitcher, ByRef $matImages, ByRef $matPano)
+Func _cveStitcherStitchMat($stitcher, $matImages, $matPano)
     ; cveStitcherStitch using cv::Mat instead of _*Array
 
     Local $iArrImages, $vectorOfMatImages, $iArrImagesSize
@@ -178,12 +193,12 @@ Func _cveStitcherStitchMat(ByRef $stitcher, ByRef $matImages, ByRef $matPano)
     Return $retval
 EndFunc   ;==>_cveStitcherStitchMat
 
-Func _cveStitcherEstimateTransform(ByRef $stitcher, ByRef $images, ByRef $masks)
+Func _cveStitcherEstimateTransform($stitcher, $images, $masks)
     ; CVAPI(int) cveStitcherEstimateTransform(cv::Stitcher* stitcher, cv::_InputArray* images, cv::_InputArray* masks);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveStitcherEstimateTransform", "ptr", $stitcher, "ptr", $images, "ptr", $masks), "cveStitcherEstimateTransform", @error)
 EndFunc   ;==>_cveStitcherEstimateTransform
 
-Func _cveStitcherEstimateTransformMat(ByRef $stitcher, ByRef $matImages, ByRef $matMasks)
+Func _cveStitcherEstimateTransformMat($stitcher, $matImages, $matMasks)
     ; cveStitcherEstimateTransform using cv::Mat instead of _*Array
 
     Local $iArrImages, $vectorOfMatImages, $iArrImagesSize
@@ -235,12 +250,12 @@ Func _cveStitcherEstimateTransformMat(ByRef $stitcher, ByRef $matImages, ByRef $
     Return $retval
 EndFunc   ;==>_cveStitcherEstimateTransformMat
 
-Func _cveStitcherComposePanorama1(ByRef $stitcher, ByRef $pano)
+Func _cveStitcherComposePanorama1($stitcher, $pano)
     ; CVAPI(int) cveStitcherComposePanorama1(cv::Stitcher* stitcher, cv::_OutputArray* pano);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveStitcherComposePanorama1", "ptr", $stitcher, "ptr", $pano), "cveStitcherComposePanorama1", @error)
 EndFunc   ;==>_cveStitcherComposePanorama1
 
-Func _cveStitcherComposePanorama1Mat(ByRef $stitcher, ByRef $matPano)
+Func _cveStitcherComposePanorama1Mat($stitcher, $matPano)
     ; cveStitcherComposePanorama1 using cv::Mat instead of _*Array
 
     Local $oArrPano, $vectorOfMatPano, $iArrPanoSize
@@ -270,12 +285,12 @@ Func _cveStitcherComposePanorama1Mat(ByRef $stitcher, ByRef $matPano)
     Return $retval
 EndFunc   ;==>_cveStitcherComposePanorama1Mat
 
-Func _cveStitcherComposePanorama2(ByRef $stitcher, ByRef $images, ByRef $pano)
+Func _cveStitcherComposePanorama2($stitcher, $images, $pano)
     ; CVAPI(int) cveStitcherComposePanorama2(cv::Stitcher* stitcher, cv::_InputArray* images, cv::_OutputArray* pano);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveStitcherComposePanorama2", "ptr", $stitcher, "ptr", $images, "ptr", $pano), "cveStitcherComposePanorama2", @error)
 EndFunc   ;==>_cveStitcherComposePanorama2
 
-Func _cveStitcherComposePanorama2Mat(ByRef $stitcher, ByRef $matImages, ByRef $matPano)
+Func _cveStitcherComposePanorama2Mat($stitcher, $matImages, $matPano)
     ; cveStitcherComposePanorama2 using cv::Mat instead of _*Array
 
     Local $iArrImages, $vectorOfMatImages, $iArrImagesSize
@@ -327,12 +342,12 @@ Func _cveStitcherComposePanorama2Mat(ByRef $stitcher, ByRef $matImages, ByRef $m
     Return $retval
 EndFunc   ;==>_cveStitcherComposePanorama2Mat
 
-Func _cveRotationWarperBuildMaps(ByRef $warper, ByRef $srcSize, ByRef $K, ByRef $R, ByRef $xmap, ByRef $ymap, ByRef $boundingBox)
+Func _cveRotationWarperBuildMaps($warper, $srcSize, $K, $R, $xmap, $ymap, $boundingBox)
     ; CVAPI(void) cveRotationWarperBuildMaps(cv::detail::RotationWarper* warper, CvSize* srcSize, cv::_InputArray* K, cv::_InputArray* R, cv::_OutputArray* xmap, cv::_OutputArray* ymap, CvRect* boundingBox);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRotationWarperBuildMaps", "ptr", $warper, "struct*", $srcSize, "ptr", $K, "ptr", $R, "ptr", $xmap, "ptr", $ymap, "struct*", $boundingBox), "cveRotationWarperBuildMaps", @error)
 EndFunc   ;==>_cveRotationWarperBuildMaps
 
-Func _cveRotationWarperBuildMapsMat(ByRef $warper, ByRef $srcSize, ByRef $matK, ByRef $matR, ByRef $matXmap, ByRef $matYmap, ByRef $boundingBox)
+Func _cveRotationWarperBuildMapsMat($warper, $srcSize, $matK, $matR, $matXmap, $matYmap, $boundingBox)
     ; cveRotationWarperBuildMaps using cv::Mat instead of _*Array
 
     Local $iArrK, $vectorOfMatK, $iArrKSize
@@ -426,12 +441,12 @@ Func _cveRotationWarperBuildMapsMat(ByRef $warper, ByRef $srcSize, ByRef $matK, 
     _cveInputArrayRelease($iArrK)
 EndFunc   ;==>_cveRotationWarperBuildMapsMat
 
-Func _cveRotationWarperWarp(ByRef $warper, ByRef $src, ByRef $K, ByRef $R, $interpMode, $borderMode, ByRef $dst, ByRef $corner)
+Func _cveRotationWarperWarp($warper, $src, $K, $R, $interpMode, $borderMode, $dst, $corner)
     ; CVAPI(void) cveRotationWarperWarp(cv::detail::RotationWarper* warper, cv::_InputArray* src, cv::_InputArray* K, cv::_InputArray* R, int interpMode, int borderMode, cv::_OutputArray* dst, CvPoint* corner);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRotationWarperWarp", "ptr", $warper, "ptr", $src, "ptr", $K, "ptr", $R, "int", $interpMode, "int", $borderMode, "ptr", $dst, "struct*", $corner), "cveRotationWarperWarp", @error)
 EndFunc   ;==>_cveRotationWarperWarp
 
-Func _cveRotationWarperWarpMat(ByRef $warper, ByRef $matSrc, ByRef $matK, ByRef $matR, $interpMode, $borderMode, ByRef $matDst, ByRef $corner)
+Func _cveRotationWarperWarpMat($warper, $matSrc, $matK, $matR, $interpMode, $borderMode, $matDst, $corner)
     ; cveRotationWarperWarp using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -525,472 +540,1177 @@ Func _cveRotationWarperWarpMat(ByRef $warper, ByRef $matSrc, ByRef $matK, ByRef 
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveRotationWarperWarpMat
 
-Func _cveDetailPlaneWarperCreate($scale, ByRef $rotationWarper)
+Func _cveDetailPlaneWarperCreate($scale, $rotationWarper)
     ; CVAPI(cv::detail::PlaneWarper*) cveDetailPlaneWarperCreate(float scale, cv::detail::RotationWarper** rotationWarper);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailPlaneWarperCreate", "float", $scale, "ptr*", $rotationWarper), "cveDetailPlaneWarperCreate", @error)
+
+    Local $bRotationWarperDllType
+    If VarGetType($rotationWarper) == "DLLStruct" Then
+        $bRotationWarperDllType = "struct*"
+    Else
+        $bRotationWarperDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailPlaneWarperCreate", "float", $scale, $bRotationWarperDllType, $rotationWarper), "cveDetailPlaneWarperCreate", @error)
 EndFunc   ;==>_cveDetailPlaneWarperCreate
 
-Func _cveDetailPlaneWarperRelease(ByRef $warper)
+Func _cveDetailPlaneWarperRelease($warper)
     ; CVAPI(void) cveDetailPlaneWarperRelease(cv::detail::PlaneWarper** warper);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailPlaneWarperRelease", "ptr*", $warper), "cveDetailPlaneWarperRelease", @error)
+
+    Local $bWarperDllType
+    If VarGetType($warper) == "DLLStruct" Then
+        $bWarperDllType = "struct*"
+    Else
+        $bWarperDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailPlaneWarperRelease", $bWarperDllType, $warper), "cveDetailPlaneWarperRelease", @error)
 EndFunc   ;==>_cveDetailPlaneWarperRelease
 
-Func _cvePlaneWarperCreate(ByRef $warperCreator)
+Func _cvePlaneWarperCreate($warperCreator)
     ; CVAPI(cv::PlaneWarper*) cvePlaneWarperCreate(cv::WarperCreator** warperCreator);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePlaneWarperCreate", "ptr*", $warperCreator), "cvePlaneWarperCreate", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePlaneWarperCreate", $bWarperCreatorDllType, $warperCreator), "cvePlaneWarperCreate", @error)
 EndFunc   ;==>_cvePlaneWarperCreate
 
-Func _cvePlaneWarperRelease(ByRef $warper)
+Func _cvePlaneWarperRelease($warper)
     ; CVAPI(void) cvePlaneWarperRelease(cv::PlaneWarper** warper);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlaneWarperRelease", "ptr*", $warper), "cvePlaneWarperRelease", @error)
+
+    Local $bWarperDllType
+    If VarGetType($warper) == "DLLStruct" Then
+        $bWarperDllType = "struct*"
+    Else
+        $bWarperDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlaneWarperRelease", $bWarperDllType, $warper), "cvePlaneWarperRelease", @error)
 EndFunc   ;==>_cvePlaneWarperRelease
 
-Func _cveDetailCylindricalWarperCreate($scale, ByRef $rotationWarper)
+Func _cveDetailCylindricalWarperCreate($scale, $rotationWarper)
     ; CVAPI(cv::detail::CylindricalWarper*) cveDetailCylindricalWarperCreate(float scale, cv::detail::RotationWarper** rotationWarper);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailCylindricalWarperCreate", "float", $scale, "ptr*", $rotationWarper), "cveDetailCylindricalWarperCreate", @error)
+
+    Local $bRotationWarperDllType
+    If VarGetType($rotationWarper) == "DLLStruct" Then
+        $bRotationWarperDllType = "struct*"
+    Else
+        $bRotationWarperDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailCylindricalWarperCreate", "float", $scale, $bRotationWarperDllType, $rotationWarper), "cveDetailCylindricalWarperCreate", @error)
 EndFunc   ;==>_cveDetailCylindricalWarperCreate
 
-Func _cveDetailCylindricalWarperRelease(ByRef $warper)
+Func _cveDetailCylindricalWarperRelease($warper)
     ; CVAPI(void) cveDetailCylindricalWarperRelease(cv::detail::CylindricalWarper** warper);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailCylindricalWarperRelease", "ptr*", $warper), "cveDetailCylindricalWarperRelease", @error)
+
+    Local $bWarperDllType
+    If VarGetType($warper) == "DLLStruct" Then
+        $bWarperDllType = "struct*"
+    Else
+        $bWarperDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailCylindricalWarperRelease", $bWarperDllType, $warper), "cveDetailCylindricalWarperRelease", @error)
 EndFunc   ;==>_cveDetailCylindricalWarperRelease
 
-Func _cveCylindricalWarperCreate(ByRef $warperCreator)
+Func _cveCylindricalWarperCreate($warperCreator)
     ; CVAPI(cv::CylindricalWarper*) cveCylindricalWarperCreate(cv::WarperCreator** warperCreator);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCylindricalWarperCreate", "ptr*", $warperCreator), "cveCylindricalWarperCreate", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCylindricalWarperCreate", $bWarperCreatorDllType, $warperCreator), "cveCylindricalWarperCreate", @error)
 EndFunc   ;==>_cveCylindricalWarperCreate
 
-Func _cveCylindricalWarperRelease(ByRef $warper)
+Func _cveCylindricalWarperRelease($warper)
     ; CVAPI(void) cveCylindricalWarperRelease(cv::CylindricalWarper** warper);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCylindricalWarperRelease", "ptr*", $warper), "cveCylindricalWarperRelease", @error)
+
+    Local $bWarperDllType
+    If VarGetType($warper) == "DLLStruct" Then
+        $bWarperDllType = "struct*"
+    Else
+        $bWarperDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCylindricalWarperRelease", $bWarperDllType, $warper), "cveCylindricalWarperRelease", @error)
 EndFunc   ;==>_cveCylindricalWarperRelease
 
-Func _cveDetailSphericalWarperCreate($scale, ByRef $rotationWarper)
+Func _cveDetailSphericalWarperCreate($scale, $rotationWarper)
     ; CVAPI(cv::detail::SphericalWarper*) cveDetailSphericalWarperCreate(float scale, cv::detail::RotationWarper** rotationWarper);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailSphericalWarperCreate", "float", $scale, "ptr*", $rotationWarper), "cveDetailSphericalWarperCreate", @error)
+
+    Local $bRotationWarperDllType
+    If VarGetType($rotationWarper) == "DLLStruct" Then
+        $bRotationWarperDllType = "struct*"
+    Else
+        $bRotationWarperDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailSphericalWarperCreate", "float", $scale, $bRotationWarperDllType, $rotationWarper), "cveDetailSphericalWarperCreate", @error)
 EndFunc   ;==>_cveDetailSphericalWarperCreate
 
-Func _cveDetailSphericalWarperRelease(ByRef $warper)
+Func _cveDetailSphericalWarperRelease($warper)
     ; CVAPI(void) cveDetailSphericalWarperRelease(cv::detail::SphericalWarper** warper);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailSphericalWarperRelease", "ptr*", $warper), "cveDetailSphericalWarperRelease", @error)
+
+    Local $bWarperDllType
+    If VarGetType($warper) == "DLLStruct" Then
+        $bWarperDllType = "struct*"
+    Else
+        $bWarperDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailSphericalWarperRelease", $bWarperDllType, $warper), "cveDetailSphericalWarperRelease", @error)
 EndFunc   ;==>_cveDetailSphericalWarperRelease
 
-Func _cveSphericalWarperCreate(ByRef $warperCreator)
+Func _cveSphericalWarperCreate($warperCreator)
     ; CVAPI(cv::SphericalWarper*) cveSphericalWarperCreate(cv::WarperCreator** warperCreator);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSphericalWarperCreate", "ptr*", $warperCreator), "cveSphericalWarperCreate", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSphericalWarperCreate", $bWarperCreatorDllType, $warperCreator), "cveSphericalWarperCreate", @error)
 EndFunc   ;==>_cveSphericalWarperCreate
 
-Func _cveSphericalWarperRelease(ByRef $warperCreator)
+Func _cveSphericalWarperRelease($warperCreator)
     ; CVAPI(void) cveSphericalWarperRelease(cv::SphericalWarper** warperCreator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSphericalWarperRelease", "ptr*", $warperCreator), "cveSphericalWarperRelease", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSphericalWarperRelease", $bWarperCreatorDllType, $warperCreator), "cveSphericalWarperRelease", @error)
 EndFunc   ;==>_cveSphericalWarperRelease
 
-Func _cveDetailFisheyeWarperCreate($scale, ByRef $rotationWarper)
+Func _cveDetailFisheyeWarperCreate($scale, $rotationWarper)
     ; CVAPI(cv::detail::FisheyeWarper*) cveDetailFisheyeWarperCreate(float scale, cv::detail::RotationWarper** rotationWarper);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailFisheyeWarperCreate", "float", $scale, "ptr*", $rotationWarper), "cveDetailFisheyeWarperCreate", @error)
+
+    Local $bRotationWarperDllType
+    If VarGetType($rotationWarper) == "DLLStruct" Then
+        $bRotationWarperDllType = "struct*"
+    Else
+        $bRotationWarperDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailFisheyeWarperCreate", "float", $scale, $bRotationWarperDllType, $rotationWarper), "cveDetailFisheyeWarperCreate", @error)
 EndFunc   ;==>_cveDetailFisheyeWarperCreate
 
-Func _cveDetailFisheyeWarperRelease(ByRef $warper)
+Func _cveDetailFisheyeWarperRelease($warper)
     ; CVAPI(void) cveDetailFisheyeWarperRelease(cv::detail::FisheyeWarper** warper);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailFisheyeWarperRelease", "ptr*", $warper), "cveDetailFisheyeWarperRelease", @error)
+
+    Local $bWarperDllType
+    If VarGetType($warper) == "DLLStruct" Then
+        $bWarperDllType = "struct*"
+    Else
+        $bWarperDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailFisheyeWarperRelease", $bWarperDllType, $warper), "cveDetailFisheyeWarperRelease", @error)
 EndFunc   ;==>_cveDetailFisheyeWarperRelease
 
-Func _cveFisheyeWarperCreate(ByRef $warperCreator)
+Func _cveFisheyeWarperCreate($warperCreator)
     ; CVAPI(cv::FisheyeWarper*) cveFisheyeWarperCreate(cv::WarperCreator** warperCreator);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFisheyeWarperCreate", "ptr*", $warperCreator), "cveFisheyeWarperCreate", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFisheyeWarperCreate", $bWarperCreatorDllType, $warperCreator), "cveFisheyeWarperCreate", @error)
 EndFunc   ;==>_cveFisheyeWarperCreate
 
-Func _cveFisheyeWarperRelease(ByRef $warperCreator)
+Func _cveFisheyeWarperRelease($warperCreator)
     ; CVAPI(void) cveFisheyeWarperRelease(cv::FisheyeWarper** warperCreator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeWarperRelease", "ptr*", $warperCreator), "cveFisheyeWarperRelease", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeWarperRelease", $bWarperCreatorDllType, $warperCreator), "cveFisheyeWarperRelease", @error)
 EndFunc   ;==>_cveFisheyeWarperRelease
 
-Func _cveDetailStereographicWarperCreate($scale, ByRef $rotationWarper)
+Func _cveDetailStereographicWarperCreate($scale, $rotationWarper)
     ; CVAPI(cv::detail::StereographicWarper*) cveDetailStereographicWarperCreate(float scale, cv::detail::RotationWarper** rotationWarper);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailStereographicWarperCreate", "float", $scale, "ptr*", $rotationWarper), "cveDetailStereographicWarperCreate", @error)
+
+    Local $bRotationWarperDllType
+    If VarGetType($rotationWarper) == "DLLStruct" Then
+        $bRotationWarperDllType = "struct*"
+    Else
+        $bRotationWarperDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailStereographicWarperCreate", "float", $scale, $bRotationWarperDllType, $rotationWarper), "cveDetailStereographicWarperCreate", @error)
 EndFunc   ;==>_cveDetailStereographicWarperCreate
 
-Func _cveDetailStereographicWarperRelease(ByRef $warper)
+Func _cveDetailStereographicWarperRelease($warper)
     ; CVAPI(void) cveDetailStereographicWarperRelease(cv::detail::StereographicWarper** warper);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailStereographicWarperRelease", "ptr*", $warper), "cveDetailStereographicWarperRelease", @error)
+
+    Local $bWarperDllType
+    If VarGetType($warper) == "DLLStruct" Then
+        $bWarperDllType = "struct*"
+    Else
+        $bWarperDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailStereographicWarperRelease", $bWarperDllType, $warper), "cveDetailStereographicWarperRelease", @error)
 EndFunc   ;==>_cveDetailStereographicWarperRelease
 
-Func _cveStereographicWarperCreate(ByRef $warperCreator)
+Func _cveStereographicWarperCreate($warperCreator)
     ; CVAPI(cv::StereographicWarper*) cveStereographicWarperCreate(cv::WarperCreator** warperCreator);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveStereographicWarperCreate", "ptr*", $warperCreator), "cveStereographicWarperCreate", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveStereographicWarperCreate", $bWarperCreatorDllType, $warperCreator), "cveStereographicWarperCreate", @error)
 EndFunc   ;==>_cveStereographicWarperCreate
 
-Func _cveStereographicWarperRelease(ByRef $warperCreator)
+Func _cveStereographicWarperRelease($warperCreator)
     ; CVAPI(void) cveStereographicWarperRelease(cv::StereographicWarper** warperCreator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStereographicWarperRelease", "ptr*", $warperCreator), "cveStereographicWarperRelease", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStereographicWarperRelease", $bWarperCreatorDllType, $warperCreator), "cveStereographicWarperRelease", @error)
 EndFunc   ;==>_cveStereographicWarperRelease
 
-Func _cveDetailCompressedRectilinearWarperCreate($scale, ByRef $rotationWarper)
+Func _cveDetailCompressedRectilinearWarperCreate($scale, $rotationWarper)
     ; CVAPI(cv::detail::CompressedRectilinearWarper*) cveDetailCompressedRectilinearWarperCreate(float scale, cv::detail::RotationWarper** rotationWarper);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailCompressedRectilinearWarperCreate", "float", $scale, "ptr*", $rotationWarper), "cveDetailCompressedRectilinearWarperCreate", @error)
+
+    Local $bRotationWarperDllType
+    If VarGetType($rotationWarper) == "DLLStruct" Then
+        $bRotationWarperDllType = "struct*"
+    Else
+        $bRotationWarperDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailCompressedRectilinearWarperCreate", "float", $scale, $bRotationWarperDllType, $rotationWarper), "cveDetailCompressedRectilinearWarperCreate", @error)
 EndFunc   ;==>_cveDetailCompressedRectilinearWarperCreate
 
-Func _cveDetailCompressedRectilinearWarperRelease(ByRef $warper)
+Func _cveDetailCompressedRectilinearWarperRelease($warper)
     ; CVAPI(void) cveDetailCompressedRectilinearWarperRelease(cv::detail::CompressedRectilinearWarper** warper);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailCompressedRectilinearWarperRelease", "ptr*", $warper), "cveDetailCompressedRectilinearWarperRelease", @error)
+
+    Local $bWarperDllType
+    If VarGetType($warper) == "DLLStruct" Then
+        $bWarperDllType = "struct*"
+    Else
+        $bWarperDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailCompressedRectilinearWarperRelease", $bWarperDllType, $warper), "cveDetailCompressedRectilinearWarperRelease", @error)
 EndFunc   ;==>_cveDetailCompressedRectilinearWarperRelease
 
-Func _cveCompressedRectilinearWarperCreate(ByRef $warperCreator)
+Func _cveCompressedRectilinearWarperCreate($warperCreator)
     ; CVAPI(cv::CompressedRectilinearWarper*) cveCompressedRectilinearWarperCreate(cv::WarperCreator** warperCreator);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCompressedRectilinearWarperCreate", "ptr*", $warperCreator), "cveCompressedRectilinearWarperCreate", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCompressedRectilinearWarperCreate", $bWarperCreatorDllType, $warperCreator), "cveCompressedRectilinearWarperCreate", @error)
 EndFunc   ;==>_cveCompressedRectilinearWarperCreate
 
-Func _cveCompressedRectilinearWarperRelease(ByRef $warperCreator)
+Func _cveCompressedRectilinearWarperRelease($warperCreator)
     ; CVAPI(void) cveCompressedRectilinearWarperRelease(cv::CompressedRectilinearWarper** warperCreator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCompressedRectilinearWarperRelease", "ptr*", $warperCreator), "cveCompressedRectilinearWarperRelease", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCompressedRectilinearWarperRelease", $bWarperCreatorDllType, $warperCreator), "cveCompressedRectilinearWarperRelease", @error)
 EndFunc   ;==>_cveCompressedRectilinearWarperRelease
 
-Func _cveDetailPaniniWarperCreate($scale, ByRef $rotationWarper)
+Func _cveDetailPaniniWarperCreate($scale, $rotationWarper)
     ; CVAPI(cv::detail::PaniniWarper*) cveDetailPaniniWarperCreate(float scale, cv::detail::RotationWarper** rotationWarper);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailPaniniWarperCreate", "float", $scale, "ptr*", $rotationWarper), "cveDetailPaniniWarperCreate", @error)
+
+    Local $bRotationWarperDllType
+    If VarGetType($rotationWarper) == "DLLStruct" Then
+        $bRotationWarperDllType = "struct*"
+    Else
+        $bRotationWarperDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailPaniniWarperCreate", "float", $scale, $bRotationWarperDllType, $rotationWarper), "cveDetailPaniniWarperCreate", @error)
 EndFunc   ;==>_cveDetailPaniniWarperCreate
 
-Func _cveDetailPaniniWarperRelease(ByRef $warper)
+Func _cveDetailPaniniWarperRelease($warper)
     ; CVAPI(void) cveDetailPaniniWarperRelease(cv::detail::PaniniWarper** warper);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailPaniniWarperRelease", "ptr*", $warper), "cveDetailPaniniWarperRelease", @error)
+
+    Local $bWarperDllType
+    If VarGetType($warper) == "DLLStruct" Then
+        $bWarperDllType = "struct*"
+    Else
+        $bWarperDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailPaniniWarperRelease", $bWarperDllType, $warper), "cveDetailPaniniWarperRelease", @error)
 EndFunc   ;==>_cveDetailPaniniWarperRelease
 
-Func _cvePaniniWarperCreate(ByRef $warperCreator)
+Func _cvePaniniWarperCreate($warperCreator)
     ; CVAPI(cv::PaniniWarper*) cvePaniniWarperCreate(cv::WarperCreator** warperCreator);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePaniniWarperCreate", "ptr*", $warperCreator), "cvePaniniWarperCreate", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePaniniWarperCreate", $bWarperCreatorDllType, $warperCreator), "cvePaniniWarperCreate", @error)
 EndFunc   ;==>_cvePaniniWarperCreate
 
-Func _cvePaniniWarperRelease(ByRef $warperCreator)
+Func _cvePaniniWarperRelease($warperCreator)
     ; CVAPI(void) cvePaniniWarperRelease(cv::PaniniWarper** warperCreator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePaniniWarperRelease", "ptr*", $warperCreator), "cvePaniniWarperRelease", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePaniniWarperRelease", $bWarperCreatorDllType, $warperCreator), "cvePaniniWarperRelease", @error)
 EndFunc   ;==>_cvePaniniWarperRelease
 
-Func _cveDetailPaniniPortraitWarperCreate($scale, ByRef $rotationWarper)
+Func _cveDetailPaniniPortraitWarperCreate($scale, $rotationWarper)
     ; CVAPI(cv::detail::PaniniPortraitWarper*) cveDetailPaniniPortraitWarperCreate(float scale, cv::detail::RotationWarper** rotationWarper);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailPaniniPortraitWarperCreate", "float", $scale, "ptr*", $rotationWarper), "cveDetailPaniniPortraitWarperCreate", @error)
+
+    Local $bRotationWarperDllType
+    If VarGetType($rotationWarper) == "DLLStruct" Then
+        $bRotationWarperDllType = "struct*"
+    Else
+        $bRotationWarperDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailPaniniPortraitWarperCreate", "float", $scale, $bRotationWarperDllType, $rotationWarper), "cveDetailPaniniPortraitWarperCreate", @error)
 EndFunc   ;==>_cveDetailPaniniPortraitWarperCreate
 
-Func _cveDetailPaniniPortraitWarperRelease(ByRef $warper)
+Func _cveDetailPaniniPortraitWarperRelease($warper)
     ; CVAPI(void) cveDetailPaniniPortraitWarperRelease(cv::detail::PaniniPortraitWarper** warper);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailPaniniPortraitWarperRelease", "ptr*", $warper), "cveDetailPaniniPortraitWarperRelease", @error)
+
+    Local $bWarperDllType
+    If VarGetType($warper) == "DLLStruct" Then
+        $bWarperDllType = "struct*"
+    Else
+        $bWarperDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailPaniniPortraitWarperRelease", $bWarperDllType, $warper), "cveDetailPaniniPortraitWarperRelease", @error)
 EndFunc   ;==>_cveDetailPaniniPortraitWarperRelease
 
-Func _cvePaniniPortraitWarperCreate(ByRef $warperCreator)
+Func _cvePaniniPortraitWarperCreate($warperCreator)
     ; CVAPI(cv::PaniniPortraitWarper*) cvePaniniPortraitWarperCreate(cv::WarperCreator** warperCreator);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePaniniPortraitWarperCreate", "ptr*", $warperCreator), "cvePaniniPortraitWarperCreate", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePaniniPortraitWarperCreate", $bWarperCreatorDllType, $warperCreator), "cvePaniniPortraitWarperCreate", @error)
 EndFunc   ;==>_cvePaniniPortraitWarperCreate
 
-Func _cvePaniniPortraitWarperRelease(ByRef $warperCreator)
+Func _cvePaniniPortraitWarperRelease($warperCreator)
     ; CVAPI(void) cvePaniniPortraitWarperRelease(cv::PaniniPortraitWarper** warperCreator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePaniniPortraitWarperRelease", "ptr*", $warperCreator), "cvePaniniPortraitWarperRelease", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePaniniPortraitWarperRelease", $bWarperCreatorDllType, $warperCreator), "cvePaniniPortraitWarperRelease", @error)
 EndFunc   ;==>_cvePaniniPortraitWarperRelease
 
-Func _cveDetailMercatorWarperCreate($scale, ByRef $rotationWarper)
+Func _cveDetailMercatorWarperCreate($scale, $rotationWarper)
     ; CVAPI(cv::detail::MercatorWarper*) cveDetailMercatorWarperCreate(float scale, cv::detail::RotationWarper** rotationWarper);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailMercatorWarperCreate", "float", $scale, "ptr*", $rotationWarper), "cveDetailMercatorWarperCreate", @error)
+
+    Local $bRotationWarperDllType
+    If VarGetType($rotationWarper) == "DLLStruct" Then
+        $bRotationWarperDllType = "struct*"
+    Else
+        $bRotationWarperDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailMercatorWarperCreate", "float", $scale, $bRotationWarperDllType, $rotationWarper), "cveDetailMercatorWarperCreate", @error)
 EndFunc   ;==>_cveDetailMercatorWarperCreate
 
-Func _cveDetailMercatorWarperRelease(ByRef $warper)
+Func _cveDetailMercatorWarperRelease($warper)
     ; CVAPI(void) cveDetailMercatorWarperRelease(cv::detail::MercatorWarper** warper);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailMercatorWarperRelease", "ptr*", $warper), "cveDetailMercatorWarperRelease", @error)
+
+    Local $bWarperDllType
+    If VarGetType($warper) == "DLLStruct" Then
+        $bWarperDllType = "struct*"
+    Else
+        $bWarperDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailMercatorWarperRelease", $bWarperDllType, $warper), "cveDetailMercatorWarperRelease", @error)
 EndFunc   ;==>_cveDetailMercatorWarperRelease
 
-Func _cveMercatorWarperCreate(ByRef $warperCreator)
+Func _cveMercatorWarperCreate($warperCreator)
     ; CVAPI(cv::MercatorWarper*) cveMercatorWarperCreate(cv::WarperCreator** warperCreator);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMercatorWarperCreate", "ptr*", $warperCreator), "cveMercatorWarperCreate", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMercatorWarperCreate", $bWarperCreatorDllType, $warperCreator), "cveMercatorWarperCreate", @error)
 EndFunc   ;==>_cveMercatorWarperCreate
 
-Func _cveMercatorWarperRelease(ByRef $warperCreator)
+Func _cveMercatorWarperRelease($warperCreator)
     ; CVAPI(void) cveMercatorWarperRelease(cv::MercatorWarper** warperCreator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMercatorWarperRelease", "ptr*", $warperCreator), "cveMercatorWarperRelease", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMercatorWarperRelease", $bWarperCreatorDllType, $warperCreator), "cveMercatorWarperRelease", @error)
 EndFunc   ;==>_cveMercatorWarperRelease
 
-Func _cveDetailTransverseMercatorWarperCreate($scale, ByRef $rotationWarper)
+Func _cveDetailTransverseMercatorWarperCreate($scale, $rotationWarper)
     ; CVAPI(cv::detail::TransverseMercatorWarper*) cveDetailTransverseMercatorWarperCreate(float scale, cv::detail::RotationWarper** rotationWarper);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailTransverseMercatorWarperCreate", "float", $scale, "ptr*", $rotationWarper), "cveDetailTransverseMercatorWarperCreate", @error)
+
+    Local $bRotationWarperDllType
+    If VarGetType($rotationWarper) == "DLLStruct" Then
+        $bRotationWarperDllType = "struct*"
+    Else
+        $bRotationWarperDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailTransverseMercatorWarperCreate", "float", $scale, $bRotationWarperDllType, $rotationWarper), "cveDetailTransverseMercatorWarperCreate", @error)
 EndFunc   ;==>_cveDetailTransverseMercatorWarperCreate
 
-Func _cveDetailTransverseMercatorWarperRelease(ByRef $warper)
+Func _cveDetailTransverseMercatorWarperRelease($warper)
     ; CVAPI(void) cveDetailTransverseMercatorWarperRelease(cv::detail::TransverseMercatorWarper** warper);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailTransverseMercatorWarperRelease", "ptr*", $warper), "cveDetailTransverseMercatorWarperRelease", @error)
+
+    Local $bWarperDllType
+    If VarGetType($warper) == "DLLStruct" Then
+        $bWarperDllType = "struct*"
+    Else
+        $bWarperDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailTransverseMercatorWarperRelease", $bWarperDllType, $warper), "cveDetailTransverseMercatorWarperRelease", @error)
 EndFunc   ;==>_cveDetailTransverseMercatorWarperRelease
 
-Func _cveTransverseMercatorWarperCreate(ByRef $warperCreator)
+Func _cveTransverseMercatorWarperCreate($warperCreator)
     ; CVAPI(cv::TransverseMercatorWarper*) cveTransverseMercatorWarperCreate(cv::WarperCreator** warperCreator);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTransverseMercatorWarperCreate", "ptr*", $warperCreator), "cveTransverseMercatorWarperCreate", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTransverseMercatorWarperCreate", $bWarperCreatorDllType, $warperCreator), "cveTransverseMercatorWarperCreate", @error)
 EndFunc   ;==>_cveTransverseMercatorWarperCreate
 
-Func _cveTransverseMercatorWarperRelease(ByRef $warperCreator)
+Func _cveTransverseMercatorWarperRelease($warperCreator)
     ; CVAPI(void) cveTransverseMercatorWarperRelease(cv::TransverseMercatorWarper** warperCreator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTransverseMercatorWarperRelease", "ptr*", $warperCreator), "cveTransverseMercatorWarperRelease", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTransverseMercatorWarperRelease", $bWarperCreatorDllType, $warperCreator), "cveTransverseMercatorWarperRelease", @error)
 EndFunc   ;==>_cveTransverseMercatorWarperRelease
 
-Func _cveFeatherBlenderCreate($sharpness, ByRef $blender)
+Func _cveFeatherBlenderCreate($sharpness, $blender)
     ; CVAPI(cv::detail::FeatherBlender*) cveFeatherBlenderCreate(float sharpness, cv::detail::Blender** blender);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFeatherBlenderCreate", "float", $sharpness, "ptr*", $blender), "cveFeatherBlenderCreate", @error)
+
+    Local $bBlenderDllType
+    If VarGetType($blender) == "DLLStruct" Then
+        $bBlenderDllType = "struct*"
+    Else
+        $bBlenderDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFeatherBlenderCreate", "float", $sharpness, $bBlenderDllType, $blender), "cveFeatherBlenderCreate", @error)
 EndFunc   ;==>_cveFeatherBlenderCreate
 
-Func _cveFeatherBlenderRelease(ByRef $blender)
+Func _cveFeatherBlenderRelease($blender)
     ; CVAPI(void) cveFeatherBlenderRelease(cv::detail::FeatherBlender** blender);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFeatherBlenderRelease", "ptr*", $blender), "cveFeatherBlenderRelease", @error)
+
+    Local $bBlenderDllType
+    If VarGetType($blender) == "DLLStruct" Then
+        $bBlenderDllType = "struct*"
+    Else
+        $bBlenderDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFeatherBlenderRelease", $bBlenderDllType, $blender), "cveFeatherBlenderRelease", @error)
 EndFunc   ;==>_cveFeatherBlenderRelease
 
-Func _cveMultiBandBlenderCreate($tryGpu, $numBands, $weightType, ByRef $blender)
+Func _cveMultiBandBlenderCreate($tryGpu, $numBands, $weightType, $blender)
     ; CVAPI(cv::detail::MultiBandBlender*) cveMultiBandBlenderCreate(int tryGpu, int numBands, int weightType, cv::detail::Blender** blender);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMultiBandBlenderCreate", "int", $tryGpu, "int", $numBands, "int", $weightType, "ptr*", $blender), "cveMultiBandBlenderCreate", @error)
+
+    Local $bBlenderDllType
+    If VarGetType($blender) == "DLLStruct" Then
+        $bBlenderDllType = "struct*"
+    Else
+        $bBlenderDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMultiBandBlenderCreate", "int", $tryGpu, "int", $numBands, "int", $weightType, $bBlenderDllType, $blender), "cveMultiBandBlenderCreate", @error)
 EndFunc   ;==>_cveMultiBandBlenderCreate
 
-Func _cveMultiBandBlenderRelease(ByRef $blender)
+Func _cveMultiBandBlenderRelease($blender)
     ; CVAPI(void) cveMultiBandBlenderRelease(cv::detail::MultiBandBlender** blender);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMultiBandBlenderRelease", "ptr*", $blender), "cveMultiBandBlenderRelease", @error)
+
+    Local $bBlenderDllType
+    If VarGetType($blender) == "DLLStruct" Then
+        $bBlenderDllType = "struct*"
+    Else
+        $bBlenderDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMultiBandBlenderRelease", $bBlenderDllType, $blender), "cveMultiBandBlenderRelease", @error)
 EndFunc   ;==>_cveMultiBandBlenderRelease
 
-Func _cveNoExposureCompensatorCreate(ByRef $exposureCompensatorPtr)
+Func _cveNoExposureCompensatorCreate($exposureCompensatorPtr)
     ; CVAPI(cv::detail::NoExposureCompensator*) cveNoExposureCompensatorCreate(cv::detail::ExposureCompensator** exposureCompensatorPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveNoExposureCompensatorCreate", "ptr*", $exposureCompensatorPtr), "cveNoExposureCompensatorCreate", @error)
+
+    Local $bExposureCompensatorPtrDllType
+    If VarGetType($exposureCompensatorPtr) == "DLLStruct" Then
+        $bExposureCompensatorPtrDllType = "struct*"
+    Else
+        $bExposureCompensatorPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveNoExposureCompensatorCreate", $bExposureCompensatorPtrDllType, $exposureCompensatorPtr), "cveNoExposureCompensatorCreate", @error)
 EndFunc   ;==>_cveNoExposureCompensatorCreate
 
-Func _cveNoExposureCompensatorRelease(ByRef $compensator)
+Func _cveNoExposureCompensatorRelease($compensator)
     ; CVAPI(void) cveNoExposureCompensatorRelease(cv::detail::NoExposureCompensator** compensator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveNoExposureCompensatorRelease", "ptr*", $compensator), "cveNoExposureCompensatorRelease", @error)
+
+    Local $bCompensatorDllType
+    If VarGetType($compensator) == "DLLStruct" Then
+        $bCompensatorDllType = "struct*"
+    Else
+        $bCompensatorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveNoExposureCompensatorRelease", $bCompensatorDllType, $compensator), "cveNoExposureCompensatorRelease", @error)
 EndFunc   ;==>_cveNoExposureCompensatorRelease
 
-Func _cveGainCompensatorCreate($nrFeeds, ByRef $exposureCompensatorPtr)
+Func _cveGainCompensatorCreate($nrFeeds, $exposureCompensatorPtr)
     ; CVAPI(cv::detail::GainCompensator*) cveGainCompensatorCreate(int nrFeeds, cv::detail::ExposureCompensator** exposureCompensatorPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveGainCompensatorCreate", "int", $nrFeeds, "ptr*", $exposureCompensatorPtr), "cveGainCompensatorCreate", @error)
+
+    Local $bExposureCompensatorPtrDllType
+    If VarGetType($exposureCompensatorPtr) == "DLLStruct" Then
+        $bExposureCompensatorPtrDllType = "struct*"
+    Else
+        $bExposureCompensatorPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveGainCompensatorCreate", "int", $nrFeeds, $bExposureCompensatorPtrDllType, $exposureCompensatorPtr), "cveGainCompensatorCreate", @error)
 EndFunc   ;==>_cveGainCompensatorCreate
 
-Func _cveGainCompensatorRelease(ByRef $compensator)
+Func _cveGainCompensatorRelease($compensator)
     ; CVAPI(void) cveGainCompensatorRelease(cv::detail::GainCompensator** compensator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGainCompensatorRelease", "ptr*", $compensator), "cveGainCompensatorRelease", @error)
+
+    Local $bCompensatorDllType
+    If VarGetType($compensator) == "DLLStruct" Then
+        $bCompensatorDllType = "struct*"
+    Else
+        $bCompensatorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGainCompensatorRelease", $bCompensatorDllType, $compensator), "cveGainCompensatorRelease", @error)
 EndFunc   ;==>_cveGainCompensatorRelease
 
-Func _cveChannelsCompensatorCreate($nrFeeds, ByRef $exposureCompensatorPtr)
+Func _cveChannelsCompensatorCreate($nrFeeds, $exposureCompensatorPtr)
     ; CVAPI(cv::detail::ChannelsCompensator*) cveChannelsCompensatorCreate(int nrFeeds, cv::detail::ExposureCompensator** exposureCompensatorPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveChannelsCompensatorCreate", "int", $nrFeeds, "ptr*", $exposureCompensatorPtr), "cveChannelsCompensatorCreate", @error)
+
+    Local $bExposureCompensatorPtrDllType
+    If VarGetType($exposureCompensatorPtr) == "DLLStruct" Then
+        $bExposureCompensatorPtrDllType = "struct*"
+    Else
+        $bExposureCompensatorPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveChannelsCompensatorCreate", "int", $nrFeeds, $bExposureCompensatorPtrDllType, $exposureCompensatorPtr), "cveChannelsCompensatorCreate", @error)
 EndFunc   ;==>_cveChannelsCompensatorCreate
 
-Func _cveChannelsCompensatorRelease(ByRef $compensator)
+Func _cveChannelsCompensatorRelease($compensator)
     ; CVAPI(void) cveChannelsCompensatorRelease(cv::detail::ChannelsCompensator** compensator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveChannelsCompensatorRelease", "ptr*", $compensator), "cveChannelsCompensatorRelease", @error)
+
+    Local $bCompensatorDllType
+    If VarGetType($compensator) == "DLLStruct" Then
+        $bCompensatorDllType = "struct*"
+    Else
+        $bCompensatorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveChannelsCompensatorRelease", $bCompensatorDllType, $compensator), "cveChannelsCompensatorRelease", @error)
 EndFunc   ;==>_cveChannelsCompensatorRelease
 
-Func _cveBlocksGainCompensatorCreate($blWidth, $blHeight, $nrFeeds, ByRef $exposureCompensatorPtr)
+Func _cveBlocksGainCompensatorCreate($blWidth, $blHeight, $nrFeeds, $exposureCompensatorPtr)
     ; CVAPI(cv::detail::BlocksGainCompensator*) cveBlocksGainCompensatorCreate(int blWidth, int blHeight, int nrFeeds, cv::detail::ExposureCompensator** exposureCompensatorPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBlocksGainCompensatorCreate", "int", $blWidth, "int", $blHeight, "int", $nrFeeds, "ptr*", $exposureCompensatorPtr), "cveBlocksGainCompensatorCreate", @error)
+
+    Local $bExposureCompensatorPtrDllType
+    If VarGetType($exposureCompensatorPtr) == "DLLStruct" Then
+        $bExposureCompensatorPtrDllType = "struct*"
+    Else
+        $bExposureCompensatorPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBlocksGainCompensatorCreate", "int", $blWidth, "int", $blHeight, "int", $nrFeeds, $bExposureCompensatorPtrDllType, $exposureCompensatorPtr), "cveBlocksGainCompensatorCreate", @error)
 EndFunc   ;==>_cveBlocksGainCompensatorCreate
 
-Func _cveBlocksGainCompensatorRelease(ByRef $compensator)
+Func _cveBlocksGainCompensatorRelease($compensator)
     ; CVAPI(void) cveBlocksGainCompensatorRelease(cv::detail::BlocksGainCompensator** compensator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBlocksGainCompensatorRelease", "ptr*", $compensator), "cveBlocksGainCompensatorRelease", @error)
+
+    Local $bCompensatorDllType
+    If VarGetType($compensator) == "DLLStruct" Then
+        $bCompensatorDllType = "struct*"
+    Else
+        $bCompensatorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBlocksGainCompensatorRelease", $bCompensatorDllType, $compensator), "cveBlocksGainCompensatorRelease", @error)
 EndFunc   ;==>_cveBlocksGainCompensatorRelease
 
-Func _cveBlocksChannelsCompensatorCreate($blWidth, $blHeight, $nrFeeds, ByRef $exposureCompensatorPtr)
+Func _cveBlocksChannelsCompensatorCreate($blWidth, $blHeight, $nrFeeds, $exposureCompensatorPtr)
     ; CVAPI(cv::detail::BlocksChannelsCompensator*) cveBlocksChannelsCompensatorCreate(int blWidth, int blHeight, int nrFeeds, cv::detail::ExposureCompensator** exposureCompensatorPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBlocksChannelsCompensatorCreate", "int", $blWidth, "int", $blHeight, "int", $nrFeeds, "ptr*", $exposureCompensatorPtr), "cveBlocksChannelsCompensatorCreate", @error)
+
+    Local $bExposureCompensatorPtrDllType
+    If VarGetType($exposureCompensatorPtr) == "DLLStruct" Then
+        $bExposureCompensatorPtrDllType = "struct*"
+    Else
+        $bExposureCompensatorPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBlocksChannelsCompensatorCreate", "int", $blWidth, "int", $blHeight, "int", $nrFeeds, $bExposureCompensatorPtrDllType, $exposureCompensatorPtr), "cveBlocksChannelsCompensatorCreate", @error)
 EndFunc   ;==>_cveBlocksChannelsCompensatorCreate
 
-Func _cveBlocksChannelsCompensatorRelease(ByRef $compensator)
+Func _cveBlocksChannelsCompensatorRelease($compensator)
     ; CVAPI(void) cveBlocksChannelsCompensatorRelease(cv::detail::BlocksChannelsCompensator** compensator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBlocksChannelsCompensatorRelease", "ptr*", $compensator), "cveBlocksChannelsCompensatorRelease", @error)
+
+    Local $bCompensatorDllType
+    If VarGetType($compensator) == "DLLStruct" Then
+        $bCompensatorDllType = "struct*"
+    Else
+        $bCompensatorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBlocksChannelsCompensatorRelease", $bCompensatorDllType, $compensator), "cveBlocksChannelsCompensatorRelease", @error)
 EndFunc   ;==>_cveBlocksChannelsCompensatorRelease
 
-Func _cveNoBundleAdjusterCreate(ByRef $bundleAdjusterBasePtr)
+Func _cveNoBundleAdjusterCreate($bundleAdjusterBasePtr)
     ; CVAPI(cv::detail::NoBundleAdjuster*) cveNoBundleAdjusterCreate(cv::detail::BundleAdjusterBase** bundleAdjusterBasePtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveNoBundleAdjusterCreate", "ptr*", $bundleAdjusterBasePtr), "cveNoBundleAdjusterCreate", @error)
+
+    Local $bBundleAdjusterBasePtrDllType
+    If VarGetType($bundleAdjusterBasePtr) == "DLLStruct" Then
+        $bBundleAdjusterBasePtrDllType = "struct*"
+    Else
+        $bBundleAdjusterBasePtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveNoBundleAdjusterCreate", $bBundleAdjusterBasePtrDllType, $bundleAdjusterBasePtr), "cveNoBundleAdjusterCreate", @error)
 EndFunc   ;==>_cveNoBundleAdjusterCreate
 
-Func _cveNoBundleAdjusterRelease(ByRef $bundleAdjuster)
+Func _cveNoBundleAdjusterRelease($bundleAdjuster)
     ; CVAPI(void) cveNoBundleAdjusterRelease(cv::detail::NoBundleAdjuster** bundleAdjuster);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveNoBundleAdjusterRelease", "ptr*", $bundleAdjuster), "cveNoBundleAdjusterRelease", @error)
+
+    Local $bBundleAdjusterDllType
+    If VarGetType($bundleAdjuster) == "DLLStruct" Then
+        $bBundleAdjusterDllType = "struct*"
+    Else
+        $bBundleAdjusterDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveNoBundleAdjusterRelease", $bBundleAdjusterDllType, $bundleAdjuster), "cveNoBundleAdjusterRelease", @error)
 EndFunc   ;==>_cveNoBundleAdjusterRelease
 
-Func _cveBundleAdjusterReprojCreate(ByRef $bundleAdjusterBasePtr)
+Func _cveBundleAdjusterReprojCreate($bundleAdjusterBasePtr)
     ; CVAPI(cv::detail::BundleAdjusterReproj*) cveBundleAdjusterReprojCreate(cv::detail::BundleAdjusterBase** bundleAdjusterBasePtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBundleAdjusterReprojCreate", "ptr*", $bundleAdjusterBasePtr), "cveBundleAdjusterReprojCreate", @error)
+
+    Local $bBundleAdjusterBasePtrDllType
+    If VarGetType($bundleAdjusterBasePtr) == "DLLStruct" Then
+        $bBundleAdjusterBasePtrDllType = "struct*"
+    Else
+        $bBundleAdjusterBasePtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBundleAdjusterReprojCreate", $bBundleAdjusterBasePtrDllType, $bundleAdjusterBasePtr), "cveBundleAdjusterReprojCreate", @error)
 EndFunc   ;==>_cveBundleAdjusterReprojCreate
 
-Func _cveBundleAdjusterReprojRelease(ByRef $bundleAdjuster)
+Func _cveBundleAdjusterReprojRelease($bundleAdjuster)
     ; CVAPI(void) cveBundleAdjusterReprojRelease(cv::detail::BundleAdjusterReproj** bundleAdjuster);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBundleAdjusterReprojRelease", "ptr*", $bundleAdjuster), "cveBundleAdjusterReprojRelease", @error)
+
+    Local $bBundleAdjusterDllType
+    If VarGetType($bundleAdjuster) == "DLLStruct" Then
+        $bBundleAdjusterDllType = "struct*"
+    Else
+        $bBundleAdjusterDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBundleAdjusterReprojRelease", $bBundleAdjusterDllType, $bundleAdjuster), "cveBundleAdjusterReprojRelease", @error)
 EndFunc   ;==>_cveBundleAdjusterReprojRelease
 
-Func _cveBundleAdjusterRayCreate(ByRef $bundleAdjusterBasePtr)
+Func _cveBundleAdjusterRayCreate($bundleAdjusterBasePtr)
     ; CVAPI(cv::detail::BundleAdjusterRay*) cveBundleAdjusterRayCreate(cv::detail::BundleAdjusterBase** bundleAdjusterBasePtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBundleAdjusterRayCreate", "ptr*", $bundleAdjusterBasePtr), "cveBundleAdjusterRayCreate", @error)
+
+    Local $bBundleAdjusterBasePtrDllType
+    If VarGetType($bundleAdjusterBasePtr) == "DLLStruct" Then
+        $bBundleAdjusterBasePtrDllType = "struct*"
+    Else
+        $bBundleAdjusterBasePtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBundleAdjusterRayCreate", $bBundleAdjusterBasePtrDllType, $bundleAdjusterBasePtr), "cveBundleAdjusterRayCreate", @error)
 EndFunc   ;==>_cveBundleAdjusterRayCreate
 
-Func _cveBundleAdjusterRayRelease(ByRef $bundleAdjuster)
+Func _cveBundleAdjusterRayRelease($bundleAdjuster)
     ; CVAPI(void) cveBundleAdjusterRayRelease(cv::detail::BundleAdjusterRay** bundleAdjuster);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBundleAdjusterRayRelease", "ptr*", $bundleAdjuster), "cveBundleAdjusterRayRelease", @error)
+
+    Local $bBundleAdjusterDllType
+    If VarGetType($bundleAdjuster) == "DLLStruct" Then
+        $bBundleAdjusterDllType = "struct*"
+    Else
+        $bBundleAdjusterDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBundleAdjusterRayRelease", $bBundleAdjusterDllType, $bundleAdjuster), "cveBundleAdjusterRayRelease", @error)
 EndFunc   ;==>_cveBundleAdjusterRayRelease
 
-Func _cveBundleAdjusterAffineCreate(ByRef $bundleAdjusterBasePtr)
+Func _cveBundleAdjusterAffineCreate($bundleAdjusterBasePtr)
     ; CVAPI(cv::detail::BundleAdjusterAffine*) cveBundleAdjusterAffineCreate(cv::detail::BundleAdjusterBase** bundleAdjusterBasePtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBundleAdjusterAffineCreate", "ptr*", $bundleAdjusterBasePtr), "cveBundleAdjusterAffineCreate", @error)
+
+    Local $bBundleAdjusterBasePtrDllType
+    If VarGetType($bundleAdjusterBasePtr) == "DLLStruct" Then
+        $bBundleAdjusterBasePtrDllType = "struct*"
+    Else
+        $bBundleAdjusterBasePtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBundleAdjusterAffineCreate", $bBundleAdjusterBasePtrDllType, $bundleAdjusterBasePtr), "cveBundleAdjusterAffineCreate", @error)
 EndFunc   ;==>_cveBundleAdjusterAffineCreate
 
-Func _cveBundleAdjusterAffineRelease(ByRef $bundleAdjuster)
+Func _cveBundleAdjusterAffineRelease($bundleAdjuster)
     ; CVAPI(void) cveBundleAdjusterAffineRelease(cv::detail::BundleAdjusterAffine** bundleAdjuster);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBundleAdjusterAffineRelease", "ptr*", $bundleAdjuster), "cveBundleAdjusterAffineRelease", @error)
+
+    Local $bBundleAdjusterDllType
+    If VarGetType($bundleAdjuster) == "DLLStruct" Then
+        $bBundleAdjusterDllType = "struct*"
+    Else
+        $bBundleAdjusterDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBundleAdjusterAffineRelease", $bBundleAdjusterDllType, $bundleAdjuster), "cveBundleAdjusterAffineRelease", @error)
 EndFunc   ;==>_cveBundleAdjusterAffineRelease
 
-Func _cveBundleAdjusterAffinePartialCreate(ByRef $bundleAdjusterBasePtr)
+Func _cveBundleAdjusterAffinePartialCreate($bundleAdjusterBasePtr)
     ; CVAPI(cv::detail::BundleAdjusterAffinePartial*) cveBundleAdjusterAffinePartialCreate(cv::detail::BundleAdjusterBase** bundleAdjusterBasePtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBundleAdjusterAffinePartialCreate", "ptr*", $bundleAdjusterBasePtr), "cveBundleAdjusterAffinePartialCreate", @error)
+
+    Local $bBundleAdjusterBasePtrDllType
+    If VarGetType($bundleAdjusterBasePtr) == "DLLStruct" Then
+        $bBundleAdjusterBasePtrDllType = "struct*"
+    Else
+        $bBundleAdjusterBasePtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBundleAdjusterAffinePartialCreate", $bBundleAdjusterBasePtrDllType, $bundleAdjusterBasePtr), "cveBundleAdjusterAffinePartialCreate", @error)
 EndFunc   ;==>_cveBundleAdjusterAffinePartialCreate
 
-Func _cveBundleAdjusterAffinePartialRelease(ByRef $bundleAdjuster)
+Func _cveBundleAdjusterAffinePartialRelease($bundleAdjuster)
     ; CVAPI(void) cveBundleAdjusterAffinePartialRelease(cv::detail::BundleAdjusterAffinePartial** bundleAdjuster);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBundleAdjusterAffinePartialRelease", "ptr*", $bundleAdjuster), "cveBundleAdjusterAffinePartialRelease", @error)
+
+    Local $bBundleAdjusterDllType
+    If VarGetType($bundleAdjuster) == "DLLStruct" Then
+        $bBundleAdjusterDllType = "struct*"
+    Else
+        $bBundleAdjusterDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBundleAdjusterAffinePartialRelease", $bBundleAdjusterDllType, $bundleAdjuster), "cveBundleAdjusterAffinePartialRelease", @error)
 EndFunc   ;==>_cveBundleAdjusterAffinePartialRelease
 
-Func _cveNoSeamFinderCreate(ByRef $seamFinderPtr)
+Func _cveNoSeamFinderCreate($seamFinderPtr)
     ; CVAPI(cv::detail::NoSeamFinder*) cveNoSeamFinderCreate(cv::detail::SeamFinder** seamFinderPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveNoSeamFinderCreate", "ptr*", $seamFinderPtr), "cveNoSeamFinderCreate", @error)
+
+    Local $bSeamFinderPtrDllType
+    If VarGetType($seamFinderPtr) == "DLLStruct" Then
+        $bSeamFinderPtrDllType = "struct*"
+    Else
+        $bSeamFinderPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveNoSeamFinderCreate", $bSeamFinderPtrDllType, $seamFinderPtr), "cveNoSeamFinderCreate", @error)
 EndFunc   ;==>_cveNoSeamFinderCreate
 
-Func _cveNoSeamFinderRelease(ByRef $seamFinder)
+Func _cveNoSeamFinderRelease($seamFinder)
     ; CVAPI(void) cveNoSeamFinderRelease(cv::detail::NoSeamFinder** seamFinder);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveNoSeamFinderRelease", "ptr*", $seamFinder), "cveNoSeamFinderRelease", @error)
+
+    Local $bSeamFinderDllType
+    If VarGetType($seamFinder) == "DLLStruct" Then
+        $bSeamFinderDllType = "struct*"
+    Else
+        $bSeamFinderDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveNoSeamFinderRelease", $bSeamFinderDllType, $seamFinder), "cveNoSeamFinderRelease", @error)
 EndFunc   ;==>_cveNoSeamFinderRelease
 
-Func _cveVoronoiSeamFinderCreate(ByRef $seamFinderPtr)
+Func _cveVoronoiSeamFinderCreate($seamFinderPtr)
     ; CVAPI(cv::detail::VoronoiSeamFinder*) cveVoronoiSeamFinderCreate(cv::detail::SeamFinder** seamFinderPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveVoronoiSeamFinderCreate", "ptr*", $seamFinderPtr), "cveVoronoiSeamFinderCreate", @error)
+
+    Local $bSeamFinderPtrDllType
+    If VarGetType($seamFinderPtr) == "DLLStruct" Then
+        $bSeamFinderPtrDllType = "struct*"
+    Else
+        $bSeamFinderPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveVoronoiSeamFinderCreate", $bSeamFinderPtrDllType, $seamFinderPtr), "cveVoronoiSeamFinderCreate", @error)
 EndFunc   ;==>_cveVoronoiSeamFinderCreate
 
-Func _cveVoronoiSeamFinderRelease(ByRef $seamFinder)
+Func _cveVoronoiSeamFinderRelease($seamFinder)
     ; CVAPI(void) cveVoronoiSeamFinderRelease(cv::detail::VoronoiSeamFinder** seamFinder);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVoronoiSeamFinderRelease", "ptr*", $seamFinder), "cveVoronoiSeamFinderRelease", @error)
+
+    Local $bSeamFinderDllType
+    If VarGetType($seamFinder) == "DLLStruct" Then
+        $bSeamFinderDllType = "struct*"
+    Else
+        $bSeamFinderDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVoronoiSeamFinderRelease", $bSeamFinderDllType, $seamFinder), "cveVoronoiSeamFinderRelease", @error)
 EndFunc   ;==>_cveVoronoiSeamFinderRelease
 
-Func _cveDpSeamFinderCreate($costFunc, ByRef $seamFinderPtr)
+Func _cveDpSeamFinderCreate($costFunc, $seamFinderPtr)
     ; CVAPI(cv::detail::DpSeamFinder*) cveDpSeamFinderCreate(int costFunc, cv::detail::SeamFinder** seamFinderPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDpSeamFinderCreate", "int", $costFunc, "ptr*", $seamFinderPtr), "cveDpSeamFinderCreate", @error)
+
+    Local $bSeamFinderPtrDllType
+    If VarGetType($seamFinderPtr) == "DLLStruct" Then
+        $bSeamFinderPtrDllType = "struct*"
+    Else
+        $bSeamFinderPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDpSeamFinderCreate", "int", $costFunc, $bSeamFinderPtrDllType, $seamFinderPtr), "cveDpSeamFinderCreate", @error)
 EndFunc   ;==>_cveDpSeamFinderCreate
 
-Func _cveDpSeamFinderRelease(ByRef $seamFinder)
+Func _cveDpSeamFinderRelease($seamFinder)
     ; CVAPI(void) cveDpSeamFinderRelease(cv::detail::DpSeamFinder** seamFinder);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDpSeamFinderRelease", "ptr*", $seamFinder), "cveDpSeamFinderRelease", @error)
+
+    Local $bSeamFinderDllType
+    If VarGetType($seamFinder) == "DLLStruct" Then
+        $bSeamFinderDllType = "struct*"
+    Else
+        $bSeamFinderDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDpSeamFinderRelease", $bSeamFinderDllType, $seamFinder), "cveDpSeamFinderRelease", @error)
 EndFunc   ;==>_cveDpSeamFinderRelease
 
-Func _cveGraphCutSeamFinderCreate($costType, $terminalCost, $badRegionPenalty, ByRef $seamFinderPtr)
+Func _cveGraphCutSeamFinderCreate($costType, $terminalCost, $badRegionPenalty, $seamFinderPtr)
     ; CVAPI(cv::detail::GraphCutSeamFinder*) cveGraphCutSeamFinderCreate(int costType, float terminalCost, float badRegionPenalty, cv::detail::SeamFinder** seamFinderPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveGraphCutSeamFinderCreate", "int", $costType, "float", $terminalCost, "float", $badRegionPenalty, "ptr*", $seamFinderPtr), "cveGraphCutSeamFinderCreate", @error)
+
+    Local $bSeamFinderPtrDllType
+    If VarGetType($seamFinderPtr) == "DLLStruct" Then
+        $bSeamFinderPtrDllType = "struct*"
+    Else
+        $bSeamFinderPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveGraphCutSeamFinderCreate", "int", $costType, "float", $terminalCost, "float", $badRegionPenalty, $bSeamFinderPtrDllType, $seamFinderPtr), "cveGraphCutSeamFinderCreate", @error)
 EndFunc   ;==>_cveGraphCutSeamFinderCreate
 
-Func _cveGraphCutSeamFinderRelease(ByRef $seamFinder)
+Func _cveGraphCutSeamFinderRelease($seamFinder)
     ; CVAPI(void) cveGraphCutSeamFinderRelease(cv::detail::GraphCutSeamFinder** seamFinder);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGraphCutSeamFinderRelease", "ptr*", $seamFinder), "cveGraphCutSeamFinderRelease", @error)
+
+    Local $bSeamFinderDllType
+    If VarGetType($seamFinder) == "DLLStruct" Then
+        $bSeamFinderDllType = "struct*"
+    Else
+        $bSeamFinderDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGraphCutSeamFinderRelease", $bSeamFinderDllType, $seamFinder), "cveGraphCutSeamFinderRelease", @error)
 EndFunc   ;==>_cveGraphCutSeamFinderRelease
 
-Func _cveHomographyBasedEstimatorCreate($isFocalsEstimated, ByRef $estimatorPtr)
+Func _cveHomographyBasedEstimatorCreate($isFocalsEstimated, $estimatorPtr)
     ; CVAPI(cv::detail::HomographyBasedEstimator*) cveHomographyBasedEstimatorCreate(bool isFocalsEstimated, cv::detail::Estimator** estimatorPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHomographyBasedEstimatorCreate", "boolean", $isFocalsEstimated, "ptr*", $estimatorPtr), "cveHomographyBasedEstimatorCreate", @error)
+
+    Local $bEstimatorPtrDllType
+    If VarGetType($estimatorPtr) == "DLLStruct" Then
+        $bEstimatorPtrDllType = "struct*"
+    Else
+        $bEstimatorPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHomographyBasedEstimatorCreate", "boolean", $isFocalsEstimated, $bEstimatorPtrDllType, $estimatorPtr), "cveHomographyBasedEstimatorCreate", @error)
 EndFunc   ;==>_cveHomographyBasedEstimatorCreate
 
-Func _cveHomographyBasedEstimatorRelease(ByRef $estimator)
+Func _cveHomographyBasedEstimatorRelease($estimator)
     ; CVAPI(void) cveHomographyBasedEstimatorRelease(cv::detail::HomographyBasedEstimator** estimator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHomographyBasedEstimatorRelease", "ptr*", $estimator), "cveHomographyBasedEstimatorRelease", @error)
+
+    Local $bEstimatorDllType
+    If VarGetType($estimator) == "DLLStruct" Then
+        $bEstimatorDllType = "struct*"
+    Else
+        $bEstimatorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHomographyBasedEstimatorRelease", $bEstimatorDllType, $estimator), "cveHomographyBasedEstimatorRelease", @error)
 EndFunc   ;==>_cveHomographyBasedEstimatorRelease
 
-Func _cveAffineBasedEstimatorCreate(ByRef $estimatorPtr)
+Func _cveAffineBasedEstimatorCreate($estimatorPtr)
     ; CVAPI(cv::detail::AffineBasedEstimator*) cveAffineBasedEstimatorCreate(cv::detail::Estimator** estimatorPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveAffineBasedEstimatorCreate", "ptr*", $estimatorPtr), "cveAffineBasedEstimatorCreate", @error)
+
+    Local $bEstimatorPtrDllType
+    If VarGetType($estimatorPtr) == "DLLStruct" Then
+        $bEstimatorPtrDllType = "struct*"
+    Else
+        $bEstimatorPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveAffineBasedEstimatorCreate", $bEstimatorPtrDllType, $estimatorPtr), "cveAffineBasedEstimatorCreate", @error)
 EndFunc   ;==>_cveAffineBasedEstimatorCreate
 
-Func _cveAffineBasedEstimatorRelease(ByRef $estimator)
+Func _cveAffineBasedEstimatorRelease($estimator)
     ; CVAPI(void) cveAffineBasedEstimatorRelease(cv::detail::AffineBasedEstimator** estimator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAffineBasedEstimatorRelease", "ptr*", $estimator), "cveAffineBasedEstimatorRelease", @error)
+
+    Local $bEstimatorDllType
+    If VarGetType($estimator) == "DLLStruct" Then
+        $bEstimatorDllType = "struct*"
+    Else
+        $bEstimatorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAffineBasedEstimatorRelease", $bEstimatorDllType, $estimator), "cveAffineBasedEstimatorRelease", @error)
 EndFunc   ;==>_cveAffineBasedEstimatorRelease
 
-Func _cveBestOf2NearestMatcherCreate($tryUseGpu, $matchConf, $numMatchesThresh1, $numMatchesThresh2, ByRef $featuresMatcher)
+Func _cveBestOf2NearestMatcherCreate($tryUseGpu, $matchConf, $numMatchesThresh1, $numMatchesThresh2, $featuresMatcher)
     ; CVAPI(cv::detail::BestOf2NearestMatcher*) cveBestOf2NearestMatcherCreate(bool tryUseGpu, float matchConf, int numMatchesThresh1, int numMatchesThresh2, cv::detail::FeaturesMatcher** featuresMatcher);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBestOf2NearestMatcherCreate", "boolean", $tryUseGpu, "float", $matchConf, "int", $numMatchesThresh1, "int", $numMatchesThresh2, "ptr*", $featuresMatcher), "cveBestOf2NearestMatcherCreate", @error)
+
+    Local $bFeaturesMatcherDllType
+    If VarGetType($featuresMatcher) == "DLLStruct" Then
+        $bFeaturesMatcherDllType = "struct*"
+    Else
+        $bFeaturesMatcherDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBestOf2NearestMatcherCreate", "boolean", $tryUseGpu, "float", $matchConf, "int", $numMatchesThresh1, "int", $numMatchesThresh2, $bFeaturesMatcherDllType, $featuresMatcher), "cveBestOf2NearestMatcherCreate", @error)
 EndFunc   ;==>_cveBestOf2NearestMatcherCreate
 
-Func _cveBestOf2NearestMatcherRelease(ByRef $featuresMatcher)
+Func _cveBestOf2NearestMatcherRelease($featuresMatcher)
     ; CVAPI(void) cveBestOf2NearestMatcherRelease(cv::detail::BestOf2NearestMatcher** featuresMatcher);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBestOf2NearestMatcherRelease", "ptr*", $featuresMatcher), "cveBestOf2NearestMatcherRelease", @error)
+
+    Local $bFeaturesMatcherDllType
+    If VarGetType($featuresMatcher) == "DLLStruct" Then
+        $bFeaturesMatcherDllType = "struct*"
+    Else
+        $bFeaturesMatcherDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBestOf2NearestMatcherRelease", $bFeaturesMatcherDllType, $featuresMatcher), "cveBestOf2NearestMatcherRelease", @error)
 EndFunc   ;==>_cveBestOf2NearestMatcherRelease
 
-Func _cveBestOf2NearestRangeMatcherCreate($rangeWidth, $tryUseGpu, $matchConf, $numMatchesThresh1, $numMatchesThresh2, ByRef $featuresMatcher)
+Func _cveBestOf2NearestRangeMatcherCreate($rangeWidth, $tryUseGpu, $matchConf, $numMatchesThresh1, $numMatchesThresh2, $featuresMatcher)
     ; CVAPI(cv::detail::BestOf2NearestRangeMatcher*) cveBestOf2NearestRangeMatcherCreate(int rangeWidth, bool tryUseGpu, float matchConf, int numMatchesThresh1, int numMatchesThresh2, cv::detail::FeaturesMatcher** featuresMatcher);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBestOf2NearestRangeMatcherCreate", "int", $rangeWidth, "boolean", $tryUseGpu, "float", $matchConf, "int", $numMatchesThresh1, "int", $numMatchesThresh2, "ptr*", $featuresMatcher), "cveBestOf2NearestRangeMatcherCreate", @error)
+
+    Local $bFeaturesMatcherDllType
+    If VarGetType($featuresMatcher) == "DLLStruct" Then
+        $bFeaturesMatcherDllType = "struct*"
+    Else
+        $bFeaturesMatcherDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBestOf2NearestRangeMatcherCreate", "int", $rangeWidth, "boolean", $tryUseGpu, "float", $matchConf, "int", $numMatchesThresh1, "int", $numMatchesThresh2, $bFeaturesMatcherDllType, $featuresMatcher), "cveBestOf2NearestRangeMatcherCreate", @error)
 EndFunc   ;==>_cveBestOf2NearestRangeMatcherCreate
 
-Func _cveBestOf2NearestRangeMatcherRelease(ByRef $featuresMatcher)
+Func _cveBestOf2NearestRangeMatcherRelease($featuresMatcher)
     ; CVAPI(void) cveBestOf2NearestRangeMatcherRelease(cv::detail::BestOf2NearestRangeMatcher** featuresMatcher);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBestOf2NearestRangeMatcherRelease", "ptr*", $featuresMatcher), "cveBestOf2NearestRangeMatcherRelease", @error)
+
+    Local $bFeaturesMatcherDllType
+    If VarGetType($featuresMatcher) == "DLLStruct" Then
+        $bFeaturesMatcherDllType = "struct*"
+    Else
+        $bFeaturesMatcherDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBestOf2NearestRangeMatcherRelease", $bFeaturesMatcherDllType, $featuresMatcher), "cveBestOf2NearestRangeMatcherRelease", @error)
 EndFunc   ;==>_cveBestOf2NearestRangeMatcherRelease
 
-Func _cveAffineBestOf2NearestMatcherCreate($fullAffine, $tryUseGpu, $matchConf, $numMatchesThresh1, ByRef $featuresMatcher)
+Func _cveAffineBestOf2NearestMatcherCreate($fullAffine, $tryUseGpu, $matchConf, $numMatchesThresh1, $featuresMatcher)
     ; CVAPI(cv::detail::AffineBestOf2NearestMatcher*) cveAffineBestOf2NearestMatcherCreate(bool fullAffine, bool tryUseGpu, float matchConf, int numMatchesThresh1, cv::detail::FeaturesMatcher** featuresMatcher);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveAffineBestOf2NearestMatcherCreate", "boolean", $fullAffine, "boolean", $tryUseGpu, "float", $matchConf, "int", $numMatchesThresh1, "ptr*", $featuresMatcher), "cveAffineBestOf2NearestMatcherCreate", @error)
+
+    Local $bFeaturesMatcherDllType
+    If VarGetType($featuresMatcher) == "DLLStruct" Then
+        $bFeaturesMatcherDllType = "struct*"
+    Else
+        $bFeaturesMatcherDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveAffineBestOf2NearestMatcherCreate", "boolean", $fullAffine, "boolean", $tryUseGpu, "float", $matchConf, "int", $numMatchesThresh1, $bFeaturesMatcherDllType, $featuresMatcher), "cveAffineBestOf2NearestMatcherCreate", @error)
 EndFunc   ;==>_cveAffineBestOf2NearestMatcherCreate
 
-Func _cveAffineBestOf2NearestMatcherRelease(ByRef $featuresMatcher)
+Func _cveAffineBestOf2NearestMatcherRelease($featuresMatcher)
     ; CVAPI(void) cveAffineBestOf2NearestMatcherRelease(cv::detail::AffineBestOf2NearestMatcher** featuresMatcher);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAffineBestOf2NearestMatcherRelease", "ptr*", $featuresMatcher), "cveAffineBestOf2NearestMatcherRelease", @error)
+
+    Local $bFeaturesMatcherDllType
+    If VarGetType($featuresMatcher) == "DLLStruct" Then
+        $bFeaturesMatcherDllType = "struct*"
+    Else
+        $bFeaturesMatcherDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAffineBestOf2NearestMatcherRelease", $bFeaturesMatcherDllType, $featuresMatcher), "cveAffineBestOf2NearestMatcherRelease", @error)
 EndFunc   ;==>_cveAffineBestOf2NearestMatcherRelease
 
-Func _cveDetailPlaneWarperGpuCreate($scale, ByRef $rotationWarper)
+Func _cveDetailPlaneWarperGpuCreate($scale, $rotationWarper)
     ; CVAPI(cv::detail::PlaneWarperGpu*) cveDetailPlaneWarperGpuCreate(float scale, cv::detail::RotationWarper** rotationWarper);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailPlaneWarperGpuCreate", "float", $scale, "ptr*", $rotationWarper), "cveDetailPlaneWarperGpuCreate", @error)
+
+    Local $bRotationWarperDllType
+    If VarGetType($rotationWarper) == "DLLStruct" Then
+        $bRotationWarperDllType = "struct*"
+    Else
+        $bRotationWarperDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailPlaneWarperGpuCreate", "float", $scale, $bRotationWarperDllType, $rotationWarper), "cveDetailPlaneWarperGpuCreate", @error)
 EndFunc   ;==>_cveDetailPlaneWarperGpuCreate
 
-Func _cveDetailPlaneWarperGpuRelease(ByRef $warper)
+Func _cveDetailPlaneWarperGpuRelease($warper)
     ; CVAPI(void) cveDetailPlaneWarperGpuRelease(cv::detail::PlaneWarperGpu** warper);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailPlaneWarperGpuRelease", "ptr*", $warper), "cveDetailPlaneWarperGpuRelease", @error)
+
+    Local $bWarperDllType
+    If VarGetType($warper) == "DLLStruct" Then
+        $bWarperDllType = "struct*"
+    Else
+        $bWarperDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailPlaneWarperGpuRelease", $bWarperDllType, $warper), "cveDetailPlaneWarperGpuRelease", @error)
 EndFunc   ;==>_cveDetailPlaneWarperGpuRelease
 
-Func _cvePlaneWarperGpuCreate(ByRef $warperCreator)
+Func _cvePlaneWarperGpuCreate($warperCreator)
     ; CVAPI(cv::PlaneWarperGpu*) cvePlaneWarperGpuCreate(cv::WarperCreator** warperCreator);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePlaneWarperGpuCreate", "ptr*", $warperCreator), "cvePlaneWarperGpuCreate", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePlaneWarperGpuCreate", $bWarperCreatorDllType, $warperCreator), "cvePlaneWarperGpuCreate", @error)
 EndFunc   ;==>_cvePlaneWarperGpuCreate
 
-Func _cvePlaneWarperGpuRelease(ByRef $warperCreator)
+Func _cvePlaneWarperGpuRelease($warperCreator)
     ; CVAPI(void) cvePlaneWarperGpuRelease(cv::PlaneWarperGpu** warperCreator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlaneWarperGpuRelease", "ptr*", $warperCreator), "cvePlaneWarperGpuRelease", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlaneWarperGpuRelease", $bWarperCreatorDllType, $warperCreator), "cvePlaneWarperGpuRelease", @error)
 EndFunc   ;==>_cvePlaneWarperGpuRelease
 
-Func _cveDetailCylindricalWarperGpuCreate($scale, ByRef $rotationWarper)
+Func _cveDetailCylindricalWarperGpuCreate($scale, $rotationWarper)
     ; CVAPI(cv::detail::CylindricalWarperGpu*) cveDetailCylindricalWarperGpuCreate(float scale, cv::detail::RotationWarper** rotationWarper);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailCylindricalWarperGpuCreate", "float", $scale, "ptr*", $rotationWarper), "cveDetailCylindricalWarperGpuCreate", @error)
+
+    Local $bRotationWarperDllType
+    If VarGetType($rotationWarper) == "DLLStruct" Then
+        $bRotationWarperDllType = "struct*"
+    Else
+        $bRotationWarperDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailCylindricalWarperGpuCreate", "float", $scale, $bRotationWarperDllType, $rotationWarper), "cveDetailCylindricalWarperGpuCreate", @error)
 EndFunc   ;==>_cveDetailCylindricalWarperGpuCreate
 
-Func _cveDetailCylindricalWarperGpuRelease(ByRef $warper)
+Func _cveDetailCylindricalWarperGpuRelease($warper)
     ; CVAPI(void) cveDetailCylindricalWarperGpuRelease(cv::detail::CylindricalWarperGpu** warper);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailCylindricalWarperGpuRelease", "ptr*", $warper), "cveDetailCylindricalWarperGpuRelease", @error)
+
+    Local $bWarperDllType
+    If VarGetType($warper) == "DLLStruct" Then
+        $bWarperDllType = "struct*"
+    Else
+        $bWarperDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailCylindricalWarperGpuRelease", $bWarperDllType, $warper), "cveDetailCylindricalWarperGpuRelease", @error)
 EndFunc   ;==>_cveDetailCylindricalWarperGpuRelease
 
-Func _cveCylindricalWarperGpuCreate(ByRef $warperCreator)
+Func _cveCylindricalWarperGpuCreate($warperCreator)
     ; CVAPI(cv::CylindricalWarperGpu*) cveCylindricalWarperGpuCreate(cv::WarperCreator** warperCreator);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCylindricalWarperGpuCreate", "ptr*", $warperCreator), "cveCylindricalWarperGpuCreate", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCylindricalWarperGpuCreate", $bWarperCreatorDllType, $warperCreator), "cveCylindricalWarperGpuCreate", @error)
 EndFunc   ;==>_cveCylindricalWarperGpuCreate
 
-Func _cveCylindricalWarperGpuRelease(ByRef $warperCreator)
+Func _cveCylindricalWarperGpuRelease($warperCreator)
     ; CVAPI(void) cveCylindricalWarperGpuRelease(cv::CylindricalWarperGpu** warperCreator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCylindricalWarperGpuRelease", "ptr*", $warperCreator), "cveCylindricalWarperGpuRelease", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCylindricalWarperGpuRelease", $bWarperCreatorDllType, $warperCreator), "cveCylindricalWarperGpuRelease", @error)
 EndFunc   ;==>_cveCylindricalWarperGpuRelease
 
-Func _cveDetailSphericalWarperGpuCreate($scale, ByRef $rotationWarper)
+Func _cveDetailSphericalWarperGpuCreate($scale, $rotationWarper)
     ; CVAPI(cv::detail::SphericalWarperGpu*) cveDetailSphericalWarperGpuCreate(float scale, cv::detail::RotationWarper** rotationWarper);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailSphericalWarperGpuCreate", "float", $scale, "ptr*", $rotationWarper), "cveDetailSphericalWarperGpuCreate", @error)
+
+    Local $bRotationWarperDllType
+    If VarGetType($rotationWarper) == "DLLStruct" Then
+        $bRotationWarperDllType = "struct*"
+    Else
+        $bRotationWarperDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDetailSphericalWarperGpuCreate", "float", $scale, $bRotationWarperDllType, $rotationWarper), "cveDetailSphericalWarperGpuCreate", @error)
 EndFunc   ;==>_cveDetailSphericalWarperGpuCreate
 
-Func _cveDetailSphericalWarperGpuRelease(ByRef $warper)
+Func _cveDetailSphericalWarperGpuRelease($warper)
     ; CVAPI(void) cveDetailSphericalWarperGpuRelease(cv::detail::SphericalWarperGpu** warper);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailSphericalWarperGpuRelease", "ptr*", $warper), "cveDetailSphericalWarperGpuRelease", @error)
+
+    Local $bWarperDllType
+    If VarGetType($warper) == "DLLStruct" Then
+        $bWarperDllType = "struct*"
+    Else
+        $bWarperDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailSphericalWarperGpuRelease", $bWarperDllType, $warper), "cveDetailSphericalWarperGpuRelease", @error)
 EndFunc   ;==>_cveDetailSphericalWarperGpuRelease
 
-Func _cveSphericalWarperGpuCreate(ByRef $warperCreator)
+Func _cveSphericalWarperGpuCreate($warperCreator)
     ; CVAPI(cv::SphericalWarperGpu*) cveSphericalWarperGpuCreate(cv::WarperCreator** warperCreator);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSphericalWarperGpuCreate", "ptr*", $warperCreator), "cveSphericalWarperGpuCreate", @error)
+
+    Local $bWarperCreatorDllType
+    If VarGetType($warperCreator) == "DLLStruct" Then
+        $bWarperCreatorDllType = "struct*"
+    Else
+        $bWarperCreatorDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSphericalWarperGpuCreate", $bWarperCreatorDllType, $warperCreator), "cveSphericalWarperGpuCreate", @error)
 EndFunc   ;==>_cveSphericalWarperGpuCreate
 
-Func _cveSphericalWarperGpuRelease(ByRef $warper)
+Func _cveSphericalWarperGpuRelease($warper)
     ; CVAPI(void) cveSphericalWarperGpuRelease(cv::SphericalWarperGpu** warper);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSphericalWarperGpuRelease", "ptr*", $warper), "cveSphericalWarperGpuRelease", @error)
+
+    Local $bWarperDllType
+    If VarGetType($warper) == "DLLStruct" Then
+        $bWarperDllType = "struct*"
+    Else
+        $bWarperDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSphericalWarperGpuRelease", $bWarperDllType, $warper), "cveSphericalWarperGpuRelease", @error)
 EndFunc   ;==>_cveSphericalWarperGpuRelease

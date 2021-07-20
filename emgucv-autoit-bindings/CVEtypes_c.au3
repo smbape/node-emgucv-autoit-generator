@@ -51,7 +51,7 @@ Func _cvRGB($cvRed, $cvGreen, $cvBlue)
 	DllStructSetData($cvScalar, 1, $cvBlue)
 	DllStructSetData($cvScalar, 2, $cvGreen)
 	DllStructSetData($cvScalar, 3, $cvRed)
-	DllStructSetData($cvScalar, 4, 0)
+	DllStructSetData($cvScalar, 4, 0xFF)
 
 	Return $cvScalar
 EndFunc   ;==>_cvRGB

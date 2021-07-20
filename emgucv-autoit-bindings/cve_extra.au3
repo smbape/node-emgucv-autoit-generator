@@ -2,6 +2,7 @@
 #include <Math.au3>
 #include <WindowsConstants.au3>
 #include <WinAPI.au3>
+#include <StaticConstants.au3>
 #include "cve_world.au3"
 
 _cveRegisterOpenHook("_cveOnOpen")
@@ -458,17 +459,15 @@ Func _cveGetDesktopScreenBits(ByRef $tRect)
 	$tBIHDR.biPlanes = 1
 	$tBIHDR.biBitCount = $iChannels * 8
 
-	Local $aDIB = DllCall("gdi32.dll", "ptr", "CreateDIBSection", "hwnd", 0, "struct*", $tBIHDR, "uint", 0, "ptr*", 0, "ptr", 0, "dword", 0)
+	Local $aDIB = DllCall("gdi32.dll", "ptr", "CreateDIBSection", "hwnd", 0, "struct*", $tBIHDR, "uint", $DIB_RGB_COLORS, "ptr*", 0, "ptr", 0, "dword", 0)
 
 	_WinAPI_SelectObject($hMemoryDC, $aDIB[0])
 	_WinAPI_BitBlt($hMemoryDC, 0, 0, $iWidth, $iHeight, $hDesktopDC, $iLeft, $iTop, $SRCCOPY)
 
-	Local $tSrcBits = DllStructCreate('byte value[' & $iSize & ']', $aDIB[4])
-
 	; $aDIB[4] will be unallacoted when _WinAPI_DeleteObject will be called
 	; to be able to preserve the values,
 	; keep the value in our own allocated memory
-	CVEDllCallResult(DllCall("msvcrt.dll", "ptr", "memcpy_s", "struct*", $tBits, "ulong_ptr", $iSize, "struct*", $tSrcBits, "ulong_ptr", $iSize), "memcpy_s", @error)
+	CVEDllCallResult(DllCall("msvcrt.dll", "ptr", "memcpy_s", "struct*", $tBits, "ulong_ptr", $iSize, "ptr", $aDIB[4], "ulong_ptr", $iSize), "memcpy_s", @error)
 
 	_WinAPI_DeleteObject($aDIB[0])
 	_WinAPI_DeleteDC($hMemoryDC)
@@ -550,3 +549,76 @@ Func _WinAPI_GetDesktopScreenRect()
 
 	Return $tRect
 EndFunc   ;==>_WinAPI_GetDesktopScreenRect
+
+Func _cveMatResizeAndCenter($matImg, $iDstWidth, $iDstHeight, $tBackgroundColor, $iCode = -1)
+	Local $tDsize = _cvSize()
+
+	_cveMatGetSize($matImg, $tDsize)
+	Local $iWidth = $tDsize.width
+	Local $iHeight = $tDsize.height
+
+	Local $fRatio = $iWidth / $iHeight
+	Local $iPadCols = 0
+	Local $iPadRows = 0
+
+	If $fRatio * $iDstHeight > $iDstWidth Then
+		$iWidth = $iDstWidth
+		$iHeight = Floor($iWidth / $fRatio)
+		$iPadCols = Floor(($iDstHeight - $iHeight) / 2)
+	Else
+		$iHeight = $iDstHeight
+		$iWidth = Floor($iHeight * $fRatio)
+		$iPadRows = Floor(($iDstWidth - $iWidth) / 2)
+	EndIf
+
+	$tDsize.width = $iWidth
+	$tDsize.height = $iHeight
+
+	Local $matCvtImg, $matSrcResized
+
+	If $iCode <> -1 Then
+		$matCvtImg = _cveMatCreate()
+		_cveCvtColorMat($matImg, $matCvtImg, $iCode)
+
+		$matSrcResized = _cveMatCreate()
+		_cveResizeMat($matCvtImg, $matSrcResized, $tDsize)
+
+		_cveMatRelease($matCvtImg)
+	Else
+		$matSrcResized = _cveMatCreate()
+		_cveResizeMat($matImg, $matSrcResized, $tDsize)
+	EndIf
+
+	$matCvtImg = _cveMatCreate()
+	_cveMatCreateData($matCvtImg, $iDstHeight, $iDstWidth, $CV_8UC4)
+	_cveCopyMakeBorderMat($matSrcResized, $matCvtImg, $iPadCols, $iPadCols, $iPadRows, $iPadRows, $CV_BORDER_CONSTANT, $tBackgroundColor)
+	_cveMatRelease($matSrcResized)
+
+	$tDsize = 0
+
+	Return $matCvtImg
+EndFunc   ;==>_cveMatResizeAndCenter
+
+Func _cveSetControlPic($controlID, $matImg)
+	Local $tDsize = _cvSize()
+
+	_cveMatGetSize($matImg, $tDsize)
+	$iWidth = $tDsize.width
+	$iHeight = $tDsize.height
+
+	Local $iChannels = 4
+	Local $iSize = $iWidth * $iHeight * $iChannels
+
+	Local $tBIHDR = DllStructCreate($tagBITMAPINFO)
+	$tBIHDR.biSize = DllStructGetSize($tBIHDR)
+	$tBIHDR.biWidth = $iWidth
+	$tBIHDR.biHeight = -$iHeight
+	$tBIHDR.biPlanes = 1
+	$tBIHDR.biBitCount = $iChannels * 8
+
+	Local $aDIB = DllCall("gdi32.dll", "ptr", "CreateDIBSection", "hwnd", 0, "struct*", $tBIHDR, "uint", $DIB_RGB_COLORS, "ptr*", 0, "ptr", 0, "dword", 0)
+	DllCall("msvcrt.dll", "ptr", "memcpy_s", "ptr", $aDIB[4], "ulong_ptr", $iSize, "ptr", _cveMatGetDataPointer($matImg), "ulong_ptr", $iSize)
+	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($controlID), $STM_SETIMAGE, 0, $aDIB[0]))
+
+	$tDsize = 0
+EndFunc   ;==>_cveSetControlPic

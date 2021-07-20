@@ -11,7 +11,7 @@ Func _VectorOfMatCreateSize($size)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfMatCreateSize", "int", $size), "VectorOfMatCreateSize", @error)
 EndFunc   ;==>_VectorOfMatCreateSize
 
-Func _VectorOfMatGetSize(ByRef $v)
+Func _VectorOfMatGetSize($v)
     ; CVAPI(int) VectorOfMatGetSize(std::vector< cv::Mat >* v);
 
     Local $vecV, $iArrVSize
@@ -37,7 +37,7 @@ Func _VectorOfMatGetSize(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfMatGetSize
 
-Func _VectorOfMatPush(ByRef $v, ByRef $value)
+Func _VectorOfMatPush($v, $value)
     ; CVAPI(void) VectorOfMatPush(std::vector< cv::Mat >* v, cv::Mat* value);
 
     Local $vecV, $iArrVSize
@@ -61,7 +61,7 @@ Func _VectorOfMatPush(ByRef $v, ByRef $value)
     EndIf
 EndFunc   ;==>_VectorOfMatPush
 
-Func _VectorOfMatPushVector(ByRef $v, ByRef $other)
+Func _VectorOfMatPushVector($v, $other)
     ; CVAPI(void) VectorOfMatPushVector(std::vector< cv::Mat >* v, std::vector< cv::Mat >* other);
 
     Local $vecV, $iArrVSize
@@ -103,7 +103,7 @@ Func _VectorOfMatPushVector(ByRef $v, ByRef $other)
     EndIf
 EndFunc   ;==>_VectorOfMatPushVector
 
-Func _VectorOfMatGetStartAddress(ByRef $v)
+Func _VectorOfMatGetStartAddress($v)
     ; CVAPI(cv::Mat*) VectorOfMatGetStartAddress(std::vector< cv::Mat >* v);
 
     Local $vecV, $iArrVSize
@@ -129,7 +129,7 @@ Func _VectorOfMatGetStartAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfMatGetStartAddress
 
-Func _VectorOfMatGetEndAddress(ByRef $v)
+Func _VectorOfMatGetEndAddress($v)
     ; CVAPI(void*) VectorOfMatGetEndAddress(std::vector< cv::Mat >* v);
 
     Local $vecV, $iArrVSize
@@ -155,7 +155,7 @@ Func _VectorOfMatGetEndAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfMatGetEndAddress
 
-Func _VectorOfMatClear(ByRef $v)
+Func _VectorOfMatClear($v)
     ; CVAPI(void) VectorOfMatClear(std::vector< cv::Mat >* v);
 
     Local $vecV, $iArrVSize
@@ -179,7 +179,7 @@ Func _VectorOfMatClear(ByRef $v)
     EndIf
 EndFunc   ;==>_VectorOfMatClear
 
-Func _VectorOfMatRelease(ByRef $v)
+Func _VectorOfMatRelease($v)
     ; CVAPI(void) VectorOfMatRelease(std::vector< cv::Mat >** v);
 
     Local $vecV, $iArrVSize
@@ -196,14 +196,21 @@ Func _VectorOfMatRelease(ByRef $v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfMatRelease", "ptr*", $vecV), "VectorOfMatRelease", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfMatRelease", $bVDllType, $vecV), "VectorOfMatRelease", @error)
 
     If $bVIsArray Then
         _VectorOfMatRelease($vecV)
     EndIf
 EndFunc   ;==>_VectorOfMatRelease
 
-Func _VectorOfMatCopyData(ByRef $v, ByRef $data)
+Func _VectorOfMatCopyData($v, $data)
     ; CVAPI(void) VectorOfMatCopyData(std::vector< cv::Mat >* v, cv::Mat* data);
 
     Local $vecV, $iArrVSize
@@ -227,7 +234,7 @@ Func _VectorOfMatCopyData(ByRef $v, ByRef $data)
     EndIf
 EndFunc   ;==>_VectorOfMatCopyData
 
-Func _VectorOfMatGetItemPtr(ByRef $vec, $index, ByRef $element)
+Func _VectorOfMatGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfMatGetItemPtr(std::vector<  cv::Mat >* vec, int index, cv::Mat** element);
 
     Local $vecVec, $iArrVecSize
@@ -244,14 +251,21 @@ Func _VectorOfMatGetItemPtr(ByRef $vec, $index, ByRef $element)
         $vecVec = $vec
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfMatGetItemPtr", "ptr", $vecVec, "int", $index, "ptr*", $element), "VectorOfMatGetItemPtr", @error)
+    Local $bElementDllType
+    If VarGetType($element) == "DLLStruct" Then
+        $bElementDllType = "struct*"
+    Else
+        $bElementDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfMatGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $element), "VectorOfMatGetItemPtr", @error)
 
     If $bVecIsArray Then
         _VectorOfMatRelease($vecVec)
     EndIf
 EndFunc   ;==>_VectorOfMatGetItemPtr
 
-Func _cveInputArrayFromVectorOfMat(ByRef $vec)
+Func _cveInputArrayFromVectorOfMat($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfMat(std::vector< cv::Mat >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -277,7 +291,7 @@ Func _cveInputArrayFromVectorOfMat(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveInputArrayFromVectorOfMat
 
-Func _cveOutputArrayFromVectorOfMat(ByRef $vec)
+Func _cveOutputArrayFromVectorOfMat($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfMat(std::vector< cv::Mat >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -303,7 +317,7 @@ Func _cveOutputArrayFromVectorOfMat(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveOutputArrayFromVectorOfMat
 
-Func _cveInputOutputArrayFromVectorOfMat(ByRef $vec)
+Func _cveInputOutputArrayFromVectorOfMat($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfMat(std::vector< cv::Mat >* vec);
 
     Local $vecVec, $iArrVecSize

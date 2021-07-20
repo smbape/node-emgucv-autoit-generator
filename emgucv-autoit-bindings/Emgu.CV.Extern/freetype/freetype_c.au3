@@ -1,17 +1,39 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveFreeType2Create(ByRef $algorithmPtr, ByRef $sharedPtr)
+Func _cveFreeType2Create($algorithmPtr, $sharedPtr)
     ; CVAPI(cv::freetype::FreeType2*) cveFreeType2Create(cv::Algorithm** algorithmPtr, cv::Ptr<cv::freetype::FreeType2>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFreeType2Create", "ptr*", $algorithmPtr, "ptr*", $sharedPtr), "cveFreeType2Create", @error)
+
+    Local $bAlgorithmPtrDllType
+    If VarGetType($algorithmPtr) == "DLLStruct" Then
+        $bAlgorithmPtrDllType = "struct*"
+    Else
+        $bAlgorithmPtrDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFreeType2Create", $bAlgorithmPtrDllType, $algorithmPtr, $bSharedPtrDllType, $sharedPtr), "cveFreeType2Create", @error)
 EndFunc   ;==>_cveFreeType2Create
 
-Func _cveFreeType2Release(ByRef $sharedPtr)
+Func _cveFreeType2Release($sharedPtr)
     ; CVAPI(void) cveFreeType2Release(cv::Ptr<cv::freetype::FreeType2>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFreeType2Release", "ptr*", $sharedPtr), "cveFreeType2Release", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFreeType2Release", $bSharedPtrDllType, $sharedPtr), "cveFreeType2Release", @error)
 EndFunc   ;==>_cveFreeType2Release
 
-Func _cveFreeType2LoadFontData(ByRef $freetype, $fontFileName, $id)
+Func _cveFreeType2LoadFontData($freetype, $fontFileName, $id)
     ; CVAPI(void) cveFreeType2LoadFontData(cv::freetype::FreeType2* freetype, cv::String* fontFileName, int id);
 
     Local $bFontFileNameIsString = VarGetType($fontFileName) == "String"
@@ -26,12 +48,12 @@ Func _cveFreeType2LoadFontData(ByRef $freetype, $fontFileName, $id)
     EndIf
 EndFunc   ;==>_cveFreeType2LoadFontData
 
-Func _cveFreeType2SetSplitNumber(ByRef $freetype, $num)
+Func _cveFreeType2SetSplitNumber($freetype, $num)
     ; CVAPI(void) cveFreeType2SetSplitNumber(cv::freetype::FreeType2* freetype, int num);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFreeType2SetSplitNumber", "ptr", $freetype, "int", $num), "cveFreeType2SetSplitNumber", @error)
 EndFunc   ;==>_cveFreeType2SetSplitNumber
 
-Func _cveFreeType2PutText(ByRef $freetype, ByRef $img, $text, ByRef $org, $fontHeight, ByRef $color, $thickness, $lineType, $bottomLeftOrigin)
+Func _cveFreeType2PutText($freetype, $img, $text, $org, $fontHeight, $color, $thickness, $lineType, $bottomLeftOrigin)
     ; CVAPI(void) cveFreeType2PutText(cv::freetype::FreeType2* freetype, cv::_InputOutputArray* img, cv::String* text, CvPoint* org, int fontHeight, CvScalar* color, int thickness, int lineType, bool bottomLeftOrigin);
 
     Local $bTextIsString = VarGetType($text) == "String"
@@ -46,7 +68,7 @@ Func _cveFreeType2PutText(ByRef $freetype, ByRef $img, $text, ByRef $org, $fontH
     EndIf
 EndFunc   ;==>_cveFreeType2PutText
 
-Func _cveFreeType2PutTextMat(ByRef $freetype, ByRef $matImg, $text, ByRef $org, $fontHeight, ByRef $color, $thickness, $lineType, $bottomLeftOrigin)
+Func _cveFreeType2PutTextMat($freetype, $matImg, $text, $org, $fontHeight, $color, $thickness, $lineType, $bottomLeftOrigin)
     ; cveFreeType2PutText using cv::Mat instead of _*Array
 
     Local $ioArrImg, $vectorOfMatImg, $iArrImgSize
@@ -74,7 +96,7 @@ Func _cveFreeType2PutTextMat(ByRef $freetype, ByRef $matImg, $text, ByRef $org, 
     _cveInputOutputArrayRelease($ioArrImg)
 EndFunc   ;==>_cveFreeType2PutTextMat
 
-Func _cveFreeType2GetTextSize(ByRef $freetype, $text, $fontHeight, $thickness, ByRef $baseLine, ByRef $size)
+Func _cveFreeType2GetTextSize($freetype, $text, $fontHeight, $thickness, $baseLine, $size)
     ; CVAPI(void) cveFreeType2GetTextSize(cv::freetype::FreeType2* freetype, cv::String* text, int fontHeight, int thickness, int* baseLine, CvSize* size);
 
     Local $bTextIsString = VarGetType($text) == "String"

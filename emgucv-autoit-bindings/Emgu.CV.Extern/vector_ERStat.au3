@@ -11,7 +11,7 @@ Func _VectorOfERStatCreateSize($size)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfERStatCreateSize", "int", $size), "VectorOfERStatCreateSize", @error)
 EndFunc   ;==>_VectorOfERStatCreateSize
 
-Func _VectorOfERStatGetSize(ByRef $v)
+Func _VectorOfERStatGetSize($v)
     ; CVAPI(int) VectorOfERStatGetSize(std::vector< cv::text::ERStat >* v);
 
     Local $vecV, $iArrVSize
@@ -37,7 +37,7 @@ Func _VectorOfERStatGetSize(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfERStatGetSize
 
-Func _VectorOfERStatPush(ByRef $v, ByRef $value)
+Func _VectorOfERStatPush($v, $value)
     ; CVAPI(void) VectorOfERStatPush(std::vector< cv::text::ERStat >* v, cv::text::ERStat* value);
 
     Local $vecV, $iArrVSize
@@ -61,7 +61,7 @@ Func _VectorOfERStatPush(ByRef $v, ByRef $value)
     EndIf
 EndFunc   ;==>_VectorOfERStatPush
 
-Func _VectorOfERStatPushMulti(ByRef $v, ByRef $values, $count)
+Func _VectorOfERStatPushMulti($v, $values, $count)
     ; CVAPI(void) VectorOfERStatPushMulti(std::vector< cv::text::ERStat >* v, cv::text::ERStat* values, int count);
 
     Local $vecV, $iArrVSize
@@ -85,7 +85,7 @@ Func _VectorOfERStatPushMulti(ByRef $v, ByRef $values, $count)
     EndIf
 EndFunc   ;==>_VectorOfERStatPushMulti
 
-Func _VectorOfERStatPushVector(ByRef $v, ByRef $other)
+Func _VectorOfERStatPushVector($v, $other)
     ; CVAPI(void) VectorOfERStatPushVector(std::vector< cv::text::ERStat >* v, std::vector< cv::text::ERStat >* other);
 
     Local $vecV, $iArrVSize
@@ -127,7 +127,7 @@ Func _VectorOfERStatPushVector(ByRef $v, ByRef $other)
     EndIf
 EndFunc   ;==>_VectorOfERStatPushVector
 
-Func _VectorOfERStatClear(ByRef $v)
+Func _VectorOfERStatClear($v)
     ; CVAPI(void) VectorOfERStatClear(std::vector< cv::text::ERStat >* v);
 
     Local $vecV, $iArrVSize
@@ -151,7 +151,7 @@ Func _VectorOfERStatClear(ByRef $v)
     EndIf
 EndFunc   ;==>_VectorOfERStatClear
 
-Func _VectorOfERStatRelease(ByRef $v)
+Func _VectorOfERStatRelease($v)
     ; CVAPI(void) VectorOfERStatRelease(std::vector< cv::text::ERStat >** v);
 
     Local $vecV, $iArrVSize
@@ -168,14 +168,21 @@ Func _VectorOfERStatRelease(ByRef $v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfERStatRelease", "ptr*", $vecV), "VectorOfERStatRelease", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfERStatRelease", $bVDllType, $vecV), "VectorOfERStatRelease", @error)
 
     If $bVIsArray Then
         _VectorOfERStatRelease($vecV)
     EndIf
 EndFunc   ;==>_VectorOfERStatRelease
 
-Func _VectorOfERStatCopyData(ByRef $v, ByRef $data)
+Func _VectorOfERStatCopyData($v, $data)
     ; CVAPI(void) VectorOfERStatCopyData(std::vector< cv::text::ERStat >* v, cv::text::ERStat* data);
 
     Local $vecV, $iArrVSize
@@ -199,7 +206,7 @@ Func _VectorOfERStatCopyData(ByRef $v, ByRef $data)
     EndIf
 EndFunc   ;==>_VectorOfERStatCopyData
 
-Func _VectorOfERStatGetStartAddress(ByRef $v)
+Func _VectorOfERStatGetStartAddress($v)
     ; CVAPI(cv::text::ERStat*) VectorOfERStatGetStartAddress(std::vector< cv::text::ERStat >* v);
 
     Local $vecV, $iArrVSize
@@ -225,7 +232,7 @@ Func _VectorOfERStatGetStartAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfERStatGetStartAddress
 
-Func _VectorOfERStatGetEndAddress(ByRef $v)
+Func _VectorOfERStatGetEndAddress($v)
     ; CVAPI(void*) VectorOfERStatGetEndAddress(std::vector< cv::text::ERStat >* v);
 
     Local $vecV, $iArrVSize
@@ -251,7 +258,7 @@ Func _VectorOfERStatGetEndAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfERStatGetEndAddress
 
-Func _VectorOfERStatGetItem(ByRef $vec, $index, ByRef $element)
+Func _VectorOfERStatGetItem($vec, $index, $element)
     ; CVAPI(void) VectorOfERStatGetItem(std::vector<  cv::text::ERStat >* vec, int index, cv::text::ERStat* element);
 
     Local $vecVec, $iArrVecSize
@@ -275,7 +282,7 @@ Func _VectorOfERStatGetItem(ByRef $vec, $index, ByRef $element)
     EndIf
 EndFunc   ;==>_VectorOfERStatGetItem
 
-Func _VectorOfERStatGetItemPtr(ByRef $vec, $index, ByRef $element)
+Func _VectorOfERStatGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfERStatGetItemPtr(std::vector<  cv::text::ERStat >* vec, int index, cv::text::ERStat** element);
 
     Local $vecVec, $iArrVecSize
@@ -292,14 +299,21 @@ Func _VectorOfERStatGetItemPtr(ByRef $vec, $index, ByRef $element)
         $vecVec = $vec
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfERStatGetItemPtr", "ptr", $vecVec, "int", $index, "ptr*", $element), "VectorOfERStatGetItemPtr", @error)
+    Local $bElementDllType
+    If VarGetType($element) == "DLLStruct" Then
+        $bElementDllType = "struct*"
+    Else
+        $bElementDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfERStatGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $element), "VectorOfERStatGetItemPtr", @error)
 
     If $bVecIsArray Then
         _VectorOfERStatRelease($vecVec)
     EndIf
 EndFunc   ;==>_VectorOfERStatGetItemPtr
 
-Func _cveInputArrayFromVectorOfERStat(ByRef $vec)
+Func _cveInputArrayFromVectorOfERStat($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfERStat(std::vector< cv::text::ERStat >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -325,7 +339,7 @@ Func _cveInputArrayFromVectorOfERStat(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveInputArrayFromVectorOfERStat
 
-Func _cveOutputArrayFromVectorOfERStat(ByRef $vec)
+Func _cveOutputArrayFromVectorOfERStat($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfERStat(std::vector< cv::text::ERStat >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -351,7 +365,7 @@ Func _cveOutputArrayFromVectorOfERStat(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveOutputArrayFromVectorOfERStat
 
-Func _cveInputOutputArrayFromVectorOfERStat(ByRef $vec)
+Func _cveInputOutputArrayFromVectorOfERStat($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfERStat(std::vector< cv::text::ERStat >* vec);
 
     Local $vecVec, $iArrVecSize

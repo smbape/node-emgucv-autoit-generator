@@ -11,7 +11,7 @@ Func _VectorOfVideoCaptureCreateSize($size)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfVideoCaptureCreateSize", "int", $size), "VectorOfVideoCaptureCreateSize", @error)
 EndFunc   ;==>_VectorOfVideoCaptureCreateSize
 
-Func _VectorOfVideoCaptureGetSize(ByRef $v)
+Func _VectorOfVideoCaptureGetSize($v)
     ; CVAPI(int) VectorOfVideoCaptureGetSize(std::vector< cv::VideoCapture >* v);
 
     Local $vecV, $iArrVSize
@@ -37,7 +37,7 @@ Func _VectorOfVideoCaptureGetSize(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfVideoCaptureGetSize
 
-Func _VectorOfVideoCapturePush(ByRef $v, ByRef $value)
+Func _VectorOfVideoCapturePush($v, $value)
     ; CVAPI(void) VectorOfVideoCapturePush(std::vector< cv::VideoCapture >* v, cv::VideoCapture* value);
 
     Local $vecV, $iArrVSize
@@ -61,7 +61,7 @@ Func _VectorOfVideoCapturePush(ByRef $v, ByRef $value)
     EndIf
 EndFunc   ;==>_VectorOfVideoCapturePush
 
-Func _VectorOfVideoCapturePushVector(ByRef $v, ByRef $other)
+Func _VectorOfVideoCapturePushVector($v, $other)
     ; CVAPI(void) VectorOfVideoCapturePushVector(std::vector< cv::VideoCapture >* v, std::vector< cv::VideoCapture >* other);
 
     Local $vecV, $iArrVSize
@@ -103,7 +103,7 @@ Func _VectorOfVideoCapturePushVector(ByRef $v, ByRef $other)
     EndIf
 EndFunc   ;==>_VectorOfVideoCapturePushVector
 
-Func _VectorOfVideoCaptureGetStartAddress(ByRef $v)
+Func _VectorOfVideoCaptureGetStartAddress($v)
     ; CVAPI(cv::VideoCapture*) VectorOfVideoCaptureGetStartAddress(std::vector< cv::VideoCapture >* v);
 
     Local $vecV, $iArrVSize
@@ -129,7 +129,7 @@ Func _VectorOfVideoCaptureGetStartAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfVideoCaptureGetStartAddress
 
-Func _VectorOfVideoCaptureGetEndAddress(ByRef $v)
+Func _VectorOfVideoCaptureGetEndAddress($v)
     ; CVAPI(void*) VectorOfVideoCaptureGetEndAddress(std::vector< cv::VideoCapture >* v);
 
     Local $vecV, $iArrVSize
@@ -155,7 +155,7 @@ Func _VectorOfVideoCaptureGetEndAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfVideoCaptureGetEndAddress
 
-Func _VectorOfVideoCaptureClear(ByRef $v)
+Func _VectorOfVideoCaptureClear($v)
     ; CVAPI(void) VectorOfVideoCaptureClear(std::vector< cv::VideoCapture >* v);
 
     Local $vecV, $iArrVSize
@@ -179,7 +179,7 @@ Func _VectorOfVideoCaptureClear(ByRef $v)
     EndIf
 EndFunc   ;==>_VectorOfVideoCaptureClear
 
-Func _VectorOfVideoCaptureRelease(ByRef $v)
+Func _VectorOfVideoCaptureRelease($v)
     ; CVAPI(void) VectorOfVideoCaptureRelease(std::vector< cv::VideoCapture >** v);
 
     Local $vecV, $iArrVSize
@@ -196,14 +196,21 @@ Func _VectorOfVideoCaptureRelease(ByRef $v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVideoCaptureRelease", "ptr*", $vecV), "VectorOfVideoCaptureRelease", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVideoCaptureRelease", $bVDllType, $vecV), "VectorOfVideoCaptureRelease", @error)
 
     If $bVIsArray Then
         _VectorOfVideoCaptureRelease($vecV)
     EndIf
 EndFunc   ;==>_VectorOfVideoCaptureRelease
 
-Func _VectorOfVideoCaptureCopyData(ByRef $v, ByRef $data)
+Func _VectorOfVideoCaptureCopyData($v, $data)
     ; CVAPI(void) VectorOfVideoCaptureCopyData(std::vector< cv::VideoCapture >* v, cv::VideoCapture* data);
 
     Local $vecV, $iArrVSize
@@ -227,7 +234,7 @@ Func _VectorOfVideoCaptureCopyData(ByRef $v, ByRef $data)
     EndIf
 EndFunc   ;==>_VectorOfVideoCaptureCopyData
 
-Func _VectorOfVideoCaptureGetItemPtr(ByRef $vec, $index, ByRef $element)
+Func _VectorOfVideoCaptureGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfVideoCaptureGetItemPtr(std::vector<  cv::VideoCapture >* vec, int index, cv::VideoCapture** element);
 
     Local $vecVec, $iArrVecSize
@@ -244,14 +251,21 @@ Func _VectorOfVideoCaptureGetItemPtr(ByRef $vec, $index, ByRef $element)
         $vecVec = $vec
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVideoCaptureGetItemPtr", "ptr", $vecVec, "int", $index, "ptr*", $element), "VectorOfVideoCaptureGetItemPtr", @error)
+    Local $bElementDllType
+    If VarGetType($element) == "DLLStruct" Then
+        $bElementDllType = "struct*"
+    Else
+        $bElementDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVideoCaptureGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $element), "VectorOfVideoCaptureGetItemPtr", @error)
 
     If $bVecIsArray Then
         _VectorOfVideoCaptureRelease($vecVec)
     EndIf
 EndFunc   ;==>_VectorOfVideoCaptureGetItemPtr
 
-Func _cveInputArrayFromVectorOfVideoCapture(ByRef $vec)
+Func _cveInputArrayFromVectorOfVideoCapture($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfVideoCapture(std::vector< cv::VideoCapture >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -277,7 +291,7 @@ Func _cveInputArrayFromVectorOfVideoCapture(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveInputArrayFromVectorOfVideoCapture
 
-Func _cveOutputArrayFromVectorOfVideoCapture(ByRef $vec)
+Func _cveOutputArrayFromVectorOfVideoCapture($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfVideoCapture(std::vector< cv::VideoCapture >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -303,7 +317,7 @@ Func _cveOutputArrayFromVectorOfVideoCapture(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveOutputArrayFromVectorOfVideoCapture
 
-Func _cveInputOutputArrayFromVectorOfVideoCapture(ByRef $vec)
+Func _cveInputOutputArrayFromVectorOfVideoCapture($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfVideoCapture(std::vector< cv::VideoCapture >* vec);
 
     Local $vecVec, $iArrVecSize

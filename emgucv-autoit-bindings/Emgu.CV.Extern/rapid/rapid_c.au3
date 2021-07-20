@@ -1,12 +1,12 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveDrawCorrespondencies(ByRef $bundle, ByRef $cols, ByRef $colors)
+Func _cveDrawCorrespondencies($bundle, $cols, $colors)
     ; CVAPI(void) cveDrawCorrespondencies(cv::_InputOutputArray* bundle, cv::_InputArray* cols, cv::_InputArray* colors);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDrawCorrespondencies", "ptr", $bundle, "ptr", $cols, "ptr", $colors), "cveDrawCorrespondencies", @error)
 EndFunc   ;==>_cveDrawCorrespondencies
 
-Func _cveDrawCorrespondenciesMat(ByRef $matBundle, ByRef $matCols, ByRef $matColors)
+Func _cveDrawCorrespondenciesMat($matBundle, $matCols, $matColors)
     ; cveDrawCorrespondencies using cv::Mat instead of _*Array
 
     Local $ioArrBundle, $vectorOfMatBundle, $iArrBundleSize
@@ -78,12 +78,12 @@ Func _cveDrawCorrespondenciesMat(ByRef $matBundle, ByRef $matCols, ByRef $matCol
     _cveInputOutputArrayRelease($ioArrBundle)
 EndFunc   ;==>_cveDrawCorrespondenciesMat
 
-Func _cveDrawSearchLines(ByRef $img, ByRef $locations, ByRef $color)
+Func _cveDrawSearchLines($img, $locations, $color)
     ; CVAPI(void) cveDrawSearchLines(cv::_InputOutputArray* img, cv::_InputArray* locations, CvScalar* color);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDrawSearchLines", "ptr", $img, "ptr", $locations, "struct*", $color), "cveDrawSearchLines", @error)
 EndFunc   ;==>_cveDrawSearchLines
 
-Func _cveDrawSearchLinesMat(ByRef $matImg, ByRef $matLocations, ByRef $color)
+Func _cveDrawSearchLinesMat($matImg, $matLocations, $color)
     ; cveDrawSearchLines using cv::Mat instead of _*Array
 
     Local $ioArrImg, $vectorOfMatImg, $iArrImgSize
@@ -133,12 +133,12 @@ Func _cveDrawSearchLinesMat(ByRef $matImg, ByRef $matLocations, ByRef $color)
     _cveInputOutputArrayRelease($ioArrImg)
 EndFunc   ;==>_cveDrawSearchLinesMat
 
-Func _cveDrawWireframe(ByRef $img, ByRef $pts2d, ByRef $tris, ByRef $color, $type, $cullBackface)
+Func _cveDrawWireframe($img, $pts2d, $tris, $color, $type, $cullBackface)
     ; CVAPI(void) cveDrawWireframe(cv::_InputOutputArray* img, cv::_InputArray* pts2d, cv::_InputArray* tris, CvScalar* color, int type, bool cullBackface);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDrawWireframe", "ptr", $img, "ptr", $pts2d, "ptr", $tris, "struct*", $color, "int", $type, "boolean", $cullBackface), "cveDrawWireframe", @error)
 EndFunc   ;==>_cveDrawWireframe
 
-Func _cveDrawWireframeMat(ByRef $matImg, ByRef $matPts2d, ByRef $matTris, ByRef $color, $type, $cullBackface)
+Func _cveDrawWireframeMat($matImg, $matPts2d, $matTris, $color, $type, $cullBackface)
     ; cveDrawWireframe using cv::Mat instead of _*Array
 
     Local $ioArrImg, $vectorOfMatImg, $iArrImgSize
@@ -210,12 +210,12 @@ Func _cveDrawWireframeMat(ByRef $matImg, ByRef $matPts2d, ByRef $matTris, ByRef 
     _cveInputOutputArrayRelease($ioArrImg)
 EndFunc   ;==>_cveDrawWireframeMat
 
-Func _cveExtractControlPoints($num, $len, ByRef $pts3d, ByRef $rvec, ByRef $tvec, ByRef $K, ByRef $imsize, ByRef $tris, ByRef $ctl2d, ByRef $ctl3d)
+Func _cveExtractControlPoints($num, $len, $pts3d, $rvec, $tvec, $K, $imsize, $tris, $ctl2d, $ctl3d)
     ; CVAPI(void) cveExtractControlPoints(int num, int len, cv::_InputArray* pts3d, cv::_InputArray* rvec, cv::_InputArray* tvec, cv::_InputArray* K, CvSize* imsize, cv::_InputArray* tris, cv::_OutputArray* ctl2d, cv::_OutputArray* ctl3d);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveExtractControlPoints", "int", $num, "int", $len, "ptr", $pts3d, "ptr", $rvec, "ptr", $tvec, "ptr", $K, "struct*", $imsize, "ptr", $tris, "ptr", $ctl2d, "ptr", $ctl3d), "cveExtractControlPoints", @error)
 EndFunc   ;==>_cveExtractControlPoints
 
-Func _cveExtractControlPointsMat($num, $len, ByRef $matPts3d, ByRef $matRvec, ByRef $matTvec, ByRef $matK, ByRef $imsize, ByRef $matTris, ByRef $matCtl2d, ByRef $matCtl3d)
+Func _cveExtractControlPointsMat($num, $len, $matPts3d, $matRvec, $matTvec, $matK, $imsize, $matTris, $matCtl2d, $matCtl3d)
     ; cveExtractControlPoints using cv::Mat instead of _*Array
 
     Local $iArrPts3d, $vectorOfMatPts3d, $iArrPts3dSize
@@ -375,12 +375,12 @@ Func _cveExtractControlPointsMat($num, $len, ByRef $matPts3d, ByRef $matRvec, By
     _cveInputArrayRelease($iArrPts3d)
 EndFunc   ;==>_cveExtractControlPointsMat
 
-Func _cveExtractLineBundle($len, ByRef $ctl2d, ByRef $img, ByRef $bundle, ByRef $srcLocations)
+Func _cveExtractLineBundle($len, $ctl2d, $img, $bundle, $srcLocations)
     ; CVAPI(void) cveExtractLineBundle(int len, cv::_InputArray* ctl2d, cv::_InputArray* img, cv::_OutputArray* bundle, cv::_OutputArray* srcLocations);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveExtractLineBundle", "int", $len, "ptr", $ctl2d, "ptr", $img, "ptr", $bundle, "ptr", $srcLocations), "cveExtractLineBundle", @error)
 EndFunc   ;==>_cveExtractLineBundle
 
-Func _cveExtractLineBundleMat($len, ByRef $matCtl2d, ByRef $matImg, ByRef $matBundle, ByRef $matSrcLocations)
+Func _cveExtractLineBundleMat($len, $matCtl2d, $matImg, $matBundle, $matSrcLocations)
     ; cveExtractLineBundle using cv::Mat instead of _*Array
 
     Local $iArrCtl2d, $vectorOfMatCtl2d, $iArrCtl2dSize
@@ -474,12 +474,12 @@ Func _cveExtractLineBundleMat($len, ByRef $matCtl2d, ByRef $matImg, ByRef $matBu
     _cveInputArrayRelease($iArrCtl2d)
 EndFunc   ;==>_cveExtractLineBundleMat
 
-Func _cveFindCorrespondencies(ByRef $bundle, ByRef $cols, ByRef $response)
+Func _cveFindCorrespondencies($bundle, $cols, $response)
     ; CVAPI(void) cveFindCorrespondencies(cv::_InputArray* bundle, cv::_OutputArray* cols, cv::_OutputArray* response);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFindCorrespondencies", "ptr", $bundle, "ptr", $cols, "ptr", $response), "cveFindCorrespondencies", @error)
 EndFunc   ;==>_cveFindCorrespondencies
 
-Func _cveFindCorrespondenciesMat(ByRef $matBundle, ByRef $matCols, ByRef $matResponse)
+Func _cveFindCorrespondenciesMat($matBundle, $matCols, $matResponse)
     ; cveFindCorrespondencies using cv::Mat instead of _*Array
 
     Local $iArrBundle, $vectorOfMatBundle, $iArrBundleSize
@@ -551,12 +551,12 @@ Func _cveFindCorrespondenciesMat(ByRef $matBundle, ByRef $matCols, ByRef $matRes
     _cveInputArrayRelease($iArrBundle)
 EndFunc   ;==>_cveFindCorrespondenciesMat
 
-Func _cveConvertCorrespondencies(ByRef $cols, ByRef $srcLocations, ByRef $pts2d, ByRef $pts3d, ByRef $mask)
+Func _cveConvertCorrespondencies($cols, $srcLocations, $pts2d, $pts3d, $mask)
     ; CVAPI(void) cveConvertCorrespondencies(cv::_InputArray* cols, cv::_InputArray* srcLocations, cv::_OutputArray* pts2d, cv::_InputOutputArray* pts3d, cv::_InputArray* mask);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveConvertCorrespondencies", "ptr", $cols, "ptr", $srcLocations, "ptr", $pts2d, "ptr", $pts3d, "ptr", $mask), "cveConvertCorrespondencies", @error)
 EndFunc   ;==>_cveConvertCorrespondencies
 
-Func _cveConvertCorrespondenciesMat(ByRef $matCols, ByRef $matSrcLocations, ByRef $matPts2d, ByRef $matPts3d, ByRef $matMask)
+Func _cveConvertCorrespondenciesMat($matCols, $matSrcLocations, $matPts2d, $matPts3d, $matMask)
     ; cveConvertCorrespondencies using cv::Mat instead of _*Array
 
     Local $iArrCols, $vectorOfMatCols, $iArrColsSize
@@ -672,12 +672,12 @@ Func _cveConvertCorrespondenciesMat(ByRef $matCols, ByRef $matSrcLocations, ByRe
     _cveInputArrayRelease($iArrCols)
 EndFunc   ;==>_cveConvertCorrespondenciesMat
 
-Func _cveRapid(ByRef $img, $num, $len, ByRef $pts3d, ByRef $tris, ByRef $K, ByRef $rvec, ByRef $tvec, ByRef $rmsd)
+Func _cveRapid($img, $num, $len, $pts3d, $tris, $K, $rvec, $tvec, $rmsd)
     ; CVAPI(float) cveRapid(cv::_InputArray* img, int num, int len, cv::_InputArray* pts3d, cv::_InputArray* tris, cv::_InputArray* K, cv::_InputOutputArray* rvec, cv::_InputOutputArray* tvec, double* rmsd);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveRapid", "ptr", $img, "int", $num, "int", $len, "ptr", $pts3d, "ptr", $tris, "ptr", $K, "ptr", $rvec, "ptr", $tvec, "struct*", $rmsd), "cveRapid", @error)
 EndFunc   ;==>_cveRapid
 
-Func _cveRapidMat(ByRef $matImg, $num, $len, ByRef $matPts3d, ByRef $matTris, ByRef $matK, ByRef $matRvec, ByRef $matTvec, ByRef $rmsd)
+Func _cveRapidMat($matImg, $num, $len, $matPts3d, $matTris, $matK, $matRvec, $matTvec, $rmsd)
     ; cveRapid using cv::Mat instead of _*Array
 
     Local $iArrImg, $vectorOfMatImg, $iArrImgSize
@@ -817,12 +817,12 @@ Func _cveRapidMat(ByRef $matImg, $num, $len, ByRef $matPts3d, ByRef $matTris, By
     Return $retval
 EndFunc   ;==>_cveRapidMat
 
-Func _cveTrackerCompute(ByRef $tracker, ByRef $img, $num, $len, ByRef $K, ByRef $rvec, ByRef $tvec, ByRef $termcrit)
+Func _cveTrackerCompute($tracker, $img, $num, $len, $K, $rvec, $tvec, $termcrit)
     ; CVAPI(float) cveTrackerCompute(cv::rapid::Tracker* tracker, cv::_InputArray* img, int num, int len, cv::_InputArray* K, cv::_InputOutputArray* rvec, cv::_InputOutputArray* tvec, CvTermCriteria* termcrit);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveTrackerCompute", "ptr", $tracker, "ptr", $img, "int", $num, "int", $len, "ptr", $K, "ptr", $rvec, "ptr", $tvec, "struct*", $termcrit), "cveTrackerCompute", @error)
 EndFunc   ;==>_cveTrackerCompute
 
-Func _cveTrackerComputeMat(ByRef $tracker, ByRef $matImg, $num, $len, ByRef $matK, ByRef $matRvec, ByRef $matTvec, ByRef $termcrit)
+Func _cveTrackerComputeMat($tracker, $matImg, $num, $len, $matK, $matRvec, $matTvec, $termcrit)
     ; cveTrackerCompute using cv::Mat instead of _*Array
 
     Local $iArrImg, $vectorOfMatImg, $iArrImgSize
@@ -918,17 +918,38 @@ Func _cveTrackerComputeMat(ByRef $tracker, ByRef $matImg, $num, $len, ByRef $mat
     Return $retval
 EndFunc   ;==>_cveTrackerComputeMat
 
-Func _cveTrackerClearState(ByRef $tracker)
+Func _cveTrackerClearState($tracker)
     ; CVAPI(void) cveTrackerClearState(cv::rapid::Tracker* tracker);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTrackerClearState", "ptr", $tracker), "cveTrackerClearState", @error)
 EndFunc   ;==>_cveTrackerClearState
 
-Func _cveRapidCreate(ByRef $pts3d, ByRef $tris, ByRef $tracker, ByRef $algorithm, ByRef $sharedPtr)
+Func _cveRapidCreate($pts3d, $tris, $tracker, $algorithm, $sharedPtr)
     ; CVAPI(cv::rapid::Rapid*) cveRapidCreate(cv::_InputArray* pts3d, cv::_InputArray* tris, cv::rapid::Tracker** tracker, cv::Algorithm** algorithm, cv::Ptr<cv::rapid::Rapid>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveRapidCreate", "ptr", $pts3d, "ptr", $tris, "ptr*", $tracker, "ptr*", $algorithm, "ptr*", $sharedPtr), "cveRapidCreate", @error)
+
+    Local $bTrackerDllType
+    If VarGetType($tracker) == "DLLStruct" Then
+        $bTrackerDllType = "struct*"
+    Else
+        $bTrackerDllType = "ptr*"
+    EndIf
+
+    Local $bAlgorithmDllType
+    If VarGetType($algorithm) == "DLLStruct" Then
+        $bAlgorithmDllType = "struct*"
+    Else
+        $bAlgorithmDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveRapidCreate", "ptr", $pts3d, "ptr", $tris, $bTrackerDllType, $tracker, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveRapidCreate", @error)
 EndFunc   ;==>_cveRapidCreate
 
-Func _cveRapidCreateMat(ByRef $matPts3d, ByRef $matTris, ByRef $tracker, ByRef $algorithm, ByRef $sharedPtr)
+Func _cveRapidCreateMat($matPts3d, $matTris, $tracker, $algorithm, $sharedPtr)
     ; cveRapidCreate using cv::Mat instead of _*Array
 
     Local $iArrPts3d, $vectorOfMatPts3d, $iArrPts3dSize
@@ -980,17 +1001,46 @@ Func _cveRapidCreateMat(ByRef $matPts3d, ByRef $matTris, ByRef $tracker, ByRef $
     Return $retval
 EndFunc   ;==>_cveRapidCreateMat
 
-Func _cveRapidRelease(ByRef $sharedPtr)
+Func _cveRapidRelease($sharedPtr)
     ; CVAPI(void) cveRapidRelease(cv::Ptr<cv::rapid::Rapid>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRapidRelease", "ptr*", $sharedPtr), "cveRapidRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRapidRelease", $bSharedPtrDllType, $sharedPtr), "cveRapidRelease", @error)
 EndFunc   ;==>_cveRapidRelease
 
-Func _cveOLSTrackerCreate(ByRef $pts3d, ByRef $tris, $histBins, $sobelThesh, ByRef $tracker, ByRef $algorithm, ByRef $sharedPtr)
+Func _cveOLSTrackerCreate($pts3d, $tris, $histBins, $sobelThesh, $tracker, $algorithm, $sharedPtr)
     ; CVAPI(cv::rapid::OLSTracker*) cveOLSTrackerCreate(cv::_InputArray* pts3d, cv::_InputArray* tris, int histBins, uchar sobelThesh, cv::rapid::Tracker** tracker, cv::Algorithm** algorithm, cv::Ptr<cv::rapid::OLSTracker>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOLSTrackerCreate", "ptr", $pts3d, "ptr", $tris, "int", $histBins, "uchar", $sobelThesh, "ptr*", $tracker, "ptr*", $algorithm, "ptr*", $sharedPtr), "cveOLSTrackerCreate", @error)
+
+    Local $bTrackerDllType
+    If VarGetType($tracker) == "DLLStruct" Then
+        $bTrackerDllType = "struct*"
+    Else
+        $bTrackerDllType = "ptr*"
+    EndIf
+
+    Local $bAlgorithmDllType
+    If VarGetType($algorithm) == "DLLStruct" Then
+        $bAlgorithmDllType = "struct*"
+    Else
+        $bAlgorithmDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOLSTrackerCreate", "ptr", $pts3d, "ptr", $tris, "int", $histBins, "uchar", $sobelThesh, $bTrackerDllType, $tracker, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveOLSTrackerCreate", @error)
 EndFunc   ;==>_cveOLSTrackerCreate
 
-Func _cveOLSTrackerCreateMat(ByRef $matPts3d, ByRef $matTris, $histBins, $sobelThesh, ByRef $tracker, ByRef $algorithm, ByRef $sharedPtr)
+Func _cveOLSTrackerCreateMat($matPts3d, $matTris, $histBins, $sobelThesh, $tracker, $algorithm, $sharedPtr)
     ; cveOLSTrackerCreate using cv::Mat instead of _*Array
 
     Local $iArrPts3d, $vectorOfMatPts3d, $iArrPts3dSize
@@ -1042,7 +1092,15 @@ Func _cveOLSTrackerCreateMat(ByRef $matPts3d, ByRef $matTris, $histBins, $sobelT
     Return $retval
 EndFunc   ;==>_cveOLSTrackerCreateMat
 
-Func _cveOLSTrackerRelease(ByRef $sharedPtr)
+Func _cveOLSTrackerRelease($sharedPtr)
     ; CVAPI(void) cveOLSTrackerRelease(cv::Ptr<cv::rapid::OLSTracker>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveOLSTrackerRelease", "ptr*", $sharedPtr), "cveOLSTrackerRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveOLSTrackerRelease", $bSharedPtrDllType, $sharedPtr), "cveOLSTrackerRelease", @error)
 EndFunc   ;==>_cveOLSTrackerRelease

@@ -11,7 +11,7 @@ Func _VectorOfKeyPointCreateSize($size)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfKeyPointCreateSize", "int", $size), "VectorOfKeyPointCreateSize", @error)
 EndFunc   ;==>_VectorOfKeyPointCreateSize
 
-Func _VectorOfKeyPointGetSize(ByRef $v)
+Func _VectorOfKeyPointGetSize($v)
     ; CVAPI(int) VectorOfKeyPointGetSize(std::vector< cv::KeyPoint >* v);
 
     Local $vecV, $iArrVSize
@@ -37,7 +37,7 @@ Func _VectorOfKeyPointGetSize(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfKeyPointGetSize
 
-Func _VectorOfKeyPointPush(ByRef $v, ByRef $value)
+Func _VectorOfKeyPointPush($v, $value)
     ; CVAPI(void) VectorOfKeyPointPush(std::vector< cv::KeyPoint >* v, cv::KeyPoint* value);
 
     Local $vecV, $iArrVSize
@@ -61,7 +61,7 @@ Func _VectorOfKeyPointPush(ByRef $v, ByRef $value)
     EndIf
 EndFunc   ;==>_VectorOfKeyPointPush
 
-Func _VectorOfKeyPointPushMulti(ByRef $v, ByRef $values, $count)
+Func _VectorOfKeyPointPushMulti($v, $values, $count)
     ; CVAPI(void) VectorOfKeyPointPushMulti(std::vector< cv::KeyPoint >* v, cv::KeyPoint* values, int count);
 
     Local $vecV, $iArrVSize
@@ -85,7 +85,7 @@ Func _VectorOfKeyPointPushMulti(ByRef $v, ByRef $values, $count)
     EndIf
 EndFunc   ;==>_VectorOfKeyPointPushMulti
 
-Func _VectorOfKeyPointPushVector(ByRef $v, ByRef $other)
+Func _VectorOfKeyPointPushVector($v, $other)
     ; CVAPI(void) VectorOfKeyPointPushVector(std::vector< cv::KeyPoint >* v, std::vector< cv::KeyPoint >* other);
 
     Local $vecV, $iArrVSize
@@ -127,7 +127,7 @@ Func _VectorOfKeyPointPushVector(ByRef $v, ByRef $other)
     EndIf
 EndFunc   ;==>_VectorOfKeyPointPushVector
 
-Func _VectorOfKeyPointClear(ByRef $v)
+Func _VectorOfKeyPointClear($v)
     ; CVAPI(void) VectorOfKeyPointClear(std::vector< cv::KeyPoint >* v);
 
     Local $vecV, $iArrVSize
@@ -151,7 +151,7 @@ Func _VectorOfKeyPointClear(ByRef $v)
     EndIf
 EndFunc   ;==>_VectorOfKeyPointClear
 
-Func _VectorOfKeyPointRelease(ByRef $v)
+Func _VectorOfKeyPointRelease($v)
     ; CVAPI(void) VectorOfKeyPointRelease(std::vector< cv::KeyPoint >** v);
 
     Local $vecV, $iArrVSize
@@ -168,14 +168,21 @@ Func _VectorOfKeyPointRelease(ByRef $v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfKeyPointRelease", "ptr*", $vecV), "VectorOfKeyPointRelease", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfKeyPointRelease", $bVDllType, $vecV), "VectorOfKeyPointRelease", @error)
 
     If $bVIsArray Then
         _VectorOfKeyPointRelease($vecV)
     EndIf
 EndFunc   ;==>_VectorOfKeyPointRelease
 
-Func _VectorOfKeyPointCopyData(ByRef $v, ByRef $data)
+Func _VectorOfKeyPointCopyData($v, $data)
     ; CVAPI(void) VectorOfKeyPointCopyData(std::vector< cv::KeyPoint >* v, cv::KeyPoint* data);
 
     Local $vecV, $iArrVSize
@@ -199,7 +206,7 @@ Func _VectorOfKeyPointCopyData(ByRef $v, ByRef $data)
     EndIf
 EndFunc   ;==>_VectorOfKeyPointCopyData
 
-Func _VectorOfKeyPointGetStartAddress(ByRef $v)
+Func _VectorOfKeyPointGetStartAddress($v)
     ; CVAPI(cv::KeyPoint*) VectorOfKeyPointGetStartAddress(std::vector< cv::KeyPoint >* v);
 
     Local $vecV, $iArrVSize
@@ -225,7 +232,7 @@ Func _VectorOfKeyPointGetStartAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfKeyPointGetStartAddress
 
-Func _VectorOfKeyPointGetEndAddress(ByRef $v)
+Func _VectorOfKeyPointGetEndAddress($v)
     ; CVAPI(void*) VectorOfKeyPointGetEndAddress(std::vector< cv::KeyPoint >* v);
 
     Local $vecV, $iArrVSize
@@ -251,7 +258,7 @@ Func _VectorOfKeyPointGetEndAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfKeyPointGetEndAddress
 
-Func _VectorOfKeyPointGetItem(ByRef $vec, $index, ByRef $element)
+Func _VectorOfKeyPointGetItem($vec, $index, $element)
     ; CVAPI(void) VectorOfKeyPointGetItem(std::vector<  cv::KeyPoint >* vec, int index, cv::KeyPoint* element);
 
     Local $vecVec, $iArrVecSize
@@ -275,7 +282,7 @@ Func _VectorOfKeyPointGetItem(ByRef $vec, $index, ByRef $element)
     EndIf
 EndFunc   ;==>_VectorOfKeyPointGetItem
 
-Func _VectorOfKeyPointGetItemPtr(ByRef $vec, $index, ByRef $element)
+Func _VectorOfKeyPointGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfKeyPointGetItemPtr(std::vector<  cv::KeyPoint >* vec, int index, cv::KeyPoint** element);
 
     Local $vecVec, $iArrVecSize
@@ -292,14 +299,21 @@ Func _VectorOfKeyPointGetItemPtr(ByRef $vec, $index, ByRef $element)
         $vecVec = $vec
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfKeyPointGetItemPtr", "ptr", $vecVec, "int", $index, "ptr*", $element), "VectorOfKeyPointGetItemPtr", @error)
+    Local $bElementDllType
+    If VarGetType($element) == "DLLStruct" Then
+        $bElementDllType = "struct*"
+    Else
+        $bElementDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfKeyPointGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $element), "VectorOfKeyPointGetItemPtr", @error)
 
     If $bVecIsArray Then
         _VectorOfKeyPointRelease($vecVec)
     EndIf
 EndFunc   ;==>_VectorOfKeyPointGetItemPtr
 
-Func _cveInputArrayFromVectorOfKeyPoint(ByRef $vec)
+Func _cveInputArrayFromVectorOfKeyPoint($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfKeyPoint(std::vector< cv::KeyPoint >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -325,7 +339,7 @@ Func _cveInputArrayFromVectorOfKeyPoint(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveInputArrayFromVectorOfKeyPoint
 
-Func _cveOutputArrayFromVectorOfKeyPoint(ByRef $vec)
+Func _cveOutputArrayFromVectorOfKeyPoint($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfKeyPoint(std::vector< cv::KeyPoint >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -351,7 +365,7 @@ Func _cveOutputArrayFromVectorOfKeyPoint(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveOutputArrayFromVectorOfKeyPoint
 
-Func _cveInputOutputArrayFromVectorOfKeyPoint(ByRef $vec)
+Func _cveInputOutputArrayFromVectorOfKeyPoint($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfKeyPoint(std::vector< cv::KeyPoint >* vec);
 
     Local $vecVec, $iArrVecSize

@@ -1,22 +1,29 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveWBDetectorCreate(ByRef $sharedPtr)
+Func _cveWBDetectorCreate($sharedPtr)
     ; CVAPI(cv::xobjdetect::WBDetector*) cveWBDetectorCreate(cv::Ptr<cv::xobjdetect::WBDetector>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWBDetectorCreate", "ptr*", $sharedPtr), "cveWBDetectorCreate", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWBDetectorCreate", $bSharedPtrDllType, $sharedPtr), "cveWBDetectorCreate", @error)
 EndFunc   ;==>_cveWBDetectorCreate
 
-Func _cveWBDetectorRead(ByRef $detector, ByRef $node)
+Func _cveWBDetectorRead($detector, $node)
     ; CVAPI(void) cveWBDetectorRead(cv::xobjdetect::WBDetector* detector, cv::FileNode* node);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWBDetectorRead", "ptr", $detector, "ptr", $node), "cveWBDetectorRead", @error)
 EndFunc   ;==>_cveWBDetectorRead
 
-Func _cveWBDetectorWrite(ByRef $detector, ByRef $fs)
+Func _cveWBDetectorWrite($detector, $fs)
     ; CVAPI(void) cveWBDetectorWrite(cv::xobjdetect::WBDetector* detector, cv::FileStorage* fs);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWBDetectorWrite", "ptr", $detector, "ptr", $fs), "cveWBDetectorWrite", @error)
 EndFunc   ;==>_cveWBDetectorWrite
 
-Func _cveWBDetectorTrain(ByRef $detector, $posSamples, $negImgs)
+Func _cveWBDetectorTrain($detector, $posSamples, $negImgs)
     ; CVAPI(void) cveWBDetectorTrain(cv::xobjdetect::WBDetector* detector, cv::String* posSamples, cv::String* negImgs);
 
     Local $bPosSamplesIsString = VarGetType($posSamples) == "String"
@@ -40,7 +47,7 @@ Func _cveWBDetectorTrain(ByRef $detector, $posSamples, $negImgs)
     EndIf
 EndFunc   ;==>_cveWBDetectorTrain
 
-Func _cveWBDetectorDetect(ByRef $detector, ByRef $img, ByRef $bboxes, ByRef $confidences)
+Func _cveWBDetectorDetect($detector, $img, $bboxes, $confidences)
     ; CVAPI(void) cveWBDetectorDetect(cv::xobjdetect::WBDetector* detector, cv::Mat* img, std::vector<cv::Rect>* bboxes, std::vector<double>* confidences);
 
     Local $vecBboxes, $iArrBboxesSize
@@ -82,7 +89,22 @@ Func _cveWBDetectorDetect(ByRef $detector, ByRef $img, ByRef $bboxes, ByRef $con
     EndIf
 EndFunc   ;==>_cveWBDetectorDetect
 
-Func _cveWBDetectorRelease(ByRef $detector, ByRef $sharedPtr)
+Func _cveWBDetectorRelease($detector, $sharedPtr)
     ; CVAPI(void) cveWBDetectorRelease(cv::xobjdetect::WBDetector** detector, cv::Ptr<cv::xobjdetect::WBDetector>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWBDetectorRelease", "ptr*", $detector, "ptr*", $sharedPtr), "cveWBDetectorRelease", @error)
+
+    Local $bDetectorDllType
+    If VarGetType($detector) == "DLLStruct" Then
+        $bDetectorDllType = "struct*"
+    Else
+        $bDetectorDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWBDetectorRelease", $bDetectorDllType, $detector, $bSharedPtrDllType, $sharedPtr), "cveWBDetectorRelease", @error)
 EndFunc   ;==>_cveWBDetectorRelease

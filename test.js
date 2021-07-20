@@ -215,7 +215,7 @@ const coerceExpression = (value, options) => {
 
     pos = value.indexOf("~");
     if (pos !== -1) {
-        let start = pos++;
+        const start = pos++;
         if (pos !== value.length && value[pos] === "(") {
             let opened = 1;
             pos++;
@@ -355,7 +355,7 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
                     // enum structs are accessible trough the struct
                     // adding :: will namespace the enum keys
                     for (const key in ast["enum struct"]) {
-                        ast_enum[key + "::"] = ast["enum struct"][key];
+                        ast_enum[`${ key }::`] = ast["enum struct"][key];
                     }
 
                     // keep only enums that are in a namespace
@@ -582,7 +582,7 @@ const options = {
         if (!isNativeType || !/^VectorOf\w+Push$/.test(name)) {
             return autoItType;
         }
-        return `${ argType }`;
+        return `"${ argType }"`;
     },
 
     rettype(returnType, entry, _options) {
@@ -627,7 +627,7 @@ const options = {
                 if (canDefault !== false && defaultValue !== undefined) {
                     autoItArgs.push(`${ autoItArgName } = ${ defaultValue === "_cveNoArray()" ? "_cveNoArrayMat()" : defaultValue }`);
                 } else {
-                    autoItArgs.push((byRef && !isString ? "ByRef " : "") + autoItArgName);
+                    autoItArgs.push(autoItArgName);
                 }
 
                 funcArgs.push(autoItArgName);
@@ -651,7 +651,7 @@ const options = {
             if (canDefault !== false && defaultValue === "_cveNoArray()") {
                 autoItArgs.push(`${ autoItArgName } = _cveNoArrayMat()`);
             } else {
-                autoItArgs.push(`ByRef ${ autoItArgName }`);
+                autoItArgs.push(autoItArgName);
             }
 
             funcArgs.push(arrArgName);

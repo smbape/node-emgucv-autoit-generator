@@ -6,47 +6,55 @@ Func _cveMatCreate()
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatCreate"), "cveMatCreate", @error)
 EndFunc   ;==>_cveMatCreate
 
-Func _cveMatCreateData(ByRef $mat, $row, $cols, $type)
+Func _cveMatCreateData($mat, $row, $cols, $type)
     ; CVAPI(void) cveMatCreateData(cv::Mat* mat, int row, int cols, int type);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatCreateData", "ptr", $mat, "int", $row, "int", $cols, "int", $type), "cveMatCreateData", @error)
 EndFunc   ;==>_cveMatCreateData
 
-Func _cveMatCreateWithData($rows, $cols, $type, ByRef $data, $step)
+Func _cveMatCreateWithData($rows, $cols, $type, $data, $step)
     ; CVAPI(cv::Mat*) cveMatCreateWithData(int rows, int cols, int type, void* data, size_t step);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatCreateWithData", "int", $rows, "int", $cols, "int", $type, "struct*", $data, "ulong_ptr", $step), "cveMatCreateWithData", @error)
 EndFunc   ;==>_cveMatCreateWithData
 
-Func _cveMatCreateMultiDimWithData($ndims, $sizes, $type, ByRef $data, ByRef $steps)
+Func _cveMatCreateMultiDimWithData($ndims, $sizes, $type, $data, $steps)
     ; CVAPI(cv::Mat*) cveMatCreateMultiDimWithData(int ndims, const int* sizes, int type, void* data, size_t* steps);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatCreateMultiDimWithData", "int", $ndims, "const int*", $sizes, "int", $type, "struct*", $data, "struct*", $steps), "cveMatCreateMultiDimWithData", @error)
 EndFunc   ;==>_cveMatCreateMultiDimWithData
 
-Func _cveMatCreateFromRect(ByRef $mat, ByRef $roi)
+Func _cveMatCreateFromRect($mat, $roi)
     ; CVAPI(cv::Mat*) cveMatCreateFromRect(cv::Mat* mat, CvRect* roi);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatCreateFromRect", "ptr", $mat, "struct*", $roi), "cveMatCreateFromRect", @error)
 EndFunc   ;==>_cveMatCreateFromRect
 
-Func _cveMatCreateFromRange(ByRef $mat, ByRef $rowRange, ByRef $colRange)
+Func _cveMatCreateFromRange($mat, $rowRange, $colRange)
     ; CVAPI(cv::Mat*) cveMatCreateFromRange(cv::Mat* mat, cv::Range* rowRange, cv::Range* colRange);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatCreateFromRange", "ptr", $mat, "ptr", $rowRange, "ptr", $colRange), "cveMatCreateFromRange", @error)
 EndFunc   ;==>_cveMatCreateFromRange
 
-Func _cveMatRelease(ByRef $mat)
+Func _cveMatRelease($mat)
     ; CVAPI(void) cveMatRelease(cv::Mat** mat);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatRelease", "ptr*", $mat), "cveMatRelease", @error)
+
+    Local $bMatDllType
+    If VarGetType($mat) == "DLLStruct" Then
+        $bMatDllType = "struct*"
+    Else
+        $bMatDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatRelease", $bMatDllType, $mat), "cveMatRelease", @error)
 EndFunc   ;==>_cveMatRelease
 
-Func _cveMatGetSize(ByRef $mat, ByRef $size)
+Func _cveMatGetSize($mat, $size)
     ; CVAPI(void) cveMatGetSize(cv::Mat* mat, CvSize* size);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatGetSize", "ptr", $mat, "struct*", $size), "cveMatGetSize", @error)
 EndFunc   ;==>_cveMatGetSize
 
-Func _cveMatCopyTo(ByRef $mat, ByRef $m, ByRef $mask)
+Func _cveMatCopyTo($mat, $m, $mask)
     ; CVAPI(void) cveMatCopyTo(cv::Mat* mat, cv::_OutputArray* m, cv::_InputArray* mask);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatCopyTo", "ptr", $mat, "ptr", $m, "ptr", $mask), "cveMatCopyTo", @error)
 EndFunc   ;==>_cveMatCopyTo
 
-Func _cveMatCopyToMat(ByRef $mat, ByRef $matM, ByRef $matMask)
+Func _cveMatCopyToMat($mat, $matM, $matMask)
     ; cveMatCopyTo using cv::Mat instead of _*Array
 
     Local $oArrM, $vectorOfMatM, $iArrMSize
@@ -96,42 +104,42 @@ Func _cveMatCopyToMat(ByRef $mat, ByRef $matM, ByRef $matMask)
     _cveOutputArrayRelease($oArrM)
 EndFunc   ;==>_cveMatCopyToMat
 
-Func _cveArrToMat(ByRef $cvArray, $copyData, $allowND, $coiMode)
+Func _cveArrToMat($cvArray, $copyData, $allowND, $coiMode)
     ; CVAPI(cv::Mat*) cveArrToMat(CvArr* cvArray, bool copyData, bool allowND, int coiMode);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveArrToMat", "struct*", $cvArray, "boolean", $copyData, "boolean", $allowND, "int", $coiMode), "cveArrToMat", @error)
 EndFunc   ;==>_cveArrToMat
 
-Func _cveMatToIplImage(ByRef $mat)
+Func _cveMatToIplImage($mat)
     ; CVAPI(IplImage*) cveMatToIplImage(cv::Mat* mat);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatToIplImage", "ptr", $mat), "cveMatToIplImage", @error)
 EndFunc   ;==>_cveMatToIplImage
 
-Func _cveMatGetElementSize(ByRef $mat)
+Func _cveMatGetElementSize($mat)
     ; CVAPI(int) cveMatGetElementSize(cv::Mat* mat);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveMatGetElementSize", "ptr", $mat), "cveMatGetElementSize", @error)
 EndFunc   ;==>_cveMatGetElementSize
 
-Func _cveMatGetDataPointer(ByRef $mat)
+Func _cveMatGetDataPointer($mat)
     ; CVAPI(uchar*) cveMatGetDataPointer(cv::Mat* mat);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatGetDataPointer", "ptr", $mat), "cveMatGetDataPointer", @error)
 EndFunc   ;==>_cveMatGetDataPointer
 
-Func _cveMatGetDataPointer2(ByRef $mat, ByRef $indices)
+Func _cveMatGetDataPointer2($mat, $indices)
     ; CVAPI(uchar*) cveMatGetDataPointer2(cv::Mat* mat, int* indices);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatGetDataPointer2", "ptr", $mat, "struct*", $indices), "cveMatGetDataPointer2", @error)
 EndFunc   ;==>_cveMatGetDataPointer2
 
-Func _cveMatGetStep(ByRef $mat)
+Func _cveMatGetStep($mat)
     ; CVAPI(size_t) cveMatGetStep(cv::Mat* mat);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ulong_ptr:cdecl", "cveMatGetStep", "ptr", $mat), "cveMatGetStep", @error)
 EndFunc   ;==>_cveMatGetStep
 
-Func _cveMatSetTo(ByRef $mat, ByRef $value, ByRef $mask)
+Func _cveMatSetTo($mat, $value, $mask)
     ; CVAPI(void) cveMatSetTo(cv::Mat* mat, cv::_InputArray* value, cv::_InputArray* mask);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatSetTo", "ptr", $mat, "ptr", $value, "ptr", $mask), "cveMatSetTo", @error)
 EndFunc   ;==>_cveMatSetTo
 
-Func _cveMatSetToMat(ByRef $mat, ByRef $matValue, ByRef $matMask)
+Func _cveMatSetToMat($mat, $matValue, $matMask)
     ; cveMatSetTo using cv::Mat instead of _*Array
 
     Local $iArrValue, $vectorOfMatValue, $iArrValueSize
@@ -181,17 +189,17 @@ Func _cveMatSetToMat(ByRef $mat, ByRef $matValue, ByRef $matMask)
     _cveInputArrayRelease($iArrValue)
 EndFunc   ;==>_cveMatSetToMat
 
-Func _cveMatGetUMat(ByRef $mat, $access, $usageFlags)
+Func _cveMatGetUMat($mat, $access, $usageFlags)
     ; CVAPI(cv::UMat*) cveMatGetUMat(cv::Mat* mat, int access, cv::UMatUsageFlags usageFlags);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatGetUMat", "ptr", $mat, "int", $access, "cv::UMatUsageFlags", $usageFlags), "cveMatGetUMat", @error)
 EndFunc   ;==>_cveMatGetUMat
 
-Func _cveMatConvertTo(ByRef $mat, ByRef $out, $rtype, $alpha, $beta)
+Func _cveMatConvertTo($mat, $out, $rtype, $alpha, $beta)
     ; CVAPI(void) cveMatConvertTo(cv::Mat* mat, cv::_OutputArray* out, int rtype, double alpha, double beta);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatConvertTo", "ptr", $mat, "ptr", $out, "int", $rtype, "double", $alpha, "double", $beta), "cveMatConvertTo", @error)
 EndFunc   ;==>_cveMatConvertTo
 
-Func _cveMatConvertToMat(ByRef $mat, ByRef $matOut, $rtype, $alpha, $beta)
+Func _cveMatConvertToMat($mat, $matOut, $rtype, $alpha, $beta)
     ; cveMatConvertTo using cv::Mat instead of _*Array
 
     Local $oArrOut, $vectorOfMatOut, $iArrOutSize
@@ -219,17 +227,17 @@ Func _cveMatConvertToMat(ByRef $mat, ByRef $matOut, $rtype, $alpha, $beta)
     _cveOutputArrayRelease($oArrOut)
 EndFunc   ;==>_cveMatConvertToMat
 
-Func _cveMatReshape(ByRef $mat, $cn, $rows)
+Func _cveMatReshape($mat, $cn, $rows)
     ; CVAPI(cv::Mat*) cveMatReshape(cv::Mat* mat, int cn, int rows);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatReshape", "ptr", $mat, "int", $cn, "int", $rows), "cveMatReshape", @error)
 EndFunc   ;==>_cveMatReshape
 
-Func _cveMatDot(ByRef $mat, ByRef $m)
+Func _cveMatDot($mat, $m)
     ; CVAPI(double) cveMatDot(cv::Mat* mat, cv::_InputArray* m);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveMatDot", "ptr", $mat, "ptr", $m), "cveMatDot", @error)
 EndFunc   ;==>_cveMatDot
 
-Func _cveMatDotMat(ByRef $mat, ByRef $matM)
+Func _cveMatDotMat($mat, $matM)
     ; cveMatDot using cv::Mat instead of _*Array
 
     Local $iArrM, $vectorOfMatM, $iArrMSize
@@ -259,12 +267,12 @@ Func _cveMatDotMat(ByRef $mat, ByRef $matM)
     Return $retval
 EndFunc   ;==>_cveMatDotMat
 
-Func _cveMatCross(ByRef $mat, ByRef $m, ByRef $result)
+Func _cveMatCross($mat, $m, $result)
     ; CVAPI(void) cveMatCross(cv::Mat* mat, cv::_InputArray* m, cv::Mat* result);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatCross", "ptr", $mat, "ptr", $m, "ptr", $result), "cveMatCross", @error)
 EndFunc   ;==>_cveMatCross
 
-Func _cveMatCrossMat(ByRef $mat, ByRef $matM, ByRef $result)
+Func _cveMatCrossMat($mat, $matM, $result)
     ; cveMatCross using cv::Mat instead of _*Array
 
     Local $iArrM, $vectorOfMatM, $iArrMSize
@@ -292,47 +300,47 @@ Func _cveMatCrossMat(ByRef $mat, ByRef $matM, ByRef $result)
     _cveInputArrayRelease($iArrM)
 EndFunc   ;==>_cveMatCrossMat
 
-Func _cveMatCopyDataTo(ByRef $mat, ByRef $dest)
+Func _cveMatCopyDataTo($mat, $dest)
     ; CVAPI(void) cveMatCopyDataTo(cv::Mat* mat, unsigned char* dest);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatCopyDataTo", "ptr", $mat, "ptr", $dest), "cveMatCopyDataTo", @error)
 EndFunc   ;==>_cveMatCopyDataTo
 
-Func _cveMatCopyDataFrom(ByRef $mat, ByRef $source)
+Func _cveMatCopyDataFrom($mat, $source)
     ; CVAPI(void) cveMatCopyDataFrom(cv::Mat* mat, unsigned char* source);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatCopyDataFrom", "ptr", $mat, "ptr", $source), "cveMatCopyDataFrom", @error)
 EndFunc   ;==>_cveMatCopyDataFrom
 
-Func _cveMatGetSizeOfDimension(ByRef $mat, ByRef $sizes)
+Func _cveMatGetSizeOfDimension($mat, $sizes)
     ; CVAPI(void) cveMatGetSizeOfDimension(cv::Mat* mat, int* sizes);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatGetSizeOfDimension", "ptr", $mat, "struct*", $sizes), "cveMatGetSizeOfDimension", @error)
 EndFunc   ;==>_cveMatGetSizeOfDimension
 
-Func _cveSwapMat(ByRef $mat1, ByRef $mat2)
+Func _cveSwapMat($mat1, $mat2)
     ; CVAPI(void) cveSwapMat(cv::Mat* mat1, cv::Mat* mat2);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSwapMat", "ptr", $mat1, "ptr", $mat2), "cveSwapMat", @error)
 EndFunc   ;==>_cveSwapMat
 
-Func _cveMatEye($rows, $cols, $type, ByRef $m)
+Func _cveMatEye($rows, $cols, $type, $m)
     ; CVAPI(void) cveMatEye(int rows, int cols, int type, cv::Mat* m);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatEye", "int", $rows, "int", $cols, "int", $type, "ptr", $m), "cveMatEye", @error)
 EndFunc   ;==>_cveMatEye
 
-Func _cveMatDiag(ByRef $src, $d, ByRef $dst)
+Func _cveMatDiag($src, $d, $dst)
     ; CVAPI(void) cveMatDiag(cv::Mat* src, int d, cv::Mat* dst);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatDiag", "ptr", $src, "int", $d, "ptr", $dst), "cveMatDiag", @error)
 EndFunc   ;==>_cveMatDiag
 
-Func _cveMatT(ByRef $src, ByRef $dst)
+Func _cveMatT($src, $dst)
     ; CVAPI(void) cveMatT(cv::Mat* src, cv::Mat* dst);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatT", "ptr", $src, "ptr", $dst), "cveMatT", @error)
 EndFunc   ;==>_cveMatT
 
-Func _cveMatZeros($rows, $cols, $type, ByRef $dst)
+Func _cveMatZeros($rows, $cols, $type, $dst)
     ; CVAPI(void) cveMatZeros(int rows, int cols, int type, cv::Mat* dst);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatZeros", "int", $rows, "int", $cols, "int", $type, "ptr", $dst), "cveMatZeros", @error)
 EndFunc   ;==>_cveMatZeros
 
-Func _cveMatOnes($rows, $cols, $type, ByRef $dst)
+Func _cveMatOnes($rows, $cols, $type, $dst)
     ; CVAPI(void) cveMatOnes(int rows, int cols, int type, cv::Mat* dst);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatOnes", "int", $rows, "int", $cols, "int", $type, "ptr", $dst), "cveMatOnes", @error)
 EndFunc   ;==>_cveMatOnes

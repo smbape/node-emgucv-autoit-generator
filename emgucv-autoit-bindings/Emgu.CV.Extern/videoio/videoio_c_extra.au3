@@ -1,7 +1,7 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _OpenniGetColorPoints(ByRef $capture, ByRef $points, ByRef $mask)
+Func _OpenniGetColorPoints($capture, $points, $mask)
     ; CVAPI(void) OpenniGetColorPoints(CvCapture* capture, std::vector<ColorPoint>* points, IplImage* mask);
 
     Local $vecPoints, $iArrPointsSize
@@ -25,7 +25,7 @@ Func _OpenniGetColorPoints(ByRef $capture, ByRef $points, ByRef $mask)
     EndIf
 EndFunc   ;==>_OpenniGetColorPoints
 
-Func _cveVideoCaptureCreateFromDevice($device, $apiPreference, ByRef $params)
+Func _cveVideoCaptureCreateFromDevice($device, $apiPreference, $params)
     ; CVAPI(cv::VideoCapture*) cveVideoCaptureCreateFromDevice(int device, int apiPreference, std::vector< int >* params);
 
     Local $vecParams, $iArrParamsSize
@@ -51,7 +51,7 @@ Func _cveVideoCaptureCreateFromDevice($device, $apiPreference, ByRef $params)
     Return $retval
 EndFunc   ;==>_cveVideoCaptureCreateFromDevice
 
-Func _cveVideoCaptureCreateFromFile($fileName, $apiPreference, ByRef $params)
+Func _cveVideoCaptureCreateFromFile($fileName, $apiPreference, $params)
     ; CVAPI(cv::VideoCapture*) cveVideoCaptureCreateFromFile(cv::String* fileName, int apiPreference, std::vector< int >* params);
 
     Local $bFileNameIsString = VarGetType($fileName) == "String"
@@ -86,32 +86,40 @@ Func _cveVideoCaptureCreateFromFile($fileName, $apiPreference, ByRef $params)
     Return $retval
 EndFunc   ;==>_cveVideoCaptureCreateFromFile
 
-Func _cveVideoCaptureRelease(ByRef $capture)
+Func _cveVideoCaptureRelease($capture)
     ; CVAPI(void) cveVideoCaptureRelease(cv::VideoCapture** capture);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideoCaptureRelease", "ptr*", $capture), "cveVideoCaptureRelease", @error)
+
+    Local $bCaptureDllType
+    If VarGetType($capture) == "DLLStruct" Then
+        $bCaptureDllType = "struct*"
+    Else
+        $bCaptureDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideoCaptureRelease", $bCaptureDllType, $capture), "cveVideoCaptureRelease", @error)
 EndFunc   ;==>_cveVideoCaptureRelease
 
-Func _cveVideoCaptureSet(ByRef $capture, $propId, $value)
+Func _cveVideoCaptureSet($capture, $propId, $value)
     ; CVAPI(bool) cveVideoCaptureSet(cv::VideoCapture* capture, int propId, double value);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureSet", "ptr", $capture, "int", $propId, "double", $value), "cveVideoCaptureSet", @error)
 EndFunc   ;==>_cveVideoCaptureSet
 
-Func _cveVideoCaptureGet(ByRef $capture, $propId)
+Func _cveVideoCaptureGet($capture, $propId)
     ; CVAPI(double) cveVideoCaptureGet(cv::VideoCapture* capture, int propId);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveVideoCaptureGet", "ptr", $capture, "int", $propId), "cveVideoCaptureGet", @error)
 EndFunc   ;==>_cveVideoCaptureGet
 
-Func _cveVideoCaptureGrab(ByRef $capture)
+Func _cveVideoCaptureGrab($capture)
     ; CVAPI(bool) cveVideoCaptureGrab(cv::VideoCapture* capture);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureGrab", "ptr", $capture), "cveVideoCaptureGrab", @error)
 EndFunc   ;==>_cveVideoCaptureGrab
 
-Func _cveVideoCaptureRetrieve(ByRef $capture, ByRef $image, $flag)
+Func _cveVideoCaptureRetrieve($capture, $image, $flag)
     ; CVAPI(bool) cveVideoCaptureRetrieve(cv::VideoCapture* capture, cv::_OutputArray* image, int flag);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureRetrieve", "ptr", $capture, "ptr", $image, "int", $flag), "cveVideoCaptureRetrieve", @error)
 EndFunc   ;==>_cveVideoCaptureRetrieve
 
-Func _cveVideoCaptureRetrieveMat(ByRef $capture, ByRef $matImage, $flag)
+Func _cveVideoCaptureRetrieveMat($capture, $matImage, $flag)
     ; cveVideoCaptureRetrieve using cv::Mat instead of _*Array
 
     Local $oArrImage, $vectorOfMatImage, $iArrImageSize
@@ -141,12 +149,12 @@ Func _cveVideoCaptureRetrieveMat(ByRef $capture, ByRef $matImage, $flag)
     Return $retval
 EndFunc   ;==>_cveVideoCaptureRetrieveMat
 
-Func _cveVideoCaptureRead(ByRef $capture, ByRef $image)
+Func _cveVideoCaptureRead($capture, $image)
     ; CVAPI(bool) cveVideoCaptureRead(cv::VideoCapture* capture, cv::_OutputArray* image);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureRead", "ptr", $capture, "ptr", $image), "cveVideoCaptureRead", @error)
 EndFunc   ;==>_cveVideoCaptureRead
 
-Func _cveVideoCaptureReadMat(ByRef $capture, ByRef $matImage)
+Func _cveVideoCaptureReadMat($capture, $matImage)
     ; cveVideoCaptureRead using cv::Mat instead of _*Array
 
     Local $oArrImage, $vectorOfMatImage, $iArrImageSize
@@ -176,17 +184,17 @@ Func _cveVideoCaptureReadMat(ByRef $capture, ByRef $matImage)
     Return $retval
 EndFunc   ;==>_cveVideoCaptureReadMat
 
-Func _cveVideoCaptureReadToMat(ByRef $capture, ByRef $mat)
+Func _cveVideoCaptureReadToMat($capture, $mat)
     ; CVAPI(void) cveVideoCaptureReadToMat(cv::VideoCapture* capture, cv::Mat* mat);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideoCaptureReadToMat", "ptr", $capture, "ptr", $mat), "cveVideoCaptureReadToMat", @error)
 EndFunc   ;==>_cveVideoCaptureReadToMat
 
-Func _cveVideoCaptureReadToUMat(ByRef $capture, ByRef $umat)
+Func _cveVideoCaptureReadToUMat($capture, $umat)
     ; CVAPI(void) cveVideoCaptureReadToUMat(cv::VideoCapture* capture, cv::UMat* umat);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideoCaptureReadToUMat", "ptr", $capture, "ptr", $umat), "cveVideoCaptureReadToUMat", @error)
 EndFunc   ;==>_cveVideoCaptureReadToUMat
 
-Func _cveVideoCaptureGetBackendName(ByRef $capture, $name)
+Func _cveVideoCaptureGetBackendName($capture, $name)
     ; CVAPI(void) cveVideoCaptureGetBackendName(cv::VideoCapture* capture, cv::String* name);
 
     Local $bNameIsString = VarGetType($name) == "String"
@@ -201,7 +209,7 @@ Func _cveVideoCaptureGetBackendName(ByRef $capture, $name)
     EndIf
 EndFunc   ;==>_cveVideoCaptureGetBackendName
 
-Func _cveVideoCaptureWaitAny(ByRef $streams, ByRef $readyIndex, $timeoutNs)
+Func _cveVideoCaptureWaitAny($streams, $readyIndex, $timeoutNs)
     ; CVAPI(bool) cveVideoCaptureWaitAny(std::vector<cv::VideoCapture>* streams, std::vector<int>* readyIndex, int timeoutNs);
 
     Local $vecStreams, $iArrStreamsSize
@@ -245,7 +253,7 @@ Func _cveVideoCaptureWaitAny(ByRef $streams, ByRef $readyIndex, $timeoutNs)
     Return $retval
 EndFunc   ;==>_cveVideoCaptureWaitAny
 
-Func _cveVideoWriterCreate($filename, $fourcc, $fps, ByRef $frameSize, $isColor)
+Func _cveVideoWriterCreate($filename, $fourcc, $fps, $frameSize, $isColor)
     ; CVAPI(cv::VideoWriter*) cveVideoWriterCreate(cv::String* filename, int fourcc, double fps, CvSize* frameSize, bool isColor);
 
     Local $bFilenameIsString = VarGetType($filename) == "String"
@@ -262,7 +270,7 @@ Func _cveVideoWriterCreate($filename, $fourcc, $fps, ByRef $frameSize, $isColor)
     Return $retval
 EndFunc   ;==>_cveVideoWriterCreate
 
-Func _cveVideoWriterCreate2($filename, $apiPreference, $fourcc, $fps, ByRef $frameSize, $isColor)
+Func _cveVideoWriterCreate2($filename, $apiPreference, $fourcc, $fps, $frameSize, $isColor)
     ; CVAPI(cv::VideoWriter*) cveVideoWriterCreate2(cv::String* filename, int apiPreference, int fourcc, double fps, CvSize* frameSize, bool isColor);
 
     Local $bFilenameIsString = VarGetType($filename) == "String"
@@ -279,7 +287,7 @@ Func _cveVideoWriterCreate2($filename, $apiPreference, $fourcc, $fps, ByRef $fra
     Return $retval
 EndFunc   ;==>_cveVideoWriterCreate2
 
-Func _cveVideoWriterCreate3($filename, $apiPreference, $fourcc, $fps, ByRef $frameSize, ByRef $params)
+Func _cveVideoWriterCreate3($filename, $apiPreference, $fourcc, $fps, $frameSize, $params)
     ; CVAPI(cv::VideoWriter*) cveVideoWriterCreate3(cv::String* filename, int apiPreference, int fourcc, double fps, CvSize* frameSize, std::vector< int >* params);
 
     Local $bFilenameIsString = VarGetType($filename) == "String"
@@ -314,27 +322,35 @@ Func _cveVideoWriterCreate3($filename, $apiPreference, $fourcc, $fps, ByRef $fra
     Return $retval
 EndFunc   ;==>_cveVideoWriterCreate3
 
-Func _cveVideoWriterIsOpened(ByRef $writer)
+Func _cveVideoWriterIsOpened($writer)
     ; CVAPI(bool) cveVideoWriterIsOpened(cv::VideoWriter* writer);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoWriterIsOpened", "ptr", $writer), "cveVideoWriterIsOpened", @error)
 EndFunc   ;==>_cveVideoWriterIsOpened
 
-Func _cveVideoWriterSet(ByRef $writer, $propId, $value)
+Func _cveVideoWriterSet($writer, $propId, $value)
     ; CVAPI(bool) cveVideoWriterSet(cv::VideoWriter* writer, int propId, double value);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoWriterSet", "ptr", $writer, "int", $propId, "double", $value), "cveVideoWriterSet", @error)
 EndFunc   ;==>_cveVideoWriterSet
 
-Func _cveVideoWriterGet(ByRef $writer, $propId)
+Func _cveVideoWriterGet($writer, $propId)
     ; CVAPI(double) cveVideoWriterGet(cv::VideoWriter* writer, int propId);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveVideoWriterGet", "ptr", $writer, "int", $propId), "cveVideoWriterGet", @error)
 EndFunc   ;==>_cveVideoWriterGet
 
-Func _cveVideoWriterRelease(ByRef $writer)
+Func _cveVideoWriterRelease($writer)
     ; CVAPI(void) cveVideoWriterRelease(cv::VideoWriter** writer);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideoWriterRelease", "ptr*", $writer), "cveVideoWriterRelease", @error)
+
+    Local $bWriterDllType
+    If VarGetType($writer) == "DLLStruct" Then
+        $bWriterDllType = "struct*"
+    Else
+        $bWriterDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideoWriterRelease", $bWriterDllType, $writer), "cveVideoWriterRelease", @error)
 EndFunc   ;==>_cveVideoWriterRelease
 
-Func _cveVideoWriterWrite(ByRef $writer, ByRef $image)
+Func _cveVideoWriterWrite($writer, $image)
     ; CVAPI(void) cveVideoWriterWrite(cv::VideoWriter* writer, cv::Mat* image);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideoWriterWrite", "ptr", $writer, "ptr", $image), "cveVideoWriterWrite", @error)
 EndFunc   ;==>_cveVideoWriterWrite
@@ -359,7 +375,7 @@ Func _cveGetBackendName($api, $name)
     EndIf
 EndFunc   ;==>_cveGetBackendName
 
-Func _cveGetBackends(ByRef $backends)
+Func _cveGetBackends($backends)
     ; CVAPI(void) cveGetBackends(std::vector<int>* backends);
 
     Local $vecBackends, $iArrBackendsSize
@@ -383,7 +399,7 @@ Func _cveGetBackends(ByRef $backends)
     EndIf
 EndFunc   ;==>_cveGetBackends
 
-Func _cveGetCameraBackends(ByRef $backends)
+Func _cveGetCameraBackends($backends)
     ; CVAPI(void) cveGetCameraBackends(std::vector<int>* backends);
 
     Local $vecBackends, $iArrBackendsSize
@@ -407,7 +423,7 @@ Func _cveGetCameraBackends(ByRef $backends)
     EndIf
 EndFunc   ;==>_cveGetCameraBackends
 
-Func _cveGetStreamBackends(ByRef $backends)
+Func _cveGetStreamBackends($backends)
     ; CVAPI(void) cveGetStreamBackends(std::vector<int>* backends);
 
     Local $vecBackends, $iArrBackendsSize
@@ -431,7 +447,7 @@ Func _cveGetStreamBackends(ByRef $backends)
     EndIf
 EndFunc   ;==>_cveGetStreamBackends
 
-Func _cveGetWriterBackends(ByRef $backends)
+Func _cveGetWriterBackends($backends)
     ; CVAPI(void) cveGetWriterBackends(std::vector<int>* backends);
 
     Local $vecBackends, $iArrBackendsSize

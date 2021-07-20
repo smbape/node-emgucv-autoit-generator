@@ -11,7 +11,7 @@ Func _VectorOfRotatedRectCreateSize($size)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfRotatedRectCreateSize", "int", $size), "VectorOfRotatedRectCreateSize", @error)
 EndFunc   ;==>_VectorOfRotatedRectCreateSize
 
-Func _VectorOfRotatedRectGetSize(ByRef $v)
+Func _VectorOfRotatedRectGetSize($v)
     ; CVAPI(int) VectorOfRotatedRectGetSize(std::vector< cv::RotatedRect >* v);
 
     Local $vecV, $iArrVSize
@@ -37,7 +37,7 @@ Func _VectorOfRotatedRectGetSize(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfRotatedRectGetSize
 
-Func _VectorOfRotatedRectPush(ByRef $v, ByRef $value)
+Func _VectorOfRotatedRectPush($v, $value)
     ; CVAPI(void) VectorOfRotatedRectPush(std::vector< cv::RotatedRect >* v, cv::RotatedRect* value);
 
     Local $vecV, $iArrVSize
@@ -61,7 +61,7 @@ Func _VectorOfRotatedRectPush(ByRef $v, ByRef $value)
     EndIf
 EndFunc   ;==>_VectorOfRotatedRectPush
 
-Func _VectorOfRotatedRectPushMulti(ByRef $v, ByRef $values, $count)
+Func _VectorOfRotatedRectPushMulti($v, $values, $count)
     ; CVAPI(void) VectorOfRotatedRectPushMulti(std::vector< cv::RotatedRect >* v, cv::RotatedRect* values, int count);
 
     Local $vecV, $iArrVSize
@@ -85,7 +85,7 @@ Func _VectorOfRotatedRectPushMulti(ByRef $v, ByRef $values, $count)
     EndIf
 EndFunc   ;==>_VectorOfRotatedRectPushMulti
 
-Func _VectorOfRotatedRectPushVector(ByRef $v, ByRef $other)
+Func _VectorOfRotatedRectPushVector($v, $other)
     ; CVAPI(void) VectorOfRotatedRectPushVector(std::vector< cv::RotatedRect >* v, std::vector< cv::RotatedRect >* other);
 
     Local $vecV, $iArrVSize
@@ -127,7 +127,7 @@ Func _VectorOfRotatedRectPushVector(ByRef $v, ByRef $other)
     EndIf
 EndFunc   ;==>_VectorOfRotatedRectPushVector
 
-Func _VectorOfRotatedRectClear(ByRef $v)
+Func _VectorOfRotatedRectClear($v)
     ; CVAPI(void) VectorOfRotatedRectClear(std::vector< cv::RotatedRect >* v);
 
     Local $vecV, $iArrVSize
@@ -151,7 +151,7 @@ Func _VectorOfRotatedRectClear(ByRef $v)
     EndIf
 EndFunc   ;==>_VectorOfRotatedRectClear
 
-Func _VectorOfRotatedRectRelease(ByRef $v)
+Func _VectorOfRotatedRectRelease($v)
     ; CVAPI(void) VectorOfRotatedRectRelease(std::vector< cv::RotatedRect >** v);
 
     Local $vecV, $iArrVSize
@@ -168,14 +168,21 @@ Func _VectorOfRotatedRectRelease(ByRef $v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfRotatedRectRelease", "ptr*", $vecV), "VectorOfRotatedRectRelease", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfRotatedRectRelease", $bVDllType, $vecV), "VectorOfRotatedRectRelease", @error)
 
     If $bVIsArray Then
         _VectorOfRotatedRectRelease($vecV)
     EndIf
 EndFunc   ;==>_VectorOfRotatedRectRelease
 
-Func _VectorOfRotatedRectCopyData(ByRef $v, ByRef $data)
+Func _VectorOfRotatedRectCopyData($v, $data)
     ; CVAPI(void) VectorOfRotatedRectCopyData(std::vector< cv::RotatedRect >* v, cv::RotatedRect* data);
 
     Local $vecV, $iArrVSize
@@ -199,7 +206,7 @@ Func _VectorOfRotatedRectCopyData(ByRef $v, ByRef $data)
     EndIf
 EndFunc   ;==>_VectorOfRotatedRectCopyData
 
-Func _VectorOfRotatedRectGetStartAddress(ByRef $v)
+Func _VectorOfRotatedRectGetStartAddress($v)
     ; CVAPI(cv::RotatedRect*) VectorOfRotatedRectGetStartAddress(std::vector< cv::RotatedRect >* v);
 
     Local $vecV, $iArrVSize
@@ -225,7 +232,7 @@ Func _VectorOfRotatedRectGetStartAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfRotatedRectGetStartAddress
 
-Func _VectorOfRotatedRectGetEndAddress(ByRef $v)
+Func _VectorOfRotatedRectGetEndAddress($v)
     ; CVAPI(void*) VectorOfRotatedRectGetEndAddress(std::vector< cv::RotatedRect >* v);
 
     Local $vecV, $iArrVSize
@@ -251,7 +258,7 @@ Func _VectorOfRotatedRectGetEndAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfRotatedRectGetEndAddress
 
-Func _VectorOfRotatedRectGetItem(ByRef $vec, $index, ByRef $element)
+Func _VectorOfRotatedRectGetItem($vec, $index, $element)
     ; CVAPI(void) VectorOfRotatedRectGetItem(std::vector<  cv::RotatedRect >* vec, int index, cv::RotatedRect* element);
 
     Local $vecVec, $iArrVecSize
@@ -275,7 +282,7 @@ Func _VectorOfRotatedRectGetItem(ByRef $vec, $index, ByRef $element)
     EndIf
 EndFunc   ;==>_VectorOfRotatedRectGetItem
 
-Func _VectorOfRotatedRectGetItemPtr(ByRef $vec, $index, ByRef $element)
+Func _VectorOfRotatedRectGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfRotatedRectGetItemPtr(std::vector<  cv::RotatedRect >* vec, int index, cv::RotatedRect** element);
 
     Local $vecVec, $iArrVecSize
@@ -292,14 +299,21 @@ Func _VectorOfRotatedRectGetItemPtr(ByRef $vec, $index, ByRef $element)
         $vecVec = $vec
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfRotatedRectGetItemPtr", "ptr", $vecVec, "int", $index, "ptr*", $element), "VectorOfRotatedRectGetItemPtr", @error)
+    Local $bElementDllType
+    If VarGetType($element) == "DLLStruct" Then
+        $bElementDllType = "struct*"
+    Else
+        $bElementDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfRotatedRectGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $element), "VectorOfRotatedRectGetItemPtr", @error)
 
     If $bVecIsArray Then
         _VectorOfRotatedRectRelease($vecVec)
     EndIf
 EndFunc   ;==>_VectorOfRotatedRectGetItemPtr
 
-Func _cveInputArrayFromVectorOfRotatedRect(ByRef $vec)
+Func _cveInputArrayFromVectorOfRotatedRect($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfRotatedRect(std::vector< cv::RotatedRect >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -325,7 +339,7 @@ Func _cveInputArrayFromVectorOfRotatedRect(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveInputArrayFromVectorOfRotatedRect
 
-Func _cveOutputArrayFromVectorOfRotatedRect(ByRef $vec)
+Func _cveOutputArrayFromVectorOfRotatedRect($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfRotatedRect(std::vector< cv::RotatedRect >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -351,7 +365,7 @@ Func _cveOutputArrayFromVectorOfRotatedRect(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveOutputArrayFromVectorOfRotatedRect
 
-Func _cveInputOutputArrayFromVectorOfRotatedRect(ByRef $vec)
+Func _cveInputOutputArrayFromVectorOfRotatedRect($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfRotatedRect(std::vector< cv::RotatedRect >* vec);
 
     Local $vecVec, $iArrVecSize

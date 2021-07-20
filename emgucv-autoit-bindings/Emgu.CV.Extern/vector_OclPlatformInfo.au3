@@ -11,7 +11,7 @@ Func _VectorOfOclPlatformInfoCreateSize($size)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfOclPlatformInfoCreateSize", "int", $size), "VectorOfOclPlatformInfoCreateSize", @error)
 EndFunc   ;==>_VectorOfOclPlatformInfoCreateSize
 
-Func _VectorOfOclPlatformInfoGetSize(ByRef $v)
+Func _VectorOfOclPlatformInfoGetSize($v)
     ; CVAPI(int) VectorOfOclPlatformInfoGetSize(std::vector< cv::ocl::PlatformInfo >* v);
 
     Local $vecV, $iArrVSize
@@ -37,7 +37,7 @@ Func _VectorOfOclPlatformInfoGetSize(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfOclPlatformInfoGetSize
 
-Func _VectorOfOclPlatformInfoPush(ByRef $v, ByRef $value)
+Func _VectorOfOclPlatformInfoPush($v, $value)
     ; CVAPI(void) VectorOfOclPlatformInfoPush(std::vector< cv::ocl::PlatformInfo >* v, cv::ocl::PlatformInfo* value);
 
     Local $vecV, $iArrVSize
@@ -61,7 +61,7 @@ Func _VectorOfOclPlatformInfoPush(ByRef $v, ByRef $value)
     EndIf
 EndFunc   ;==>_VectorOfOclPlatformInfoPush
 
-Func _VectorOfOclPlatformInfoPushVector(ByRef $v, ByRef $other)
+Func _VectorOfOclPlatformInfoPushVector($v, $other)
     ; CVAPI(void) VectorOfOclPlatformInfoPushVector(std::vector< cv::ocl::PlatformInfo >* v, std::vector< cv::ocl::PlatformInfo >* other);
 
     Local $vecV, $iArrVSize
@@ -103,7 +103,7 @@ Func _VectorOfOclPlatformInfoPushVector(ByRef $v, ByRef $other)
     EndIf
 EndFunc   ;==>_VectorOfOclPlatformInfoPushVector
 
-Func _VectorOfOclPlatformInfoGetStartAddress(ByRef $v)
+Func _VectorOfOclPlatformInfoGetStartAddress($v)
     ; CVAPI(cv::ocl::PlatformInfo*) VectorOfOclPlatformInfoGetStartAddress(std::vector< cv::ocl::PlatformInfo >* v);
 
     Local $vecV, $iArrVSize
@@ -129,7 +129,7 @@ Func _VectorOfOclPlatformInfoGetStartAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfOclPlatformInfoGetStartAddress
 
-Func _VectorOfOclPlatformInfoGetEndAddress(ByRef $v)
+Func _VectorOfOclPlatformInfoGetEndAddress($v)
     ; CVAPI(void*) VectorOfOclPlatformInfoGetEndAddress(std::vector< cv::ocl::PlatformInfo >* v);
 
     Local $vecV, $iArrVSize
@@ -155,7 +155,7 @@ Func _VectorOfOclPlatformInfoGetEndAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfOclPlatformInfoGetEndAddress
 
-Func _VectorOfOclPlatformInfoClear(ByRef $v)
+Func _VectorOfOclPlatformInfoClear($v)
     ; CVAPI(void) VectorOfOclPlatformInfoClear(std::vector< cv::ocl::PlatformInfo >* v);
 
     Local $vecV, $iArrVSize
@@ -179,7 +179,7 @@ Func _VectorOfOclPlatformInfoClear(ByRef $v)
     EndIf
 EndFunc   ;==>_VectorOfOclPlatformInfoClear
 
-Func _VectorOfOclPlatformInfoRelease(ByRef $v)
+Func _VectorOfOclPlatformInfoRelease($v)
     ; CVAPI(void) VectorOfOclPlatformInfoRelease(std::vector< cv::ocl::PlatformInfo >** v);
 
     Local $vecV, $iArrVSize
@@ -196,14 +196,21 @@ Func _VectorOfOclPlatformInfoRelease(ByRef $v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfOclPlatformInfoRelease", "ptr*", $vecV), "VectorOfOclPlatformInfoRelease", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfOclPlatformInfoRelease", $bVDllType, $vecV), "VectorOfOclPlatformInfoRelease", @error)
 
     If $bVIsArray Then
         _VectorOfOclPlatformInfoRelease($vecV)
     EndIf
 EndFunc   ;==>_VectorOfOclPlatformInfoRelease
 
-Func _VectorOfOclPlatformInfoCopyData(ByRef $v, ByRef $data)
+Func _VectorOfOclPlatformInfoCopyData($v, $data)
     ; CVAPI(void) VectorOfOclPlatformInfoCopyData(std::vector< cv::ocl::PlatformInfo >* v, cv::ocl::PlatformInfo* data);
 
     Local $vecV, $iArrVSize
@@ -227,7 +234,7 @@ Func _VectorOfOclPlatformInfoCopyData(ByRef $v, ByRef $data)
     EndIf
 EndFunc   ;==>_VectorOfOclPlatformInfoCopyData
 
-Func _VectorOfOclPlatformInfoGetItemPtr(ByRef $vec, $index, ByRef $element)
+Func _VectorOfOclPlatformInfoGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfOclPlatformInfoGetItemPtr(std::vector<  cv::ocl::PlatformInfo >* vec, int index, cv::ocl::PlatformInfo** element);
 
     Local $vecVec, $iArrVecSize
@@ -244,14 +251,21 @@ Func _VectorOfOclPlatformInfoGetItemPtr(ByRef $vec, $index, ByRef $element)
         $vecVec = $vec
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfOclPlatformInfoGetItemPtr", "ptr", $vecVec, "int", $index, "ptr*", $element), "VectorOfOclPlatformInfoGetItemPtr", @error)
+    Local $bElementDllType
+    If VarGetType($element) == "DLLStruct" Then
+        $bElementDllType = "struct*"
+    Else
+        $bElementDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfOclPlatformInfoGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $element), "VectorOfOclPlatformInfoGetItemPtr", @error)
 
     If $bVecIsArray Then
         _VectorOfOclPlatformInfoRelease($vecVec)
     EndIf
 EndFunc   ;==>_VectorOfOclPlatformInfoGetItemPtr
 
-Func _cveInputArrayFromVectorOfOclPlatformInfo(ByRef $vec)
+Func _cveInputArrayFromVectorOfOclPlatformInfo($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfOclPlatformInfo(std::vector< cv::ocl::PlatformInfo >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -277,7 +291,7 @@ Func _cveInputArrayFromVectorOfOclPlatformInfo(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveInputArrayFromVectorOfOclPlatformInfo
 
-Func _cveOutputArrayFromVectorOfOclPlatformInfo(ByRef $vec)
+Func _cveOutputArrayFromVectorOfOclPlatformInfo($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfOclPlatformInfo(std::vector< cv::ocl::PlatformInfo >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -303,7 +317,7 @@ Func _cveOutputArrayFromVectorOfOclPlatformInfo(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveOutputArrayFromVectorOfOclPlatformInfo
 
-Func _cveInputOutputArrayFromVectorOfOclPlatformInfo(ByRef $vec)
+Func _cveInputOutputArrayFromVectorOfOclPlatformInfo($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfOclPlatformInfo(std::vector< cv::ocl::PlatformInfo >* vec);
 
     Local $vecVec, $iArrVecSize

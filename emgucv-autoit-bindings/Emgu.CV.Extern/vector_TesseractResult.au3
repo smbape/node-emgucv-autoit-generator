@@ -11,7 +11,7 @@ Func _VectorOfTesseractResultCreateSize($size)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfTesseractResultCreateSize", "int", $size), "VectorOfTesseractResultCreateSize", @error)
 EndFunc   ;==>_VectorOfTesseractResultCreateSize
 
-Func _VectorOfTesseractResultGetSize(ByRef $v)
+Func _VectorOfTesseractResultGetSize($v)
     ; CVAPI(int) VectorOfTesseractResultGetSize(std::vector< TesseractResult >* v);
 
     Local $vecV, $iArrVSize
@@ -37,7 +37,7 @@ Func _VectorOfTesseractResultGetSize(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfTesseractResultGetSize
 
-Func _VectorOfTesseractResultPush(ByRef $v, ByRef $value)
+Func _VectorOfTesseractResultPush($v, $value)
     ; CVAPI(void) VectorOfTesseractResultPush(std::vector< TesseractResult >* v, TesseractResult* value);
 
     Local $vecV, $iArrVSize
@@ -61,7 +61,7 @@ Func _VectorOfTesseractResultPush(ByRef $v, ByRef $value)
     EndIf
 EndFunc   ;==>_VectorOfTesseractResultPush
 
-Func _VectorOfTesseractResultPushMulti(ByRef $v, ByRef $values, $count)
+Func _VectorOfTesseractResultPushMulti($v, $values, $count)
     ; CVAPI(void) VectorOfTesseractResultPushMulti(std::vector< TesseractResult >* v, TesseractResult* values, int count);
 
     Local $vecV, $iArrVSize
@@ -85,7 +85,7 @@ Func _VectorOfTesseractResultPushMulti(ByRef $v, ByRef $values, $count)
     EndIf
 EndFunc   ;==>_VectorOfTesseractResultPushMulti
 
-Func _VectorOfTesseractResultPushVector(ByRef $v, ByRef $other)
+Func _VectorOfTesseractResultPushVector($v, $other)
     ; CVAPI(void) VectorOfTesseractResultPushVector(std::vector< TesseractResult >* v, std::vector< TesseractResult >* other);
 
     Local $vecV, $iArrVSize
@@ -127,7 +127,7 @@ Func _VectorOfTesseractResultPushVector(ByRef $v, ByRef $other)
     EndIf
 EndFunc   ;==>_VectorOfTesseractResultPushVector
 
-Func _VectorOfTesseractResultClear(ByRef $v)
+Func _VectorOfTesseractResultClear($v)
     ; CVAPI(void) VectorOfTesseractResultClear(std::vector< TesseractResult >* v);
 
     Local $vecV, $iArrVSize
@@ -151,7 +151,7 @@ Func _VectorOfTesseractResultClear(ByRef $v)
     EndIf
 EndFunc   ;==>_VectorOfTesseractResultClear
 
-Func _VectorOfTesseractResultRelease(ByRef $v)
+Func _VectorOfTesseractResultRelease($v)
     ; CVAPI(void) VectorOfTesseractResultRelease(std::vector< TesseractResult >** v);
 
     Local $vecV, $iArrVSize
@@ -168,14 +168,21 @@ Func _VectorOfTesseractResultRelease(ByRef $v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTesseractResultRelease", "ptr*", $vecV), "VectorOfTesseractResultRelease", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTesseractResultRelease", $bVDllType, $vecV), "VectorOfTesseractResultRelease", @error)
 
     If $bVIsArray Then
         _VectorOfTesseractResultRelease($vecV)
     EndIf
 EndFunc   ;==>_VectorOfTesseractResultRelease
 
-Func _VectorOfTesseractResultCopyData(ByRef $v, ByRef $data)
+Func _VectorOfTesseractResultCopyData($v, $data)
     ; CVAPI(void) VectorOfTesseractResultCopyData(std::vector< TesseractResult >* v, TesseractResult* data);
 
     Local $vecV, $iArrVSize
@@ -199,7 +206,7 @@ Func _VectorOfTesseractResultCopyData(ByRef $v, ByRef $data)
     EndIf
 EndFunc   ;==>_VectorOfTesseractResultCopyData
 
-Func _VectorOfTesseractResultGetStartAddress(ByRef $v)
+Func _VectorOfTesseractResultGetStartAddress($v)
     ; CVAPI(TesseractResult*) VectorOfTesseractResultGetStartAddress(std::vector< TesseractResult >* v);
 
     Local $vecV, $iArrVSize
@@ -225,7 +232,7 @@ Func _VectorOfTesseractResultGetStartAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfTesseractResultGetStartAddress
 
-Func _VectorOfTesseractResultGetEndAddress(ByRef $v)
+Func _VectorOfTesseractResultGetEndAddress($v)
     ; CVAPI(void*) VectorOfTesseractResultGetEndAddress(std::vector< TesseractResult >* v);
 
     Local $vecV, $iArrVSize
@@ -251,7 +258,7 @@ Func _VectorOfTesseractResultGetEndAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfTesseractResultGetEndAddress
 
-Func _VectorOfTesseractResultGetItem(ByRef $vec, $index, ByRef $element)
+Func _VectorOfTesseractResultGetItem($vec, $index, $element)
     ; CVAPI(void) VectorOfTesseractResultGetItem(std::vector<  TesseractResult >* vec, int index, TesseractResult* element);
 
     Local $vecVec, $iArrVecSize
@@ -275,7 +282,7 @@ Func _VectorOfTesseractResultGetItem(ByRef $vec, $index, ByRef $element)
     EndIf
 EndFunc   ;==>_VectorOfTesseractResultGetItem
 
-Func _VectorOfTesseractResultGetItemPtr(ByRef $vec, $index, ByRef $element)
+Func _VectorOfTesseractResultGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfTesseractResultGetItemPtr(std::vector<  TesseractResult >* vec, int index, TesseractResult** element);
 
     Local $vecVec, $iArrVecSize
@@ -292,14 +299,21 @@ Func _VectorOfTesseractResultGetItemPtr(ByRef $vec, $index, ByRef $element)
         $vecVec = $vec
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTesseractResultGetItemPtr", "ptr", $vecVec, "int", $index, "ptr*", $element), "VectorOfTesseractResultGetItemPtr", @error)
+    Local $bElementDllType
+    If VarGetType($element) == "DLLStruct" Then
+        $bElementDllType = "struct*"
+    Else
+        $bElementDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTesseractResultGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $element), "VectorOfTesseractResultGetItemPtr", @error)
 
     If $bVecIsArray Then
         _VectorOfTesseractResultRelease($vecVec)
     EndIf
 EndFunc   ;==>_VectorOfTesseractResultGetItemPtr
 
-Func _cveInputArrayFromVectorOfTesseractResult(ByRef $vec)
+Func _cveInputArrayFromVectorOfTesseractResult($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfTesseractResult(std::vector< TesseractResult >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -325,7 +339,7 @@ Func _cveInputArrayFromVectorOfTesseractResult(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveInputArrayFromVectorOfTesseractResult
 
-Func _cveOutputArrayFromVectorOfTesseractResult(ByRef $vec)
+Func _cveOutputArrayFromVectorOfTesseractResult($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfTesseractResult(std::vector< TesseractResult >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -351,7 +365,7 @@ Func _cveOutputArrayFromVectorOfTesseractResult(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveOutputArrayFromVectorOfTesseractResult
 
-Func _cveInputOutputArrayFromVectorOfTesseractResult(ByRef $vec)
+Func _cveInputOutputArrayFromVectorOfTesseractResult($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfTesseractResult(std::vector< TesseractResult >* vec);
 
     Local $vecVec, $iArrVecSize

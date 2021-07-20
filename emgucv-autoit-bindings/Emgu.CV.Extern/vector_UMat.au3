@@ -11,7 +11,7 @@ Func _VectorOfUMatCreateSize($size)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfUMatCreateSize", "int", $size), "VectorOfUMatCreateSize", @error)
 EndFunc   ;==>_VectorOfUMatCreateSize
 
-Func _VectorOfUMatGetSize(ByRef $v)
+Func _VectorOfUMatGetSize($v)
     ; CVAPI(int) VectorOfUMatGetSize(std::vector< cv::UMat >* v);
 
     Local $vecV, $iArrVSize
@@ -37,7 +37,7 @@ Func _VectorOfUMatGetSize(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfUMatGetSize
 
-Func _VectorOfUMatPush(ByRef $v, ByRef $value)
+Func _VectorOfUMatPush($v, $value)
     ; CVAPI(void) VectorOfUMatPush(std::vector< cv::UMat >* v, cv::UMat* value);
 
     Local $vecV, $iArrVSize
@@ -61,7 +61,7 @@ Func _VectorOfUMatPush(ByRef $v, ByRef $value)
     EndIf
 EndFunc   ;==>_VectorOfUMatPush
 
-Func _VectorOfUMatPushVector(ByRef $v, ByRef $other)
+Func _VectorOfUMatPushVector($v, $other)
     ; CVAPI(void) VectorOfUMatPushVector(std::vector< cv::UMat >* v, std::vector< cv::UMat >* other);
 
     Local $vecV, $iArrVSize
@@ -103,7 +103,7 @@ Func _VectorOfUMatPushVector(ByRef $v, ByRef $other)
     EndIf
 EndFunc   ;==>_VectorOfUMatPushVector
 
-Func _VectorOfUMatGetStartAddress(ByRef $v)
+Func _VectorOfUMatGetStartAddress($v)
     ; CVAPI(cv::UMat*) VectorOfUMatGetStartAddress(std::vector< cv::UMat >* v);
 
     Local $vecV, $iArrVSize
@@ -129,7 +129,7 @@ Func _VectorOfUMatGetStartAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfUMatGetStartAddress
 
-Func _VectorOfUMatGetEndAddress(ByRef $v)
+Func _VectorOfUMatGetEndAddress($v)
     ; CVAPI(void*) VectorOfUMatGetEndAddress(std::vector< cv::UMat >* v);
 
     Local $vecV, $iArrVSize
@@ -155,7 +155,7 @@ Func _VectorOfUMatGetEndAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfUMatGetEndAddress
 
-Func _VectorOfUMatClear(ByRef $v)
+Func _VectorOfUMatClear($v)
     ; CVAPI(void) VectorOfUMatClear(std::vector< cv::UMat >* v);
 
     Local $vecV, $iArrVSize
@@ -179,7 +179,7 @@ Func _VectorOfUMatClear(ByRef $v)
     EndIf
 EndFunc   ;==>_VectorOfUMatClear
 
-Func _VectorOfUMatRelease(ByRef $v)
+Func _VectorOfUMatRelease($v)
     ; CVAPI(void) VectorOfUMatRelease(std::vector< cv::UMat >** v);
 
     Local $vecV, $iArrVSize
@@ -196,14 +196,21 @@ Func _VectorOfUMatRelease(ByRef $v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfUMatRelease", "ptr*", $vecV), "VectorOfUMatRelease", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfUMatRelease", $bVDllType, $vecV), "VectorOfUMatRelease", @error)
 
     If $bVIsArray Then
         _VectorOfUMatRelease($vecV)
     EndIf
 EndFunc   ;==>_VectorOfUMatRelease
 
-Func _VectorOfUMatCopyData(ByRef $v, ByRef $data)
+Func _VectorOfUMatCopyData($v, $data)
     ; CVAPI(void) VectorOfUMatCopyData(std::vector< cv::UMat >* v, cv::UMat* data);
 
     Local $vecV, $iArrVSize
@@ -227,7 +234,7 @@ Func _VectorOfUMatCopyData(ByRef $v, ByRef $data)
     EndIf
 EndFunc   ;==>_VectorOfUMatCopyData
 
-Func _VectorOfUMatGetItemPtr(ByRef $vec, $index, ByRef $element)
+Func _VectorOfUMatGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfUMatGetItemPtr(std::vector<  cv::UMat >* vec, int index, cv::UMat** element);
 
     Local $vecVec, $iArrVecSize
@@ -244,14 +251,21 @@ Func _VectorOfUMatGetItemPtr(ByRef $vec, $index, ByRef $element)
         $vecVec = $vec
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfUMatGetItemPtr", "ptr", $vecVec, "int", $index, "ptr*", $element), "VectorOfUMatGetItemPtr", @error)
+    Local $bElementDllType
+    If VarGetType($element) == "DLLStruct" Then
+        $bElementDllType = "struct*"
+    Else
+        $bElementDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfUMatGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $element), "VectorOfUMatGetItemPtr", @error)
 
     If $bVecIsArray Then
         _VectorOfUMatRelease($vecVec)
     EndIf
 EndFunc   ;==>_VectorOfUMatGetItemPtr
 
-Func _cveInputArrayFromVectorOfUMat(ByRef $vec)
+Func _cveInputArrayFromVectorOfUMat($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfUMat(std::vector< cv::UMat >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -277,7 +291,7 @@ Func _cveInputArrayFromVectorOfUMat(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveInputArrayFromVectorOfUMat
 
-Func _cveOutputArrayFromVectorOfUMat(ByRef $vec)
+Func _cveOutputArrayFromVectorOfUMat($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfUMat(std::vector< cv::UMat >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -303,7 +317,7 @@ Func _cveOutputArrayFromVectorOfUMat(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveOutputArrayFromVectorOfUMat
 
-Func _cveInputOutputArrayFromVectorOfUMat(ByRef $vec)
+Func _cveInputOutputArrayFromVectorOfUMat($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfUMat(std::vector< cv::UMat >* vec);
 
     Local $vecVec, $iArrVecSize

@@ -1,2 +1,4 @@
+/emgucv-autoit-bindings*.zip
+/libemgucv-windesktop-*
 /node_modules
 /*.sublime-workspace

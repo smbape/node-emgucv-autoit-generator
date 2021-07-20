@@ -1,7 +1,7 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveERFilterNM1Create($classifier, $thresholdDelta, $minArea, $maxArea, $minProbability, $nonMaxSuppression, $minProbabilityDiff, ByRef $sharedPtr)
+Func _cveERFilterNM1Create($classifier, $thresholdDelta, $minArea, $maxArea, $minProbability, $nonMaxSuppression, $minProbabilityDiff, $sharedPtr)
     ; CVAPI(cv::text::ERFilter*) cveERFilterNM1Create(cv::String* classifier, int thresholdDelta, float minArea, float maxArea, float minProbability, bool nonMaxSuppression, float minProbabilityDiff, cv::Ptr<cv::text::ERFilter>** sharedPtr);
 
     Local $bClassifierIsString = VarGetType($classifier) == "String"
@@ -9,7 +9,14 @@ Func _cveERFilterNM1Create($classifier, $thresholdDelta, $minArea, $maxArea, $mi
         $classifier = _cveStringCreateFromStr($classifier)
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveERFilterNM1Create", "ptr", $classifier, "int", $thresholdDelta, "float", $minArea, "float", $maxArea, "float", $minProbability, "boolean", $nonMaxSuppression, "float", $minProbabilityDiff, "ptr*", $sharedPtr), "cveERFilterNM1Create", @error)
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveERFilterNM1Create", "ptr", $classifier, "int", $thresholdDelta, "float", $minArea, "float", $maxArea, "float", $minProbability, "boolean", $nonMaxSuppression, "float", $minProbabilityDiff, $bSharedPtrDllType, $sharedPtr), "cveERFilterNM1Create", @error)
 
     If $bClassifierIsString Then
         _cveStringRelease($classifier)
@@ -18,7 +25,7 @@ Func _cveERFilterNM1Create($classifier, $thresholdDelta, $minArea, $maxArea, $mi
     Return $retval
 EndFunc   ;==>_cveERFilterNM1Create
 
-Func _cveERFilterNM2Create($classifier, $minProbability, ByRef $sharedPtr)
+Func _cveERFilterNM2Create($classifier, $minProbability, $sharedPtr)
     ; CVAPI(cv::text::ERFilter*) cveERFilterNM2Create(cv::String* classifier, float minProbability, cv::Ptr<cv::text::ERFilter>** sharedPtr);
 
     Local $bClassifierIsString = VarGetType($classifier) == "String"
@@ -26,7 +33,14 @@ Func _cveERFilterNM2Create($classifier, $minProbability, ByRef $sharedPtr)
         $classifier = _cveStringCreateFromStr($classifier)
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveERFilterNM2Create", "ptr", $classifier, "float", $minProbability, "ptr*", $sharedPtr), "cveERFilterNM2Create", @error)
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveERFilterNM2Create", "ptr", $classifier, "float", $minProbability, $bSharedPtrDllType, $sharedPtr), "cveERFilterNM2Create", @error)
 
     If $bClassifierIsString Then
         _cveStringRelease($classifier)
@@ -35,12 +49,20 @@ Func _cveERFilterNM2Create($classifier, $minProbability, ByRef $sharedPtr)
     Return $retval
 EndFunc   ;==>_cveERFilterNM2Create
 
-Func _cveERFilterRelease(ByRef $sharedPtr)
+Func _cveERFilterRelease($sharedPtr)
     ; CVAPI(void) cveERFilterRelease(cv::Ptr<cv::text::ERFilter>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveERFilterRelease", "ptr*", $sharedPtr), "cveERFilterRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveERFilterRelease", $bSharedPtrDllType, $sharedPtr), "cveERFilterRelease", @error)
 EndFunc   ;==>_cveERFilterRelease
 
-Func _cveERFilterRun(ByRef $filter, ByRef $image, ByRef $regions)
+Func _cveERFilterRun($filter, $image, $regions)
     ; CVAPI(void) cveERFilterRun(cv::text::ERFilter* filter, cv::_InputArray* image, std::vector<cv::text::ERStat>* regions);
 
     Local $vecRegions, $iArrRegionsSize
@@ -64,7 +86,7 @@ Func _cveERFilterRun(ByRef $filter, ByRef $image, ByRef $regions)
     EndIf
 EndFunc   ;==>_cveERFilterRun
 
-Func _cveERFilterRunMat(ByRef $filter, ByRef $matImage, ByRef $regions)
+Func _cveERFilterRunMat($filter, $matImage, $regions)
     ; cveERFilterRun using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -92,7 +114,7 @@ Func _cveERFilterRunMat(ByRef $filter, ByRef $matImage, ByRef $regions)
     _cveInputArrayRelease($iArrImage)
 EndFunc   ;==>_cveERFilterRunMat
 
-Func _cveERGrouping(ByRef $image, ByRef $channels, ByRef $regions, $count, ByRef $groups, ByRef $group_rects, $method, $fileName, $minProbability)
+Func _cveERGrouping($image, $channels, $regions, $count, $groups, $group_rects, $method, $fileName, $minProbability)
     ; CVAPI(void) cveERGrouping(cv::_InputArray* image, cv::_InputArray* channels, std::vector<cv::text::ERStat>** regions, int count, std::vector< std::vector<cv::Vec2i> >* groups, std::vector<cv::Rect>* group_rects, int method, cv::String* fileName, float minProbability);
 
     Local $vecRegions, $iArrRegionsSize
@@ -107,6 +129,13 @@ Func _cveERGrouping(ByRef $image, ByRef $channels, ByRef $regions, $count, ByRef
         Next
     Else
         $vecRegions = $regions
+    EndIf
+
+    Local $bRegionsDllType
+    If VarGetType($regions) == "DLLStruct" Then
+        $bRegionsDllType = "struct*"
+    Else
+        $bRegionsDllType = "ptr*"
     EndIf
 
     Local $vecGroup_rects, $iArrGroup_rectsSize
@@ -128,7 +157,7 @@ Func _cveERGrouping(ByRef $image, ByRef $channels, ByRef $regions, $count, ByRef
         $fileName = _cveStringCreateFromStr($fileName)
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveERGrouping", "ptr", $image, "ptr", $channels, "ptr*", $vecRegions, "int", $count, "ptr", $groups, "ptr", $vecGroup_rects, "int", $method, "ptr", $fileName, "float", $minProbability), "cveERGrouping", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveERGrouping", "ptr", $image, "ptr", $channels, $bRegionsDllType, $vecRegions, "int", $count, "ptr", $groups, "ptr", $vecGroup_rects, "int", $method, "ptr", $fileName, "float", $minProbability), "cveERGrouping", @error)
 
     If $bFileNameIsString Then
         _cveStringRelease($fileName)
@@ -143,7 +172,7 @@ Func _cveERGrouping(ByRef $image, ByRef $channels, ByRef $regions, $count, ByRef
     EndIf
 EndFunc   ;==>_cveERGrouping
 
-Func _cveERGroupingMat(ByRef $matImage, ByRef $matChannels, ByRef $regions, $count, ByRef $groups, ByRef $group_rects, $method, $fileName, $minProbability)
+Func _cveERGroupingMat($matImage, $matChannels, $regions, $count, $groups, $group_rects, $method, $fileName, $minProbability)
     ; cveERGrouping using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -193,7 +222,7 @@ Func _cveERGroupingMat(ByRef $matImage, ByRef $matChannels, ByRef $regions, $cou
     _cveInputArrayRelease($iArrImage)
 EndFunc   ;==>_cveERGroupingMat
 
-Func _cveMSERsToERStats(ByRef $image, ByRef $contours, ByRef $regions)
+Func _cveMSERsToERStats($image, $contours, $regions)
     ; CVAPI(void) cveMSERsToERStats(cv::_InputArray* image, std::vector< std::vector< cv::Point > >* contours, std::vector< std::vector< cv::text::ERStat> >* regions);
 
     Local $vecContours, $iArrContoursSize
@@ -235,7 +264,7 @@ Func _cveMSERsToERStats(ByRef $image, ByRef $contours, ByRef $regions)
     EndIf
 EndFunc   ;==>_cveMSERsToERStats
 
-Func _cveMSERsToERStatsMat(ByRef $matImage, ByRef $contours, ByRef $regions)
+Func _cveMSERsToERStatsMat($matImage, $contours, $regions)
     ; cveMSERsToERStats using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -263,12 +292,12 @@ Func _cveMSERsToERStatsMat(ByRef $matImage, ByRef $contours, ByRef $regions)
     _cveInputArrayRelease($iArrImage)
 EndFunc   ;==>_cveMSERsToERStatsMat
 
-Func _cveComputeNMChannels(ByRef $src, ByRef $channels, $mode)
+Func _cveComputeNMChannels($src, $channels, $mode)
     ; CVAPI(void) cveComputeNMChannels(cv::_InputArray* src, cv::_OutputArray* channels, int mode);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveComputeNMChannels", "ptr", $src, "ptr", $channels, "int", $mode), "cveComputeNMChannels", @error)
 EndFunc   ;==>_cveComputeNMChannels
 
-Func _cveComputeNMChannelsMat(ByRef $matSrc, ByRef $matChannels, $mode)
+Func _cveComputeNMChannelsMat($matSrc, $matChannels, $mode)
     ; cveComputeNMChannels using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -318,7 +347,7 @@ Func _cveComputeNMChannelsMat(ByRef $matSrc, ByRef $matChannels, $mode)
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveComputeNMChannelsMat
 
-Func _cveTextDetectorCNNCreate($modelArchFilename, $modelWeightsFilename, ByRef $sharedPtr)
+Func _cveTextDetectorCNNCreate($modelArchFilename, $modelWeightsFilename, $sharedPtr)
     ; CVAPI(cv::text::TextDetectorCNN*) cveTextDetectorCNNCreate(cv::String* modelArchFilename, cv::String* modelWeightsFilename, cv::Ptr<cv::text::TextDetectorCNN>** sharedPtr);
 
     Local $bModelArchFilenameIsString = VarGetType($modelArchFilename) == "String"
@@ -331,7 +360,14 @@ Func _cveTextDetectorCNNCreate($modelArchFilename, $modelWeightsFilename, ByRef 
         $modelWeightsFilename = _cveStringCreateFromStr($modelWeightsFilename)
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTextDetectorCNNCreate", "ptr", $modelArchFilename, "ptr", $modelWeightsFilename, "ptr*", $sharedPtr), "cveTextDetectorCNNCreate", @error)
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTextDetectorCNNCreate", "ptr", $modelArchFilename, "ptr", $modelWeightsFilename, $bSharedPtrDllType, $sharedPtr), "cveTextDetectorCNNCreate", @error)
 
     If $bModelWeightsFilenameIsString Then
         _cveStringRelease($modelWeightsFilename)
@@ -344,7 +380,7 @@ Func _cveTextDetectorCNNCreate($modelArchFilename, $modelWeightsFilename, ByRef 
     Return $retval
 EndFunc   ;==>_cveTextDetectorCNNCreate
 
-Func _cveTextDetectorCNNCreate2($modelArchFilename, $modelWeightsFilename, ByRef $detectionSizes, ByRef $sharedPtr)
+Func _cveTextDetectorCNNCreate2($modelArchFilename, $modelWeightsFilename, $detectionSizes, $sharedPtr)
     ; CVAPI(cv::text::TextDetectorCNN*) cveTextDetectorCNNCreate2(cv::String* modelArchFilename, cv::String* modelWeightsFilename, std::vector<cv::Size>* detectionSizes, cv::Ptr<cv::text::TextDetectorCNN>** sharedPtr);
 
     Local $bModelArchFilenameIsString = VarGetType($modelArchFilename) == "String"
@@ -371,7 +407,14 @@ Func _cveTextDetectorCNNCreate2($modelArchFilename, $modelWeightsFilename, ByRef
         $vecDetectionSizes = $detectionSizes
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTextDetectorCNNCreate2", "ptr", $modelArchFilename, "ptr", $modelWeightsFilename, "ptr", $vecDetectionSizes, "ptr*", $sharedPtr), "cveTextDetectorCNNCreate2", @error)
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTextDetectorCNNCreate2", "ptr", $modelArchFilename, "ptr", $modelWeightsFilename, "ptr", $vecDetectionSizes, $bSharedPtrDllType, $sharedPtr), "cveTextDetectorCNNCreate2", @error)
 
     If $bDetectionSizesIsArray Then
         _VectorOfSizeRelease($vecDetectionSizes)
@@ -388,7 +431,7 @@ Func _cveTextDetectorCNNCreate2($modelArchFilename, $modelWeightsFilename, ByRef
     Return $retval
 EndFunc   ;==>_cveTextDetectorCNNCreate2
 
-Func _cveTextDetectorCNNDetect(ByRef $detector, ByRef $inputImage, ByRef $bbox, ByRef $confidence)
+Func _cveTextDetectorCNNDetect($detector, $inputImage, $bbox, $confidence)
     ; CVAPI(void) cveTextDetectorCNNDetect(cv::text::TextDetectorCNN* detector, cv::_InputArray* inputImage, std::vector<cv::Rect>* bbox, std::vector<float>* confidence);
 
     Local $vecBbox, $iArrBboxSize
@@ -430,7 +473,7 @@ Func _cveTextDetectorCNNDetect(ByRef $detector, ByRef $inputImage, ByRef $bbox, 
     EndIf
 EndFunc   ;==>_cveTextDetectorCNNDetect
 
-Func _cveTextDetectorCNNDetectMat(ByRef $detector, ByRef $matInputImage, ByRef $bbox, ByRef $confidence)
+Func _cveTextDetectorCNNDetectMat($detector, $matInputImage, $bbox, $confidence)
     ; cveTextDetectorCNNDetect using cv::Mat instead of _*Array
 
     Local $iArrInputImage, $vectorOfMatInputImage, $iArrInputImageSize
@@ -458,7 +501,15 @@ Func _cveTextDetectorCNNDetectMat(ByRef $detector, ByRef $matInputImage, ByRef $
     _cveInputArrayRelease($iArrInputImage)
 EndFunc   ;==>_cveTextDetectorCNNDetectMat
 
-Func _cveTextDetectorCNNRelease(ByRef $sharedPtr)
+Func _cveTextDetectorCNNRelease($sharedPtr)
     ; CVAPI(void) cveTextDetectorCNNRelease(cv::Ptr<cv::text::TextDetectorCNN>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTextDetectorCNNRelease", "ptr*", $sharedPtr), "cveTextDetectorCNNRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTextDetectorCNNRelease", $bSharedPtrDllType, $sharedPtr), "cveTextDetectorCNNRelease", @error)
 EndFunc   ;==>_cveTextDetectorCNNRelease

@@ -11,7 +11,7 @@ Func _VectorOfVectorOfDMatchCreateSize($size)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfVectorOfDMatchCreateSize", "int", $size), "VectorOfVectorOfDMatchCreateSize", @error)
 EndFunc   ;==>_VectorOfVectorOfDMatchCreateSize
 
-Func _VectorOfVectorOfDMatchGetSize(ByRef $v)
+Func _VectorOfVectorOfDMatchGetSize($v)
     ; CVAPI(int) VectorOfVectorOfDMatchGetSize(std::vector< std::vector< cv::DMatch > >* v);
 
     Local $vecV, $iArrVSize
@@ -37,7 +37,7 @@ Func _VectorOfVectorOfDMatchGetSize(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfVectorOfDMatchGetSize
 
-Func _VectorOfVectorOfDMatchPush(ByRef $v, ByRef $value)
+Func _VectorOfVectorOfDMatchPush($v, $value)
     ; CVAPI(void) VectorOfVectorOfDMatchPush(std::vector< std::vector< cv::DMatch > >* v, std::vector< cv::DMatch >* value);
 
     Local $vecV, $iArrVSize
@@ -79,7 +79,7 @@ Func _VectorOfVectorOfDMatchPush(ByRef $v, ByRef $value)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfDMatchPush
 
-Func _VectorOfVectorOfDMatchPushVector(ByRef $v, ByRef $other)
+Func _VectorOfVectorOfDMatchPushVector($v, $other)
     ; CVAPI(void) VectorOfVectorOfDMatchPushVector(std::vector< std::vector< cv::DMatch > >* v, std::vector< std::vector< cv::DMatch > >* other);
 
     Local $vecV, $iArrVSize
@@ -121,7 +121,7 @@ Func _VectorOfVectorOfDMatchPushVector(ByRef $v, ByRef $other)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfDMatchPushVector
 
-Func _VectorOfVectorOfDMatchGetStartAddress(ByRef $v)
+Func _VectorOfVectorOfDMatchGetStartAddress($v)
     ; CVAPI(std::vector< cv::DMatch >*) VectorOfVectorOfDMatchGetStartAddress(std::vector< std::vector< cv::DMatch > >* v);
 
     Local $vecV, $iArrVSize
@@ -147,7 +147,7 @@ Func _VectorOfVectorOfDMatchGetStartAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfVectorOfDMatchGetStartAddress
 
-Func _VectorOfVectorOfDMatchGetEndAddress(ByRef $v)
+Func _VectorOfVectorOfDMatchGetEndAddress($v)
     ; CVAPI(void*) VectorOfVectorOfDMatchGetEndAddress(std::vector< std::vector< cv::DMatch > >* v);
 
     Local $vecV, $iArrVSize
@@ -173,7 +173,7 @@ Func _VectorOfVectorOfDMatchGetEndAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfVectorOfDMatchGetEndAddress
 
-Func _VectorOfVectorOfDMatchClear(ByRef $v)
+Func _VectorOfVectorOfDMatchClear($v)
     ; CVAPI(void) VectorOfVectorOfDMatchClear(std::vector< std::vector< cv::DMatch > >* v);
 
     Local $vecV, $iArrVSize
@@ -197,7 +197,7 @@ Func _VectorOfVectorOfDMatchClear(ByRef $v)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfDMatchClear
 
-Func _VectorOfVectorOfDMatchRelease(ByRef $v)
+Func _VectorOfVectorOfDMatchRelease($v)
     ; CVAPI(void) VectorOfVectorOfDMatchRelease(std::vector< std::vector< cv::DMatch > >** v);
 
     Local $vecV, $iArrVSize
@@ -214,14 +214,21 @@ Func _VectorOfVectorOfDMatchRelease(ByRef $v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVectorOfDMatchRelease", "ptr*", $vecV), "VectorOfVectorOfDMatchRelease", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVectorOfDMatchRelease", $bVDllType, $vecV), "VectorOfVectorOfDMatchRelease", @error)
 
     If $bVIsArray Then
         _VectorOfVectorOfDMatchRelease($vecV)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfDMatchRelease
 
-Func _VectorOfVectorOfDMatchCopyData(ByRef $v, ByRef $data)
+Func _VectorOfVectorOfDMatchCopyData($v, $data)
     ; CVAPI(void) VectorOfVectorOfDMatchCopyData(std::vector< std::vector< cv::DMatch > >* v, std::vector< cv::DMatch >* data);
 
     Local $vecV, $iArrVSize
@@ -263,7 +270,7 @@ Func _VectorOfVectorOfDMatchCopyData(ByRef $v, ByRef $data)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfDMatchCopyData
 
-Func _VectorOfVectorOfDMatchGetItemPtr(ByRef $vec, $index, ByRef $element)
+Func _VectorOfVectorOfDMatchGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfVectorOfDMatchGetItemPtr(std::vector<  std::vector< cv::DMatch > >* vec, int index, std::vector< cv::DMatch >** element);
 
     Local $vecVec, $iArrVecSize
@@ -294,7 +301,14 @@ Func _VectorOfVectorOfDMatchGetItemPtr(ByRef $vec, $index, ByRef $element)
         $vecElement = $element
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVectorOfDMatchGetItemPtr", "ptr", $vecVec, "int", $index, "ptr*", $vecElement), "VectorOfVectorOfDMatchGetItemPtr", @error)
+    Local $bElementDllType
+    If VarGetType($element) == "DLLStruct" Then
+        $bElementDllType = "struct*"
+    Else
+        $bElementDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVectorOfDMatchGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $vecElement), "VectorOfVectorOfDMatchGetItemPtr", @error)
 
     If $bElementIsArray Then
         _VectorOfDMatchRelease($vecElement)
@@ -305,7 +319,7 @@ Func _VectorOfVectorOfDMatchGetItemPtr(ByRef $vec, $index, ByRef $element)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfDMatchGetItemPtr
 
-Func _cveInputArrayFromVectorOfVectorOfDMatch(ByRef $vec)
+Func _cveInputArrayFromVectorOfVectorOfDMatch($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfVectorOfDMatch(std::vector< std::vector< cv::DMatch > >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -331,7 +345,7 @@ Func _cveInputArrayFromVectorOfVectorOfDMatch(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveInputArrayFromVectorOfVectorOfDMatch
 
-Func _cveOutputArrayFromVectorOfVectorOfDMatch(ByRef $vec)
+Func _cveOutputArrayFromVectorOfVectorOfDMatch($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfVectorOfDMatch(std::vector< std::vector< cv::DMatch > >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -357,7 +371,7 @@ Func _cveOutputArrayFromVectorOfVectorOfDMatch(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveOutputArrayFromVectorOfVectorOfDMatch
 
-Func _cveInputOutputArrayFromVectorOfVectorOfDMatch(ByRef $vec)
+Func _cveInputOutputArrayFromVectorOfVectorOfDMatch($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfVectorOfDMatch(std::vector< std::vector< cv::DMatch > >* vec);
 
     Local $vecVec, $iArrVecSize

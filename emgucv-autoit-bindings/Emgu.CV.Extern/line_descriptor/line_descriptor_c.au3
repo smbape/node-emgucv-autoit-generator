@@ -1,12 +1,19 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveLineDescriptorBinaryDescriptorCreate(ByRef $sharedPtr)
+Func _cveLineDescriptorBinaryDescriptorCreate($sharedPtr)
     ; CVAPI(cv::line_descriptor::BinaryDescriptor*) cveLineDescriptorBinaryDescriptorCreate(cv::Ptr<cv::line_descriptor::BinaryDescriptor>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveLineDescriptorBinaryDescriptorCreate", "ptr*", $sharedPtr), "cveLineDescriptorBinaryDescriptorCreate", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveLineDescriptorBinaryDescriptorCreate", $bSharedPtrDllType, $sharedPtr), "cveLineDescriptorBinaryDescriptorCreate", @error)
 EndFunc   ;==>_cveLineDescriptorBinaryDescriptorCreate
 
-Func _cveLineDescriptorBinaryDescriptorDetect(ByRef $descriptor, ByRef $image, ByRef $keypoints, ByRef $mask)
+Func _cveLineDescriptorBinaryDescriptorDetect($descriptor, $image, $keypoints, $mask)
     ; CVAPI(void) cveLineDescriptorBinaryDescriptorDetect(cv::line_descriptor::BinaryDescriptor* descriptor, cv::Mat* image, std::vector<cv::line_descriptor::KeyLine>* keypoints, cv::Mat* mask);
 
     Local $vecKeypoints, $iArrKeypointsSize
@@ -30,7 +37,7 @@ Func _cveLineDescriptorBinaryDescriptorDetect(ByRef $descriptor, ByRef $image, B
     EndIf
 EndFunc   ;==>_cveLineDescriptorBinaryDescriptorDetect
 
-Func _cveLineDescriptorBinaryDescriptorCompute(ByRef $descriptor, ByRef $image, ByRef $keylines, ByRef $descriptors, $returnFloatDescr)
+Func _cveLineDescriptorBinaryDescriptorCompute($descriptor, $image, $keylines, $descriptors, $returnFloatDescr)
     ; CVAPI(void) cveLineDescriptorBinaryDescriptorCompute(cv::line_descriptor::BinaryDescriptor* descriptor, cv::Mat* image, std::vector<cv::line_descriptor::KeyLine>* keylines, cv::Mat* descriptors, bool returnFloatDescr);
 
     Local $vecKeylines, $iArrKeylinesSize
@@ -54,17 +61,32 @@ Func _cveLineDescriptorBinaryDescriptorCompute(ByRef $descriptor, ByRef $image, 
     EndIf
 EndFunc   ;==>_cveLineDescriptorBinaryDescriptorCompute
 
-Func _cveLineDescriptorBinaryDescriptorRelease(ByRef $sharedPtr)
+Func _cveLineDescriptorBinaryDescriptorRelease($sharedPtr)
     ; CVAPI(void) cveLineDescriptorBinaryDescriptorRelease(cv::Ptr<cv::line_descriptor::BinaryDescriptor>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLineDescriptorBinaryDescriptorRelease", "ptr*", $sharedPtr), "cveLineDescriptorBinaryDescriptorRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLineDescriptorBinaryDescriptorRelease", $bSharedPtrDllType, $sharedPtr), "cveLineDescriptorBinaryDescriptorRelease", @error)
 EndFunc   ;==>_cveLineDescriptorBinaryDescriptorRelease
 
-Func _cveLineDescriptorLSDDetectorCreate(ByRef $sharedPtr)
+Func _cveLineDescriptorLSDDetectorCreate($sharedPtr)
     ; CVAPI(cv::line_descriptor::LSDDetector*) cveLineDescriptorLSDDetectorCreate(cv::Ptr<cv::line_descriptor::LSDDetector>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveLineDescriptorLSDDetectorCreate", "ptr*", $sharedPtr), "cveLineDescriptorLSDDetectorCreate", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveLineDescriptorLSDDetectorCreate", $bSharedPtrDllType, $sharedPtr), "cveLineDescriptorLSDDetectorCreate", @error)
 EndFunc   ;==>_cveLineDescriptorLSDDetectorCreate
 
-Func _cveLineDescriptorLSDDetectorDetect(ByRef $detector, ByRef $image, ByRef $keypoints, $scale, $numOctaves, ByRef $mask)
+Func _cveLineDescriptorLSDDetectorDetect($detector, $image, $keypoints, $scale, $numOctaves, $mask)
     ; CVAPI(void) cveLineDescriptorLSDDetectorDetect(cv::line_descriptor::LSDDetector* detector, cv::Mat* image, std::vector<cv::line_descriptor::KeyLine>* keypoints, int scale, int numOctaves, cv::Mat* mask);
 
     Local $vecKeypoints, $iArrKeypointsSize
@@ -88,7 +110,15 @@ Func _cveLineDescriptorLSDDetectorDetect(ByRef $detector, ByRef $image, ByRef $k
     EndIf
 EndFunc   ;==>_cveLineDescriptorLSDDetectorDetect
 
-Func _cveLineDescriptorLSDDetectorRelease(ByRef $sharedPtr)
+Func _cveLineDescriptorLSDDetectorRelease($sharedPtr)
     ; CVAPI(void) cveLineDescriptorLSDDetectorRelease(cv::Ptr<cv::line_descriptor::LSDDetector>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLineDescriptorLSDDetectorRelease", "ptr*", $sharedPtr), "cveLineDescriptorLSDDetectorRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLineDescriptorLSDDetectorRelease", $bSharedPtrDllType, $sharedPtr), "cveLineDescriptorLSDDetectorRelease", @error)
 EndFunc   ;==>_cveLineDescriptorLSDDetectorRelease

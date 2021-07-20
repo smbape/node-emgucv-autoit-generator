@@ -11,7 +11,7 @@ Func _VectorOfGpuMatCreateSize($size)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfGpuMatCreateSize", "int", $size), "VectorOfGpuMatCreateSize", @error)
 EndFunc   ;==>_VectorOfGpuMatCreateSize
 
-Func _VectorOfGpuMatGetSize(ByRef $v)
+Func _VectorOfGpuMatGetSize($v)
     ; CVAPI(int) VectorOfGpuMatGetSize(std::vector< cv::cuda::GpuMat >* v);
 
     Local $vecV, $iArrVSize
@@ -37,7 +37,7 @@ Func _VectorOfGpuMatGetSize(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfGpuMatGetSize
 
-Func _VectorOfGpuMatPush(ByRef $v, ByRef $value)
+Func _VectorOfGpuMatPush($v, $value)
     ; CVAPI(void) VectorOfGpuMatPush(std::vector< cv::cuda::GpuMat >* v, cv::cuda::GpuMat* value);
 
     Local $vecV, $iArrVSize
@@ -61,7 +61,7 @@ Func _VectorOfGpuMatPush(ByRef $v, ByRef $value)
     EndIf
 EndFunc   ;==>_VectorOfGpuMatPush
 
-Func _VectorOfGpuMatPushVector(ByRef $v, ByRef $other)
+Func _VectorOfGpuMatPushVector($v, $other)
     ; CVAPI(void) VectorOfGpuMatPushVector(std::vector< cv::cuda::GpuMat >* v, std::vector< cv::cuda::GpuMat >* other);
 
     Local $vecV, $iArrVSize
@@ -103,7 +103,7 @@ Func _VectorOfGpuMatPushVector(ByRef $v, ByRef $other)
     EndIf
 EndFunc   ;==>_VectorOfGpuMatPushVector
 
-Func _VectorOfGpuMatGetStartAddress(ByRef $v)
+Func _VectorOfGpuMatGetStartAddress($v)
     ; CVAPI(cv::cuda::GpuMat*) VectorOfGpuMatGetStartAddress(std::vector< cv::cuda::GpuMat >* v);
 
     Local $vecV, $iArrVSize
@@ -129,7 +129,7 @@ Func _VectorOfGpuMatGetStartAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfGpuMatGetStartAddress
 
-Func _VectorOfGpuMatGetEndAddress(ByRef $v)
+Func _VectorOfGpuMatGetEndAddress($v)
     ; CVAPI(void*) VectorOfGpuMatGetEndAddress(std::vector< cv::cuda::GpuMat >* v);
 
     Local $vecV, $iArrVSize
@@ -155,7 +155,7 @@ Func _VectorOfGpuMatGetEndAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfGpuMatGetEndAddress
 
-Func _VectorOfGpuMatClear(ByRef $v)
+Func _VectorOfGpuMatClear($v)
     ; CVAPI(void) VectorOfGpuMatClear(std::vector< cv::cuda::GpuMat >* v);
 
     Local $vecV, $iArrVSize
@@ -179,7 +179,7 @@ Func _VectorOfGpuMatClear(ByRef $v)
     EndIf
 EndFunc   ;==>_VectorOfGpuMatClear
 
-Func _VectorOfGpuMatRelease(ByRef $v)
+Func _VectorOfGpuMatRelease($v)
     ; CVAPI(void) VectorOfGpuMatRelease(std::vector< cv::cuda::GpuMat >** v);
 
     Local $vecV, $iArrVSize
@@ -196,14 +196,21 @@ Func _VectorOfGpuMatRelease(ByRef $v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfGpuMatRelease", "ptr*", $vecV), "VectorOfGpuMatRelease", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfGpuMatRelease", $bVDllType, $vecV), "VectorOfGpuMatRelease", @error)
 
     If $bVIsArray Then
         _VectorOfGpuMatRelease($vecV)
     EndIf
 EndFunc   ;==>_VectorOfGpuMatRelease
 
-Func _VectorOfGpuMatCopyData(ByRef $v, ByRef $data)
+Func _VectorOfGpuMatCopyData($v, $data)
     ; CVAPI(void) VectorOfGpuMatCopyData(std::vector< cv::cuda::GpuMat >* v, cv::cuda::GpuMat* data);
 
     Local $vecV, $iArrVSize
@@ -227,7 +234,7 @@ Func _VectorOfGpuMatCopyData(ByRef $v, ByRef $data)
     EndIf
 EndFunc   ;==>_VectorOfGpuMatCopyData
 
-Func _VectorOfGpuMatGetItemPtr(ByRef $vec, $index, ByRef $element)
+Func _VectorOfGpuMatGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfGpuMatGetItemPtr(std::vector<  cv::cuda::GpuMat >* vec, int index, cv::cuda::GpuMat** element);
 
     Local $vecVec, $iArrVecSize
@@ -244,14 +251,21 @@ Func _VectorOfGpuMatGetItemPtr(ByRef $vec, $index, ByRef $element)
         $vecVec = $vec
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfGpuMatGetItemPtr", "ptr", $vecVec, "int", $index, "ptr*", $element), "VectorOfGpuMatGetItemPtr", @error)
+    Local $bElementDllType
+    If VarGetType($element) == "DLLStruct" Then
+        $bElementDllType = "struct*"
+    Else
+        $bElementDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfGpuMatGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $element), "VectorOfGpuMatGetItemPtr", @error)
 
     If $bVecIsArray Then
         _VectorOfGpuMatRelease($vecVec)
     EndIf
 EndFunc   ;==>_VectorOfGpuMatGetItemPtr
 
-Func _cveInputArrayFromVectorOfGpuMat(ByRef $vec)
+Func _cveInputArrayFromVectorOfGpuMat($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfGpuMat(std::vector< cv::cuda::GpuMat >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -277,7 +291,7 @@ Func _cveInputArrayFromVectorOfGpuMat(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveInputArrayFromVectorOfGpuMat
 
-Func _cveOutputArrayFromVectorOfGpuMat(ByRef $vec)
+Func _cveOutputArrayFromVectorOfGpuMat($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfGpuMat(std::vector< cv::cuda::GpuMat >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -303,7 +317,7 @@ Func _cveOutputArrayFromVectorOfGpuMat(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveOutputArrayFromVectorOfGpuMat
 
-Func _cveInputOutputArrayFromVectorOfGpuMat(ByRef $vec)
+Func _cveInputOutputArrayFromVectorOfGpuMat($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfGpuMat(std::vector< cv::cuda::GpuMat >* vec);
 
     Local $vecVec, $iArrVecSize

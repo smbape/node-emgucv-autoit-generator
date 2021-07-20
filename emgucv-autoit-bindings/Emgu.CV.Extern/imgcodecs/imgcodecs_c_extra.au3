@@ -35,7 +35,7 @@ Func _cveHaveImageWriter($filename)
     Return $retval
 EndFunc   ;==>_cveHaveImageWriter
 
-Func _cveImwrite($filename, ByRef $img, $params = _VectorOfIntCreate())
+Func _cveImwrite($filename, $img, $params = _VectorOfIntCreate())
     ; CVAPI(bool) cveImwrite(cv::String* filename, cv::_InputArray* img, std::vector<int>* params);
 
     Local $bFilenameIsString = VarGetType($filename) == "String"
@@ -70,7 +70,7 @@ Func _cveImwrite($filename, ByRef $img, $params = _VectorOfIntCreate())
     Return $retval
 EndFunc   ;==>_cveImwrite
 
-Func _cveImwriteMat($filename, ByRef $matImg, $params = _VectorOfIntCreate())
+Func _cveImwriteMat($filename, $matImg, $params = _VectorOfIntCreate())
     ; cveImwrite using cv::Mat instead of _*Array
 
     Local $iArrImg, $vectorOfMatImg, $iArrImgSize
@@ -100,7 +100,7 @@ Func _cveImwriteMat($filename, ByRef $matImg, $params = _VectorOfIntCreate())
     Return $retval
 EndFunc   ;==>_cveImwriteMat
 
-Func _cveImwritemulti($filename, ByRef $img, ByRef $params)
+Func _cveImwritemulti($filename, $img, $params)
     ; CVAPI(bool) cveImwritemulti(cv::String* filename, cv::_InputArray* img, std::vector<int>* params);
 
     Local $bFilenameIsString = VarGetType($filename) == "String"
@@ -135,7 +135,7 @@ Func _cveImwritemulti($filename, ByRef $img, ByRef $params)
     Return $retval
 EndFunc   ;==>_cveImwritemulti
 
-Func _cveImwritemultiMat($filename, ByRef $matImg, ByRef $params)
+Func _cveImwritemultiMat($filename, $matImg, $params)
     ; cveImwritemulti using cv::Mat instead of _*Array
 
     Local $iArrImg, $vectorOfMatImg, $iArrImgSize
@@ -186,7 +186,7 @@ Func _cveImread($fileName, $flags = $CV_IMREAD_COLOR, $result = Null)
     Return $result
 EndFunc   ;==>_cveImread
 
-Func _cveImreadmulti($filename, ByRef $mats, $flags = $CV_IMREAD_ANYCOLOR)
+Func _cveImreadmulti($filename, $mats, $flags = $CV_IMREAD_ANYCOLOR)
     ; CVAPI(bool) cveImreadmulti(const cv::String* filename, std::vector<cv::Mat>* mats, int flags);
 
     Local $vecMats, $iArrMatsSize
@@ -212,12 +212,12 @@ Func _cveImreadmulti($filename, ByRef $mats, $flags = $CV_IMREAD_ANYCOLOR)
     Return $retval
 EndFunc   ;==>_cveImreadmulti
 
-Func _cveImdecode(ByRef $buf, $flags, ByRef $dst)
+Func _cveImdecode($buf, $flags, $dst)
     ; CVAPI(void) cveImdecode(cv::_InputArray* buf, int flags, cv::Mat* dst);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveImdecode", "ptr", $buf, "int", $flags, "ptr", $dst), "cveImdecode", @error)
 EndFunc   ;==>_cveImdecode
 
-Func _cveImdecodeMat(ByRef $matBuf, $flags, ByRef $dst)
+Func _cveImdecodeMat($matBuf, $flags, $dst)
     ; cveImdecode using cv::Mat instead of _*Array
 
     Local $iArrBuf, $vectorOfMatBuf, $iArrBufSize
@@ -245,7 +245,7 @@ Func _cveImdecodeMat(ByRef $matBuf, $flags, ByRef $dst)
     _cveInputArrayRelease($iArrBuf)
 EndFunc   ;==>_cveImdecodeMat
 
-Func _cveImencode($ext, ByRef $img, ByRef $buf, $params = _VectorOfIntCreate())
+Func _cveImencode($ext, $img, $buf, $params = _VectorOfIntCreate())
     ; CVAPI(bool) cveImencode(cv::String* ext, cv::_InputArray* img, std::vector< unsigned char >* buf, std::vector< int >* params);
 
     Local $bExtIsString = VarGetType($ext) == "String"
@@ -298,7 +298,7 @@ Func _cveImencode($ext, ByRef $img, ByRef $buf, $params = _VectorOfIntCreate())
     Return $retval
 EndFunc   ;==>_cveImencode
 
-Func _cveImencodeMat($ext, ByRef $matImg, ByRef $buf, $params = _VectorOfIntCreate())
+Func _cveImencodeMat($ext, $matImg, $buf, $params = _VectorOfIntCreate())
     ; cveImencode using cv::Mat instead of _*Array
 
     Local $iArrImg, $vectorOfMatImg, $iArrImgSize

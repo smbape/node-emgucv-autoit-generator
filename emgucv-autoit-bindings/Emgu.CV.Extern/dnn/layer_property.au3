@@ -1,7 +1,7 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveLayerGetName(ByRef $obj, $str)
+Func _cveLayerGetName($obj, $str)
     ; CVAPI(void) cveLayerGetName(cv::dnn::Layer* obj, cv::String* str);
 
     Local $bStrIsString = VarGetType($str) == "String"
@@ -16,7 +16,7 @@ Func _cveLayerGetName(ByRef $obj, $str)
     EndIf
 EndFunc   ;==>_cveLayerGetName
 
-Func _cveLayerGetType(ByRef $obj, $str)
+Func _cveLayerGetType($obj, $str)
     ; CVAPI(void) cveLayerGetType(cv::dnn::Layer* obj, cv::String* str);
 
     Local $bStrIsString = VarGetType($str) == "String"
@@ -31,7 +31,7 @@ Func _cveLayerGetType(ByRef $obj, $str)
     EndIf
 EndFunc   ;==>_cveLayerGetType
 
-Func _cveLayerGetPreferableTarget(ByRef $obj)
+Func _cveLayerGetPreferableTarget($obj)
     ; CVAPI(int) cveLayerGetPreferableTarget(cv::dnn::Layer* obj);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveLayerGetPreferableTarget", "ptr", $obj), "cveLayerGetPreferableTarget", @error)
 EndFunc   ;==>_cveLayerGetPreferableTarget

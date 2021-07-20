@@ -11,7 +11,7 @@ Func _VectorOfCvStringCreateSize($size)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfCvStringCreateSize", "int", $size), "VectorOfCvStringCreateSize", @error)
 EndFunc   ;==>_VectorOfCvStringCreateSize
 
-Func _VectorOfCvStringGetSize(ByRef $v)
+Func _VectorOfCvStringGetSize($v)
     ; CVAPI(int) VectorOfCvStringGetSize(std::vector< cv::String >* v);
 
     Local $vecV, $iArrVSize
@@ -37,7 +37,7 @@ Func _VectorOfCvStringGetSize(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfCvStringGetSize
 
-Func _VectorOfCvStringPush(ByRef $v, $value)
+Func _VectorOfCvStringPush($v, $value)
     ; CVAPI(void) VectorOfCvStringPush(std::vector< cv::String >* v, cv::String* value);
 
     Local $vecV, $iArrVSize
@@ -70,7 +70,7 @@ Func _VectorOfCvStringPush(ByRef $v, $value)
     EndIf
 EndFunc   ;==>_VectorOfCvStringPush
 
-Func _VectorOfCvStringPushVector(ByRef $v, ByRef $other)
+Func _VectorOfCvStringPushVector($v, $other)
     ; CVAPI(void) VectorOfCvStringPushVector(std::vector< cv::String >* v, std::vector< cv::String >* other);
 
     Local $vecV, $iArrVSize
@@ -112,7 +112,7 @@ Func _VectorOfCvStringPushVector(ByRef $v, ByRef $other)
     EndIf
 EndFunc   ;==>_VectorOfCvStringPushVector
 
-Func _VectorOfCvStringGetStartAddress(ByRef $v)
+Func _VectorOfCvStringGetStartAddress($v)
     ; CVAPI(cv::String*) VectorOfCvStringGetStartAddress(std::vector< cv::String >* v);
 
     Local $vecV, $iArrVSize
@@ -138,7 +138,7 @@ Func _VectorOfCvStringGetStartAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfCvStringGetStartAddress
 
-Func _VectorOfCvStringGetEndAddress(ByRef $v)
+Func _VectorOfCvStringGetEndAddress($v)
     ; CVAPI(void*) VectorOfCvStringGetEndAddress(std::vector< cv::String >* v);
 
     Local $vecV, $iArrVSize
@@ -164,7 +164,7 @@ Func _VectorOfCvStringGetEndAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfCvStringGetEndAddress
 
-Func _VectorOfCvStringClear(ByRef $v)
+Func _VectorOfCvStringClear($v)
     ; CVAPI(void) VectorOfCvStringClear(std::vector< cv::String >* v);
 
     Local $vecV, $iArrVSize
@@ -188,7 +188,7 @@ Func _VectorOfCvStringClear(ByRef $v)
     EndIf
 EndFunc   ;==>_VectorOfCvStringClear
 
-Func _VectorOfCvStringRelease(ByRef $v)
+Func _VectorOfCvStringRelease($v)
     ; CVAPI(void) VectorOfCvStringRelease(std::vector< cv::String >** v);
 
     Local $vecV, $iArrVSize
@@ -205,14 +205,21 @@ Func _VectorOfCvStringRelease(ByRef $v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfCvStringRelease", "ptr*", $vecV), "VectorOfCvStringRelease", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfCvStringRelease", $bVDllType, $vecV), "VectorOfCvStringRelease", @error)
 
     If $bVIsArray Then
         _VectorOfCvStringRelease($vecV)
     EndIf
 EndFunc   ;==>_VectorOfCvStringRelease
 
-Func _VectorOfCvStringCopyData(ByRef $v, $data)
+Func _VectorOfCvStringCopyData($v, $data)
     ; CVAPI(void) VectorOfCvStringCopyData(std::vector< cv::String >* v, cv::String* data);
 
     Local $vecV, $iArrVSize
@@ -245,7 +252,7 @@ Func _VectorOfCvStringCopyData(ByRef $v, $data)
     EndIf
 EndFunc   ;==>_VectorOfCvStringCopyData
 
-Func _VectorOfCvStringGetItemPtr(ByRef $vec, $index, ByRef $element)
+Func _VectorOfCvStringGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfCvStringGetItemPtr(std::vector<  cv::String >* vec, int index, cv::String** element);
 
     Local $vecVec, $iArrVecSize
@@ -262,14 +269,21 @@ Func _VectorOfCvStringGetItemPtr(ByRef $vec, $index, ByRef $element)
         $vecVec = $vec
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfCvStringGetItemPtr", "ptr", $vecVec, "int", $index, "ptr*", $element), "VectorOfCvStringGetItemPtr", @error)
+    Local $bElementDllType
+    If VarGetType($element) == "DLLStruct" Then
+        $bElementDllType = "struct*"
+    Else
+        $bElementDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfCvStringGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $element), "VectorOfCvStringGetItemPtr", @error)
 
     If $bVecIsArray Then
         _VectorOfCvStringRelease($vecVec)
     EndIf
 EndFunc   ;==>_VectorOfCvStringGetItemPtr
 
-Func _cveInputArrayFromVectorOfCvString(ByRef $vec)
+Func _cveInputArrayFromVectorOfCvString($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfCvString(std::vector< cv::String >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -295,7 +309,7 @@ Func _cveInputArrayFromVectorOfCvString(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveInputArrayFromVectorOfCvString
 
-Func _cveOutputArrayFromVectorOfCvString(ByRef $vec)
+Func _cveOutputArrayFromVectorOfCvString($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfCvString(std::vector< cv::String >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -321,7 +335,7 @@ Func _cveOutputArrayFromVectorOfCvString(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveOutputArrayFromVectorOfCvString
 
-Func _cveInputOutputArrayFromVectorOfCvString(ByRef $vec)
+Func _cveInputOutputArrayFromVectorOfCvString($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfCvString(std::vector< cv::String >* vec);
 
     Local $vecVec, $iArrVecSize

@@ -11,7 +11,7 @@ Func _VectorOfPoint3D32FCreateSize($size)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfPoint3D32FCreateSize", "int", $size), "VectorOfPoint3D32FCreateSize", @error)
 EndFunc   ;==>_VectorOfPoint3D32FCreateSize
 
-Func _VectorOfPoint3D32FGetSize(ByRef $v)
+Func _VectorOfPoint3D32FGetSize($v)
     ; CVAPI(int) VectorOfPoint3D32FGetSize(std::vector< cv::Point3f >* v);
 
     Local $vecV, $iArrVSize
@@ -37,7 +37,7 @@ Func _VectorOfPoint3D32FGetSize(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfPoint3D32FGetSize
 
-Func _VectorOfPoint3D32FPush(ByRef $v, ByRef $value)
+Func _VectorOfPoint3D32FPush($v, $value)
     ; CVAPI(void) VectorOfPoint3D32FPush(std::vector< cv::Point3f >* v, cv::Point3f* value);
 
     Local $vecV, $iArrVSize
@@ -61,7 +61,7 @@ Func _VectorOfPoint3D32FPush(ByRef $v, ByRef $value)
     EndIf
 EndFunc   ;==>_VectorOfPoint3D32FPush
 
-Func _VectorOfPoint3D32FPushMulti(ByRef $v, ByRef $values, $count)
+Func _VectorOfPoint3D32FPushMulti($v, $values, $count)
     ; CVAPI(void) VectorOfPoint3D32FPushMulti(std::vector< cv::Point3f >* v, cv::Point3f* values, int count);
 
     Local $vecV, $iArrVSize
@@ -85,7 +85,7 @@ Func _VectorOfPoint3D32FPushMulti(ByRef $v, ByRef $values, $count)
     EndIf
 EndFunc   ;==>_VectorOfPoint3D32FPushMulti
 
-Func _VectorOfPoint3D32FPushVector(ByRef $v, ByRef $other)
+Func _VectorOfPoint3D32FPushVector($v, $other)
     ; CVAPI(void) VectorOfPoint3D32FPushVector(std::vector< cv::Point3f >* v, std::vector< cv::Point3f >* other);
 
     Local $vecV, $iArrVSize
@@ -127,7 +127,7 @@ Func _VectorOfPoint3D32FPushVector(ByRef $v, ByRef $other)
     EndIf
 EndFunc   ;==>_VectorOfPoint3D32FPushVector
 
-Func _VectorOfPoint3D32FClear(ByRef $v)
+Func _VectorOfPoint3D32FClear($v)
     ; CVAPI(void) VectorOfPoint3D32FClear(std::vector< cv::Point3f >* v);
 
     Local $vecV, $iArrVSize
@@ -151,7 +151,7 @@ Func _VectorOfPoint3D32FClear(ByRef $v)
     EndIf
 EndFunc   ;==>_VectorOfPoint3D32FClear
 
-Func _VectorOfPoint3D32FRelease(ByRef $v)
+Func _VectorOfPoint3D32FRelease($v)
     ; CVAPI(void) VectorOfPoint3D32FRelease(std::vector< cv::Point3f >** v);
 
     Local $vecV, $iArrVSize
@@ -168,14 +168,21 @@ Func _VectorOfPoint3D32FRelease(ByRef $v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfPoint3D32FRelease", "ptr*", $vecV), "VectorOfPoint3D32FRelease", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfPoint3D32FRelease", $bVDllType, $vecV), "VectorOfPoint3D32FRelease", @error)
 
     If $bVIsArray Then
         _VectorOfPoint3D32FRelease($vecV)
     EndIf
 EndFunc   ;==>_VectorOfPoint3D32FRelease
 
-Func _VectorOfPoint3D32FCopyData(ByRef $v, ByRef $data)
+Func _VectorOfPoint3D32FCopyData($v, $data)
     ; CVAPI(void) VectorOfPoint3D32FCopyData(std::vector< cv::Point3f >* v, cv::Point3f* data);
 
     Local $vecV, $iArrVSize
@@ -199,7 +206,7 @@ Func _VectorOfPoint3D32FCopyData(ByRef $v, ByRef $data)
     EndIf
 EndFunc   ;==>_VectorOfPoint3D32FCopyData
 
-Func _VectorOfPoint3D32FGetStartAddress(ByRef $v)
+Func _VectorOfPoint3D32FGetStartAddress($v)
     ; CVAPI(cv::Point3f*) VectorOfPoint3D32FGetStartAddress(std::vector< cv::Point3f >* v);
 
     Local $vecV, $iArrVSize
@@ -225,7 +232,7 @@ Func _VectorOfPoint3D32FGetStartAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfPoint3D32FGetStartAddress
 
-Func _VectorOfPoint3D32FGetEndAddress(ByRef $v)
+Func _VectorOfPoint3D32FGetEndAddress($v)
     ; CVAPI(void*) VectorOfPoint3D32FGetEndAddress(std::vector< cv::Point3f >* v);
 
     Local $vecV, $iArrVSize
@@ -251,7 +258,7 @@ Func _VectorOfPoint3D32FGetEndAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfPoint3D32FGetEndAddress
 
-Func _VectorOfPoint3D32FGetItem(ByRef $vec, $index, ByRef $element)
+Func _VectorOfPoint3D32FGetItem($vec, $index, $element)
     ; CVAPI(void) VectorOfPoint3D32FGetItem(std::vector<  cv::Point3f >* vec, int index, cv::Point3f* element);
 
     Local $vecVec, $iArrVecSize
@@ -275,7 +282,7 @@ Func _VectorOfPoint3D32FGetItem(ByRef $vec, $index, ByRef $element)
     EndIf
 EndFunc   ;==>_VectorOfPoint3D32FGetItem
 
-Func _VectorOfPoint3D32FGetItemPtr(ByRef $vec, $index, ByRef $element)
+Func _VectorOfPoint3D32FGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfPoint3D32FGetItemPtr(std::vector<  cv::Point3f >* vec, int index, cv::Point3f** element);
 
     Local $vecVec, $iArrVecSize
@@ -292,14 +299,21 @@ Func _VectorOfPoint3D32FGetItemPtr(ByRef $vec, $index, ByRef $element)
         $vecVec = $vec
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfPoint3D32FGetItemPtr", "ptr", $vecVec, "int", $index, "ptr*", $element), "VectorOfPoint3D32FGetItemPtr", @error)
+    Local $bElementDllType
+    If VarGetType($element) == "DLLStruct" Then
+        $bElementDllType = "struct*"
+    Else
+        $bElementDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfPoint3D32FGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $element), "VectorOfPoint3D32FGetItemPtr", @error)
 
     If $bVecIsArray Then
         _VectorOfPoint3D32FRelease($vecVec)
     EndIf
 EndFunc   ;==>_VectorOfPoint3D32FGetItemPtr
 
-Func _cveInputArrayFromVectorOfPoint3D32F(ByRef $vec)
+Func _cveInputArrayFromVectorOfPoint3D32F($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfPoint3D32F(std::vector< cv::Point3f >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -325,7 +339,7 @@ Func _cveInputArrayFromVectorOfPoint3D32F(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveInputArrayFromVectorOfPoint3D32F
 
-Func _cveOutputArrayFromVectorOfPoint3D32F(ByRef $vec)
+Func _cveOutputArrayFromVectorOfPoint3D32F($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfPoint3D32F(std::vector< cv::Point3f >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -351,7 +365,7 @@ Func _cveOutputArrayFromVectorOfPoint3D32F(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveOutputArrayFromVectorOfPoint3D32F
 
-Func _cveInputOutputArrayFromVectorOfPoint3D32F(ByRef $vec)
+Func _cveInputOutputArrayFromVectorOfPoint3D32F($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfPoint3D32F(std::vector< cv::Point3f >* vec);
 
     Local $vecVec, $iArrVecSize

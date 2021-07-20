@@ -1,22 +1,44 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveHistogramPhaseUnwrappingCreate($width, $height, $histThresh, $nbrOfSmallBins, $nbrOfLargeBins, ByRef $sharedPtr)
+Func _cveHistogramPhaseUnwrappingCreate($width, $height, $histThresh, $nbrOfSmallBins, $nbrOfLargeBins, $sharedPtr)
     ; CVAPI(cv::phase_unwrapping::HistogramPhaseUnwrapping*) cveHistogramPhaseUnwrappingCreate(int width, int height, float histThresh, int nbrOfSmallBins, int nbrOfLargeBins, cv::Ptr<cv::phase_unwrapping::HistogramPhaseUnwrapping>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHistogramPhaseUnwrappingCreate", "int", $width, "int", $height, "float", $histThresh, "int", $nbrOfSmallBins, "int", $nbrOfLargeBins, "ptr*", $sharedPtr), "cveHistogramPhaseUnwrappingCreate", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHistogramPhaseUnwrappingCreate", "int", $width, "int", $height, "float", $histThresh, "int", $nbrOfSmallBins, "int", $nbrOfLargeBins, $bSharedPtrDllType, $sharedPtr), "cveHistogramPhaseUnwrappingCreate", @error)
 EndFunc   ;==>_cveHistogramPhaseUnwrappingCreate
 
-Func _cveHistogramPhaseUnwrappingRelease(ByRef $phase_unwrapping, ByRef $sharedPtr)
+Func _cveHistogramPhaseUnwrappingRelease($phase_unwrapping, $sharedPtr)
     ; CVAPI(void) cveHistogramPhaseUnwrappingRelease(cv::phase_unwrapping::HistogramPhaseUnwrapping** phase_unwrapping, cv::Ptr<cv::phase_unwrapping::HistogramPhaseUnwrapping>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHistogramPhaseUnwrappingRelease", "ptr*", $phase_unwrapping, "ptr*", $sharedPtr), "cveHistogramPhaseUnwrappingRelease", @error)
+
+    Local $bPhase_unwrappingDllType
+    If VarGetType($phase_unwrapping) == "DLLStruct" Then
+        $bPhase_unwrappingDllType = "struct*"
+    Else
+        $bPhase_unwrappingDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHistogramPhaseUnwrappingRelease", $bPhase_unwrappingDllType, $phase_unwrapping, $bSharedPtrDllType, $sharedPtr), "cveHistogramPhaseUnwrappingRelease", @error)
 EndFunc   ;==>_cveHistogramPhaseUnwrappingRelease
 
-Func _cveHistogramPhaseUnwrappingGetInverseReliabilityMap(ByRef $phase_unwrapping, ByRef $reliabilityMap)
+Func _cveHistogramPhaseUnwrappingGetInverseReliabilityMap($phase_unwrapping, $reliabilityMap)
     ; CVAPI(void) cveHistogramPhaseUnwrappingGetInverseReliabilityMap(cv::phase_unwrapping::HistogramPhaseUnwrapping* phase_unwrapping, cv::_OutputArray* reliabilityMap);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHistogramPhaseUnwrappingGetInverseReliabilityMap", "ptr", $phase_unwrapping, "ptr", $reliabilityMap), "cveHistogramPhaseUnwrappingGetInverseReliabilityMap", @error)
 EndFunc   ;==>_cveHistogramPhaseUnwrappingGetInverseReliabilityMap
 
-Func _cveHistogramPhaseUnwrappingGetInverseReliabilityMapMat(ByRef $phase_unwrapping, ByRef $matReliabilityMap)
+Func _cveHistogramPhaseUnwrappingGetInverseReliabilityMapMat($phase_unwrapping, $matReliabilityMap)
     ; cveHistogramPhaseUnwrappingGetInverseReliabilityMap using cv::Mat instead of _*Array
 
     Local $oArrReliabilityMap, $vectorOfMatReliabilityMap, $iArrReliabilityMapSize
@@ -44,12 +66,12 @@ Func _cveHistogramPhaseUnwrappingGetInverseReliabilityMapMat(ByRef $phase_unwrap
     _cveOutputArrayRelease($oArrReliabilityMap)
 EndFunc   ;==>_cveHistogramPhaseUnwrappingGetInverseReliabilityMapMat
 
-Func _cveHistogramPhaseMapUnwrappingUnwrapPhaseMap(ByRef $phase_unwrapping, ByRef $wrappedPhaseMap, ByRef $unwrappedPhaseMap, ByRef $shadowMask)
+Func _cveHistogramPhaseMapUnwrappingUnwrapPhaseMap($phase_unwrapping, $wrappedPhaseMap, $unwrappedPhaseMap, $shadowMask)
     ; CVAPI(void) cveHistogramPhaseMapUnwrappingUnwrapPhaseMap(cv::phase_unwrapping::HistogramPhaseUnwrapping* phase_unwrapping, cv::_InputArray* wrappedPhaseMap, cv::_OutputArray* unwrappedPhaseMap, cv::_InputArray* shadowMask);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHistogramPhaseMapUnwrappingUnwrapPhaseMap", "ptr", $phase_unwrapping, "ptr", $wrappedPhaseMap, "ptr", $unwrappedPhaseMap, "ptr", $shadowMask), "cveHistogramPhaseMapUnwrappingUnwrapPhaseMap", @error)
 EndFunc   ;==>_cveHistogramPhaseMapUnwrappingUnwrapPhaseMap
 
-Func _cveHistogramPhaseMapUnwrappingUnwrapPhaseMapMat(ByRef $phase_unwrapping, ByRef $matWrappedPhaseMap, ByRef $matUnwrappedPhaseMap, ByRef $matShadowMask)
+Func _cveHistogramPhaseMapUnwrappingUnwrapPhaseMapMat($phase_unwrapping, $matWrappedPhaseMap, $matUnwrappedPhaseMap, $matShadowMask)
     ; cveHistogramPhaseMapUnwrappingUnwrapPhaseMap using cv::Mat instead of _*Array
 
     Local $iArrWrappedPhaseMap, $vectorOfMatWrappedPhaseMap, $iArrWrappedPhaseMapSize

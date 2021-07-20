@@ -1,7 +1,7 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cudaCascadeClassifierCreate($filename, ByRef $sharedPtr)
+Func _cudaCascadeClassifierCreate($filename, $sharedPtr)
     ; CVAPI(cv::cuda::CascadeClassifier*) cudaCascadeClassifierCreate(cv::String* filename, cv::Ptr<cv::cuda::CascadeClassifier>** sharedPtr);
 
     Local $bFilenameIsString = VarGetType($filename) == "String"
@@ -9,7 +9,14 @@ Func _cudaCascadeClassifierCreate($filename, ByRef $sharedPtr)
         $filename = _cveStringCreateFromStr($filename)
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCascadeClassifierCreate", "ptr", $filename, "ptr*", $sharedPtr), "cudaCascadeClassifierCreate", @error)
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCascadeClassifierCreate", "ptr", $filename, $bSharedPtrDllType, $sharedPtr), "cudaCascadeClassifierCreate", @error)
 
     If $bFilenameIsString Then
         _cveStringRelease($filename)
@@ -18,22 +25,37 @@ Func _cudaCascadeClassifierCreate($filename, ByRef $sharedPtr)
     Return $retval
 EndFunc   ;==>_cudaCascadeClassifierCreate
 
-Func _cudaCascadeClassifierCreateFromFileStorage(ByRef $filestorage, ByRef $sharedPtr)
+Func _cudaCascadeClassifierCreateFromFileStorage($filestorage, $sharedPtr)
     ; CVAPI(cv::cuda::CascadeClassifier*) cudaCascadeClassifierCreateFromFileStorage(cv::FileStorage* filestorage, cv::Ptr<cv::cuda::CascadeClassifier>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCascadeClassifierCreateFromFileStorage", "ptr", $filestorage, "ptr*", $sharedPtr), "cudaCascadeClassifierCreateFromFileStorage", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCascadeClassifierCreateFromFileStorage", "ptr", $filestorage, $bSharedPtrDllType, $sharedPtr), "cudaCascadeClassifierCreateFromFileStorage", @error)
 EndFunc   ;==>_cudaCascadeClassifierCreateFromFileStorage
 
-Func _cudaCascadeClassifierRelease(ByRef $classifier)
+Func _cudaCascadeClassifierRelease($classifier)
     ; CVAPI(void) cudaCascadeClassifierRelease(cv::Ptr<cv::cuda::CascadeClassifier>** classifier);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCascadeClassifierRelease", "ptr*", $classifier), "cudaCascadeClassifierRelease", @error)
+
+    Local $bClassifierDllType
+    If VarGetType($classifier) == "DLLStruct" Then
+        $bClassifierDllType = "struct*"
+    Else
+        $bClassifierDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCascadeClassifierRelease", $bClassifierDllType, $classifier), "cudaCascadeClassifierRelease", @error)
 EndFunc   ;==>_cudaCascadeClassifierRelease
 
-Func _cudaCascadeClassifierDetectMultiScale(ByRef $classifier, ByRef $image, ByRef $objects, ByRef $stream)
+Func _cudaCascadeClassifierDetectMultiScale($classifier, $image, $objects, $stream)
     ; CVAPI(void) cudaCascadeClassifierDetectMultiScale(cv::cuda::CascadeClassifier* classifier, cv::_InputArray* image, cv::_OutputArray* objects, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCascadeClassifierDetectMultiScale", "ptr", $classifier, "ptr", $image, "ptr", $objects, "ptr", $stream), "cudaCascadeClassifierDetectMultiScale", @error)
 EndFunc   ;==>_cudaCascadeClassifierDetectMultiScale
 
-Func _cudaCascadeClassifierDetectMultiScaleMat(ByRef $classifier, ByRef $matImage, ByRef $matObjects, ByRef $stream)
+Func _cudaCascadeClassifierDetectMultiScaleMat($classifier, $matImage, $matObjects, $stream)
     ; cudaCascadeClassifierDetectMultiScale using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -83,7 +105,7 @@ Func _cudaCascadeClassifierDetectMultiScaleMat(ByRef $classifier, ByRef $matImag
     _cveInputArrayRelease($iArrImage)
 EndFunc   ;==>_cudaCascadeClassifierDetectMultiScaleMat
 
-Func _cudaCascadeClassifierConvert(ByRef $classifier, ByRef $gpuObjects, ByRef $objects)
+Func _cudaCascadeClassifierConvert($classifier, $gpuObjects, $objects)
     ; CVAPI(void) cudaCascadeClassifierConvert(cv::cuda::CascadeClassifier* classifier, cv::_OutputArray* gpuObjects, std::vector<cv::Rect>* objects);
 
     Local $vecObjects, $iArrObjectsSize
@@ -107,7 +129,7 @@ Func _cudaCascadeClassifierConvert(ByRef $classifier, ByRef $gpuObjects, ByRef $
     EndIf
 EndFunc   ;==>_cudaCascadeClassifierConvert
 
-Func _cudaCascadeClassifierConvertMat(ByRef $classifier, ByRef $matGpuObjects, ByRef $objects)
+Func _cudaCascadeClassifierConvertMat($classifier, $matGpuObjects, $objects)
     ; cudaCascadeClassifierConvert using cv::Mat instead of _*Array
 
     Local $oArrGpuObjects, $vectorOfMatGpuObjects, $iArrGpuObjectsSize
@@ -135,32 +157,39 @@ Func _cudaCascadeClassifierConvertMat(ByRef $classifier, ByRef $matGpuObjects, B
     _cveOutputArrayRelease($oArrGpuObjects)
 EndFunc   ;==>_cudaCascadeClassifierConvertMat
 
-Func _cudaCascadeClassifierGetMinObjectSize(ByRef $classifier, ByRef $minObjectSize)
+Func _cudaCascadeClassifierGetMinObjectSize($classifier, $minObjectSize)
     ; CVAPI(void) cudaCascadeClassifierGetMinObjectSize(cv::cuda::CascadeClassifier* classifier, CvSize* minObjectSize);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCascadeClassifierGetMinObjectSize", "ptr", $classifier, "struct*", $minObjectSize), "cudaCascadeClassifierGetMinObjectSize", @error)
 EndFunc   ;==>_cudaCascadeClassifierGetMinObjectSize
 
-Func _cudaCascadeClassifierSetMinObjectSize(ByRef $classifier, ByRef $minObjectSize)
+Func _cudaCascadeClassifierSetMinObjectSize($classifier, $minObjectSize)
     ; CVAPI(void) cudaCascadeClassifierSetMinObjectSize(cv::cuda::CascadeClassifier* classifier, CvSize* minObjectSize);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCascadeClassifierSetMinObjectSize", "ptr", $classifier, "struct*", $minObjectSize), "cudaCascadeClassifierSetMinObjectSize", @error)
 EndFunc   ;==>_cudaCascadeClassifierSetMinObjectSize
 
-Func _cudaHOGGetDefaultPeopleDetector(ByRef $descriptor, ByRef $detector)
+Func _cudaHOGGetDefaultPeopleDetector($descriptor, $detector)
     ; CVAPI(void) cudaHOGGetDefaultPeopleDetector(cv::cuda::HOG* descriptor, cv::Mat* detector);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHOGGetDefaultPeopleDetector", "ptr", $descriptor, "ptr", $detector), "cudaHOGGetDefaultPeopleDetector", @error)
 EndFunc   ;==>_cudaHOGGetDefaultPeopleDetector
 
-Func _cudaHOGCreate(ByRef $winSize, ByRef $blockSize, ByRef $blockStride, ByRef $cellSize, $nbins, ByRef $sharedPtr)
+Func _cudaHOGCreate($winSize, $blockSize, $blockStride, $cellSize, $nbins, $sharedPtr)
     ; CVAPI(cv::cuda::HOG*) cudaHOGCreate(CvSize* winSize, CvSize* blockSize, CvSize* blockStride, CvSize* cellSize, int nbins, cv::Ptr<cv::cuda::HOG>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaHOGCreate", "struct*", $winSize, "struct*", $blockSize, "struct*", $blockStride, "struct*", $cellSize, "int", $nbins, "ptr*", $sharedPtr), "cudaHOGCreate", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaHOGCreate", "struct*", $winSize, "struct*", $blockSize, "struct*", $blockStride, "struct*", $cellSize, "int", $nbins, $bSharedPtrDllType, $sharedPtr), "cudaHOGCreate", @error)
 EndFunc   ;==>_cudaHOGCreate
 
-Func _cudaHOGSetSVMDetector(ByRef $descriptor, ByRef $detector)
+Func _cudaHOGSetSVMDetector($descriptor, $detector)
     ; CVAPI(void) cudaHOGSetSVMDetector(cv::cuda::HOG* descriptor, cv::_InputArray* detector);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHOGSetSVMDetector", "ptr", $descriptor, "ptr", $detector), "cudaHOGSetSVMDetector", @error)
 EndFunc   ;==>_cudaHOGSetSVMDetector
 
-Func _cudaHOGSetSVMDetectorMat(ByRef $descriptor, ByRef $matDetector)
+Func _cudaHOGSetSVMDetectorMat($descriptor, $matDetector)
     ; cudaHOGSetSVMDetector using cv::Mat instead of _*Array
 
     Local $iArrDetector, $vectorOfMatDetector, $iArrDetectorSize
@@ -188,12 +217,20 @@ Func _cudaHOGSetSVMDetectorMat(ByRef $descriptor, ByRef $matDetector)
     _cveInputArrayRelease($iArrDetector)
 EndFunc   ;==>_cudaHOGSetSVMDetectorMat
 
-Func _cudaHOGRelease(ByRef $descriptor)
+Func _cudaHOGRelease($descriptor)
     ; CVAPI(void) cudaHOGRelease(cv::Ptr<cv::cuda::HOG>** descriptor);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHOGRelease", "ptr*", $descriptor), "cudaHOGRelease", @error)
+
+    Local $bDescriptorDllType
+    If VarGetType($descriptor) == "DLLStruct" Then
+        $bDescriptorDllType = "struct*"
+    Else
+        $bDescriptorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHOGRelease", $bDescriptorDllType, $descriptor), "cudaHOGRelease", @error)
 EndFunc   ;==>_cudaHOGRelease
 
-Func _cudaHOGDetectMultiScale(ByRef $descriptor, ByRef $img, ByRef $foundLocations, ByRef $confidents)
+Func _cudaHOGDetectMultiScale($descriptor, $img, $foundLocations, $confidents)
     ; CVAPI(void) cudaHOGDetectMultiScale(cv::cuda::HOG* descriptor, cv::_InputArray* img, std::vector<cv::Rect>* foundLocations, std::vector<double>* confidents);
 
     Local $vecFoundLocations, $iArrFoundLocationsSize
@@ -235,7 +272,7 @@ Func _cudaHOGDetectMultiScale(ByRef $descriptor, ByRef $img, ByRef $foundLocatio
     EndIf
 EndFunc   ;==>_cudaHOGDetectMultiScale
 
-Func _cudaHOGDetectMultiScaleMat(ByRef $descriptor, ByRef $matImg, ByRef $foundLocations, ByRef $confidents)
+Func _cudaHOGDetectMultiScaleMat($descriptor, $matImg, $foundLocations, $confidents)
     ; cudaHOGDetectMultiScale using cv::Mat instead of _*Array
 
     Local $iArrImg, $vectorOfMatImg, $iArrImgSize

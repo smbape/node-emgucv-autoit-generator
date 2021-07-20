@@ -1,7 +1,7 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveHOGDescriptorPeopleDetectorCreate(ByRef $seq)
+Func _cveHOGDescriptorPeopleDetectorCreate($seq)
     ; CVAPI(void) cveHOGDescriptorPeopleDetectorCreate(std::vector<float>* seq);
 
     Local $vecSeq, $iArrSeqSize
@@ -30,12 +30,12 @@ Func _cveHOGDescriptorCreateDefault()
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHOGDescriptorCreateDefault"), "cveHOGDescriptorCreateDefault", @error)
 EndFunc   ;==>_cveHOGDescriptorCreateDefault
 
-Func _cveHOGDescriptorCreate(ByRef $_winSize, ByRef $_blockSize, ByRef $_blockStride, ByRef $_cellSize, $_nbins, $_derivAperture, $_winSigma, $_histogramNormType, $_L2HysThreshold, $_gammaCorrection)
+Func _cveHOGDescriptorCreate($_winSize, $_blockSize, $_blockStride, $_cellSize, $_nbins, $_derivAperture, $_winSigma, $_histogramNormType, $_L2HysThreshold, $_gammaCorrection)
     ; CVAPI(cv::HOGDescriptor*) cveHOGDescriptorCreate(CvSize* _winSize, CvSize* _blockSize, CvSize* _blockStride, CvSize* _cellSize, int _nbins, int _derivAperture, double _winSigma, int _histogramNormType, double _L2HysThreshold, bool _gammaCorrection);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHOGDescriptorCreate", "struct*", $_winSize, "struct*", $_blockSize, "struct*", $_blockStride, "struct*", $_cellSize, "int", $_nbins, "int", $_derivAperture, "double", $_winSigma, "int", $_histogramNormType, "double", $_L2HysThreshold, "boolean", $_gammaCorrection), "cveHOGDescriptorCreate", @error)
 EndFunc   ;==>_cveHOGDescriptorCreate
 
-Func _cveHOGSetSVMDetector(ByRef $descriptor, ByRef $vector)
+Func _cveHOGSetSVMDetector($descriptor, $vector)
     ; CVAPI(void) cveHOGSetSVMDetector(cv::HOGDescriptor* descriptor, std::vector<float>* vector);
 
     Local $vecVector, $iArrVectorSize
@@ -59,12 +59,20 @@ Func _cveHOGSetSVMDetector(ByRef $descriptor, ByRef $vector)
     EndIf
 EndFunc   ;==>_cveHOGSetSVMDetector
 
-Func _cveHOGDescriptorRelease(ByRef $descriptor)
+Func _cveHOGDescriptorRelease($descriptor)
     ; CVAPI(void) cveHOGDescriptorRelease(cv::HOGDescriptor** descriptor);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHOGDescriptorRelease", "ptr*", $descriptor), "cveHOGDescriptorRelease", @error)
+
+    Local $bDescriptorDllType
+    If VarGetType($descriptor) == "DLLStruct" Then
+        $bDescriptorDllType = "struct*"
+    Else
+        $bDescriptorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHOGDescriptorRelease", $bDescriptorDllType, $descriptor), "cveHOGDescriptorRelease", @error)
 EndFunc   ;==>_cveHOGDescriptorRelease
 
-Func _cveHOGDescriptorDetectMultiScale(ByRef $descriptor, ByRef $img, ByRef $foundLocations, ByRef $weights, $hitThreshold, ByRef $winStride, ByRef $padding, $scale, $finalThreshold, $useMeanshiftGrouping)
+Func _cveHOGDescriptorDetectMultiScale($descriptor, $img, $foundLocations, $weights, $hitThreshold, $winStride, $padding, $scale, $finalThreshold, $useMeanshiftGrouping)
     ; CVAPI(void) cveHOGDescriptorDetectMultiScale(cv::HOGDescriptor* descriptor, cv::_InputArray* img, std::vector<cv::Rect>* foundLocations, std::vector<double>* weights, double hitThreshold, CvSize* winStride, CvSize* padding, double scale, double finalThreshold, bool useMeanshiftGrouping);
 
     Local $vecFoundLocations, $iArrFoundLocationsSize
@@ -106,7 +114,7 @@ Func _cveHOGDescriptorDetectMultiScale(ByRef $descriptor, ByRef $img, ByRef $fou
     EndIf
 EndFunc   ;==>_cveHOGDescriptorDetectMultiScale
 
-Func _cveHOGDescriptorDetectMultiScaleMat(ByRef $descriptor, ByRef $matImg, ByRef $foundLocations, ByRef $weights, $hitThreshold, ByRef $winStride, ByRef $padding, $scale, $finalThreshold, $useMeanshiftGrouping)
+Func _cveHOGDescriptorDetectMultiScaleMat($descriptor, $matImg, $foundLocations, $weights, $hitThreshold, $winStride, $padding, $scale, $finalThreshold, $useMeanshiftGrouping)
     ; cveHOGDescriptorDetectMultiScale using cv::Mat instead of _*Array
 
     Local $iArrImg, $vectorOfMatImg, $iArrImgSize
@@ -134,7 +142,7 @@ Func _cveHOGDescriptorDetectMultiScaleMat(ByRef $descriptor, ByRef $matImg, ByRe
     _cveInputArrayRelease($iArrImg)
 EndFunc   ;==>_cveHOGDescriptorDetectMultiScaleMat
 
-Func _cveHOGDescriptorCompute(ByRef $descriptor, ByRef $img, ByRef $descriptors, ByRef $winStride, ByRef $padding, ByRef $locations)
+Func _cveHOGDescriptorCompute($descriptor, $img, $descriptors, $winStride, $padding, $locations)
     ; CVAPI(void) cveHOGDescriptorCompute(cv::HOGDescriptor * descriptor, cv::_InputArray* img, std::vector<float> * descriptors, CvSize* winStride, CvSize* padding, std::vector< cv::Point >* locations);
 
     Local $vecDescriptors, $iArrDescriptorsSize
@@ -176,7 +184,7 @@ Func _cveHOGDescriptorCompute(ByRef $descriptor, ByRef $img, ByRef $descriptors,
     EndIf
 EndFunc   ;==>_cveHOGDescriptorCompute
 
-Func _cveHOGDescriptorComputeMat(ByRef $descriptor, ByRef $matImg, ByRef $descriptors, ByRef $winStride, ByRef $padding, ByRef $locations)
+Func _cveHOGDescriptorComputeMat($descriptor, $matImg, $descriptors, $winStride, $padding, $locations)
     ; cveHOGDescriptorCompute using cv::Mat instead of _*Array
 
     Local $iArrImg, $vectorOfMatImg, $iArrImgSize
@@ -204,7 +212,7 @@ Func _cveHOGDescriptorComputeMat(ByRef $descriptor, ByRef $matImg, ByRef $descri
     _cveInputArrayRelease($iArrImg)
 EndFunc   ;==>_cveHOGDescriptorComputeMat
 
-Func _cveHOGDescriptorGetDescriptorSize(ByRef $descriptor)
+Func _cveHOGDescriptorGetDescriptorSize($descriptor)
     ; CVAPI(unsigned) cveHOGDescriptorGetDescriptorSize(cv::HOGDescriptor* descriptor);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "unsigned:cdecl", "cveHOGDescriptorGetDescriptorSize", "ptr", $descriptor), "cveHOGDescriptorGetDescriptorSize", @error)
 EndFunc   ;==>_cveHOGDescriptorGetDescriptorSize
@@ -231,17 +239,25 @@ Func _cveCascadeClassifierCreateFromFile($fileName)
     Return $retval
 EndFunc   ;==>_cveCascadeClassifierCreateFromFile
 
-Func _cveCascadeClassifierRead(ByRef $classifier, ByRef $node)
+Func _cveCascadeClassifierRead($classifier, $node)
     ; CVAPI(bool) cveCascadeClassifierRead(cv::CascadeClassifier* classifier, cv::FileNode* node);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveCascadeClassifierRead", "ptr", $classifier, "ptr", $node), "cveCascadeClassifierRead", @error)
 EndFunc   ;==>_cveCascadeClassifierRead
 
-Func _cveCascadeClassifierRelease(ByRef $classifier)
+Func _cveCascadeClassifierRelease($classifier)
     ; CVAPI(void) cveCascadeClassifierRelease(cv::CascadeClassifier** classifier);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCascadeClassifierRelease", "ptr*", $classifier), "cveCascadeClassifierRelease", @error)
+
+    Local $bClassifierDllType
+    If VarGetType($classifier) == "DLLStruct" Then
+        $bClassifierDllType = "struct*"
+    Else
+        $bClassifierDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCascadeClassifierRelease", $bClassifierDllType, $classifier), "cveCascadeClassifierRelease", @error)
 EndFunc   ;==>_cveCascadeClassifierRelease
 
-Func _cveCascadeClassifierDetectMultiScale(ByRef $classifier, ByRef $image, ByRef $objects, $scaleFactor, $minNeighbors, $flags, ByRef $minSize, ByRef $maxSize)
+Func _cveCascadeClassifierDetectMultiScale($classifier, $image, $objects, $scaleFactor, $minNeighbors, $flags, $minSize, $maxSize)
     ; CVAPI(void) cveCascadeClassifierDetectMultiScale(cv::CascadeClassifier* classifier, cv::_InputArray* image, std::vector<cv::Rect>* objects, double scaleFactor, int minNeighbors, int flags, CvSize* minSize, CvSize* maxSize);
 
     Local $vecObjects, $iArrObjectsSize
@@ -265,7 +281,7 @@ Func _cveCascadeClassifierDetectMultiScale(ByRef $classifier, ByRef $image, ByRe
     EndIf
 EndFunc   ;==>_cveCascadeClassifierDetectMultiScale
 
-Func _cveCascadeClassifierDetectMultiScaleMat(ByRef $classifier, ByRef $matImage, ByRef $objects, $scaleFactor, $minNeighbors, $flags, ByRef $minSize, ByRef $maxSize)
+Func _cveCascadeClassifierDetectMultiScaleMat($classifier, $matImage, $objects, $scaleFactor, $minNeighbors, $flags, $minSize, $maxSize)
     ; cveCascadeClassifierDetectMultiScale using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -293,17 +309,17 @@ Func _cveCascadeClassifierDetectMultiScaleMat(ByRef $classifier, ByRef $matImage
     _cveInputArrayRelease($iArrImage)
 EndFunc   ;==>_cveCascadeClassifierDetectMultiScaleMat
 
-Func _cveCascadeClassifierIsOldFormatCascade(ByRef $classifier)
+Func _cveCascadeClassifierIsOldFormatCascade($classifier)
     ; CVAPI(bool) cveCascadeClassifierIsOldFormatCascade(cv::CascadeClassifier* classifier);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveCascadeClassifierIsOldFormatCascade", "ptr", $classifier), "cveCascadeClassifierIsOldFormatCascade", @error)
 EndFunc   ;==>_cveCascadeClassifierIsOldFormatCascade
 
-Func _cveCascadeClassifierGetOriginalWindowSize(ByRef $classifier, ByRef $size)
+Func _cveCascadeClassifierGetOriginalWindowSize($classifier, $size)
     ; CVAPI(void) cveCascadeClassifierGetOriginalWindowSize(cv::CascadeClassifier* classifier, CvSize* size);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCascadeClassifierGetOriginalWindowSize", "ptr", $classifier, "struct*", $size), "cveCascadeClassifierGetOriginalWindowSize", @error)
 EndFunc   ;==>_cveCascadeClassifierGetOriginalWindowSize
 
-Func _cveGroupRectangles1(ByRef $rectList, $groupThreshold, $eps)
+Func _cveGroupRectangles1($rectList, $groupThreshold, $eps)
     ; CVAPI(void) cveGroupRectangles1(std::vector< cv::Rect >* rectList, int groupThreshold, double eps);
 
     Local $vecRectList, $iArrRectListSize
@@ -327,7 +343,7 @@ Func _cveGroupRectangles1(ByRef $rectList, $groupThreshold, $eps)
     EndIf
 EndFunc   ;==>_cveGroupRectangles1
 
-Func _cveGroupRectangles2(ByRef $rectList, ByRef $weights, $groupThreshold, $eps)
+Func _cveGroupRectangles2($rectList, $weights, $groupThreshold, $eps)
     ; CVAPI(void) cveGroupRectangles2(std::vector<cv::Rect>* rectList, std::vector<int>* weights, int groupThreshold, double eps);
 
     Local $vecRectList, $iArrRectListSize
@@ -369,7 +385,7 @@ Func _cveGroupRectangles2(ByRef $rectList, ByRef $weights, $groupThreshold, $eps
     EndIf
 EndFunc   ;==>_cveGroupRectangles2
 
-Func _cveGroupRectangles3(ByRef $rectList, $groupThreshold, $eps, ByRef $weights, ByRef $levelWeights)
+Func _cveGroupRectangles3($rectList, $groupThreshold, $eps, $weights, $levelWeights)
     ; CVAPI(void) cveGroupRectangles3(std::vector<cv::Rect>* rectList, int groupThreshold, double eps, std::vector<int>* weights, std::vector<double>* levelWeights);
 
     Local $vecRectList, $iArrRectListSize
@@ -429,7 +445,7 @@ Func _cveGroupRectangles3(ByRef $rectList, $groupThreshold, $eps, ByRef $weights
     EndIf
 EndFunc   ;==>_cveGroupRectangles3
 
-Func _cveGroupRectangles4(ByRef $rectList, ByRef $rejectLevels, ByRef $levelWeights, $groupThreshold, $eps)
+Func _cveGroupRectangles4($rectList, $rejectLevels, $levelWeights, $groupThreshold, $eps)
     ; CVAPI(void) cveGroupRectangles4(std::vector<cv::Rect>* rectList, std::vector<int>* rejectLevels, std::vector<double>* levelWeights, int groupThreshold, double eps);
 
     Local $vecRectList, $iArrRectListSize
@@ -489,7 +505,7 @@ Func _cveGroupRectangles4(ByRef $rectList, ByRef $rejectLevels, ByRef $levelWeig
     EndIf
 EndFunc   ;==>_cveGroupRectangles4
 
-Func _cveGroupRectanglesMeanshift(ByRef $rectList, ByRef $foundWeights, ByRef $foundScales, $detectThreshold, ByRef $winDetSize)
+Func _cveGroupRectanglesMeanshift($rectList, $foundWeights, $foundScales, $detectThreshold, $winDetSize)
     ; CVAPI(void) cveGroupRectanglesMeanshift(std::vector<cv::Rect>* rectList, std::vector<double>* foundWeights, std::vector<double>* foundScales, double detectThreshold, CvSize* winDetSize);
 
     Local $vecRectList, $iArrRectListSize
@@ -554,17 +570,25 @@ Func _cveQRCodeDetectorCreate()
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveQRCodeDetectorCreate"), "cveQRCodeDetectorCreate", @error)
 EndFunc   ;==>_cveQRCodeDetectorCreate
 
-Func _cveQRCodeDetectorRelease(ByRef $detector)
+Func _cveQRCodeDetectorRelease($detector)
     ; CVAPI(void) cveQRCodeDetectorRelease(cv::QRCodeDetector** detector);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQRCodeDetectorRelease", "ptr*", $detector), "cveQRCodeDetectorRelease", @error)
+
+    Local $bDetectorDllType
+    If VarGetType($detector) == "DLLStruct" Then
+        $bDetectorDllType = "struct*"
+    Else
+        $bDetectorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQRCodeDetectorRelease", $bDetectorDllType, $detector), "cveQRCodeDetectorRelease", @error)
 EndFunc   ;==>_cveQRCodeDetectorRelease
 
-Func _cveQRCodeDetectorDetect(ByRef $detector, ByRef $img, ByRef $points)
+Func _cveQRCodeDetectorDetect($detector, $img, $points)
     ; CVAPI(bool) cveQRCodeDetectorDetect(cv::QRCodeDetector* detector, cv::_InputArray* img, cv::_OutputArray* points);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveQRCodeDetectorDetect", "ptr", $detector, "ptr", $img, "ptr", $points), "cveQRCodeDetectorDetect", @error)
 EndFunc   ;==>_cveQRCodeDetectorDetect
 
-Func _cveQRCodeDetectorDetectMat(ByRef $detector, ByRef $matImg, ByRef $matPoints)
+Func _cveQRCodeDetectorDetectMat($detector, $matImg, $matPoints)
     ; cveQRCodeDetectorDetect using cv::Mat instead of _*Array
 
     Local $iArrImg, $vectorOfMatImg, $iArrImgSize
@@ -616,12 +640,12 @@ Func _cveQRCodeDetectorDetectMat(ByRef $detector, ByRef $matImg, ByRef $matPoint
     Return $retval
 EndFunc   ;==>_cveQRCodeDetectorDetectMat
 
-Func _cveQRCodeDetectorDetectMulti(ByRef $detector, ByRef $img, ByRef $points)
+Func _cveQRCodeDetectorDetectMulti($detector, $img, $points)
     ; CVAPI(bool) cveQRCodeDetectorDetectMulti(cv::QRCodeDetector* detector, cv::_InputArray* img, cv::_OutputArray* points);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveQRCodeDetectorDetectMulti", "ptr", $detector, "ptr", $img, "ptr", $points), "cveQRCodeDetectorDetectMulti", @error)
 EndFunc   ;==>_cveQRCodeDetectorDetectMulti
 
-Func _cveQRCodeDetectorDetectMultiMat(ByRef $detector, ByRef $matImg, ByRef $matPoints)
+Func _cveQRCodeDetectorDetectMultiMat($detector, $matImg, $matPoints)
     ; cveQRCodeDetectorDetectMulti using cv::Mat instead of _*Array
 
     Local $iArrImg, $vectorOfMatImg, $iArrImgSize
@@ -673,7 +697,7 @@ Func _cveQRCodeDetectorDetectMultiMat(ByRef $detector, ByRef $matImg, ByRef $mat
     Return $retval
 EndFunc   ;==>_cveQRCodeDetectorDetectMultiMat
 
-Func _cveQRCodeDetectorDecode(ByRef $detector, ByRef $img, ByRef $points, $decodedInfo, ByRef $straightQrcode)
+Func _cveQRCodeDetectorDecode($detector, $img, $points, $decodedInfo, $straightQrcode)
     ; CVAPI(void) cveQRCodeDetectorDecode(cv::QRCodeDetector* detector, cv::_InputArray* img, cv::_InputArray* points, cv::String* decodedInfo, cv::_OutputArray* straightQrcode);
 
     Local $bDecodedInfoIsString = VarGetType($decodedInfo) == "String"
@@ -688,7 +712,7 @@ Func _cveQRCodeDetectorDecode(ByRef $detector, ByRef $img, ByRef $points, $decod
     EndIf
 EndFunc   ;==>_cveQRCodeDetectorDecode
 
-Func _cveQRCodeDetectorDecodeMat(ByRef $detector, ByRef $matImg, ByRef $matPoints, $decodedInfo, ByRef $matStraightQrcode)
+Func _cveQRCodeDetectorDecodeMat($detector, $matImg, $matPoints, $decodedInfo, $matStraightQrcode)
     ; cveQRCodeDetectorDecode using cv::Mat instead of _*Array
 
     Local $iArrImg, $vectorOfMatImg, $iArrImgSize
@@ -760,7 +784,7 @@ Func _cveQRCodeDetectorDecodeMat(ByRef $detector, ByRef $matImg, ByRef $matPoint
     _cveInputArrayRelease($iArrImg)
 EndFunc   ;==>_cveQRCodeDetectorDecodeMat
 
-Func _cveQRCodeDetectorDecodeCurved(ByRef $detector, ByRef $img, ByRef $points, $decodedInfo, ByRef $straightQrcode)
+Func _cveQRCodeDetectorDecodeCurved($detector, $img, $points, $decodedInfo, $straightQrcode)
     ; CVAPI(void) cveQRCodeDetectorDecodeCurved(cv::QRCodeDetector* detector, cv::_InputArray* img, cv::_InputArray* points, cv::String* decodedInfo, cv::_OutputArray* straightQrcode);
 
     Local $bDecodedInfoIsString = VarGetType($decodedInfo) == "String"
@@ -775,7 +799,7 @@ Func _cveQRCodeDetectorDecodeCurved(ByRef $detector, ByRef $img, ByRef $points, 
     EndIf
 EndFunc   ;==>_cveQRCodeDetectorDecodeCurved
 
-Func _cveQRCodeDetectorDecodeCurvedMat(ByRef $detector, ByRef $matImg, ByRef $matPoints, $decodedInfo, ByRef $matStraightQrcode)
+Func _cveQRCodeDetectorDecodeCurvedMat($detector, $matImg, $matPoints, $decodedInfo, $matStraightQrcode)
     ; cveQRCodeDetectorDecodeCurved using cv::Mat instead of _*Array
 
     Local $iArrImg, $vectorOfMatImg, $iArrImgSize
@@ -847,12 +871,12 @@ Func _cveQRCodeDetectorDecodeCurvedMat(ByRef $detector, ByRef $matImg, ByRef $ma
     _cveInputArrayRelease($iArrImg)
 EndFunc   ;==>_cveQRCodeDetectorDecodeCurvedMat
 
-Func _cveQRCodeDetectorDecodeMulti(ByRef $detector, ByRef $img, ByRef $points, ByRef $decodedInfo, ByRef $straightQrcode)
+Func _cveQRCodeDetectorDecodeMulti($detector, $img, $points, $decodedInfo, $straightQrcode)
     ; CVAPI(bool) cveQRCodeDetectorDecodeMulti(cv::QRCodeDetector* detector, cv::_InputArray* img, cv::_InputArray* points, std::vector< std::string >* decodedInfo, cv::_OutputArray* straightQrcode);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveQRCodeDetectorDecodeMulti", "ptr", $detector, "ptr", $img, "ptr", $points, "ptr", $decodedInfo, "ptr", $straightQrcode), "cveQRCodeDetectorDecodeMulti", @error)
 EndFunc   ;==>_cveQRCodeDetectorDecodeMulti
 
-Func _cveQRCodeDetectorDecodeMultiMat(ByRef $detector, ByRef $matImg, ByRef $matPoints, ByRef $decodedInfo, ByRef $matStraightQrcode)
+Func _cveQRCodeDetectorDecodeMultiMat($detector, $matImg, $matPoints, $decodedInfo, $matStraightQrcode)
     ; cveQRCodeDetectorDecodeMulti using cv::Mat instead of _*Array
 
     Local $iArrImg, $vectorOfMatImg, $iArrImgSize

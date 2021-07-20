@@ -111,7 +111,7 @@ Func _cveReadNetFromONNX($onnxFile)
     Return $retval
 EndFunc   ;==>_cveReadNetFromONNX
 
-Func _cveReadTensorFromONNX($path, ByRef $tensor)
+Func _cveReadTensorFromONNX($path, $tensor)
     ; CVAPI(void) cveReadTensorFromONNX(cv::String* path, cv::Mat* tensor);
 
     Local $bPathIsString = VarGetType($path) == "String"
@@ -192,7 +192,7 @@ Func _cveDnnNetCreate()
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnNetCreate"), "cveDnnNetCreate", @error)
 EndFunc   ;==>_cveDnnNetCreate
 
-Func _cveDnnNetSetInput(ByRef $net, ByRef $blob, $name, $scalefactor, ByRef $mean)
+Func _cveDnnNetSetInput($net, $blob, $name, $scalefactor, $mean)
     ; CVAPI(void) cveDnnNetSetInput(cv::dnn::Net* net, cv::_InputArray* blob, cv::String* name, double scalefactor, CvScalar* mean);
 
     Local $bNameIsString = VarGetType($name) == "String"
@@ -207,7 +207,7 @@ Func _cveDnnNetSetInput(ByRef $net, ByRef $blob, $name, $scalefactor, ByRef $mea
     EndIf
 EndFunc   ;==>_cveDnnNetSetInput
 
-Func _cveDnnNetSetInputMat(ByRef $net, ByRef $matBlob, $name, $scalefactor, ByRef $mean)
+Func _cveDnnNetSetInputMat($net, $matBlob, $name, $scalefactor, $mean)
     ; cveDnnNetSetInput using cv::Mat instead of _*Array
 
     Local $iArrBlob, $vectorOfMatBlob, $iArrBlobSize
@@ -235,7 +235,7 @@ Func _cveDnnNetSetInputMat(ByRef $net, ByRef $matBlob, $name, $scalefactor, ByRe
     _cveInputArrayRelease($iArrBlob)
 EndFunc   ;==>_cveDnnNetSetInputMat
 
-Func _cveDnnNetForward(ByRef $net, $outputName, ByRef $output)
+Func _cveDnnNetForward($net, $outputName, $output)
     ; CVAPI(void) cveDnnNetForward(cv::dnn::Net* net, cv::String* outputName, cv::Mat* output);
 
     Local $bOutputNameIsString = VarGetType($outputName) == "String"
@@ -250,7 +250,7 @@ Func _cveDnnNetForward(ByRef $net, $outputName, ByRef $output)
     EndIf
 EndFunc   ;==>_cveDnnNetForward
 
-Func _cveDnnNetForward2(ByRef $net, ByRef $outputBlobs, $outputName)
+Func _cveDnnNetForward2($net, $outputBlobs, $outputName)
     ; CVAPI(void) cveDnnNetForward2(cv::dnn::Net* net, cv::_OutputArray* outputBlobs, cv::String* outputName);
 
     Local $bOutputNameIsString = VarGetType($outputName) == "String"
@@ -265,7 +265,7 @@ Func _cveDnnNetForward2(ByRef $net, ByRef $outputBlobs, $outputName)
     EndIf
 EndFunc   ;==>_cveDnnNetForward2
 
-Func _cveDnnNetForward2Mat(ByRef $net, ByRef $matOutputBlobs, $outputName)
+Func _cveDnnNetForward2Mat($net, $matOutputBlobs, $outputName)
     ; cveDnnNetForward2 using cv::Mat instead of _*Array
 
     Local $oArrOutputBlobs, $vectorOfMatOutputBlobs, $iArrOutputBlobsSize
@@ -293,7 +293,7 @@ Func _cveDnnNetForward2Mat(ByRef $net, ByRef $matOutputBlobs, $outputName)
     _cveOutputArrayRelease($oArrOutputBlobs)
 EndFunc   ;==>_cveDnnNetForward2Mat
 
-Func _cveDnnNetForward3(ByRef $net, ByRef $outputBlobs, ByRef $outBlobNames)
+Func _cveDnnNetForward3($net, $outputBlobs, $outBlobNames)
     ; CVAPI(void) cveDnnNetForward3(cv::dnn::Net* net, cv::_OutputArray* outputBlobs, std::vector<cv::String>* outBlobNames);
 
     Local $vecOutBlobNames, $iArrOutBlobNamesSize
@@ -317,7 +317,7 @@ Func _cveDnnNetForward3(ByRef $net, ByRef $outputBlobs, ByRef $outBlobNames)
     EndIf
 EndFunc   ;==>_cveDnnNetForward3
 
-Func _cveDnnNetForward3Mat(ByRef $net, ByRef $matOutputBlobs, ByRef $outBlobNames)
+Func _cveDnnNetForward3Mat($net, $matOutputBlobs, $outBlobNames)
     ; cveDnnNetForward3 using cv::Mat instead of _*Array
 
     Local $oArrOutputBlobs, $vectorOfMatOutputBlobs, $iArrOutputBlobsSize
@@ -345,12 +345,20 @@ Func _cveDnnNetForward3Mat(ByRef $net, ByRef $matOutputBlobs, ByRef $outBlobName
     _cveOutputArrayRelease($oArrOutputBlobs)
 EndFunc   ;==>_cveDnnNetForward3Mat
 
-Func _cveDnnNetRelease(ByRef $net)
+Func _cveDnnNetRelease($net)
     ; CVAPI(void) cveDnnNetRelease(cv::dnn::Net** net);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnNetRelease", "ptr*", $net), "cveDnnNetRelease", @error)
+
+    Local $bNetDllType
+    If VarGetType($net) == "DLLStruct" Then
+        $bNetDllType = "struct*"
+    Else
+        $bNetDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnNetRelease", $bNetDllType, $net), "cveDnnNetRelease", @error)
 EndFunc   ;==>_cveDnnNetRelease
 
-Func _cveDnnNetGetUnconnectedOutLayers(ByRef $net, ByRef $layerIds)
+Func _cveDnnNetGetUnconnectedOutLayers($net, $layerIds)
     ; CVAPI(void) cveDnnNetGetUnconnectedOutLayers(cv::dnn::Net* net, std::vector<int>* layerIds);
 
     Local $vecLayerIds, $iArrLayerIdsSize
@@ -374,7 +382,7 @@ Func _cveDnnNetGetUnconnectedOutLayers(ByRef $net, ByRef $layerIds)
     EndIf
 EndFunc   ;==>_cveDnnNetGetUnconnectedOutLayers
 
-Func _cveDnnNetGetUnconnectedOutLayersNames(ByRef $net, ByRef $layerNames)
+Func _cveDnnNetGetUnconnectedOutLayersNames($net, $layerNames)
     ; CVAPI(void) cveDnnNetGetUnconnectedOutLayersNames(cv::dnn::Net* net, std::vector<cv::String>* layerNames);
 
     Local $vecLayerNames, $iArrLayerNamesSize
@@ -398,7 +406,7 @@ Func _cveDnnNetGetUnconnectedOutLayersNames(ByRef $net, ByRef $layerNames)
     EndIf
 EndFunc   ;==>_cveDnnNetGetUnconnectedOutLayersNames
 
-Func _cveDnnNetGetPerfProfile(ByRef $net, ByRef $timings)
+Func _cveDnnNetGetPerfProfile($net, $timings)
     ; CVAPI(int64) cveDnnNetGetPerfProfile(cv::dnn::Net* net, std::vector<double>* timings);
 
     Local $vecTimings, $iArrTimingsSize
@@ -424,7 +432,7 @@ Func _cveDnnNetGetPerfProfile(ByRef $net, ByRef $timings)
     Return $retval
 EndFunc   ;==>_cveDnnNetGetPerfProfile
 
-Func _cveDnnNetDump(ByRef $net, $string)
+Func _cveDnnNetDump($net, $string)
     ; CVAPI(void) cveDnnNetDump(cv::dnn::Net* net, cv::String* string);
 
     Local $bStringIsString = VarGetType($string) == "String"
@@ -439,7 +447,7 @@ Func _cveDnnNetDump(ByRef $net, $string)
     EndIf
 EndFunc   ;==>_cveDnnNetDump
 
-Func _cveDnnNetDumpToFile(ByRef $net, $path)
+Func _cveDnnNetDumpToFile($net, $path)
     ; CVAPI(void) cveDnnNetDumpToFile(cv::dnn::Net* net, cv::String* path);
 
     Local $bPathIsString = VarGetType($path) == "String"
@@ -454,12 +462,12 @@ Func _cveDnnNetDumpToFile(ByRef $net, $path)
     EndIf
 EndFunc   ;==>_cveDnnNetDumpToFile
 
-Func _cveDnnNetGetLayerNames(ByRef $net)
+Func _cveDnnNetGetLayerNames($net)
     ; CVAPI(std::vector<cv::String>*) cveDnnNetGetLayerNames(cv::dnn::Net* net);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnNetGetLayerNames", "ptr", $net), "cveDnnNetGetLayerNames", @error)
 EndFunc   ;==>_cveDnnNetGetLayerNames
 
-Func _cveDnnGetLayerId(ByRef $net, $layer)
+Func _cveDnnGetLayerId($net, $layer)
     ; CVAPI(int) cveDnnGetLayerId(cv::dnn::Net* net, cv::String* layer);
 
     Local $bLayerIsString = VarGetType($layer) == "String"
@@ -476,7 +484,7 @@ Func _cveDnnGetLayerId(ByRef $net, $layer)
     Return $retval
 EndFunc   ;==>_cveDnnGetLayerId
 
-Func _cveDnnGetLayerByName(ByRef $net, $layerName, ByRef $sharedPtr)
+Func _cveDnnGetLayerByName($net, $layerName, $sharedPtr)
     ; CVAPI(cv::dnn::Layer*) cveDnnGetLayerByName(cv::dnn::Net* net, cv::String* layerName, cv::Ptr<cv::dnn::Layer>** sharedPtr);
 
     Local $bLayerNameIsString = VarGetType($layerName) == "String"
@@ -484,7 +492,14 @@ Func _cveDnnGetLayerByName(ByRef $net, $layerName, ByRef $sharedPtr)
         $layerName = _cveStringCreateFromStr($layerName)
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnGetLayerByName", "ptr", $net, "ptr", $layerName, "ptr*", $sharedPtr), "cveDnnGetLayerByName", @error)
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnGetLayerByName", "ptr", $net, "ptr", $layerName, $bSharedPtrDllType, $sharedPtr), "cveDnnGetLayerByName", @error)
 
     If $bLayerNameIsString Then
         _cveStringRelease($layerName)
@@ -493,27 +508,42 @@ Func _cveDnnGetLayerByName(ByRef $net, $layerName, ByRef $sharedPtr)
     Return $retval
 EndFunc   ;==>_cveDnnGetLayerByName
 
-Func _cveDnnGetLayerById(ByRef $net, $layerId, ByRef $sharedPtr)
+Func _cveDnnGetLayerById($net, $layerId, $sharedPtr)
     ; CVAPI(cv::dnn::Layer*) cveDnnGetLayerById(cv::dnn::Net* net, int layerId, cv::Ptr<cv::dnn::Layer>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnGetLayerById", "ptr", $net, "int", $layerId, "ptr*", $sharedPtr), "cveDnnGetLayerById", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnGetLayerById", "ptr", $net, "int", $layerId, $bSharedPtrDllType, $sharedPtr), "cveDnnGetLayerById", @error)
 EndFunc   ;==>_cveDnnGetLayerById
 
-Func _cveDnnLayerRelease(ByRef $layer)
+Func _cveDnnLayerRelease($layer)
     ; CVAPI(void) cveDnnLayerRelease(cv::Ptr<cv::dnn::Layer>** layer);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnLayerRelease", "ptr*", $layer), "cveDnnLayerRelease", @error)
+
+    Local $bLayerDllType
+    If VarGetType($layer) == "DLLStruct" Then
+        $bLayerDllType = "struct*"
+    Else
+        $bLayerDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnLayerRelease", $bLayerDllType, $layer), "cveDnnLayerRelease", @error)
 EndFunc   ;==>_cveDnnLayerRelease
 
-Func _cveDnnLayerGetBlobs(ByRef $layer)
+Func _cveDnnLayerGetBlobs($layer)
     ; CVAPI(std::vector<cv::Mat>*) cveDnnLayerGetBlobs(cv::dnn::Layer* layer);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnLayerGetBlobs", "ptr", $layer), "cveDnnLayerGetBlobs", @error)
 EndFunc   ;==>_cveDnnLayerGetBlobs
 
-Func _cveDnnBlobFromImage(ByRef $image, ByRef $blob, $scalefactor, ByRef $size, ByRef $mean, $swapRB, $crop, $ddepth)
+Func _cveDnnBlobFromImage($image, $blob, $scalefactor, $size, $mean, $swapRB, $crop, $ddepth)
     ; CVAPI(void) cveDnnBlobFromImage(cv::_InputArray* image, cv::_OutputArray* blob, double scalefactor, CvSize* size, CvScalar* mean, bool swapRB, bool crop, int ddepth);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnBlobFromImage", "ptr", $image, "ptr", $blob, "double", $scalefactor, "struct*", $size, "struct*", $mean, "boolean", $swapRB, "boolean", $crop, "int", $ddepth), "cveDnnBlobFromImage", @error)
 EndFunc   ;==>_cveDnnBlobFromImage
 
-Func _cveDnnBlobFromImageMat(ByRef $matImage, ByRef $matBlob, $scalefactor, ByRef $size, ByRef $mean, $swapRB, $crop, $ddepth)
+Func _cveDnnBlobFromImageMat($matImage, $matBlob, $scalefactor, $size, $mean, $swapRB, $crop, $ddepth)
     ; cveDnnBlobFromImage using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -563,12 +593,12 @@ Func _cveDnnBlobFromImageMat(ByRef $matImage, ByRef $matBlob, $scalefactor, ByRe
     _cveInputArrayRelease($iArrImage)
 EndFunc   ;==>_cveDnnBlobFromImageMat
 
-Func _cveDnnBlobFromImages(ByRef $images, ByRef $blob, $scalefactor, ByRef $size, ByRef $mean, $swapRB, $crop, $ddepth)
+Func _cveDnnBlobFromImages($images, $blob, $scalefactor, $size, $mean, $swapRB, $crop, $ddepth)
     ; CVAPI(void) cveDnnBlobFromImages(cv::_InputArray* images, cv::_OutputArray* blob, double scalefactor, CvSize* size, CvScalar* mean, bool swapRB, bool crop, int ddepth);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnBlobFromImages", "ptr", $images, "ptr", $blob, "double", $scalefactor, "struct*", $size, "struct*", $mean, "boolean", $swapRB, "boolean", $crop, "int", $ddepth), "cveDnnBlobFromImages", @error)
 EndFunc   ;==>_cveDnnBlobFromImages
 
-Func _cveDnnBlobFromImagesMat(ByRef $matImages, ByRef $matBlob, $scalefactor, ByRef $size, ByRef $mean, $swapRB, $crop, $ddepth)
+Func _cveDnnBlobFromImagesMat($matImages, $matBlob, $scalefactor, $size, $mean, $swapRB, $crop, $ddepth)
     ; cveDnnBlobFromImages using cv::Mat instead of _*Array
 
     Local $iArrImages, $vectorOfMatImages, $iArrImagesSize
@@ -618,12 +648,12 @@ Func _cveDnnBlobFromImagesMat(ByRef $matImages, ByRef $matBlob, $scalefactor, By
     _cveInputArrayRelease($iArrImages)
 EndFunc   ;==>_cveDnnBlobFromImagesMat
 
-Func _cveDnnImagesFromBlob(ByRef $blob, ByRef $images)
+Func _cveDnnImagesFromBlob($blob, $images)
     ; CVAPI(void) cveDnnImagesFromBlob(cv::Mat* blob, cv::_OutputArray* images);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnImagesFromBlob", "ptr", $blob, "ptr", $images), "cveDnnImagesFromBlob", @error)
 EndFunc   ;==>_cveDnnImagesFromBlob
 
-Func _cveDnnImagesFromBlobMat(ByRef $blob, ByRef $matImages)
+Func _cveDnnImagesFromBlobMat($blob, $matImages)
     ; cveDnnImagesFromBlob using cv::Mat instead of _*Array
 
     Local $oArrImages, $vectorOfMatImages, $iArrImagesSize
@@ -699,7 +729,7 @@ Func _cveDnnWriteTextGraph($model, $output)
     EndIf
 EndFunc   ;==>_cveDnnWriteTextGraph
 
-Func _cveDnnNMSBoxes(ByRef $bboxes, ByRef $scores, $scoreThreshold, $nmsThreshold, ByRef $indices, $eta, $topK)
+Func _cveDnnNMSBoxes($bboxes, $scores, $scoreThreshold, $nmsThreshold, $indices, $eta, $topK)
     ; CVAPI(void) cveDnnNMSBoxes(std::vector<cv::Rect>* bboxes, std::vector<float>* scores, float scoreThreshold, float nmsThreshold, std::vector<int>* indices, float eta, int topK);
 
     Local $vecBboxes, $iArrBboxesSize
@@ -759,7 +789,7 @@ Func _cveDnnNMSBoxes(ByRef $bboxes, ByRef $scores, $scoreThreshold, $nmsThreshol
     EndIf
 EndFunc   ;==>_cveDnnNMSBoxes
 
-Func _cveDnnNMSBoxes2(ByRef $bboxes, ByRef $scores, $scoreThreshold, $nmsThreshold, ByRef $indices, $eta, $topK)
+Func _cveDnnNMSBoxes2($bboxes, $scores, $scoreThreshold, $nmsThreshold, $indices, $eta, $topK)
     ; CVAPI(void) cveDnnNMSBoxes2(std::vector<cv::RotatedRect>* bboxes, std::vector<float>* scores, float scoreThreshold, float nmsThreshold, std::vector<int>* indices, float eta, int topK);
 
     Local $vecBboxes, $iArrBboxesSize
@@ -819,7 +849,7 @@ Func _cveDnnNMSBoxes2(ByRef $bboxes, ByRef $scores, $scoreThreshold, $nmsThresho
     EndIf
 EndFunc   ;==>_cveDnnNMSBoxes2
 
-Func _cveDNNGetAvailableBackends(ByRef $backends, ByRef $targets)
+Func _cveDNNGetAvailableBackends($backends, $targets)
     ; CVAPI(void) cveDNNGetAvailableBackends(std::vector<int>* backends, std::vector<int>* targets);
 
     Local $vecBackends, $iArrBackendsSize
@@ -861,7 +891,7 @@ Func _cveDNNGetAvailableBackends(ByRef $backends, ByRef $targets)
     EndIf
 EndFunc   ;==>_cveDNNGetAvailableBackends
 
-Func _cveDnnTextDetectionModelDbCreate1($model, $config, ByRef $textDetectionModel, ByRef $baseModel)
+Func _cveDnnTextDetectionModelDbCreate1($model, $config, $textDetectionModel, $baseModel)
     ; CVAPI(cv::dnn::TextDetectionModel_DB*) cveDnnTextDetectionModelDbCreate1(cv::String* model, cv::String* config, cv::dnn::TextDetectionModel** textDetectionModel, cv::dnn::Model** baseModel);
 
     Local $bModelIsString = VarGetType($model) == "String"
@@ -874,7 +904,21 @@ Func _cveDnnTextDetectionModelDbCreate1($model, $config, ByRef $textDetectionMod
         $config = _cveStringCreateFromStr($config)
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnTextDetectionModelDbCreate1", "ptr", $model, "ptr", $config, "ptr*", $textDetectionModel, "ptr*", $baseModel), "cveDnnTextDetectionModelDbCreate1", @error)
+    Local $bTextDetectionModelDllType
+    If VarGetType($textDetectionModel) == "DLLStruct" Then
+        $bTextDetectionModelDllType = "struct*"
+    Else
+        $bTextDetectionModelDllType = "ptr*"
+    EndIf
+
+    Local $bBaseModelDllType
+    If VarGetType($baseModel) == "DLLStruct" Then
+        $bBaseModelDllType = "struct*"
+    Else
+        $bBaseModelDllType = "ptr*"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnTextDetectionModelDbCreate1", "ptr", $model, "ptr", $config, $bTextDetectionModelDllType, $textDetectionModel, $bBaseModelDllType, $baseModel), "cveDnnTextDetectionModelDbCreate1", @error)
 
     If $bConfigIsString Then
         _cveStringRelease($config)
@@ -887,17 +931,39 @@ Func _cveDnnTextDetectionModelDbCreate1($model, $config, ByRef $textDetectionMod
     Return $retval
 EndFunc   ;==>_cveDnnTextDetectionModelDbCreate1
 
-Func _cveDnnTextDetectionModelDbCreate2(ByRef $network, ByRef $textDetectionModel, ByRef $baseModel)
+Func _cveDnnTextDetectionModelDbCreate2($network, $textDetectionModel, $baseModel)
     ; CVAPI(cv::dnn::TextDetectionModel_DB*) cveDnnTextDetectionModelDbCreate2(cv::dnn::Net* network, cv::dnn::TextDetectionModel** textDetectionModel, cv::dnn::Model** baseModel);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnTextDetectionModelDbCreate2", "ptr", $network, "ptr*", $textDetectionModel, "ptr*", $baseModel), "cveDnnTextDetectionModelDbCreate2", @error)
+
+    Local $bTextDetectionModelDllType
+    If VarGetType($textDetectionModel) == "DLLStruct" Then
+        $bTextDetectionModelDllType = "struct*"
+    Else
+        $bTextDetectionModelDllType = "ptr*"
+    EndIf
+
+    Local $bBaseModelDllType
+    If VarGetType($baseModel) == "DLLStruct" Then
+        $bBaseModelDllType = "struct*"
+    Else
+        $bBaseModelDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnTextDetectionModelDbCreate2", "ptr", $network, $bTextDetectionModelDllType, $textDetectionModel, $bBaseModelDllType, $baseModel), "cveDnnTextDetectionModelDbCreate2", @error)
 EndFunc   ;==>_cveDnnTextDetectionModelDbCreate2
 
-Func _cveDnnTextDetectionModelDbRelease(ByRef $textDetectionModel)
+Func _cveDnnTextDetectionModelDbRelease($textDetectionModel)
     ; CVAPI(void) cveDnnTextDetectionModelDbRelease(cv::dnn::TextDetectionModel_DB** textDetectionModel);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnTextDetectionModelDbRelease", "ptr*", $textDetectionModel), "cveDnnTextDetectionModelDbRelease", @error)
+
+    Local $bTextDetectionModelDllType
+    If VarGetType($textDetectionModel) == "DLLStruct" Then
+        $bTextDetectionModelDllType = "struct*"
+    Else
+        $bTextDetectionModelDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnTextDetectionModelDbRelease", $bTextDetectionModelDllType, $textDetectionModel), "cveDnnTextDetectionModelDbRelease", @error)
 EndFunc   ;==>_cveDnnTextDetectionModelDbRelease
 
-Func _cveDnnTextDetectionModelEastCreate1($model, $config, ByRef $textDetectionModel, ByRef $baseModel)
+Func _cveDnnTextDetectionModelEastCreate1($model, $config, $textDetectionModel, $baseModel)
     ; CVAPI(cv::dnn::TextDetectionModel_EAST*) cveDnnTextDetectionModelEastCreate1(cv::String* model, cv::String* config, cv::dnn::TextDetectionModel** textDetectionModel, cv::dnn::Model** baseModel);
 
     Local $bModelIsString = VarGetType($model) == "String"
@@ -910,7 +976,21 @@ Func _cveDnnTextDetectionModelEastCreate1($model, $config, ByRef $textDetectionM
         $config = _cveStringCreateFromStr($config)
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnTextDetectionModelEastCreate1", "ptr", $model, "ptr", $config, "ptr*", $textDetectionModel, "ptr*", $baseModel), "cveDnnTextDetectionModelEastCreate1", @error)
+    Local $bTextDetectionModelDllType
+    If VarGetType($textDetectionModel) == "DLLStruct" Then
+        $bTextDetectionModelDllType = "struct*"
+    Else
+        $bTextDetectionModelDllType = "ptr*"
+    EndIf
+
+    Local $bBaseModelDllType
+    If VarGetType($baseModel) == "DLLStruct" Then
+        $bBaseModelDllType = "struct*"
+    Else
+        $bBaseModelDllType = "ptr*"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnTextDetectionModelEastCreate1", "ptr", $model, "ptr", $config, $bTextDetectionModelDllType, $textDetectionModel, $bBaseModelDllType, $baseModel), "cveDnnTextDetectionModelEastCreate1", @error)
 
     If $bConfigIsString Then
         _cveStringRelease($config)
@@ -923,17 +1003,39 @@ Func _cveDnnTextDetectionModelEastCreate1($model, $config, ByRef $textDetectionM
     Return $retval
 EndFunc   ;==>_cveDnnTextDetectionModelEastCreate1
 
-Func _cveDnnTextDetectionModelEastCreate2(ByRef $network, ByRef $textDetectionModel, ByRef $baseModel)
+Func _cveDnnTextDetectionModelEastCreate2($network, $textDetectionModel, $baseModel)
     ; CVAPI(cv::dnn::TextDetectionModel_EAST*) cveDnnTextDetectionModelEastCreate2(cv::dnn::Net* network, cv::dnn::TextDetectionModel** textDetectionModel, cv::dnn::Model** baseModel);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnTextDetectionModelEastCreate2", "ptr", $network, "ptr*", $textDetectionModel, "ptr*", $baseModel), "cveDnnTextDetectionModelEastCreate2", @error)
+
+    Local $bTextDetectionModelDllType
+    If VarGetType($textDetectionModel) == "DLLStruct" Then
+        $bTextDetectionModelDllType = "struct*"
+    Else
+        $bTextDetectionModelDllType = "ptr*"
+    EndIf
+
+    Local $bBaseModelDllType
+    If VarGetType($baseModel) == "DLLStruct" Then
+        $bBaseModelDllType = "struct*"
+    Else
+        $bBaseModelDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnTextDetectionModelEastCreate2", "ptr", $network, $bTextDetectionModelDllType, $textDetectionModel, $bBaseModelDllType, $baseModel), "cveDnnTextDetectionModelEastCreate2", @error)
 EndFunc   ;==>_cveDnnTextDetectionModelEastCreate2
 
-Func _cveDnnTextDetectionModelEastRelease(ByRef $textDetectionModel)
+Func _cveDnnTextDetectionModelEastRelease($textDetectionModel)
     ; CVAPI(void) cveDnnTextDetectionModelEastRelease(cv::dnn::TextDetectionModel_EAST** textDetectionModel);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnTextDetectionModelEastRelease", "ptr*", $textDetectionModel), "cveDnnTextDetectionModelEastRelease", @error)
+
+    Local $bTextDetectionModelDllType
+    If VarGetType($textDetectionModel) == "DLLStruct" Then
+        $bTextDetectionModelDllType = "struct*"
+    Else
+        $bTextDetectionModelDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnTextDetectionModelEastRelease", $bTextDetectionModelDllType, $textDetectionModel), "cveDnnTextDetectionModelEastRelease", @error)
 EndFunc   ;==>_cveDnnTextDetectionModelEastRelease
 
-Func _cveDnnTextDetectionModelDetect(ByRef $textDetectionModel, ByRef $frame, ByRef $detections, ByRef $confidences)
+Func _cveDnnTextDetectionModelDetect($textDetectionModel, $frame, $detections, $confidences)
     ; CVAPI(void) cveDnnTextDetectionModelDetect(cv::dnn::TextDetectionModel* textDetectionModel, cv::_InputArray* frame, std::vector< std::vector< cv::Point > >* detections, std::vector<float>* confidences);
 
     Local $vecDetections, $iArrDetectionsSize
@@ -975,7 +1077,7 @@ Func _cveDnnTextDetectionModelDetect(ByRef $textDetectionModel, ByRef $frame, By
     EndIf
 EndFunc   ;==>_cveDnnTextDetectionModelDetect
 
-Func _cveDnnTextDetectionModelDetectMat(ByRef $textDetectionModel, ByRef $matFrame, ByRef $detections, ByRef $confidences)
+Func _cveDnnTextDetectionModelDetectMat($textDetectionModel, $matFrame, $detections, $confidences)
     ; cveDnnTextDetectionModelDetect using cv::Mat instead of _*Array
 
     Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
@@ -1003,7 +1105,7 @@ Func _cveDnnTextDetectionModelDetectMat(ByRef $textDetectionModel, ByRef $matFra
     _cveInputArrayRelease($iArrFrame)
 EndFunc   ;==>_cveDnnTextDetectionModelDetectMat
 
-Func _cveDnnTextDetectionModelDetectTextRectangles(ByRef $textDetectionModel, ByRef $frame, ByRef $detections, ByRef $confidences)
+Func _cveDnnTextDetectionModelDetectTextRectangles($textDetectionModel, $frame, $detections, $confidences)
     ; CVAPI(void) cveDnnTextDetectionModelDetectTextRectangles(cv::dnn::TextDetectionModel* textDetectionModel, cv::_InputArray* frame, std::vector< cv::RotatedRect >* detections, std::vector< float >* confidences);
 
     Local $vecDetections, $iArrDetectionsSize
@@ -1045,7 +1147,7 @@ Func _cveDnnTextDetectionModelDetectTextRectangles(ByRef $textDetectionModel, By
     EndIf
 EndFunc   ;==>_cveDnnTextDetectionModelDetectTextRectangles
 
-Func _cveDnnTextDetectionModelDetectTextRectanglesMat(ByRef $textDetectionModel, ByRef $matFrame, ByRef $detections, ByRef $confidences)
+Func _cveDnnTextDetectionModelDetectTextRectanglesMat($textDetectionModel, $matFrame, $detections, $confidences)
     ; cveDnnTextDetectionModelDetectTextRectangles using cv::Mat instead of _*Array
 
     Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
@@ -1073,7 +1175,7 @@ Func _cveDnnTextDetectionModelDetectTextRectanglesMat(ByRef $textDetectionModel,
     _cveInputArrayRelease($iArrFrame)
 EndFunc   ;==>_cveDnnTextDetectionModelDetectTextRectanglesMat
 
-Func _cveDnnTextRecognitionModelCreate1($model, $config, ByRef $baseModel)
+Func _cveDnnTextRecognitionModelCreate1($model, $config, $baseModel)
     ; CVAPI(cv::dnn::TextRecognitionModel*) cveDnnTextRecognitionModelCreate1(cv::String* model, cv::String* config, cv::dnn::Model** baseModel);
 
     Local $bModelIsString = VarGetType($model) == "String"
@@ -1086,7 +1188,14 @@ Func _cveDnnTextRecognitionModelCreate1($model, $config, ByRef $baseModel)
         $config = _cveStringCreateFromStr($config)
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnTextRecognitionModelCreate1", "ptr", $model, "ptr", $config, "ptr*", $baseModel), "cveDnnTextRecognitionModelCreate1", @error)
+    Local $bBaseModelDllType
+    If VarGetType($baseModel) == "DLLStruct" Then
+        $bBaseModelDllType = "struct*"
+    Else
+        $bBaseModelDllType = "ptr*"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnTextRecognitionModelCreate1", "ptr", $model, "ptr", $config, $bBaseModelDllType, $baseModel), "cveDnnTextRecognitionModelCreate1", @error)
 
     If $bConfigIsString Then
         _cveStringRelease($config)
@@ -1099,27 +1208,42 @@ Func _cveDnnTextRecognitionModelCreate1($model, $config, ByRef $baseModel)
     Return $retval
 EndFunc   ;==>_cveDnnTextRecognitionModelCreate1
 
-Func _cveDnnTextRecognitionModelCreate2(ByRef $network, ByRef $baseModel)
+Func _cveDnnTextRecognitionModelCreate2($network, $baseModel)
     ; CVAPI(cv::dnn::TextRecognitionModel*) cveDnnTextRecognitionModelCreate2(cv::dnn::Net* network, cv::dnn::Model** baseModel);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnTextRecognitionModelCreate2", "ptr", $network, "ptr*", $baseModel), "cveDnnTextRecognitionModelCreate2", @error)
+
+    Local $bBaseModelDllType
+    If VarGetType($baseModel) == "DLLStruct" Then
+        $bBaseModelDllType = "struct*"
+    Else
+        $bBaseModelDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnTextRecognitionModelCreate2", "ptr", $network, $bBaseModelDllType, $baseModel), "cveDnnTextRecognitionModelCreate2", @error)
 EndFunc   ;==>_cveDnnTextRecognitionModelCreate2
 
-Func _cveDnnTextRecognitionModelRelease(ByRef $textRecognitionModel)
+Func _cveDnnTextRecognitionModelRelease($textRecognitionModel)
     ; CVAPI(void) cveDnnTextRecognitionModelRelease(cv::dnn::TextRecognitionModel** textRecognitionModel);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnTextRecognitionModelRelease", "ptr*", $textRecognitionModel), "cveDnnTextRecognitionModelRelease", @error)
+
+    Local $bTextRecognitionModelDllType
+    If VarGetType($textRecognitionModel) == "DLLStruct" Then
+        $bTextRecognitionModelDllType = "struct*"
+    Else
+        $bTextRecognitionModelDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnTextRecognitionModelRelease", $bTextRecognitionModelDllType, $textRecognitionModel), "cveDnnTextRecognitionModelRelease", @error)
 EndFunc   ;==>_cveDnnTextRecognitionModelRelease
 
-Func _cveDnnTextRecognitionModelSetVocabulary(ByRef $textRecognitionModel, ByRef $vocabulary)
+Func _cveDnnTextRecognitionModelSetVocabulary($textRecognitionModel, $vocabulary)
     ; CVAPI(void) cveDnnTextRecognitionModelSetVocabulary(cv::dnn::TextRecognitionModel* textRecognitionModel, std::vector< std::string >* vocabulary);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnTextRecognitionModelSetVocabulary", "ptr", $textRecognitionModel, "ptr", $vocabulary), "cveDnnTextRecognitionModelSetVocabulary", @error)
 EndFunc   ;==>_cveDnnTextRecognitionModelSetVocabulary
 
-Func _cveDnnTextRecognitionModelGetVocabulary(ByRef $textRecognitionModel, ByRef $vocabulary)
+Func _cveDnnTextRecognitionModelGetVocabulary($textRecognitionModel, $vocabulary)
     ; CVAPI(void) cveDnnTextRecognitionModelGetVocabulary(cv::dnn::TextRecognitionModel* textRecognitionModel, std::vector< std::string >* vocabulary);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnTextRecognitionModelGetVocabulary", "ptr", $textRecognitionModel, "ptr", $vocabulary), "cveDnnTextRecognitionModelGetVocabulary", @error)
 EndFunc   ;==>_cveDnnTextRecognitionModelGetVocabulary
 
-Func _cveDnnTextRecognitionModelRecognize1(ByRef $textRecognitionModel, ByRef $frame, $text)
+Func _cveDnnTextRecognitionModelRecognize1($textRecognitionModel, $frame, $text)
     ; CVAPI(void) cveDnnTextRecognitionModelRecognize1(cv::dnn::TextRecognitionModel* textRecognitionModel, cv::_InputArray* frame, cv::String* text);
 
     Local $bTextIsString = VarGetType($text) == "String"
@@ -1134,7 +1258,7 @@ Func _cveDnnTextRecognitionModelRecognize1(ByRef $textRecognitionModel, ByRef $f
     EndIf
 EndFunc   ;==>_cveDnnTextRecognitionModelRecognize1
 
-Func _cveDnnTextRecognitionModelRecognize1Mat(ByRef $textRecognitionModel, ByRef $matFrame, $text)
+Func _cveDnnTextRecognitionModelRecognize1Mat($textRecognitionModel, $matFrame, $text)
     ; cveDnnTextRecognitionModelRecognize1 using cv::Mat instead of _*Array
 
     Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
@@ -1162,12 +1286,12 @@ Func _cveDnnTextRecognitionModelRecognize1Mat(ByRef $textRecognitionModel, ByRef
     _cveInputArrayRelease($iArrFrame)
 EndFunc   ;==>_cveDnnTextRecognitionModelRecognize1Mat
 
-Func _cveDnnTextRecognitionModelRecognize2(ByRef $textRecognitionModel, ByRef $frame, ByRef $roiRects, ByRef $results)
+Func _cveDnnTextRecognitionModelRecognize2($textRecognitionModel, $frame, $roiRects, $results)
     ; CVAPI(void) cveDnnTextRecognitionModelRecognize2(cv::dnn::TextRecognitionModel* textRecognitionModel, cv::_InputArray* frame, cv::_InputArray* roiRects, std::vector< std::string >* results);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnTextRecognitionModelRecognize2", "ptr", $textRecognitionModel, "ptr", $frame, "ptr", $roiRects, "ptr", $results), "cveDnnTextRecognitionModelRecognize2", @error)
 EndFunc   ;==>_cveDnnTextRecognitionModelRecognize2
 
-Func _cveDnnTextRecognitionModelRecognize2Mat(ByRef $textRecognitionModel, ByRef $matFrame, ByRef $matRoiRects, ByRef $results)
+Func _cveDnnTextRecognitionModelRecognize2Mat($textRecognitionModel, $matFrame, $matRoiRects, $results)
     ; cveDnnTextRecognitionModelRecognize2 using cv::Mat instead of _*Array
 
     Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
@@ -1243,22 +1367,30 @@ Func _cveModelCreate($model, $config)
     Return $retval
 EndFunc   ;==>_cveModelCreate
 
-Func _cveModelCreateFromNet(ByRef $network)
+Func _cveModelCreateFromNet($network)
     ; CVAPI(cv::dnn::Model*) cveModelCreateFromNet(cv::dnn::Net* network);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveModelCreateFromNet", "ptr", $network), "cveModelCreateFromNet", @error)
 EndFunc   ;==>_cveModelCreateFromNet
 
-Func _cveModelRelease(ByRef $model)
+Func _cveModelRelease($model)
     ; CVAPI(void) cveModelRelease(cv::dnn::Model** model);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveModelRelease", "ptr*", $model), "cveModelRelease", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveModelRelease", $bModelDllType, $model), "cveModelRelease", @error)
 EndFunc   ;==>_cveModelRelease
 
-Func _cveModelPredict(ByRef $model, ByRef $frame, ByRef $outs)
+Func _cveModelPredict($model, $frame, $outs)
     ; CVAPI(void) cveModelPredict(cv::dnn::Model* model, cv::_InputArray* frame, cv::_OutputArray* outs);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveModelPredict", "ptr", $model, "ptr", $frame, "ptr", $outs), "cveModelPredict", @error)
 EndFunc   ;==>_cveModelPredict
 
-Func _cveModelPredictMat(ByRef $model, ByRef $matFrame, ByRef $matOuts)
+Func _cveModelPredictMat($model, $matFrame, $matOuts)
     ; cveModelPredict using cv::Mat instead of _*Array
 
     Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
@@ -1308,42 +1440,42 @@ Func _cveModelPredictMat(ByRef $model, ByRef $matFrame, ByRef $matOuts)
     _cveInputArrayRelease($iArrFrame)
 EndFunc   ;==>_cveModelPredictMat
 
-Func _cveModelSetInputMean(ByRef $model, ByRef $mean)
+Func _cveModelSetInputMean($model, $mean)
     ; CVAPI(void) cveModelSetInputMean(cv::dnn::Model* model, CvScalar* mean);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveModelSetInputMean", "ptr", $model, "struct*", $mean), "cveModelSetInputMean", @error)
 EndFunc   ;==>_cveModelSetInputMean
 
-Func _cveModelSetInputScale(ByRef $model, $value)
+Func _cveModelSetInputScale($model, $value)
     ; CVAPI(void) cveModelSetInputScale(cv::dnn::Model* model, double value);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveModelSetInputScale", "ptr", $model, "double", $value), "cveModelSetInputScale", @error)
 EndFunc   ;==>_cveModelSetInputScale
 
-Func _cveModelSetInputSize(ByRef $model, ByRef $size)
+Func _cveModelSetInputSize($model, $size)
     ; CVAPI(void) cveModelSetInputSize(cv::dnn::Model* model, CvSize* size);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveModelSetInputSize", "ptr", $model, "struct*", $size), "cveModelSetInputSize", @error)
 EndFunc   ;==>_cveModelSetInputSize
 
-Func _cveModelSetInputCrop(ByRef $model, $crop)
+Func _cveModelSetInputCrop($model, $crop)
     ; CVAPI(void) cveModelSetInputCrop(cv::dnn::Model* model, bool crop);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveModelSetInputCrop", "ptr", $model, "boolean", $crop), "cveModelSetInputCrop", @error)
 EndFunc   ;==>_cveModelSetInputCrop
 
-Func _cveModelSetInputSwapRB(ByRef $model, $swapRB)
+Func _cveModelSetInputSwapRB($model, $swapRB)
     ; CVAPI(void) cveModelSetInputSwapRB(cv::dnn::Model* model, bool swapRB);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveModelSetInputSwapRB", "ptr", $model, "boolean", $swapRB), "cveModelSetInputSwapRB", @error)
 EndFunc   ;==>_cveModelSetInputSwapRB
 
-Func _cveModelSetPreferableBackend(ByRef $model, $backendId)
+Func _cveModelSetPreferableBackend($model, $backendId)
     ; CVAPI(void) cveModelSetPreferableBackend(cv::dnn::Model* model, int backendId);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveModelSetPreferableBackend", "ptr", $model, "int", $backendId), "cveModelSetPreferableBackend", @error)
 EndFunc   ;==>_cveModelSetPreferableBackend
 
-Func _cveModelSetPreferableTarget(ByRef $model, $targetId)
+Func _cveModelSetPreferableTarget($model, $targetId)
     ; CVAPI(void) cveModelSetPreferableTarget(cv::dnn::Model* model, int targetId);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveModelSetPreferableTarget", "ptr", $model, "int", $targetId), "cveModelSetPreferableTarget", @error)
 EndFunc   ;==>_cveModelSetPreferableTarget
 
-Func _cveDnnDetectionModelCreate1($model, $config, ByRef $baseModel)
+Func _cveDnnDetectionModelCreate1($model, $config, $baseModel)
     ; CVAPI(cv::dnn::DetectionModel*) cveDnnDetectionModelCreate1(cv::String* model, cv::String* config, cv::dnn::Model** baseModel);
 
     Local $bModelIsString = VarGetType($model) == "String"
@@ -1356,7 +1488,14 @@ Func _cveDnnDetectionModelCreate1($model, $config, ByRef $baseModel)
         $config = _cveStringCreateFromStr($config)
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnDetectionModelCreate1", "ptr", $model, "ptr", $config, "ptr*", $baseModel), "cveDnnDetectionModelCreate1", @error)
+    Local $bBaseModelDllType
+    If VarGetType($baseModel) == "DLLStruct" Then
+        $bBaseModelDllType = "struct*"
+    Else
+        $bBaseModelDllType = "ptr*"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnDetectionModelCreate1", "ptr", $model, "ptr", $config, $bBaseModelDllType, $baseModel), "cveDnnDetectionModelCreate1", @error)
 
     If $bConfigIsString Then
         _cveStringRelease($config)
@@ -1369,17 +1508,32 @@ Func _cveDnnDetectionModelCreate1($model, $config, ByRef $baseModel)
     Return $retval
 EndFunc   ;==>_cveDnnDetectionModelCreate1
 
-Func _cveDnnDetectionModelCreate2(ByRef $network, ByRef $baseModel)
+Func _cveDnnDetectionModelCreate2($network, $baseModel)
     ; CVAPI(cv::dnn::DetectionModel*) cveDnnDetectionModelCreate2(cv::dnn::Net* network, cv::dnn::Model** baseModel);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnDetectionModelCreate2", "ptr", $network, "ptr*", $baseModel), "cveDnnDetectionModelCreate2", @error)
+
+    Local $bBaseModelDllType
+    If VarGetType($baseModel) == "DLLStruct" Then
+        $bBaseModelDllType = "struct*"
+    Else
+        $bBaseModelDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnDetectionModelCreate2", "ptr", $network, $bBaseModelDllType, $baseModel), "cveDnnDetectionModelCreate2", @error)
 EndFunc   ;==>_cveDnnDetectionModelCreate2
 
-Func _cveDnnDetectionModelRelease(ByRef $detectionModel)
+Func _cveDnnDetectionModelRelease($detectionModel)
     ; CVAPI(void) cveDnnDetectionModelRelease(cv::dnn::DetectionModel** detectionModel);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnDetectionModelRelease", "ptr*", $detectionModel), "cveDnnDetectionModelRelease", @error)
+
+    Local $bDetectionModelDllType
+    If VarGetType($detectionModel) == "DLLStruct" Then
+        $bDetectionModelDllType = "struct*"
+    Else
+        $bDetectionModelDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnDetectionModelRelease", $bDetectionModelDllType, $detectionModel), "cveDnnDetectionModelRelease", @error)
 EndFunc   ;==>_cveDnnDetectionModelRelease
 
-Func _cveDnnDetectionModelDetect(ByRef $detectionModel, ByRef $frame, ByRef $classIds, ByRef $confidences, ByRef $boxes, $confThreshold, $nmsThreshold)
+Func _cveDnnDetectionModelDetect($detectionModel, $frame, $classIds, $confidences, $boxes, $confThreshold, $nmsThreshold)
     ; CVAPI(void) cveDnnDetectionModelDetect(cv::dnn::DetectionModel* detectionModel, cv::_InputArray* frame, std::vector< int >* classIds, std::vector< float >* confidences, std::vector< cv::Rect >* boxes, float confThreshold, float nmsThreshold);
 
     Local $vecClassIds, $iArrClassIdsSize
@@ -1439,7 +1593,7 @@ Func _cveDnnDetectionModelDetect(ByRef $detectionModel, ByRef $frame, ByRef $cla
     EndIf
 EndFunc   ;==>_cveDnnDetectionModelDetect
 
-Func _cveDnnDetectionModelDetectMat(ByRef $detectionModel, ByRef $matFrame, ByRef $classIds, ByRef $confidences, ByRef $boxes, $confThreshold, $nmsThreshold)
+Func _cveDnnDetectionModelDetectMat($detectionModel, $matFrame, $classIds, $confidences, $boxes, $confThreshold, $nmsThreshold)
     ; cveDnnDetectionModelDetect using cv::Mat instead of _*Array
 
     Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
@@ -1467,7 +1621,7 @@ Func _cveDnnDetectionModelDetectMat(ByRef $detectionModel, ByRef $matFrame, ByRe
     _cveInputArrayRelease($iArrFrame)
 EndFunc   ;==>_cveDnnDetectionModelDetectMat
 
-Func _cveDnnClassificationModelCreate1($model, $config, ByRef $baseModel)
+Func _cveDnnClassificationModelCreate1($model, $config, $baseModel)
     ; CVAPI(cv::dnn::ClassificationModel*) cveDnnClassificationModelCreate1(cv::String* model, cv::String* config, cv::dnn::Model** baseModel);
 
     Local $bModelIsString = VarGetType($model) == "String"
@@ -1480,7 +1634,14 @@ Func _cveDnnClassificationModelCreate1($model, $config, ByRef $baseModel)
         $config = _cveStringCreateFromStr($config)
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnClassificationModelCreate1", "ptr", $model, "ptr", $config, "ptr*", $baseModel), "cveDnnClassificationModelCreate1", @error)
+    Local $bBaseModelDllType
+    If VarGetType($baseModel) == "DLLStruct" Then
+        $bBaseModelDllType = "struct*"
+    Else
+        $bBaseModelDllType = "ptr*"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnClassificationModelCreate1", "ptr", $model, "ptr", $config, $bBaseModelDllType, $baseModel), "cveDnnClassificationModelCreate1", @error)
 
     If $bConfigIsString Then
         _cveStringRelease($config)
@@ -1493,22 +1654,37 @@ Func _cveDnnClassificationModelCreate1($model, $config, ByRef $baseModel)
     Return $retval
 EndFunc   ;==>_cveDnnClassificationModelCreate1
 
-Func _cveDnnClassificationModelCreate2(ByRef $network, ByRef $baseModel)
+Func _cveDnnClassificationModelCreate2($network, $baseModel)
     ; CVAPI(cv::dnn::ClassificationModel*) cveDnnClassificationModelCreate2(cv::dnn::Net* network, cv::dnn::Model** baseModel);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnClassificationModelCreate2", "ptr", $network, "ptr*", $baseModel), "cveDnnClassificationModelCreate2", @error)
+
+    Local $bBaseModelDllType
+    If VarGetType($baseModel) == "DLLStruct" Then
+        $bBaseModelDllType = "struct*"
+    Else
+        $bBaseModelDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnClassificationModelCreate2", "ptr", $network, $bBaseModelDllType, $baseModel), "cveDnnClassificationModelCreate2", @error)
 EndFunc   ;==>_cveDnnClassificationModelCreate2
 
-Func _cveDnnClassificationModelRelease(ByRef $classificationModel)
+Func _cveDnnClassificationModelRelease($classificationModel)
     ; CVAPI(void) cveDnnClassificationModelRelease(cv::dnn::ClassificationModel** classificationModel);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnClassificationModelRelease", "ptr*", $classificationModel), "cveDnnClassificationModelRelease", @error)
+
+    Local $bClassificationModelDllType
+    If VarGetType($classificationModel) == "DLLStruct" Then
+        $bClassificationModelDllType = "struct*"
+    Else
+        $bClassificationModelDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnClassificationModelRelease", $bClassificationModelDllType, $classificationModel), "cveDnnClassificationModelRelease", @error)
 EndFunc   ;==>_cveDnnClassificationModelRelease
 
-Func _cveDnnClassificationModelClassify(ByRef $classificationModel, ByRef $frame, ByRef $classId, ByRef $conf)
+Func _cveDnnClassificationModelClassify($classificationModel, $frame, $classId, $conf)
     ; CVAPI(void) cveDnnClassificationModelClassify(cv::dnn::ClassificationModel* classificationModel, cv::_InputArray* frame, int* classId, float* conf);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnClassificationModelClassify", "ptr", $classificationModel, "ptr", $frame, "struct*", $classId, "struct*", $conf), "cveDnnClassificationModelClassify", @error)
 EndFunc   ;==>_cveDnnClassificationModelClassify
 
-Func _cveDnnClassificationModelClassifyMat(ByRef $classificationModel, ByRef $matFrame, ByRef $classId, ByRef $conf)
+Func _cveDnnClassificationModelClassifyMat($classificationModel, $matFrame, $classId, $conf)
     ; cveDnnClassificationModelClassify using cv::Mat instead of _*Array
 
     Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
@@ -1536,7 +1712,7 @@ Func _cveDnnClassificationModelClassifyMat(ByRef $classificationModel, ByRef $ma
     _cveInputArrayRelease($iArrFrame)
 EndFunc   ;==>_cveDnnClassificationModelClassifyMat
 
-Func _cveDnnKeypointsModelCreate1($model, $config, ByRef $baseModel)
+Func _cveDnnKeypointsModelCreate1($model, $config, $baseModel)
     ; CVAPI(cv::dnn::KeypointsModel*) cveDnnKeypointsModelCreate1(cv::String* model, cv::String* config, cv::dnn::Model** baseModel);
 
     Local $bModelIsString = VarGetType($model) == "String"
@@ -1549,7 +1725,14 @@ Func _cveDnnKeypointsModelCreate1($model, $config, ByRef $baseModel)
         $config = _cveStringCreateFromStr($config)
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnKeypointsModelCreate1", "ptr", $model, "ptr", $config, "ptr*", $baseModel), "cveDnnKeypointsModelCreate1", @error)
+    Local $bBaseModelDllType
+    If VarGetType($baseModel) == "DLLStruct" Then
+        $bBaseModelDllType = "struct*"
+    Else
+        $bBaseModelDllType = "ptr*"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnKeypointsModelCreate1", "ptr", $model, "ptr", $config, $bBaseModelDllType, $baseModel), "cveDnnKeypointsModelCreate1", @error)
 
     If $bConfigIsString Then
         _cveStringRelease($config)
@@ -1562,17 +1745,32 @@ Func _cveDnnKeypointsModelCreate1($model, $config, ByRef $baseModel)
     Return $retval
 EndFunc   ;==>_cveDnnKeypointsModelCreate1
 
-Func _cveDnnKeypointsModelCreate2(ByRef $network, ByRef $baseModel)
+Func _cveDnnKeypointsModelCreate2($network, $baseModel)
     ; CVAPI(cv::dnn::KeypointsModel*) cveDnnKeypointsModelCreate2(cv::dnn::Net* network, cv::dnn::Model** baseModel);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnKeypointsModelCreate2", "ptr", $network, "ptr*", $baseModel), "cveDnnKeypointsModelCreate2", @error)
+
+    Local $bBaseModelDllType
+    If VarGetType($baseModel) == "DLLStruct" Then
+        $bBaseModelDllType = "struct*"
+    Else
+        $bBaseModelDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnKeypointsModelCreate2", "ptr", $network, $bBaseModelDllType, $baseModel), "cveDnnKeypointsModelCreate2", @error)
 EndFunc   ;==>_cveDnnKeypointsModelCreate2
 
-Func _cveDnnKeypointsModelRelease(ByRef $keypointsModel)
+Func _cveDnnKeypointsModelRelease($keypointsModel)
     ; CVAPI(void) cveDnnKeypointsModelRelease(cv::dnn::KeypointsModel** keypointsModel);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnKeypointsModelRelease", "ptr*", $keypointsModel), "cveDnnKeypointsModelRelease", @error)
+
+    Local $bKeypointsModelDllType
+    If VarGetType($keypointsModel) == "DLLStruct" Then
+        $bKeypointsModelDllType = "struct*"
+    Else
+        $bKeypointsModelDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnKeypointsModelRelease", $bKeypointsModelDllType, $keypointsModel), "cveDnnKeypointsModelRelease", @error)
 EndFunc   ;==>_cveDnnKeypointsModelRelease
 
-Func _cveDnnKeypointsModelEstimate(ByRef $keypointsModel, ByRef $frame, ByRef $keypoints, $thresh)
+Func _cveDnnKeypointsModelEstimate($keypointsModel, $frame, $keypoints, $thresh)
     ; CVAPI(void) cveDnnKeypointsModelEstimate(cv::dnn::KeypointsModel* keypointsModel, cv::_InputArray* frame, std::vector< cv::Point2f >* keypoints, float thresh);
 
     Local $vecKeypoints, $iArrKeypointsSize
@@ -1596,7 +1794,7 @@ Func _cveDnnKeypointsModelEstimate(ByRef $keypointsModel, ByRef $frame, ByRef $k
     EndIf
 EndFunc   ;==>_cveDnnKeypointsModelEstimate
 
-Func _cveDnnKeypointsModelEstimateMat(ByRef $keypointsModel, ByRef $matFrame, ByRef $keypoints, $thresh)
+Func _cveDnnKeypointsModelEstimateMat($keypointsModel, $matFrame, $keypoints, $thresh)
     ; cveDnnKeypointsModelEstimate using cv::Mat instead of _*Array
 
     Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
@@ -1624,7 +1822,7 @@ Func _cveDnnKeypointsModelEstimateMat(ByRef $keypointsModel, ByRef $matFrame, By
     _cveInputArrayRelease($iArrFrame)
 EndFunc   ;==>_cveDnnKeypointsModelEstimateMat
 
-Func _cveDnnSegmentationModelCreate1($model, $config, ByRef $baseModel)
+Func _cveDnnSegmentationModelCreate1($model, $config, $baseModel)
     ; CVAPI(cv::dnn::SegmentationModel*) cveDnnSegmentationModelCreate1(cv::String* model, cv::String* config, cv::dnn::Model** baseModel);
 
     Local $bModelIsString = VarGetType($model) == "String"
@@ -1637,7 +1835,14 @@ Func _cveDnnSegmentationModelCreate1($model, $config, ByRef $baseModel)
         $config = _cveStringCreateFromStr($config)
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnSegmentationModelCreate1", "ptr", $model, "ptr", $config, "ptr*", $baseModel), "cveDnnSegmentationModelCreate1", @error)
+    Local $bBaseModelDllType
+    If VarGetType($baseModel) == "DLLStruct" Then
+        $bBaseModelDllType = "struct*"
+    Else
+        $bBaseModelDllType = "ptr*"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnSegmentationModelCreate1", "ptr", $model, "ptr", $config, $bBaseModelDllType, $baseModel), "cveDnnSegmentationModelCreate1", @error)
 
     If $bConfigIsString Then
         _cveStringRelease($config)
@@ -1650,22 +1855,37 @@ Func _cveDnnSegmentationModelCreate1($model, $config, ByRef $baseModel)
     Return $retval
 EndFunc   ;==>_cveDnnSegmentationModelCreate1
 
-Func _cveDnnSegmentationModelCreate2(ByRef $network, ByRef $baseModel)
+Func _cveDnnSegmentationModelCreate2($network, $baseModel)
     ; CVAPI(cv::dnn::SegmentationModel*) cveDnnSegmentationModelCreate2(cv::dnn::Net* network, cv::dnn::Model** baseModel);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnSegmentationModelCreate2", "ptr", $network, "ptr*", $baseModel), "cveDnnSegmentationModelCreate2", @error)
+
+    Local $bBaseModelDllType
+    If VarGetType($baseModel) == "DLLStruct" Then
+        $bBaseModelDllType = "struct*"
+    Else
+        $bBaseModelDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDnnSegmentationModelCreate2", "ptr", $network, $bBaseModelDllType, $baseModel), "cveDnnSegmentationModelCreate2", @error)
 EndFunc   ;==>_cveDnnSegmentationModelCreate2
 
-Func _cveDnnSegmentationModelRelease(ByRef $segmentationModel)
+Func _cveDnnSegmentationModelRelease($segmentationModel)
     ; CVAPI(void) cveDnnSegmentationModelRelease(cv::dnn::SegmentationModel** segmentationModel);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnSegmentationModelRelease", "ptr*", $segmentationModel), "cveDnnSegmentationModelRelease", @error)
+
+    Local $bSegmentationModelDllType
+    If VarGetType($segmentationModel) == "DLLStruct" Then
+        $bSegmentationModelDllType = "struct*"
+    Else
+        $bSegmentationModelDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnSegmentationModelRelease", $bSegmentationModelDllType, $segmentationModel), "cveDnnSegmentationModelRelease", @error)
 EndFunc   ;==>_cveDnnSegmentationModelRelease
 
-Func _cveDnnSegmentationModelSegment(ByRef $segmentationModel, ByRef $frame, ByRef $mask)
+Func _cveDnnSegmentationModelSegment($segmentationModel, $frame, $mask)
     ; CVAPI(void) cveDnnSegmentationModelSegment(cv::dnn::SegmentationModel* segmentationModel, cv::_InputArray* frame, cv::_OutputArray* mask);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnSegmentationModelSegment", "ptr", $segmentationModel, "ptr", $frame, "ptr", $mask), "cveDnnSegmentationModelSegment", @error)
 EndFunc   ;==>_cveDnnSegmentationModelSegment
 
-Func _cveDnnSegmentationModelSegmentMat(ByRef $segmentationModel, ByRef $matFrame, ByRef $matMask)
+Func _cveDnnSegmentationModelSegmentMat($segmentationModel, $matFrame, $matMask)
     ; cveDnnSegmentationModelSegment using cv::Mat instead of _*Array
 
     Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize

@@ -11,7 +11,7 @@ Func _TessBaseAPICreate()
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "TessBaseAPICreate"), "TessBaseAPICreate", @error)
 EndFunc   ;==>_TessBaseAPICreate
 
-Func _TessBaseAPIInit(ByRef $ocr, $dataPath, $language, $mode)
+Func _TessBaseAPIInit($ocr, $dataPath, $language, $mode)
     ; CVAPI(int) TessBaseAPIInit(EmguTesseract* ocr, cv::String* dataPath, cv::String* language, int mode);
 
     Local $bDataPathIsString = VarGetType($dataPath) == "String"
@@ -37,22 +37,30 @@ Func _TessBaseAPIInit(ByRef $ocr, $dataPath, $language, $mode)
     Return $retval
 EndFunc   ;==>_TessBaseAPIInit
 
-Func _TessBaseAPIRelease(ByRef $ocr)
+Func _TessBaseAPIRelease($ocr)
     ; CVAPI(void) TessBaseAPIRelease(EmguTesseract** ocr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "TessBaseAPIRelease", "ptr*", $ocr), "TessBaseAPIRelease", @error)
+
+    Local $bOcrDllType
+    If VarGetType($ocr) == "DLLStruct" Then
+        $bOcrDllType = "struct*"
+    Else
+        $bOcrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "TessBaseAPIRelease", $bOcrDllType, $ocr), "TessBaseAPIRelease", @error)
 EndFunc   ;==>_TessBaseAPIRelease
 
-Func _TessBaseAPIRecognize(ByRef $ocr)
+Func _TessBaseAPIRecognize($ocr)
     ; CVAPI(int) TessBaseAPIRecognize(EmguTesseract* ocr);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "TessBaseAPIRecognize", "struct*", $ocr), "TessBaseAPIRecognize", @error)
 EndFunc   ;==>_TessBaseAPIRecognize
 
-Func _TessBaseAPISetImage(ByRef $ocr, ByRef $mat)
+Func _TessBaseAPISetImage($ocr, $mat)
     ; CVAPI(void) TessBaseAPISetImage(EmguTesseract* ocr, cv::_InputArray* mat);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "TessBaseAPISetImage", "struct*", $ocr, "ptr", $mat), "TessBaseAPISetImage", @error)
 EndFunc   ;==>_TessBaseAPISetImage
 
-Func _TessBaseAPISetImageMat(ByRef $ocr, ByRef $matMat)
+Func _TessBaseAPISetImageMat($ocr, $matMat)
     ; TessBaseAPISetImage using cv::Mat instead of _*Array
 
     Local $iArrMat, $vectorOfMatMat, $iArrMatSize
@@ -80,12 +88,12 @@ Func _TessBaseAPISetImageMat(ByRef $ocr, ByRef $matMat)
     _cveInputArrayRelease($iArrMat)
 EndFunc   ;==>_TessBaseAPISetImageMat
 
-Func _TessBaseAPISetImagePix(ByRef $ocr, ByRef $pix)
+Func _TessBaseAPISetImagePix($ocr, $pix)
     ; CVAPI(void) TessBaseAPISetImagePix(EmguTesseract* ocr, Pix* pix);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "TessBaseAPISetImagePix", "struct*", $ocr, "struct*", $pix), "TessBaseAPISetImagePix", @error)
 EndFunc   ;==>_TessBaseAPISetImagePix
 
-Func _TessBaseAPIGetUTF8Text(ByRef $ocr, ByRef $vectorOfByte)
+Func _TessBaseAPIGetUTF8Text($ocr, $vectorOfByte)
     ; CVAPI(void) TessBaseAPIGetUTF8Text(EmguTesseract* ocr, std::vector<unsigned char>* vectorOfByte);
 
     Local $vecVectorOfByte, $iArrVectorOfByteSize
@@ -109,7 +117,7 @@ Func _TessBaseAPIGetUTF8Text(ByRef $ocr, ByRef $vectorOfByte)
     EndIf
 EndFunc   ;==>_TessBaseAPIGetUTF8Text
 
-Func _TessBaseAPIGetHOCRText(ByRef $ocr, $pageNumber, ByRef $vectorOfByte)
+Func _TessBaseAPIGetHOCRText($ocr, $pageNumber, $vectorOfByte)
     ; CVAPI(void) TessBaseAPIGetHOCRText(EmguTesseract* ocr, int pageNumber, std::vector<unsigned char>* vectorOfByte);
 
     Local $vecVectorOfByte, $iArrVectorOfByteSize
@@ -133,7 +141,7 @@ Func _TessBaseAPIGetHOCRText(ByRef $ocr, $pageNumber, ByRef $vectorOfByte)
     EndIf
 EndFunc   ;==>_TessBaseAPIGetHOCRText
 
-Func _TessBaseAPIGetTSVText(ByRef $ocr, $pageNumber, ByRef $vectorOfByte)
+Func _TessBaseAPIGetTSVText($ocr, $pageNumber, $vectorOfByte)
     ; CVAPI(void) TessBaseAPIGetTSVText(EmguTesseract* ocr, int pageNumber, std::vector<unsigned char>* vectorOfByte);
 
     Local $vecVectorOfByte, $iArrVectorOfByteSize
@@ -157,7 +165,7 @@ Func _TessBaseAPIGetTSVText(ByRef $ocr, $pageNumber, ByRef $vectorOfByte)
     EndIf
 EndFunc   ;==>_TessBaseAPIGetTSVText
 
-Func _TessBaseAPIGetBoxText(ByRef $ocr, $pageNumber, ByRef $vectorOfByte)
+Func _TessBaseAPIGetBoxText($ocr, $pageNumber, $vectorOfByte)
     ; CVAPI(void) TessBaseAPIGetBoxText(EmguTesseract* ocr, int pageNumber, std::vector<unsigned char>* vectorOfByte);
 
     Local $vecVectorOfByte, $iArrVectorOfByteSize
@@ -181,7 +189,7 @@ Func _TessBaseAPIGetBoxText(ByRef $ocr, $pageNumber, ByRef $vectorOfByte)
     EndIf
 EndFunc   ;==>_TessBaseAPIGetBoxText
 
-Func _TessBaseAPIGetUNLVText(ByRef $ocr, ByRef $vectorOfByte)
+Func _TessBaseAPIGetUNLVText($ocr, $vectorOfByte)
     ; CVAPI(void) TessBaseAPIGetUNLVText(EmguTesseract* ocr, std::vector<unsigned char>* vectorOfByte);
 
     Local $vecVectorOfByte, $iArrVectorOfByteSize
@@ -205,7 +213,7 @@ Func _TessBaseAPIGetUNLVText(ByRef $ocr, ByRef $vectorOfByte)
     EndIf
 EndFunc   ;==>_TessBaseAPIGetUNLVText
 
-Func _TessBaseAPIGetOsdText(ByRef $ocr, $pageNumber, ByRef $vectorOfByte)
+Func _TessBaseAPIGetOsdText($ocr, $pageNumber, $vectorOfByte)
     ; CVAPI(void) TessBaseAPIGetOsdText(EmguTesseract* ocr, int pageNumber, std::vector<unsigned char>* vectorOfByte);
 
     Local $vecVectorOfByte, $iArrVectorOfByteSize
@@ -229,7 +237,7 @@ Func _TessBaseAPIGetOsdText(ByRef $ocr, $pageNumber, ByRef $vectorOfByte)
     EndIf
 EndFunc   ;==>_TessBaseAPIGetOsdText
 
-Func _TessBaseAPIExtractResult(ByRef $ocr, ByRef $charSeq, ByRef $resultSeq)
+Func _TessBaseAPIExtractResult($ocr, $charSeq, $resultSeq)
     ; CVAPI(void) TessBaseAPIExtractResult(EmguTesseract* ocr, std::vector<unsigned char>* charSeq, std::vector<TesseractResult>* resultSeq);
 
     Local $vecCharSeq, $iArrCharSeqSize
@@ -271,7 +279,7 @@ Func _TessBaseAPIExtractResult(ByRef $ocr, ByRef $charSeq, ByRef $resultSeq)
     EndIf
 EndFunc   ;==>_TessBaseAPIExtractResult
 
-Func _TessBaseAPIProcessPage(ByRef $ocr, ByRef $pix, $pageIndex, $filename, $retryConfig, $timeoutMillisec, ByRef $renderer)
+Func _TessBaseAPIProcessPage($ocr, $pix, $pageIndex, $filename, $retryConfig, $timeoutMillisec, $renderer)
     ; CVAPI(bool) TessBaseAPIProcessPage(EmguTesseract* ocr, Pix* pix, int pageIndex, cv::String* filename, cv::String* retryConfig, int timeoutMillisec, tesseract::TessResultRenderer* renderer);
 
     Local $bFilenameIsString = VarGetType($filename) == "String"
@@ -297,57 +305,72 @@ Func _TessBaseAPIProcessPage(ByRef $ocr, ByRef $pix, $pageIndex, $filename, $ret
     Return $retval
 EndFunc   ;==>_TessBaseAPIProcessPage
 
-Func _TessBaseAPISetVariable(ByRef $ocr, $varName, $value)
+Func _TessBaseAPISetVariable($ocr, $varName, $value)
     ; CVAPI(bool) TessBaseAPISetVariable(EmguTesseract* ocr, const char* varName, const char* value);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "TessBaseAPISetVariable", "struct*", $ocr, "str", $varName, "str", $value), "TessBaseAPISetVariable", @error)
 EndFunc   ;==>_TessBaseAPISetVariable
 
-Func _TessBaseAPISetPageSegMode(ByRef $ocr, $mode)
+Func _TessBaseAPISetPageSegMode($ocr, $mode)
     ; CVAPI(void) TessBaseAPISetPageSegMode(EmguTesseract* ocr, tesseract::PageSegMode mode);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "TessBaseAPISetPageSegMode", "struct*", $ocr, "tesseract::PageSegMode", $mode), "TessBaseAPISetPageSegMode", @error)
 EndFunc   ;==>_TessBaseAPISetPageSegMode
 
-Func _TessBaseAPIGetPageSegMode(ByRef $ocr)
+Func _TessBaseAPIGetPageSegMode($ocr)
     ; CVAPI(tesseract::PageSegMode) TessBaseAPIGetPageSegMode(EmguTesseract* ocr);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "tesseract::PageSegMode:cdecl", "TessBaseAPIGetPageSegMode", "struct*", $ocr), "TessBaseAPIGetPageSegMode", @error)
 EndFunc   ;==>_TessBaseAPIGetPageSegMode
 
-Func _TessBaseAPIGetOpenCLDevice(ByRef $ocr, ByRef $device)
+Func _TessBaseAPIGetOpenCLDevice($ocr, $device)
     ; CVAPI(int) TessBaseAPIGetOpenCLDevice(EmguTesseract* ocr, void ** device);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "TessBaseAPIGetOpenCLDevice", "struct*", $ocr, "ptr*", $device), "TessBaseAPIGetOpenCLDevice", @error)
+
+    Local $bDeviceDllType
+    If VarGetType($device) == "DLLStruct" Then
+        $bDeviceDllType = "struct*"
+    Else
+        $bDeviceDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "TessBaseAPIGetOpenCLDevice", "struct*", $ocr, $bDeviceDllType, $device), "TessBaseAPIGetOpenCLDevice", @error)
 EndFunc   ;==>_TessBaseAPIGetOpenCLDevice
 
-Func _TessBaseAPIAnalyseLayout(ByRef $ocr, $mergeSimilarWords)
+Func _TessBaseAPIAnalyseLayout($ocr, $mergeSimilarWords)
     ; CVAPI(tesseract::PageIterator*) TessBaseAPIAnalyseLayout(EmguTesseract* ocr, bool mergeSimilarWords);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "TessBaseAPIAnalyseLayout", "struct*", $ocr, "boolean", $mergeSimilarWords), "TessBaseAPIAnalyseLayout", @error)
 EndFunc   ;==>_TessBaseAPIAnalyseLayout
 
-Func _TessPageIteratorGetOrientation(ByRef $iterator, ByRef $orientation, ByRef $writingDirection, ByRef $order, ByRef $deskewAngle)
+Func _TessPageIteratorGetOrientation($iterator, $orientation, $writingDirection, $order, $deskewAngle)
     ; CVAPI(void) TessPageIteratorGetOrientation(tesseract::PageIterator* iterator, tesseract::Orientation* orientation, tesseract::WritingDirection* writingDirection, tesseract::TextlineOrder* order, float* deskewAngle);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "TessPageIteratorGetOrientation", "ptr", $iterator, "ptr", $orientation, "ptr", $writingDirection, "ptr", $order, "struct*", $deskewAngle), "TessPageIteratorGetOrientation", @error)
 EndFunc   ;==>_TessPageIteratorGetOrientation
 
-Func _TessPageIteratorRelease(ByRef $iterator)
+Func _TessPageIteratorRelease($iterator)
     ; CVAPI(void) TessPageIteratorRelease(tesseract::PageIterator** iterator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "TessPageIteratorRelease", "ptr*", $iterator), "TessPageIteratorRelease", @error)
+
+    Local $bIteratorDllType
+    If VarGetType($iterator) == "DLLStruct" Then
+        $bIteratorDllType = "struct*"
+    Else
+        $bIteratorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "TessPageIteratorRelease", $bIteratorDllType, $iterator), "TessPageIteratorRelease", @error)
 EndFunc   ;==>_TessPageIteratorRelease
 
-Func _TessPageIteratorGetBaseLine(ByRef $iterator, $level, ByRef $x1, ByRef $y1, ByRef $x2, ByRef $y2)
+Func _TessPageIteratorGetBaseLine($iterator, $level, $x1, $y1, $x2, $y2)
     ; CVAPI(bool) TessPageIteratorGetBaseLine(tesseract::PageIterator* iterator, tesseract::PageIteratorLevel level, int* x1, int* y1, int* x2, int* y2);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "TessPageIteratorGetBaseLine", "ptr", $iterator, "tesseract::PageIteratorLevel", $level, "struct*", $x1, "struct*", $y1, "struct*", $x2, "struct*", $y2), "TessPageIteratorGetBaseLine", @error)
 EndFunc   ;==>_TessPageIteratorGetBaseLine
 
-Func _TessBaseAPIIsValidWord(ByRef $ocr, ByRef $word)
+Func _TessBaseAPIIsValidWord($ocr, $word)
     ; CVAPI(int) TessBaseAPIIsValidWord(EmguTesseract* ocr, char* word);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "TessBaseAPIIsValidWord", "struct*", $ocr, "struct*", $word), "TessBaseAPIIsValidWord", @error)
 EndFunc   ;==>_TessBaseAPIIsValidWord
 
-Func _TessBaseAPIGetOem(ByRef $ocr)
+Func _TessBaseAPIGetOem($ocr)
     ; CVAPI(int) TessBaseAPIGetOem(EmguTesseract* ocr);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "TessBaseAPIGetOem", "struct*", $ocr), "TessBaseAPIGetOem", @error)
 EndFunc   ;==>_TessBaseAPIGetOem
 
-Func _TessPDFRendererCreate($outputbase, $datadir, $textonly, ByRef $resultRenderer)
+Func _TessPDFRendererCreate($outputbase, $datadir, $textonly, $resultRenderer)
     ; CVAPI(tesseract::TessPDFRenderer*) TessPDFRendererCreate(cv::String* outputbase, cv::String* datadir, bool textonly, tesseract::TessResultRenderer** resultRenderer);
 
     Local $bOutputbaseIsString = VarGetType($outputbase) == "String"
@@ -360,7 +383,14 @@ Func _TessPDFRendererCreate($outputbase, $datadir, $textonly, ByRef $resultRende
         $datadir = _cveStringCreateFromStr($datadir)
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "TessPDFRendererCreate", "ptr", $outputbase, "ptr", $datadir, "boolean", $textonly, "ptr*", $resultRenderer), "TessPDFRendererCreate", @error)
+    Local $bResultRendererDllType
+    If VarGetType($resultRenderer) == "DLLStruct" Then
+        $bResultRendererDllType = "struct*"
+    Else
+        $bResultRendererDllType = "ptr*"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "TessPDFRendererCreate", "ptr", $outputbase, "ptr", $datadir, "boolean", $textonly, $bResultRendererDllType, $resultRenderer), "TessPDFRendererCreate", @error)
 
     If $bDatadirIsString Then
         _cveStringRelease($datadir)
@@ -373,22 +403,38 @@ Func _TessPDFRendererCreate($outputbase, $datadir, $textonly, ByRef $resultRende
     Return $retval
 EndFunc   ;==>_TessPDFRendererCreate
 
-Func _TessPDFRendererRelease(ByRef $renderer)
+Func _TessPDFRendererRelease($renderer)
     ; CVAPI(void) TessPDFRendererRelease(tesseract::TessPDFRenderer** renderer);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "TessPDFRendererRelease", "ptr*", $renderer), "TessPDFRendererRelease", @error)
+
+    Local $bRendererDllType
+    If VarGetType($renderer) == "DLLStruct" Then
+        $bRendererDllType = "struct*"
+    Else
+        $bRendererDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "TessPDFRendererRelease", $bRendererDllType, $renderer), "TessPDFRendererRelease", @error)
 EndFunc   ;==>_TessPDFRendererRelease
 
-Func _leptCreatePixFromMat(ByRef $m)
+Func _leptCreatePixFromMat($m)
     ; CVAPI(Pix*) leptCreatePixFromMat(cv::Mat* m);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "leptCreatePixFromMat", "ptr", $m), "leptCreatePixFromMat", @error)
 EndFunc   ;==>_leptCreatePixFromMat
 
-Func _leptPixDestroy(ByRef $pix)
+Func _leptPixDestroy($pix)
     ; CVAPI(void) leptPixDestroy(Pix** pix);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "leptPixDestroy", "ptr*", $pix), "leptPixDestroy", @error)
+
+    Local $bPixDllType
+    If VarGetType($pix) == "DLLStruct" Then
+        $bPixDllType = "struct*"
+    Else
+        $bPixDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "leptPixDestroy", $bPixDllType, $pix), "leptPixDestroy", @error)
 EndFunc   ;==>_leptPixDestroy
 
-Func _stdSetlocale($category, ByRef $locale)
+Func _stdSetlocale($category, $locale)
     ; CVAPI(char*) stdSetlocale(int category, char* locale);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "stdSetlocale", "int", $category, "struct*", $locale), "stdSetlocale", @error)
 EndFunc   ;==>_stdSetlocale

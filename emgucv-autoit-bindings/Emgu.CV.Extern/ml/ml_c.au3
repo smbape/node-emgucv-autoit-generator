@@ -1,12 +1,12 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _StatModelTrain(ByRef $model, ByRef $samples, $layout, ByRef $responses)
+Func _StatModelTrain($model, $samples, $layout, $responses)
     ; CVAPI(bool) StatModelTrain(cv::ml::StatModel* model, cv::_InputArray* samples, int layout, cv::_InputArray* responses);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "StatModelTrain", "ptr", $model, "ptr", $samples, "int", $layout, "ptr", $responses), "StatModelTrain", @error)
 EndFunc   ;==>_StatModelTrain
 
-Func _StatModelTrainMat(ByRef $model, ByRef $matSamples, $layout, ByRef $matResponses)
+Func _StatModelTrainMat($model, $matSamples, $layout, $matResponses)
     ; StatModelTrain using cv::Mat instead of _*Array
 
     Local $iArrSamples, $vectorOfMatSamples, $iArrSamplesSize
@@ -58,17 +58,17 @@ Func _StatModelTrainMat(ByRef $model, ByRef $matSamples, $layout, ByRef $matResp
     Return $retval
 EndFunc   ;==>_StatModelTrainMat
 
-Func _StatModelTrainWithData(ByRef $model, ByRef $data, $flags)
+Func _StatModelTrainWithData($model, $data, $flags)
     ; CVAPI(bool) StatModelTrainWithData(cv::ml::StatModel* model, cv::ml::TrainData* data, int flags);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "StatModelTrainWithData", "ptr", $model, "ptr", $data, "int", $flags), "StatModelTrainWithData", @error)
 EndFunc   ;==>_StatModelTrainWithData
 
-Func _StatModelPredict(ByRef $model, ByRef $samples, ByRef $results, $flags)
+Func _StatModelPredict($model, $samples, $results, $flags)
     ; CVAPI(float) StatModelPredict(cv::ml::StatModel* model, cv::_InputArray* samples, cv::_OutputArray* results, int flags);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "StatModelPredict", "ptr", $model, "ptr", $samples, "ptr", $results, "int", $flags), "StatModelPredict", @error)
 EndFunc   ;==>_StatModelPredict
 
-Func _StatModelPredictMat(ByRef $model, ByRef $matSamples, ByRef $matResults, $flags)
+Func _StatModelPredictMat($model, $matSamples, $matResults, $flags)
     ; StatModelPredict using cv::Mat instead of _*Array
 
     Local $iArrSamples, $vectorOfMatSamples, $iArrSamplesSize
@@ -120,12 +120,19 @@ Func _StatModelPredictMat(ByRef $model, ByRef $matSamples, ByRef $matResults, $f
     Return $retval
 EndFunc   ;==>_StatModelPredictMat
 
-Func _cveTrainDataCreate(ByRef $samples, $layout, ByRef $responses, ByRef $varIdx, ByRef $sampleIdx, ByRef $sampleWeights, ByRef $varType, ByRef $sharedPtr)
+Func _cveTrainDataCreate($samples, $layout, $responses, $varIdx, $sampleIdx, $sampleWeights, $varType, $sharedPtr)
     ; CVAPI(cv::ml::TrainData*) cveTrainDataCreate(cv::_InputArray* samples, int layout, cv::_InputArray* responses, cv::_InputArray* varIdx, cv::_InputArray* sampleIdx, cv::_InputArray* sampleWeights, cv::_InputArray* varType, cv::Ptr<cv::ml::TrainData>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTrainDataCreate", "ptr", $samples, "int", $layout, "ptr", $responses, "ptr", $varIdx, "ptr", $sampleIdx, "ptr", $sampleWeights, "ptr", $varType, "ptr*", $sharedPtr), "cveTrainDataCreate", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTrainDataCreate", "ptr", $samples, "int", $layout, "ptr", $responses, "ptr", $varIdx, "ptr", $sampleIdx, "ptr", $sampleWeights, "ptr", $varType, $bSharedPtrDllType, $sharedPtr), "cveTrainDataCreate", @error)
 EndFunc   ;==>_cveTrainDataCreate
 
-Func _cveTrainDataCreateMat(ByRef $matSamples, $layout, ByRef $matResponses, ByRef $matVarIdx, ByRef $matSampleIdx, ByRef $matSampleWeights, ByRef $matVarType, ByRef $sharedPtr)
+Func _cveTrainDataCreateMat($matSamples, $layout, $matResponses, $matVarIdx, $matSampleIdx, $matSampleWeights, $matVarType, $sharedPtr)
     ; cveTrainDataCreate using cv::Mat instead of _*Array
 
     Local $iArrSamples, $vectorOfMatSamples, $iArrSamplesSize
@@ -265,37 +272,110 @@ Func _cveTrainDataCreateMat(ByRef $matSamples, $layout, ByRef $matResponses, ByR
     Return $retval
 EndFunc   ;==>_cveTrainDataCreateMat
 
-Func _cveTrainDataRelease(ByRef $sharedPtr)
+Func _cveTrainDataRelease($sharedPtr)
     ; CVAPI(void) cveTrainDataRelease(cv::Ptr<cv::ml::TrainData>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTrainDataRelease", "ptr*", $sharedPtr), "cveTrainDataRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTrainDataRelease", $bSharedPtrDllType, $sharedPtr), "cveTrainDataRelease", @error)
 EndFunc   ;==>_cveTrainDataRelease
 
-Func _cveNormalBayesClassifierDefaultCreate(ByRef $statModel, ByRef $algorithm, ByRef $sharedPtr)
+Func _cveNormalBayesClassifierDefaultCreate($statModel, $algorithm, $sharedPtr)
     ; CVAPI(cv::ml::NormalBayesClassifier*) cveNormalBayesClassifierDefaultCreate(cv::ml::StatModel** statModel, cv::Algorithm** algorithm, cv::Ptr<cv::ml::NormalBayesClassifier>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveNormalBayesClassifierDefaultCreate", "ptr*", $statModel, "ptr*", $algorithm, "ptr*", $sharedPtr), "cveNormalBayesClassifierDefaultCreate", @error)
+
+    Local $bStatModelDllType
+    If VarGetType($statModel) == "DLLStruct" Then
+        $bStatModelDllType = "struct*"
+    Else
+        $bStatModelDllType = "ptr*"
+    EndIf
+
+    Local $bAlgorithmDllType
+    If VarGetType($algorithm) == "DLLStruct" Then
+        $bAlgorithmDllType = "struct*"
+    Else
+        $bAlgorithmDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveNormalBayesClassifierDefaultCreate", $bStatModelDllType, $statModel, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveNormalBayesClassifierDefaultCreate", @error)
 EndFunc   ;==>_cveNormalBayesClassifierDefaultCreate
 
-Func _cveNormalBayesClassifierRelease(ByRef $classifier, ByRef $sharedPtr)
+Func _cveNormalBayesClassifierRelease($classifier, $sharedPtr)
     ; CVAPI(void) cveNormalBayesClassifierRelease(cv::ml::NormalBayesClassifier** classifier, cv::Ptr<cv::ml::NormalBayesClassifier>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveNormalBayesClassifierRelease", "ptr*", $classifier, "ptr*", $sharedPtr), "cveNormalBayesClassifierRelease", @error)
+
+    Local $bClassifierDllType
+    If VarGetType($classifier) == "DLLStruct" Then
+        $bClassifierDllType = "struct*"
+    Else
+        $bClassifierDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveNormalBayesClassifierRelease", $bClassifierDllType, $classifier, $bSharedPtrDllType, $sharedPtr), "cveNormalBayesClassifierRelease", @error)
 EndFunc   ;==>_cveNormalBayesClassifierRelease
 
-Func _cveKNearestCreate(ByRef $statModel, ByRef $algorithm, ByRef $sharedPtr)
+Func _cveKNearestCreate($statModel, $algorithm, $sharedPtr)
     ; CVAPI(cv::ml::KNearest*) cveKNearestCreate(cv::ml::StatModel** statModel, cv::Algorithm** algorithm, cv::Ptr<cv::ml::KNearest>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveKNearestCreate", "ptr*", $statModel, "ptr*", $algorithm, "ptr*", $sharedPtr), "cveKNearestCreate", @error)
+
+    Local $bStatModelDllType
+    If VarGetType($statModel) == "DLLStruct" Then
+        $bStatModelDllType = "struct*"
+    Else
+        $bStatModelDllType = "ptr*"
+    EndIf
+
+    Local $bAlgorithmDllType
+    If VarGetType($algorithm) == "DLLStruct" Then
+        $bAlgorithmDllType = "struct*"
+    Else
+        $bAlgorithmDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveKNearestCreate", $bStatModelDllType, $statModel, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveKNearestCreate", @error)
 EndFunc   ;==>_cveKNearestCreate
 
-Func _cveKNearestRelease(ByRef $sharedPtr)
+Func _cveKNearestRelease($sharedPtr)
     ; CVAPI(void) cveKNearestRelease(cv::Ptr<cv::ml::KNearest>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveKNearestRelease", "ptr*", $sharedPtr), "cveKNearestRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveKNearestRelease", $bSharedPtrDllType, $sharedPtr), "cveKNearestRelease", @error)
 EndFunc   ;==>_cveKNearestRelease
 
-Func _cveKNearestFindNearest(ByRef $classifier, ByRef $samples, $k, ByRef $results, ByRef $neighborResponses, ByRef $dist)
+Func _cveKNearestFindNearest($classifier, $samples, $k, $results, $neighborResponses, $dist)
     ; CVAPI(float) cveKNearestFindNearest(cv::ml::KNearest* classifier, cv::_InputArray* samples, int k, cv::_OutputArray* results, cv::_OutputArray* neighborResponses, cv::_OutputArray* dist);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveKNearestFindNearest", "ptr", $classifier, "ptr", $samples, "int", $k, "ptr", $results, "ptr", $neighborResponses, "ptr", $dist), "cveKNearestFindNearest", @error)
 EndFunc   ;==>_cveKNearestFindNearest
 
-Func _cveKNearestFindNearestMat(ByRef $classifier, ByRef $matSamples, $k, ByRef $matResults, ByRef $matNeighborResponses, ByRef $matDist)
+Func _cveKNearestFindNearestMat($classifier, $matSamples, $k, $matResults, $matNeighborResponses, $matDist)
     ; cveKNearestFindNearest using cv::Mat instead of _*Array
 
     Local $iArrSamples, $vectorOfMatSamples, $iArrSamplesSize
@@ -391,17 +471,53 @@ Func _cveKNearestFindNearestMat(ByRef $classifier, ByRef $matSamples, $k, ByRef 
     Return $retval
 EndFunc   ;==>_cveKNearestFindNearestMat
 
-Func _cveEMDefaultCreate(ByRef $statModel, ByRef $algorithm, ByRef $sharedPtr)
+Func _cveEMDefaultCreate($statModel, $algorithm, $sharedPtr)
     ; CVAPI(cv::ml::EM*) cveEMDefaultCreate(cv::ml::StatModel** statModel, cv::Algorithm** algorithm, cv::Ptr<cv::ml::EM>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveEMDefaultCreate", "ptr*", $statModel, "ptr*", $algorithm, "ptr*", $sharedPtr), "cveEMDefaultCreate", @error)
+
+    Local $bStatModelDllType
+    If VarGetType($statModel) == "DLLStruct" Then
+        $bStatModelDllType = "struct*"
+    Else
+        $bStatModelDllType = "ptr*"
+    EndIf
+
+    Local $bAlgorithmDllType
+    If VarGetType($algorithm) == "DLLStruct" Then
+        $bAlgorithmDllType = "struct*"
+    Else
+        $bAlgorithmDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveEMDefaultCreate", $bStatModelDllType, $statModel, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveEMDefaultCreate", @error)
 EndFunc   ;==>_cveEMDefaultCreate
 
-Func _cveEMTrainE(ByRef $model, ByRef $samples, ByRef $means0, ByRef $covs0, ByRef $weights0, ByRef $logLikelihoods, ByRef $labels, ByRef $probs, ByRef $statModel, ByRef $algorithm)
+Func _cveEMTrainE($model, $samples, $means0, $covs0, $weights0, $logLikelihoods, $labels, $probs, $statModel, $algorithm)
     ; CVAPI(void) cveEMTrainE(cv::ml::EM* model, cv::_InputArray* samples, cv::_InputArray* means0, cv::_InputArray* covs0, cv::_InputArray* weights0, cv::_OutputArray* logLikelihoods, cv::_OutputArray* labels, cv::_OutputArray* probs, cv::ml::StatModel** statModel, cv::Algorithm** algorithm);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMTrainE", "ptr", $model, "ptr", $samples, "ptr", $means0, "ptr", $covs0, "ptr", $weights0, "ptr", $logLikelihoods, "ptr", $labels, "ptr", $probs, "ptr*", $statModel, "ptr*", $algorithm), "cveEMTrainE", @error)
+
+    Local $bStatModelDllType
+    If VarGetType($statModel) == "DLLStruct" Then
+        $bStatModelDllType = "struct*"
+    Else
+        $bStatModelDllType = "ptr*"
+    EndIf
+
+    Local $bAlgorithmDllType
+    If VarGetType($algorithm) == "DLLStruct" Then
+        $bAlgorithmDllType = "struct*"
+    Else
+        $bAlgorithmDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMTrainE", "ptr", $model, "ptr", $samples, "ptr", $means0, "ptr", $covs0, "ptr", $weights0, "ptr", $logLikelihoods, "ptr", $labels, "ptr", $probs, $bStatModelDllType, $statModel, $bAlgorithmDllType, $algorithm), "cveEMTrainE", @error)
 EndFunc   ;==>_cveEMTrainE
 
-Func _cveEMTrainEMat(ByRef $model, ByRef $matSamples, ByRef $matMeans0, ByRef $matCovs0, ByRef $matWeights0, ByRef $matLogLikelihoods, ByRef $matLabels, ByRef $matProbs, ByRef $statModel, ByRef $algorithm)
+Func _cveEMTrainEMat($model, $matSamples, $matMeans0, $matCovs0, $matWeights0, $matLogLikelihoods, $matLabels, $matProbs, $statModel, $algorithm)
     ; cveEMTrainE using cv::Mat instead of _*Array
 
     Local $iArrSamples, $vectorOfMatSamples, $iArrSamplesSize
@@ -561,12 +677,27 @@ Func _cveEMTrainEMat(ByRef $model, ByRef $matSamples, ByRef $matMeans0, ByRef $m
     _cveInputArrayRelease($iArrSamples)
 EndFunc   ;==>_cveEMTrainEMat
 
-Func _cveEMTrainM(ByRef $model, ByRef $samples, ByRef $probs0, ByRef $logLikelihoods, ByRef $labels, ByRef $probs, ByRef $statModel, ByRef $algorithm)
+Func _cveEMTrainM($model, $samples, $probs0, $logLikelihoods, $labels, $probs, $statModel, $algorithm)
     ; CVAPI(void) cveEMTrainM(cv::ml::EM* model, cv::_InputArray* samples, cv::_InputArray* probs0, cv::_OutputArray* logLikelihoods, cv::_OutputArray* labels, cv::_OutputArray* probs, cv::ml::StatModel** statModel, cv::Algorithm** algorithm);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMTrainM", "ptr", $model, "ptr", $samples, "ptr", $probs0, "ptr", $logLikelihoods, "ptr", $labels, "ptr", $probs, "ptr*", $statModel, "ptr*", $algorithm), "cveEMTrainM", @error)
+
+    Local $bStatModelDllType
+    If VarGetType($statModel) == "DLLStruct" Then
+        $bStatModelDllType = "struct*"
+    Else
+        $bStatModelDllType = "ptr*"
+    EndIf
+
+    Local $bAlgorithmDllType
+    If VarGetType($algorithm) == "DLLStruct" Then
+        $bAlgorithmDllType = "struct*"
+    Else
+        $bAlgorithmDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMTrainM", "ptr", $model, "ptr", $samples, "ptr", $probs0, "ptr", $logLikelihoods, "ptr", $labels, "ptr", $probs, $bStatModelDllType, $statModel, $bAlgorithmDllType, $algorithm), "cveEMTrainM", @error)
 EndFunc   ;==>_cveEMTrainM
 
-Func _cveEMTrainMMat(ByRef $model, ByRef $matSamples, ByRef $matProbs0, ByRef $matLogLikelihoods, ByRef $matLabels, ByRef $matProbs, ByRef $statModel, ByRef $algorithm)
+Func _cveEMTrainMMat($model, $matSamples, $matProbs0, $matLogLikelihoods, $matLabels, $matProbs, $statModel, $algorithm)
     ; cveEMTrainM using cv::Mat instead of _*Array
 
     Local $iArrSamples, $vectorOfMatSamples, $iArrSamplesSize
@@ -682,12 +813,12 @@ Func _cveEMTrainMMat(ByRef $model, ByRef $matSamples, ByRef $matProbs0, ByRef $m
     _cveInputArrayRelease($iArrSamples)
 EndFunc   ;==>_cveEMTrainMMat
 
-Func _cveEMPredict(ByRef $model, ByRef $sample, ByRef $result, ByRef $probs)
+Func _cveEMPredict($model, $sample, $result, $probs)
     ; CVAPI(void) cveEMPredict(cv::ml::EM* model, cv::_InputArray* sample, CvPoint2D64f* result, cv::_OutputArray* probs);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMPredict", "ptr", $model, "ptr", $sample, "struct*", $result, "ptr", $probs), "cveEMPredict", @error)
 EndFunc   ;==>_cveEMPredict
 
-Func _cveEMPredictMat(ByRef $model, ByRef $matSample, ByRef $result, ByRef $matProbs)
+Func _cveEMPredictMat($model, $matSample, $result, $matProbs)
     ; cveEMPredict using cv::Mat instead of _*Array
 
     Local $iArrSample, $vectorOfMatSample, $iArrSampleSize
@@ -737,47 +868,119 @@ Func _cveEMPredictMat(ByRef $model, ByRef $matSample, ByRef $result, ByRef $matP
     _cveInputArrayRelease($iArrSample)
 EndFunc   ;==>_cveEMPredictMat
 
-Func _cveEMRelease(ByRef $model, ByRef $sharedPtr)
+Func _cveEMRelease($model, $sharedPtr)
     ; CVAPI(void) cveEMRelease(cv::ml::EM** model, cv::Ptr<cv::ml::EM>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMRelease", "ptr*", $model, "ptr*", $sharedPtr), "cveEMRelease", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMRelease", $bModelDllType, $model, $bSharedPtrDllType, $sharedPtr), "cveEMRelease", @error)
 EndFunc   ;==>_cveEMRelease
 
-Func _cveSVMDefaultCreate(ByRef $model, ByRef $algorithm, ByRef $sharedPtr)
+Func _cveSVMDefaultCreate($model, $algorithm, $sharedPtr)
     ; CVAPI(cv::ml::SVM*) cveSVMDefaultCreate(cv::ml::StatModel** model, cv::Algorithm** algorithm, cv::Ptr<cv::ml::SVM>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSVMDefaultCreate", "ptr*", $model, "ptr*", $algorithm, "ptr*", $sharedPtr), "cveSVMDefaultCreate", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr*"
+    EndIf
+
+    Local $bAlgorithmDllType
+    If VarGetType($algorithm) == "DLLStruct" Then
+        $bAlgorithmDllType = "struct*"
+    Else
+        $bAlgorithmDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSVMDefaultCreate", $bModelDllType, $model, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveSVMDefaultCreate", @error)
 EndFunc   ;==>_cveSVMDefaultCreate
 
-Func _cveSVMTrainAuto(ByRef $model, ByRef $trainData, $kFold, ByRef $CGrid, ByRef $gammaGrid, ByRef $pGrid, ByRef $nuGrid, ByRef $coefGrid, ByRef $degreeGrid, $balanced)
+Func _cveSVMTrainAuto($model, $trainData, $kFold, $CGrid, $gammaGrid, $pGrid, $nuGrid, $coefGrid, $degreeGrid, $balanced)
     ; CVAPI(bool) cveSVMTrainAuto(cv::ml::SVM* model, cv::ml::TrainData* trainData, int kFold, cv::ml::ParamGrid* CGrid, cv::ml::ParamGrid* gammaGrid, cv::ml::ParamGrid* pGrid, cv::ml::ParamGrid* nuGrid, cv::ml::ParamGrid* coefGrid, cv::ml::ParamGrid* degreeGrid, bool balanced);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveSVMTrainAuto", "ptr", $model, "ptr", $trainData, "int", $kFold, "ptr", $CGrid, "ptr", $gammaGrid, "ptr", $pGrid, "ptr", $nuGrid, "ptr", $coefGrid, "ptr", $degreeGrid, "boolean", $balanced), "cveSVMTrainAuto", @error)
 EndFunc   ;==>_cveSVMTrainAuto
 
-Func _cveSVMGetDefaultGrid($gridType, ByRef $grid)
+Func _cveSVMGetDefaultGrid($gridType, $grid)
     ; CVAPI(void) cveSVMGetDefaultGrid(int gridType, cv::ml::ParamGrid* grid);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSVMGetDefaultGrid", "int", $gridType, "ptr", $grid), "cveSVMGetDefaultGrid", @error)
 EndFunc   ;==>_cveSVMGetDefaultGrid
 
-Func _cveSVMRelease(ByRef $model, ByRef $sharedPtr)
+Func _cveSVMRelease($model, $sharedPtr)
     ; CVAPI(void) cveSVMRelease(cv::ml::SVM** model, cv::Ptr<cv::ml::SVM>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSVMRelease", "ptr*", $model, "ptr*", $sharedPtr), "cveSVMRelease", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSVMRelease", $bModelDllType, $model, $bSharedPtrDllType, $sharedPtr), "cveSVMRelease", @error)
 EndFunc   ;==>_cveSVMRelease
 
-Func _cveSVMGetSupportVectors(ByRef $model, ByRef $supportVectors)
+Func _cveSVMGetSupportVectors($model, $supportVectors)
     ; CVAPI(void) cveSVMGetSupportVectors(cv::ml::SVM* model, cv::Mat* supportVectors);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSVMGetSupportVectors", "ptr", $model, "ptr", $supportVectors), "cveSVMGetSupportVectors", @error)
 EndFunc   ;==>_cveSVMGetSupportVectors
 
-Func _cveANN_MLPCreate(ByRef $model, ByRef $algorithm, ByRef $sharedPtr)
+Func _cveANN_MLPCreate($model, $algorithm, $sharedPtr)
     ; CVAPI(cv::ml::ANN_MLP*) cveANN_MLPCreate(cv::ml::StatModel** model, cv::Algorithm** algorithm, cv::Ptr<cv::ml::ANN_MLP>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveANN_MLPCreate", "ptr*", $model, "ptr*", $algorithm, "ptr*", $sharedPtr), "cveANN_MLPCreate", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr*"
+    EndIf
+
+    Local $bAlgorithmDllType
+    If VarGetType($algorithm) == "DLLStruct" Then
+        $bAlgorithmDllType = "struct*"
+    Else
+        $bAlgorithmDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveANN_MLPCreate", $bModelDllType, $model, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveANN_MLPCreate", @error)
 EndFunc   ;==>_cveANN_MLPCreate
 
-Func _cveANN_MLPSetLayerSizes(ByRef $model, ByRef $layerSizes)
+Func _cveANN_MLPSetLayerSizes($model, $layerSizes)
     ; CVAPI(void) cveANN_MLPSetLayerSizes(cv::ml::ANN_MLP* model, cv::_InputArray* layerSizes);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveANN_MLPSetLayerSizes", "ptr", $model, "ptr", $layerSizes), "cveANN_MLPSetLayerSizes", @error)
 EndFunc   ;==>_cveANN_MLPSetLayerSizes
 
-Func _cveANN_MLPSetLayerSizesMat(ByRef $model, ByRef $matLayerSizes)
+Func _cveANN_MLPSetLayerSizesMat($model, $matLayerSizes)
     ; cveANN_MLPSetLayerSizes using cv::Mat instead of _*Array
 
     Local $iArrLayerSizes, $vectorOfMatLayerSizes, $iArrLayerSizesSize
@@ -805,42 +1008,114 @@ Func _cveANN_MLPSetLayerSizesMat(ByRef $model, ByRef $matLayerSizes)
     _cveInputArrayRelease($iArrLayerSizes)
 EndFunc   ;==>_cveANN_MLPSetLayerSizesMat
 
-Func _cveANN_MLPSetActivationFunction(ByRef $model, $type, $param1, $param2)
+Func _cveANN_MLPSetActivationFunction($model, $type, $param1, $param2)
     ; CVAPI(void) cveANN_MLPSetActivationFunction(cv::ml::ANN_MLP* model, int type, double param1, double param2);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveANN_MLPSetActivationFunction", "ptr", $model, "int", $type, "double", $param1, "double", $param2), "cveANN_MLPSetActivationFunction", @error)
 EndFunc   ;==>_cveANN_MLPSetActivationFunction
 
-Func _cveANN_MLPSetTrainMethod(ByRef $model, $method, $param1, $param2)
+Func _cveANN_MLPSetTrainMethod($model, $method, $param1, $param2)
     ; CVAPI(void) cveANN_MLPSetTrainMethod(cv::ml::ANN_MLP* model, int method, double param1, double param2);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveANN_MLPSetTrainMethod", "ptr", $model, "int", $method, "double", $param1, "double", $param2), "cveANN_MLPSetTrainMethod", @error)
 EndFunc   ;==>_cveANN_MLPSetTrainMethod
 
-Func _cveANN_MLPRelease(ByRef $model, ByRef $sharedPtr)
+Func _cveANN_MLPRelease($model, $sharedPtr)
     ; CVAPI(void) cveANN_MLPRelease(cv::ml::ANN_MLP** model, cv::Ptr<cv::ml::ANN_MLP>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveANN_MLPRelease", "ptr*", $model, "ptr*", $sharedPtr), "cveANN_MLPRelease", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveANN_MLPRelease", $bModelDllType, $model, $bSharedPtrDllType, $sharedPtr), "cveANN_MLPRelease", @error)
 EndFunc   ;==>_cveANN_MLPRelease
 
-Func _cveDTreesCreate(ByRef $statModel, ByRef $algorithm, ByRef $sharedPtr)
+Func _cveDTreesCreate($statModel, $algorithm, $sharedPtr)
     ; CVAPI(cv::ml::DTrees*) cveDTreesCreate(cv::ml::StatModel** statModel, cv::Algorithm** algorithm, cv::Ptr<cv::ml::DTrees>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDTreesCreate", "ptr*", $statModel, "ptr*", $algorithm, "ptr*", $sharedPtr), "cveDTreesCreate", @error)
+
+    Local $bStatModelDllType
+    If VarGetType($statModel) == "DLLStruct" Then
+        $bStatModelDllType = "struct*"
+    Else
+        $bStatModelDllType = "ptr*"
+    EndIf
+
+    Local $bAlgorithmDllType
+    If VarGetType($algorithm) == "DLLStruct" Then
+        $bAlgorithmDllType = "struct*"
+    Else
+        $bAlgorithmDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDTreesCreate", $bStatModelDllType, $statModel, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveDTreesCreate", @error)
 EndFunc   ;==>_cveDTreesCreate
 
-Func _cveDTreesRelease(ByRef $model, ByRef $sharedPtr)
+Func _cveDTreesRelease($model, $sharedPtr)
     ; CVAPI(void) cveDTreesRelease(cv::ml::DTrees** model, cv::Ptr<cv::ml::DTrees>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDTreesRelease", "ptr*", $model, "ptr*", $sharedPtr), "cveDTreesRelease", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDTreesRelease", $bModelDllType, $model, $bSharedPtrDllType, $sharedPtr), "cveDTreesRelease", @error)
 EndFunc   ;==>_cveDTreesRelease
 
-Func _cveRTreesCreate(ByRef $statModel, ByRef $algorithm, ByRef $sharedPtr)
+Func _cveRTreesCreate($statModel, $algorithm, $sharedPtr)
     ; CVAPI(cv::ml::RTrees*) cveRTreesCreate(cv::ml::StatModel** statModel, cv::Algorithm** algorithm, cv::Ptr<cv::ml::RTrees>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveRTreesCreate", "ptr*", $statModel, "ptr*", $algorithm, "ptr*", $sharedPtr), "cveRTreesCreate", @error)
+
+    Local $bStatModelDllType
+    If VarGetType($statModel) == "DLLStruct" Then
+        $bStatModelDllType = "struct*"
+    Else
+        $bStatModelDllType = "ptr*"
+    EndIf
+
+    Local $bAlgorithmDllType
+    If VarGetType($algorithm) == "DLLStruct" Then
+        $bAlgorithmDllType = "struct*"
+    Else
+        $bAlgorithmDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveRTreesCreate", $bStatModelDllType, $statModel, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveRTreesCreate", @error)
 EndFunc   ;==>_cveRTreesCreate
 
-Func _cveRTreesGetVotes(ByRef $model, ByRef $samples, ByRef $results, $flags)
+Func _cveRTreesGetVotes($model, $samples, $results, $flags)
     ; CVAPI(void) cveRTreesGetVotes(cv::ml::RTrees* model, cv::_InputArray* samples, cv::_OutputArray* results, int flags);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRTreesGetVotes", "ptr", $model, "ptr", $samples, "ptr", $results, "int", $flags), "cveRTreesGetVotes", @error)
 EndFunc   ;==>_cveRTreesGetVotes
 
-Func _cveRTreesGetVotesMat(ByRef $model, ByRef $matSamples, ByRef $matResults, $flags)
+Func _cveRTreesGetVotesMat($model, $matSamples, $matResults, $flags)
     ; cveRTreesGetVotes using cv::Mat instead of _*Array
 
     Local $iArrSamples, $vectorOfMatSamples, $iArrSamplesSize
@@ -890,42 +1165,165 @@ Func _cveRTreesGetVotesMat(ByRef $model, ByRef $matSamples, ByRef $matResults, $
     _cveInputArrayRelease($iArrSamples)
 EndFunc   ;==>_cveRTreesGetVotesMat
 
-Func _cveRTreesRelease(ByRef $model, ByRef $sharedPtr)
+Func _cveRTreesRelease($model, $sharedPtr)
     ; CVAPI(void) cveRTreesRelease(cv::ml::RTrees** model, cv::Ptr<cv::ml::RTrees>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRTreesRelease", "ptr*", $model, "ptr*", $sharedPtr), "cveRTreesRelease", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRTreesRelease", $bModelDllType, $model, $bSharedPtrDllType, $sharedPtr), "cveRTreesRelease", @error)
 EndFunc   ;==>_cveRTreesRelease
 
-Func _cveBoostCreate(ByRef $statModel, ByRef $algorithm, ByRef $sharedPtr)
+Func _cveBoostCreate($statModel, $algorithm, $sharedPtr)
     ; CVAPI(cv::ml::Boost*) cveBoostCreate(cv::ml::StatModel** statModel, cv::Algorithm** algorithm, cv::Ptr<cv::ml::Boost>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBoostCreate", "ptr*", $statModel, "ptr*", $algorithm, "ptr*", $sharedPtr), "cveBoostCreate", @error)
+
+    Local $bStatModelDllType
+    If VarGetType($statModel) == "DLLStruct" Then
+        $bStatModelDllType = "struct*"
+    Else
+        $bStatModelDllType = "ptr*"
+    EndIf
+
+    Local $bAlgorithmDllType
+    If VarGetType($algorithm) == "DLLStruct" Then
+        $bAlgorithmDllType = "struct*"
+    Else
+        $bAlgorithmDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBoostCreate", $bStatModelDllType, $statModel, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveBoostCreate", @error)
 EndFunc   ;==>_cveBoostCreate
 
-Func _cveBoostRelease(ByRef $model, ByRef $sharedPtr)
+Func _cveBoostRelease($model, $sharedPtr)
     ; CVAPI(void) cveBoostRelease(cv::ml::Boost** model, cv::Ptr<cv::ml::Boost>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBoostRelease", "ptr*", $model, "ptr*", $sharedPtr), "cveBoostRelease", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBoostRelease", $bModelDllType, $model, $bSharedPtrDllType, $sharedPtr), "cveBoostRelease", @error)
 EndFunc   ;==>_cveBoostRelease
 
-Func _cveLogisticRegressionCreate(ByRef $statModel, ByRef $algorithm, ByRef $sharedPtr)
+Func _cveLogisticRegressionCreate($statModel, $algorithm, $sharedPtr)
     ; CVAPI(cv::ml::LogisticRegression*) cveLogisticRegressionCreate(cv::ml::StatModel** statModel, cv::Algorithm** algorithm, cv::Ptr<cv::ml::LogisticRegression>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveLogisticRegressionCreate", "ptr*", $statModel, "ptr*", $algorithm, "ptr*", $sharedPtr), "cveLogisticRegressionCreate", @error)
+
+    Local $bStatModelDllType
+    If VarGetType($statModel) == "DLLStruct" Then
+        $bStatModelDllType = "struct*"
+    Else
+        $bStatModelDllType = "ptr*"
+    EndIf
+
+    Local $bAlgorithmDllType
+    If VarGetType($algorithm) == "DLLStruct" Then
+        $bAlgorithmDllType = "struct*"
+    Else
+        $bAlgorithmDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveLogisticRegressionCreate", $bStatModelDllType, $statModel, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveLogisticRegressionCreate", @error)
 EndFunc   ;==>_cveLogisticRegressionCreate
 
-Func _cveLogisticRegressionRelease(ByRef $model, ByRef $sharedPtr)
+Func _cveLogisticRegressionRelease($model, $sharedPtr)
     ; CVAPI(void) cveLogisticRegressionRelease(cv::ml::LogisticRegression** model, cv::Ptr<cv::ml::LogisticRegression>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLogisticRegressionRelease", "ptr*", $model, "ptr*", $sharedPtr), "cveLogisticRegressionRelease", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLogisticRegressionRelease", $bModelDllType, $model, $bSharedPtrDllType, $sharedPtr), "cveLogisticRegressionRelease", @error)
 EndFunc   ;==>_cveLogisticRegressionRelease
 
-Func _cveSVMSGDDefaultCreate(ByRef $model, ByRef $algorithm, ByRef $sharedPtr)
+Func _cveSVMSGDDefaultCreate($model, $algorithm, $sharedPtr)
     ; CVAPI(cv::ml::SVMSGD*) cveSVMSGDDefaultCreate(cv::ml::StatModel** model, cv::Algorithm** algorithm, cv::Ptr<cv::ml::SVMSGD>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSVMSGDDefaultCreate", "ptr*", $model, "ptr*", $algorithm, "ptr*", $sharedPtr), "cveSVMSGDDefaultCreate", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr*"
+    EndIf
+
+    Local $bAlgorithmDllType
+    If VarGetType($algorithm) == "DLLStruct" Then
+        $bAlgorithmDllType = "struct*"
+    Else
+        $bAlgorithmDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSVMSGDDefaultCreate", $bModelDllType, $model, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveSVMSGDDefaultCreate", @error)
 EndFunc   ;==>_cveSVMSGDDefaultCreate
 
-Func _cveSVMSGDRelease(ByRef $model, ByRef $sharedPtr)
+Func _cveSVMSGDRelease($model, $sharedPtr)
     ; CVAPI(void) cveSVMSGDRelease(cv::ml::SVMSGD** model, cv::Ptr<cv::ml::SVMSGD>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSVMSGDRelease", "ptr*", $model, "ptr*", $sharedPtr), "cveSVMSGDRelease", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSVMSGDRelease", $bModelDllType, $model, $bSharedPtrDllType, $sharedPtr), "cveSVMSGDRelease", @error)
 EndFunc   ;==>_cveSVMSGDRelease
 
-Func _cveSVMSGDSetOptimalParameters(ByRef $model, $svmsgdType, $marginType)
+Func _cveSVMSGDSetOptimalParameters($model, $svmsgdType, $marginType)
     ; CVAPI(void) cveSVMSGDSetOptimalParameters(cv::ml::SVMSGD* model, int svmsgdType, int marginType);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSVMSGDSetOptimalParameters", "ptr", $model, "int", $svmsgdType, "int", $marginType), "cveSVMSGDSetOptimalParameters", @error)
 EndFunc   ;==>_cveSVMSGDSetOptimalParameters

@@ -11,7 +11,7 @@ Func _VectorOfTriangle2DFCreateSize($size)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfTriangle2DFCreateSize", "int", $size), "VectorOfTriangle2DFCreateSize", @error)
 EndFunc   ;==>_VectorOfTriangle2DFCreateSize
 
-Func _VectorOfTriangle2DFGetSize(ByRef $v)
+Func _VectorOfTriangle2DFGetSize($v)
     ; CVAPI(int) VectorOfTriangle2DFGetSize(std::vector< cv::Vec6f >* v);
 
     Local $vecV, $iArrVSize
@@ -37,7 +37,7 @@ Func _VectorOfTriangle2DFGetSize(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfTriangle2DFGetSize
 
-Func _VectorOfTriangle2DFPush(ByRef $v, ByRef $value)
+Func _VectorOfTriangle2DFPush($v, $value)
     ; CVAPI(void) VectorOfTriangle2DFPush(std::vector< cv::Vec6f >* v, cv::Vec6f* value);
 
     Local $vecV, $iArrVSize
@@ -61,7 +61,7 @@ Func _VectorOfTriangle2DFPush(ByRef $v, ByRef $value)
     EndIf
 EndFunc   ;==>_VectorOfTriangle2DFPush
 
-Func _VectorOfTriangle2DFPushMulti(ByRef $v, ByRef $values, $count)
+Func _VectorOfTriangle2DFPushMulti($v, $values, $count)
     ; CVAPI(void) VectorOfTriangle2DFPushMulti(std::vector< cv::Vec6f >* v, cv::Vec6f* values, int count);
 
     Local $vecV, $iArrVSize
@@ -85,7 +85,7 @@ Func _VectorOfTriangle2DFPushMulti(ByRef $v, ByRef $values, $count)
     EndIf
 EndFunc   ;==>_VectorOfTriangle2DFPushMulti
 
-Func _VectorOfTriangle2DFPushVector(ByRef $v, ByRef $other)
+Func _VectorOfTriangle2DFPushVector($v, $other)
     ; CVAPI(void) VectorOfTriangle2DFPushVector(std::vector< cv::Vec6f >* v, std::vector< cv::Vec6f >* other);
 
     Local $vecV, $iArrVSize
@@ -127,7 +127,7 @@ Func _VectorOfTriangle2DFPushVector(ByRef $v, ByRef $other)
     EndIf
 EndFunc   ;==>_VectorOfTriangle2DFPushVector
 
-Func _VectorOfTriangle2DFClear(ByRef $v)
+Func _VectorOfTriangle2DFClear($v)
     ; CVAPI(void) VectorOfTriangle2DFClear(std::vector< cv::Vec6f >* v);
 
     Local $vecV, $iArrVSize
@@ -151,7 +151,7 @@ Func _VectorOfTriangle2DFClear(ByRef $v)
     EndIf
 EndFunc   ;==>_VectorOfTriangle2DFClear
 
-Func _VectorOfTriangle2DFRelease(ByRef $v)
+Func _VectorOfTriangle2DFRelease($v)
     ; CVAPI(void) VectorOfTriangle2DFRelease(std::vector< cv::Vec6f >** v);
 
     Local $vecV, $iArrVSize
@@ -168,14 +168,21 @@ Func _VectorOfTriangle2DFRelease(ByRef $v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTriangle2DFRelease", "ptr*", $vecV), "VectorOfTriangle2DFRelease", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTriangle2DFRelease", $bVDllType, $vecV), "VectorOfTriangle2DFRelease", @error)
 
     If $bVIsArray Then
         _VectorOfTriangle2DFRelease($vecV)
     EndIf
 EndFunc   ;==>_VectorOfTriangle2DFRelease
 
-Func _VectorOfTriangle2DFCopyData(ByRef $v, ByRef $data)
+Func _VectorOfTriangle2DFCopyData($v, $data)
     ; CVAPI(void) VectorOfTriangle2DFCopyData(std::vector< cv::Vec6f >* v, cv::Vec6f* data);
 
     Local $vecV, $iArrVSize
@@ -199,7 +206,7 @@ Func _VectorOfTriangle2DFCopyData(ByRef $v, ByRef $data)
     EndIf
 EndFunc   ;==>_VectorOfTriangle2DFCopyData
 
-Func _VectorOfTriangle2DFGetStartAddress(ByRef $v)
+Func _VectorOfTriangle2DFGetStartAddress($v)
     ; CVAPI(cv::Vec6f*) VectorOfTriangle2DFGetStartAddress(std::vector< cv::Vec6f >* v);
 
     Local $vecV, $iArrVSize
@@ -225,7 +232,7 @@ Func _VectorOfTriangle2DFGetStartAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfTriangle2DFGetStartAddress
 
-Func _VectorOfTriangle2DFGetEndAddress(ByRef $v)
+Func _VectorOfTriangle2DFGetEndAddress($v)
     ; CVAPI(void*) VectorOfTriangle2DFGetEndAddress(std::vector< cv::Vec6f >* v);
 
     Local $vecV, $iArrVSize
@@ -251,7 +258,7 @@ Func _VectorOfTriangle2DFGetEndAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfTriangle2DFGetEndAddress
 
-Func _VectorOfTriangle2DFGetItem(ByRef $vec, $index, ByRef $element)
+Func _VectorOfTriangle2DFGetItem($vec, $index, $element)
     ; CVAPI(void) VectorOfTriangle2DFGetItem(std::vector<  cv::Vec6f >* vec, int index, cv::Vec6f* element);
 
     Local $vecVec, $iArrVecSize
@@ -275,7 +282,7 @@ Func _VectorOfTriangle2DFGetItem(ByRef $vec, $index, ByRef $element)
     EndIf
 EndFunc   ;==>_VectorOfTriangle2DFGetItem
 
-Func _VectorOfTriangle2DFGetItemPtr(ByRef $vec, $index, ByRef $element)
+Func _VectorOfTriangle2DFGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfTriangle2DFGetItemPtr(std::vector<  cv::Vec6f >* vec, int index, cv::Vec6f** element);
 
     Local $vecVec, $iArrVecSize
@@ -292,14 +299,21 @@ Func _VectorOfTriangle2DFGetItemPtr(ByRef $vec, $index, ByRef $element)
         $vecVec = $vec
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTriangle2DFGetItemPtr", "ptr", $vecVec, "int", $index, "ptr*", $element), "VectorOfTriangle2DFGetItemPtr", @error)
+    Local $bElementDllType
+    If VarGetType($element) == "DLLStruct" Then
+        $bElementDllType = "struct*"
+    Else
+        $bElementDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTriangle2DFGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $element), "VectorOfTriangle2DFGetItemPtr", @error)
 
     If $bVecIsArray Then
         _VectorOfTriangle2DFRelease($vecVec)
     EndIf
 EndFunc   ;==>_VectorOfTriangle2DFGetItemPtr
 
-Func _cveInputArrayFromVectorOfTriangle2DF(ByRef $vec)
+Func _cveInputArrayFromVectorOfTriangle2DF($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfTriangle2DF(std::vector< cv::Vec6f >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -325,7 +339,7 @@ Func _cveInputArrayFromVectorOfTriangle2DF(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveInputArrayFromVectorOfTriangle2DF
 
-Func _cveOutputArrayFromVectorOfTriangle2DF(ByRef $vec)
+Func _cveOutputArrayFromVectorOfTriangle2DF($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfTriangle2DF(std::vector< cv::Vec6f >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -351,7 +365,7 @@ Func _cveOutputArrayFromVectorOfTriangle2DF(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveOutputArrayFromVectorOfTriangle2DF
 
-Func _cveInputOutputArrayFromVectorOfTriangle2DF(ByRef $vec)
+Func _cveInputOutputArrayFromVectorOfTriangle2DF($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfTriangle2DF(std::vector< cv::Vec6f >* vec);
 
     Local $vecVec, $iArrVecSize

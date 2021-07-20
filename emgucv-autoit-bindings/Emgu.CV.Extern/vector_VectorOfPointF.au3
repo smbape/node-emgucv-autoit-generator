@@ -11,7 +11,7 @@ Func _VectorOfVectorOfPointFCreateSize($size)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfVectorOfPointFCreateSize", "int", $size), "VectorOfVectorOfPointFCreateSize", @error)
 EndFunc   ;==>_VectorOfVectorOfPointFCreateSize
 
-Func _VectorOfVectorOfPointFGetSize(ByRef $v)
+Func _VectorOfVectorOfPointFGetSize($v)
     ; CVAPI(int) VectorOfVectorOfPointFGetSize(std::vector< std::vector< cv::Point2f > >* v);
 
     Local $vecV, $iArrVSize
@@ -37,7 +37,7 @@ Func _VectorOfVectorOfPointFGetSize(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfVectorOfPointFGetSize
 
-Func _VectorOfVectorOfPointFPush(ByRef $v, ByRef $value)
+Func _VectorOfVectorOfPointFPush($v, $value)
     ; CVAPI(void) VectorOfVectorOfPointFPush(std::vector< std::vector< cv::Point2f > >* v, std::vector< cv::Point2f >* value);
 
     Local $vecV, $iArrVSize
@@ -79,7 +79,7 @@ Func _VectorOfVectorOfPointFPush(ByRef $v, ByRef $value)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfPointFPush
 
-Func _VectorOfVectorOfPointFPushVector(ByRef $v, ByRef $other)
+Func _VectorOfVectorOfPointFPushVector($v, $other)
     ; CVAPI(void) VectorOfVectorOfPointFPushVector(std::vector< std::vector< cv::Point2f > >* v, std::vector< std::vector< cv::Point2f > >* other);
 
     Local $vecV, $iArrVSize
@@ -121,7 +121,7 @@ Func _VectorOfVectorOfPointFPushVector(ByRef $v, ByRef $other)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfPointFPushVector
 
-Func _VectorOfVectorOfPointFGetStartAddress(ByRef $v)
+Func _VectorOfVectorOfPointFGetStartAddress($v)
     ; CVAPI(std::vector< cv::Point2f >*) VectorOfVectorOfPointFGetStartAddress(std::vector< std::vector< cv::Point2f > >* v);
 
     Local $vecV, $iArrVSize
@@ -147,7 +147,7 @@ Func _VectorOfVectorOfPointFGetStartAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfVectorOfPointFGetStartAddress
 
-Func _VectorOfVectorOfPointFGetEndAddress(ByRef $v)
+Func _VectorOfVectorOfPointFGetEndAddress($v)
     ; CVAPI(void*) VectorOfVectorOfPointFGetEndAddress(std::vector< std::vector< cv::Point2f > >* v);
 
     Local $vecV, $iArrVSize
@@ -173,7 +173,7 @@ Func _VectorOfVectorOfPointFGetEndAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfVectorOfPointFGetEndAddress
 
-Func _VectorOfVectorOfPointFClear(ByRef $v)
+Func _VectorOfVectorOfPointFClear($v)
     ; CVAPI(void) VectorOfVectorOfPointFClear(std::vector< std::vector< cv::Point2f > >* v);
 
     Local $vecV, $iArrVSize
@@ -197,7 +197,7 @@ Func _VectorOfVectorOfPointFClear(ByRef $v)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfPointFClear
 
-Func _VectorOfVectorOfPointFRelease(ByRef $v)
+Func _VectorOfVectorOfPointFRelease($v)
     ; CVAPI(void) VectorOfVectorOfPointFRelease(std::vector< std::vector< cv::Point2f > >** v);
 
     Local $vecV, $iArrVSize
@@ -214,14 +214,21 @@ Func _VectorOfVectorOfPointFRelease(ByRef $v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVectorOfPointFRelease", "ptr*", $vecV), "VectorOfVectorOfPointFRelease", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVectorOfPointFRelease", $bVDllType, $vecV), "VectorOfVectorOfPointFRelease", @error)
 
     If $bVIsArray Then
         _VectorOfVectorOfPointFRelease($vecV)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfPointFRelease
 
-Func _VectorOfVectorOfPointFCopyData(ByRef $v, ByRef $data)
+Func _VectorOfVectorOfPointFCopyData($v, $data)
     ; CVAPI(void) VectorOfVectorOfPointFCopyData(std::vector< std::vector< cv::Point2f > >* v, std::vector< cv::Point2f >* data);
 
     Local $vecV, $iArrVSize
@@ -263,7 +270,7 @@ Func _VectorOfVectorOfPointFCopyData(ByRef $v, ByRef $data)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfPointFCopyData
 
-Func _VectorOfVectorOfPointFGetItemPtr(ByRef $vec, $index, ByRef $element)
+Func _VectorOfVectorOfPointFGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfVectorOfPointFGetItemPtr(std::vector<  std::vector< cv::Point2f > >* vec, int index, std::vector< cv::Point2f >** element);
 
     Local $vecVec, $iArrVecSize
@@ -294,7 +301,14 @@ Func _VectorOfVectorOfPointFGetItemPtr(ByRef $vec, $index, ByRef $element)
         $vecElement = $element
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVectorOfPointFGetItemPtr", "ptr", $vecVec, "int", $index, "ptr*", $vecElement), "VectorOfVectorOfPointFGetItemPtr", @error)
+    Local $bElementDllType
+    If VarGetType($element) == "DLLStruct" Then
+        $bElementDllType = "struct*"
+    Else
+        $bElementDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVectorOfPointFGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $vecElement), "VectorOfVectorOfPointFGetItemPtr", @error)
 
     If $bElementIsArray Then
         _VectorOfPointFRelease($vecElement)
@@ -305,7 +319,7 @@ Func _VectorOfVectorOfPointFGetItemPtr(ByRef $vec, $index, ByRef $element)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfPointFGetItemPtr
 
-Func _cveInputArrayFromVectorOfVectorOfPointF(ByRef $vec)
+Func _cveInputArrayFromVectorOfVectorOfPointF($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfVectorOfPointF(std::vector< std::vector< cv::Point2f > >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -331,7 +345,7 @@ Func _cveInputArrayFromVectorOfVectorOfPointF(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveInputArrayFromVectorOfVectorOfPointF
 
-Func _cveOutputArrayFromVectorOfVectorOfPointF(ByRef $vec)
+Func _cveOutputArrayFromVectorOfVectorOfPointF($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfVectorOfPointF(std::vector< std::vector< cv::Point2f > >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -357,7 +371,7 @@ Func _cveOutputArrayFromVectorOfVectorOfPointF(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveOutputArrayFromVectorOfVectorOfPointF
 
-Func _cveInputOutputArrayFromVectorOfVectorOfPointF(ByRef $vec)
+Func _cveInputOutputArrayFromVectorOfVectorOfPointF($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfVectorOfPointF(std::vector< std::vector< cv::Point2f > >* vec);
 
     Local $vecVec, $iArrVecSize

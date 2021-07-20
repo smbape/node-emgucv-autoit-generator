@@ -1,49 +1,108 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveVideostabCaptureFrameSourceCreate(ByRef $capture, ByRef $frameSource)
+Func _cveVideostabCaptureFrameSourceCreate($capture, $frameSource)
     ; CVAPI(CaptureFrameSource*) cveVideostabCaptureFrameSourceCreate(cv::VideoCapture* capture, cv::videostab::IFrameSource** frameSource);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveVideostabCaptureFrameSourceCreate", "ptr", $capture, "ptr*", $frameSource), "cveVideostabCaptureFrameSourceCreate", @error)
+
+    Local $bFrameSourceDllType
+    If VarGetType($frameSource) == "DLLStruct" Then
+        $bFrameSourceDllType = "struct*"
+    Else
+        $bFrameSourceDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveVideostabCaptureFrameSourceCreate", "ptr", $capture, $bFrameSourceDllType, $frameSource), "cveVideostabCaptureFrameSourceCreate", @error)
 EndFunc   ;==>_cveVideostabCaptureFrameSourceCreate
 
-Func _cveVideostabCaptureFrameSourceRelease(ByRef $captureFrameSource)
+Func _cveVideostabCaptureFrameSourceRelease($captureFrameSource)
     ; CVAPI(void) cveVideostabCaptureFrameSourceRelease(CaptureFrameSource** captureFrameSource);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideostabCaptureFrameSourceRelease", "ptr*", $captureFrameSource), "cveVideostabCaptureFrameSourceRelease", @error)
+
+    Local $bCaptureFrameSourceDllType
+    If VarGetType($captureFrameSource) == "DLLStruct" Then
+        $bCaptureFrameSourceDllType = "struct*"
+    Else
+        $bCaptureFrameSourceDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideostabCaptureFrameSourceRelease", $bCaptureFrameSourceDllType, $captureFrameSource), "cveVideostabCaptureFrameSourceRelease", @error)
 EndFunc   ;==>_cveVideostabCaptureFrameSourceRelease
 
-Func _cveVideostabFrameSourceGetNextFrame(ByRef $frameSource, ByRef $nextFrame)
+Func _cveVideostabFrameSourceGetNextFrame($frameSource, $nextFrame)
     ; CVAPI(bool) cveVideostabFrameSourceGetNextFrame(cv::videostab::IFrameSource* frameSource, cv::Mat* nextFrame);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideostabFrameSourceGetNextFrame", "ptr", $frameSource, "ptr", $nextFrame), "cveVideostabFrameSourceGetNextFrame", @error)
 EndFunc   ;==>_cveVideostabFrameSourceGetNextFrame
 
-Func _cveStabilizerBaseSetMotionEstimator(ByRef $stabilizer, ByRef $motionEstimator)
+Func _cveStabilizerBaseSetMotionEstimator($stabilizer, $motionEstimator)
     ; CVAPI(void) cveStabilizerBaseSetMotionEstimator(cv::videostab::StabilizerBase* stabilizer, cv::videostab::ImageMotionEstimatorBase* motionEstimator);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStabilizerBaseSetMotionEstimator", "ptr", $stabilizer, "ptr", $motionEstimator), "cveStabilizerBaseSetMotionEstimator", @error)
 EndFunc   ;==>_cveStabilizerBaseSetMotionEstimator
 
-Func _cveOnePassStabilizerCreate(ByRef $baseFrameSource, ByRef $stabilizerBase, ByRef $frameSource)
+Func _cveOnePassStabilizerCreate($baseFrameSource, $stabilizerBase, $frameSource)
     ; CVAPI(cv::videostab::OnePassStabilizer*) cveOnePassStabilizerCreate(cv::videostab::IFrameSource* baseFrameSource, cv::videostab::StabilizerBase** stabilizerBase, cv::videostab::IFrameSource** frameSource);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOnePassStabilizerCreate", "ptr", $baseFrameSource, "ptr*", $stabilizerBase, "ptr*", $frameSource), "cveOnePassStabilizerCreate", @error)
+
+    Local $bStabilizerBaseDllType
+    If VarGetType($stabilizerBase) == "DLLStruct" Then
+        $bStabilizerBaseDllType = "struct*"
+    Else
+        $bStabilizerBaseDllType = "ptr*"
+    EndIf
+
+    Local $bFrameSourceDllType
+    If VarGetType($frameSource) == "DLLStruct" Then
+        $bFrameSourceDllType = "struct*"
+    Else
+        $bFrameSourceDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOnePassStabilizerCreate", "ptr", $baseFrameSource, $bStabilizerBaseDllType, $stabilizerBase, $bFrameSourceDllType, $frameSource), "cveOnePassStabilizerCreate", @error)
 EndFunc   ;==>_cveOnePassStabilizerCreate
 
-Func _cveOnePassStabilizerSetMotionFilter(ByRef $stabilizer, ByRef $motionFilter)
+Func _cveOnePassStabilizerSetMotionFilter($stabilizer, $motionFilter)
     ; CVAPI(void) cveOnePassStabilizerSetMotionFilter(cv::videostab::OnePassStabilizer* stabilizer, cv::videostab::MotionFilterBase* motionFilter);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveOnePassStabilizerSetMotionFilter", "ptr", $stabilizer, "ptr", $motionFilter), "cveOnePassStabilizerSetMotionFilter", @error)
 EndFunc   ;==>_cveOnePassStabilizerSetMotionFilter
 
-Func _cveOnePassStabilizerRelease(ByRef $stabilizer)
+Func _cveOnePassStabilizerRelease($stabilizer)
     ; CVAPI(void) cveOnePassStabilizerRelease(cv::videostab::OnePassStabilizer** stabilizer);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveOnePassStabilizerRelease", "ptr*", $stabilizer), "cveOnePassStabilizerRelease", @error)
+
+    Local $bStabilizerDllType
+    If VarGetType($stabilizer) == "DLLStruct" Then
+        $bStabilizerDllType = "struct*"
+    Else
+        $bStabilizerDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveOnePassStabilizerRelease", $bStabilizerDllType, $stabilizer), "cveOnePassStabilizerRelease", @error)
 EndFunc   ;==>_cveOnePassStabilizerRelease
 
-Func _cveTwoPassStabilizerCreate(ByRef $baseFrameSource, ByRef $stabilizerBase, ByRef $frameSource)
+Func _cveTwoPassStabilizerCreate($baseFrameSource, $stabilizerBase, $frameSource)
     ; CVAPI(cv::videostab::TwoPassStabilizer*) cveTwoPassStabilizerCreate(cv::videostab::IFrameSource* baseFrameSource, cv::videostab::StabilizerBase** stabilizerBase, cv::videostab::IFrameSource** frameSource);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTwoPassStabilizerCreate", "ptr", $baseFrameSource, "ptr*", $stabilizerBase, "ptr*", $frameSource), "cveTwoPassStabilizerCreate", @error)
+
+    Local $bStabilizerBaseDllType
+    If VarGetType($stabilizerBase) == "DLLStruct" Then
+        $bStabilizerBaseDllType = "struct*"
+    Else
+        $bStabilizerBaseDllType = "ptr*"
+    EndIf
+
+    Local $bFrameSourceDllType
+    If VarGetType($frameSource) == "DLLStruct" Then
+        $bFrameSourceDllType = "struct*"
+    Else
+        $bFrameSourceDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTwoPassStabilizerCreate", "ptr", $baseFrameSource, $bStabilizerBaseDllType, $stabilizerBase, $bFrameSourceDllType, $frameSource), "cveTwoPassStabilizerCreate", @error)
 EndFunc   ;==>_cveTwoPassStabilizerCreate
 
-Func _cveTwoPassStabilizerRelease(ByRef $stabilizer)
+Func _cveTwoPassStabilizerRelease($stabilizer)
     ; CVAPI(void) cveTwoPassStabilizerRelease(cv::videostab::TwoPassStabilizer** stabilizer);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTwoPassStabilizerRelease", "ptr*", $stabilizer), "cveTwoPassStabilizerRelease", @error)
+
+    Local $bStabilizerDllType
+    If VarGetType($stabilizer) == "DLLStruct" Then
+        $bStabilizerDllType = "struct*"
+    Else
+        $bStabilizerDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTwoPassStabilizerRelease", $bStabilizerDllType, $stabilizer), "cveTwoPassStabilizerRelease", @error)
 EndFunc   ;==>_cveTwoPassStabilizerRelease
 
 Func _cveGaussianMotionFilterCreate($radius, $stdev)
@@ -51,12 +110,20 @@ Func _cveGaussianMotionFilterCreate($radius, $stdev)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveGaussianMotionFilterCreate", "int", $radius, "float", $stdev), "cveGaussianMotionFilterCreate", @error)
 EndFunc   ;==>_cveGaussianMotionFilterCreate
 
-Func _cveGaussianMotionFilterRelease(ByRef $filter)
+Func _cveGaussianMotionFilterRelease($filter)
     ; CVAPI(void) cveGaussianMotionFilterRelease(cv::videostab::GaussianMotionFilter** filter);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGaussianMotionFilterRelease", "ptr*", $filter), "cveGaussianMotionFilterRelease", @error)
+
+    Local $bFilterDllType
+    If VarGetType($filter) == "DLLStruct" Then
+        $bFilterDllType = "struct*"
+    Else
+        $bFilterDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGaussianMotionFilterRelease", $bFilterDllType, $filter), "cveGaussianMotionFilterRelease", @error)
 EndFunc   ;==>_cveGaussianMotionFilterRelease
 
-Func _cveCalcBlurriness(ByRef $frame)
+Func _cveCalcBlurriness($frame)
     ; CVAPI(float) cveCalcBlurriness(cv::Mat* frame);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveCalcBlurriness", "ptr", $frame), "cveCalcBlurriness", @error)
 EndFunc   ;==>_cveCalcBlurriness

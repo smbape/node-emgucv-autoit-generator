@@ -1,32 +1,68 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveArucoGetPredefinedDictionary($name, ByRef $sharedPtr)
+Func _cveArucoGetPredefinedDictionary($name, $sharedPtr)
     ; CVAPI(cv::aruco::Dictionary*) cveArucoGetPredefinedDictionary(int name, cv::Ptr<cv::aruco::Dictionary>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveArucoGetPredefinedDictionary", "int", $name, "ptr*", $sharedPtr), "cveArucoGetPredefinedDictionary", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveArucoGetPredefinedDictionary", "int", $name, $bSharedPtrDllType, $sharedPtr), "cveArucoGetPredefinedDictionary", @error)
 EndFunc   ;==>_cveArucoGetPredefinedDictionary
 
-Func _cveArucoDictionaryCreate1($nMarkers, $markerSize, ByRef $sharedPtr)
+Func _cveArucoDictionaryCreate1($nMarkers, $markerSize, $sharedPtr)
     ; CVAPI(cv::aruco::Dictionary*) cveArucoDictionaryCreate1(int nMarkers, int markerSize, cv::Ptr<cv::aruco::Dictionary>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveArucoDictionaryCreate1", "int", $nMarkers, "int", $markerSize, "ptr*", $sharedPtr), "cveArucoDictionaryCreate1", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveArucoDictionaryCreate1", "int", $nMarkers, "int", $markerSize, $bSharedPtrDllType, $sharedPtr), "cveArucoDictionaryCreate1", @error)
 EndFunc   ;==>_cveArucoDictionaryCreate1
 
-Func _cveArucoDictionaryCreate2($nMarkers, $markerSize, ByRef $baseDictionary, ByRef $sharedPtr)
+Func _cveArucoDictionaryCreate2($nMarkers, $markerSize, $baseDictionary, $sharedPtr)
     ; CVAPI(cv::aruco::Dictionary*) cveArucoDictionaryCreate2(int nMarkers, int markerSize, cv::Ptr<cv::aruco::Dictionary>* baseDictionary, cv::Ptr<cv::aruco::Dictionary>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveArucoDictionaryCreate2", "int", $nMarkers, "int", $markerSize, "ptr", $baseDictionary, "ptr*", $sharedPtr), "cveArucoDictionaryCreate2", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveArucoDictionaryCreate2", "int", $nMarkers, "int", $markerSize, "ptr", $baseDictionary, $bSharedPtrDllType, $sharedPtr), "cveArucoDictionaryCreate2", @error)
 EndFunc   ;==>_cveArucoDictionaryCreate2
 
-Func _cveArucoDictionaryRelease(ByRef $dict, ByRef $sharedPtr)
+Func _cveArucoDictionaryRelease($dict, $sharedPtr)
     ; CVAPI(void) cveArucoDictionaryRelease(cv::aruco::Dictionary** dict, cv::Ptr<cv::aruco::Dictionary>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDictionaryRelease", "ptr*", $dict, "ptr*", $sharedPtr), "cveArucoDictionaryRelease", @error)
+
+    Local $bDictDllType
+    If VarGetType($dict) == "DLLStruct" Then
+        $bDictDllType = "struct*"
+    Else
+        $bDictDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDictionaryRelease", $bDictDllType, $dict, $bSharedPtrDllType, $sharedPtr), "cveArucoDictionaryRelease", @error)
 EndFunc   ;==>_cveArucoDictionaryRelease
 
-Func _cveArucoDrawMarker(ByRef $dictionary, $id, $sidePixels, ByRef $img, $borderBits)
+Func _cveArucoDrawMarker($dictionary, $id, $sidePixels, $img, $borderBits)
     ; CVAPI(void) cveArucoDrawMarker(cv::aruco::Dictionary* dictionary, int id, int sidePixels, cv::_OutputArray* img, int borderBits);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawMarker", "ptr", $dictionary, "int", $id, "int", $sidePixels, "ptr", $img, "int", $borderBits), "cveArucoDrawMarker", @error)
 EndFunc   ;==>_cveArucoDrawMarker
 
-Func _cveArucoDrawMarkerMat(ByRef $dictionary, $id, $sidePixels, ByRef $matImg, $borderBits)
+Func _cveArucoDrawMarkerMat($dictionary, $id, $sidePixels, $matImg, $borderBits)
     ; cveArucoDrawMarker using cv::Mat instead of _*Array
 
     Local $oArrImg, $vectorOfMatImg, $iArrImgSize
@@ -54,12 +90,12 @@ Func _cveArucoDrawMarkerMat(ByRef $dictionary, $id, $sidePixels, ByRef $matImg, 
     _cveOutputArrayRelease($oArrImg)
 EndFunc   ;==>_cveArucoDrawMarkerMat
 
-Func _cveArucoDrawAxis(ByRef $image, ByRef $cameraMatrix, ByRef $distCoeffs, ByRef $rvec, ByRef $tvec, $length)
+Func _cveArucoDrawAxis($image, $cameraMatrix, $distCoeffs, $rvec, $tvec, $length)
     ; CVAPI(void) cveArucoDrawAxis(cv::_InputOutputArray* image, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_InputArray* rvec, cv::_InputArray* tvec, float length);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawAxis", "ptr", $image, "ptr", $cameraMatrix, "ptr", $distCoeffs, "ptr", $rvec, "ptr", $tvec, "float", $length), "cveArucoDrawAxis", @error)
 EndFunc   ;==>_cveArucoDrawAxis
 
-Func _cveArucoDrawAxisMat(ByRef $matImage, ByRef $matCameraMatrix, ByRef $matDistCoeffs, ByRef $matRvec, ByRef $matTvec, $length)
+Func _cveArucoDrawAxisMat($matImage, $matCameraMatrix, $matDistCoeffs, $matRvec, $matTvec, $length)
     ; cveArucoDrawAxis using cv::Mat instead of _*Array
 
     Local $ioArrImage, $vectorOfMatImage, $iArrImageSize
@@ -175,12 +211,12 @@ Func _cveArucoDrawAxisMat(ByRef $matImage, ByRef $matCameraMatrix, ByRef $matDis
     _cveInputOutputArrayRelease($ioArrImage)
 EndFunc   ;==>_cveArucoDrawAxisMat
 
-Func _cveArucoDetectMarkers(ByRef $image, ByRef $dictionary, ByRef $corners, ByRef $ids, ByRef $parameters, ByRef $rejectedImgPoints)
+Func _cveArucoDetectMarkers($image, $dictionary, $corners, $ids, $parameters, $rejectedImgPoints)
     ; CVAPI(void) cveArucoDetectMarkers(cv::_InputArray* image, cv::aruco::Dictionary* dictionary, cv::_OutputArray* corners, cv::_OutputArray* ids, cv::aruco::DetectorParameters* parameters, cv::_OutputArray* rejectedImgPoints);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDetectMarkers", "ptr", $image, "ptr", $dictionary, "ptr", $corners, "ptr", $ids, "ptr", $parameters, "ptr", $rejectedImgPoints), "cveArucoDetectMarkers", @error)
 EndFunc   ;==>_cveArucoDetectMarkers
 
-Func _cveArucoDetectMarkersMat(ByRef $matImage, ByRef $dictionary, ByRef $matCorners, ByRef $matIds, ByRef $parameters, ByRef $matRejectedImgPoints)
+Func _cveArucoDetectMarkersMat($matImage, $dictionary, $matCorners, $matIds, $parameters, $matRejectedImgPoints)
     ; cveArucoDetectMarkers using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -274,12 +310,12 @@ Func _cveArucoDetectMarkersMat(ByRef $matImage, ByRef $dictionary, ByRef $matCor
     _cveInputArrayRelease($iArrImage)
 EndFunc   ;==>_cveArucoDetectMarkersMat
 
-Func _cveArucoEstimatePoseSingleMarkers(ByRef $corners, $markerLength, ByRef $cameraMatrix, ByRef $distCoeffs, ByRef $rvecs, ByRef $tvecs)
+Func _cveArucoEstimatePoseSingleMarkers($corners, $markerLength, $cameraMatrix, $distCoeffs, $rvecs, $tvecs)
     ; CVAPI(void) cveArucoEstimatePoseSingleMarkers(cv::_InputArray* corners, float markerLength, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_OutputArray* rvecs, cv::_OutputArray* tvecs);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoEstimatePoseSingleMarkers", "ptr", $corners, "float", $markerLength, "ptr", $cameraMatrix, "ptr", $distCoeffs, "ptr", $rvecs, "ptr", $tvecs), "cveArucoEstimatePoseSingleMarkers", @error)
 EndFunc   ;==>_cveArucoEstimatePoseSingleMarkers
 
-Func _cveArucoEstimatePoseSingleMarkersMat(ByRef $matCorners, $markerLength, ByRef $matCameraMatrix, ByRef $matDistCoeffs, ByRef $matRvecs, ByRef $matTvecs)
+Func _cveArucoEstimatePoseSingleMarkersMat($matCorners, $markerLength, $matCameraMatrix, $matDistCoeffs, $matRvecs, $matTvecs)
     ; cveArucoEstimatePoseSingleMarkers using cv::Mat instead of _*Array
 
     Local $iArrCorners, $vectorOfMatCorners, $iArrCornersSize
@@ -395,17 +431,31 @@ Func _cveArucoEstimatePoseSingleMarkersMat(ByRef $matCorners, $markerLength, ByR
     _cveInputArrayRelease($iArrCorners)
 EndFunc   ;==>_cveArucoEstimatePoseSingleMarkersMat
 
-Func _cveArucoGridBoardCreate($markersX, $markersY, $markerLength, $markerSeparation, ByRef $dictionary, $firstMarker, ByRef $boardPtr, ByRef $sharedPtr)
+Func _cveArucoGridBoardCreate($markersX, $markersY, $markerLength, $markerSeparation, $dictionary, $firstMarker, $boardPtr, $sharedPtr)
     ; CVAPI(cv::aruco::GridBoard*) cveArucoGridBoardCreate(int markersX, int markersY, float markerLength, float markerSeparation, cv::aruco::Dictionary* dictionary, int firstMarker, cv::aruco::Board** boardPtr, cv::Ptr<cv::aruco::GridBoard>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveArucoGridBoardCreate", "int", $markersX, "int", $markersY, "float", $markerLength, "float", $markerSeparation, "ptr", $dictionary, "int", $firstMarker, "ptr*", $boardPtr, "ptr*", $sharedPtr), "cveArucoGridBoardCreate", @error)
+
+    Local $bBoardPtrDllType
+    If VarGetType($boardPtr) == "DLLStruct" Then
+        $bBoardPtrDllType = "struct*"
+    Else
+        $bBoardPtrDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveArucoGridBoardCreate", "int", $markersX, "int", $markersY, "float", $markerLength, "float", $markerSeparation, "ptr", $dictionary, "int", $firstMarker, $bBoardPtrDllType, $boardPtr, $bSharedPtrDllType, $sharedPtr), "cveArucoGridBoardCreate", @error)
 EndFunc   ;==>_cveArucoGridBoardCreate
 
-Func _cveArucoGridBoardDraw(ByRef $gridBoard, ByRef $outSize, ByRef $img, $marginSize, $borderBits)
+Func _cveArucoGridBoardDraw($gridBoard, $outSize, $img, $marginSize, $borderBits)
     ; CVAPI(void) cveArucoGridBoardDraw(cv::aruco::GridBoard* gridBoard, CvSize* outSize, cv::_OutputArray* img, int marginSize, int borderBits);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoGridBoardDraw", "ptr", $gridBoard, "struct*", $outSize, "ptr", $img, "int", $marginSize, "int", $borderBits), "cveArucoGridBoardDraw", @error)
 EndFunc   ;==>_cveArucoGridBoardDraw
 
-Func _cveArucoGridBoardDrawMat(ByRef $gridBoard, ByRef $outSize, ByRef $matImg, $marginSize, $borderBits)
+Func _cveArucoGridBoardDrawMat($gridBoard, $outSize, $matImg, $marginSize, $borderBits)
     ; cveArucoGridBoardDraw using cv::Mat instead of _*Array
 
     Local $oArrImg, $vectorOfMatImg, $iArrImgSize
@@ -433,22 +483,51 @@ Func _cveArucoGridBoardDrawMat(ByRef $gridBoard, ByRef $outSize, ByRef $matImg, 
     _cveOutputArrayRelease($oArrImg)
 EndFunc   ;==>_cveArucoGridBoardDrawMat
 
-Func _cveArucoGridBoardRelease(ByRef $gridBoard, ByRef $sharedPtr)
+Func _cveArucoGridBoardRelease($gridBoard, $sharedPtr)
     ; CVAPI(void) cveArucoGridBoardRelease(cv::aruco::GridBoard** gridBoard, cv::Ptr<cv::aruco::GridBoard>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoGridBoardRelease", "ptr*", $gridBoard, "ptr*", $sharedPtr), "cveArucoGridBoardRelease", @error)
+
+    Local $bGridBoardDllType
+    If VarGetType($gridBoard) == "DLLStruct" Then
+        $bGridBoardDllType = "struct*"
+    Else
+        $bGridBoardDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoGridBoardRelease", $bGridBoardDllType, $gridBoard, $bSharedPtrDllType, $sharedPtr), "cveArucoGridBoardRelease", @error)
 EndFunc   ;==>_cveArucoGridBoardRelease
 
-Func _cveCharucoBoardCreate($squaresX, $squaresY, $squareLength, $markerLength, ByRef $dictionary, ByRef $boardPtr, ByRef $sharedPtr)
+Func _cveCharucoBoardCreate($squaresX, $squaresY, $squareLength, $markerLength, $dictionary, $boardPtr, $sharedPtr)
     ; CVAPI(cv::aruco::CharucoBoard*) cveCharucoBoardCreate(int squaresX, int squaresY, float squareLength, float markerLength, cv::aruco::Dictionary* dictionary, cv::aruco::Board** boardPtr, cv::Ptr<cv::aruco::CharucoBoard>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCharucoBoardCreate", "int", $squaresX, "int", $squaresY, "float", $squareLength, "float", $markerLength, "ptr", $dictionary, "ptr*", $boardPtr, "ptr*", $sharedPtr), "cveCharucoBoardCreate", @error)
+
+    Local $bBoardPtrDllType
+    If VarGetType($boardPtr) == "DLLStruct" Then
+        $bBoardPtrDllType = "struct*"
+    Else
+        $bBoardPtrDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCharucoBoardCreate", "int", $squaresX, "int", $squaresY, "float", $squareLength, "float", $markerLength, "ptr", $dictionary, $bBoardPtrDllType, $boardPtr, $bSharedPtrDllType, $sharedPtr), "cveCharucoBoardCreate", @error)
 EndFunc   ;==>_cveCharucoBoardCreate
 
-Func _cveCharucoBoardDraw(ByRef $charucoBoard, ByRef $outSize, ByRef $img, $marginSize, $borderBits)
+Func _cveCharucoBoardDraw($charucoBoard, $outSize, $img, $marginSize, $borderBits)
     ; CVAPI(void) cveCharucoBoardDraw(cv::aruco::CharucoBoard* charucoBoard, CvSize* outSize, cv::_OutputArray* img, int marginSize, int borderBits);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCharucoBoardDraw", "ptr", $charucoBoard, "struct*", $outSize, "ptr", $img, "int", $marginSize, "int", $borderBits), "cveCharucoBoardDraw", @error)
 EndFunc   ;==>_cveCharucoBoardDraw
 
-Func _cveCharucoBoardDrawMat(ByRef $charucoBoard, ByRef $outSize, ByRef $matImg, $marginSize, $borderBits)
+Func _cveCharucoBoardDrawMat($charucoBoard, $outSize, $matImg, $marginSize, $borderBits)
     ; cveCharucoBoardDraw using cv::Mat instead of _*Array
 
     Local $oArrImg, $vectorOfMatImg, $iArrImgSize
@@ -476,17 +555,32 @@ Func _cveCharucoBoardDrawMat(ByRef $charucoBoard, ByRef $outSize, ByRef $matImg,
     _cveOutputArrayRelease($oArrImg)
 EndFunc   ;==>_cveCharucoBoardDrawMat
 
-Func _cveCharucoBoardRelease(ByRef $charucoBoard, ByRef $sharedPtr)
+Func _cveCharucoBoardRelease($charucoBoard, $sharedPtr)
     ; CVAPI(void) cveCharucoBoardRelease(cv::aruco::CharucoBoard** charucoBoard, cv::Ptr<cv::aruco::CharucoBoard>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCharucoBoardRelease", "ptr*", $charucoBoard, "ptr*", $sharedPtr), "cveCharucoBoardRelease", @error)
+
+    Local $bCharucoBoardDllType
+    If VarGetType($charucoBoard) == "DLLStruct" Then
+        $bCharucoBoardDllType = "struct*"
+    Else
+        $bCharucoBoardDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCharucoBoardRelease", $bCharucoBoardDllType, $charucoBoard, $bSharedPtrDllType, $sharedPtr), "cveCharucoBoardRelease", @error)
 EndFunc   ;==>_cveCharucoBoardRelease
 
-Func _cveArucoRefineDetectedMarkers(ByRef $image, ByRef $board, ByRef $detectedCorners, ByRef $detectedIds, ByRef $rejectedCorners, ByRef $cameraMatrix, ByRef $distCoeffs, $minRepDistance, $errorCorrectionRate, $checkAllOrders, ByRef $recoveredIdxs, ByRef $parameters)
+Func _cveArucoRefineDetectedMarkers($image, $board, $detectedCorners, $detectedIds, $rejectedCorners, $cameraMatrix, $distCoeffs, $minRepDistance, $errorCorrectionRate, $checkAllOrders, $recoveredIdxs, $parameters)
     ; CVAPI(void) cveArucoRefineDetectedMarkers(cv::_InputArray* image, cv::aruco::Board* board, cv::_InputOutputArray* detectedCorners, cv::_InputOutputArray* detectedIds, cv::_InputOutputArray* rejectedCorners, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, float minRepDistance, float errorCorrectionRate, bool checkAllOrders, cv::_OutputArray* recoveredIdxs, cv::aruco::DetectorParameters* parameters);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoRefineDetectedMarkers", "ptr", $image, "ptr", $board, "ptr", $detectedCorners, "ptr", $detectedIds, "ptr", $rejectedCorners, "ptr", $cameraMatrix, "ptr", $distCoeffs, "float", $minRepDistance, "float", $errorCorrectionRate, "boolean", $checkAllOrders, "ptr", $recoveredIdxs, "ptr", $parameters), "cveArucoRefineDetectedMarkers", @error)
 EndFunc   ;==>_cveArucoRefineDetectedMarkers
 
-Func _cveArucoRefineDetectedMarkersMat(ByRef $matImage, ByRef $board, ByRef $matDetectedCorners, ByRef $matDetectedIds, ByRef $matRejectedCorners, ByRef $matCameraMatrix, ByRef $matDistCoeffs, $minRepDistance, $errorCorrectionRate, $checkAllOrders, ByRef $matRecoveredIdxs, ByRef $parameters)
+Func _cveArucoRefineDetectedMarkersMat($matImage, $board, $matDetectedCorners, $matDetectedIds, $matRejectedCorners, $matCameraMatrix, $matDistCoeffs, $minRepDistance, $errorCorrectionRate, $checkAllOrders, $matRecoveredIdxs, $parameters)
     ; cveArucoRefineDetectedMarkers using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -646,12 +740,12 @@ Func _cveArucoRefineDetectedMarkersMat(ByRef $matImage, ByRef $board, ByRef $mat
     _cveInputArrayRelease($iArrImage)
 EndFunc   ;==>_cveArucoRefineDetectedMarkersMat
 
-Func _cveArucoDrawDetectedMarkers(ByRef $image, ByRef $corners, ByRef $ids, ByRef $borderColor)
+Func _cveArucoDrawDetectedMarkers($image, $corners, $ids, $borderColor)
     ; CVAPI(void) cveArucoDrawDetectedMarkers(cv::_InputOutputArray* image, cv::_InputArray* corners, cv::_InputArray* ids, CvScalar* borderColor);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawDetectedMarkers", "ptr", $image, "ptr", $corners, "ptr", $ids, "struct*", $borderColor), "cveArucoDrawDetectedMarkers", @error)
 EndFunc   ;==>_cveArucoDrawDetectedMarkers
 
-Func _cveArucoDrawDetectedMarkersMat(ByRef $matImage, ByRef $matCorners, ByRef $matIds, ByRef $borderColor)
+Func _cveArucoDrawDetectedMarkersMat($matImage, $matCorners, $matIds, $borderColor)
     ; cveArucoDrawDetectedMarkers using cv::Mat instead of _*Array
 
     Local $ioArrImage, $vectorOfMatImage, $iArrImageSize
@@ -723,12 +817,12 @@ Func _cveArucoDrawDetectedMarkersMat(ByRef $matImage, ByRef $matCorners, ByRef $
     _cveInputOutputArrayRelease($ioArrImage)
 EndFunc   ;==>_cveArucoDrawDetectedMarkersMat
 
-Func _cveArucoCalibrateCameraAruco(ByRef $corners, ByRef $ids, ByRef $counter, ByRef $board, ByRef $imageSize, ByRef $cameraMatrix, ByRef $distCoeffs, ByRef $rvecs, ByRef $tvecs, ByRef $stdDeviationsIntrinsics, ByRef $stdDeviationsExtrinsics, ByRef $perViewErrors, $flags, ByRef $criteria)
+Func _cveArucoCalibrateCameraAruco($corners, $ids, $counter, $board, $imageSize, $cameraMatrix, $distCoeffs, $rvecs, $tvecs, $stdDeviationsIntrinsics, $stdDeviationsExtrinsics, $perViewErrors, $flags, $criteria)
     ; CVAPI(double) cveArucoCalibrateCameraAruco(cv::_InputArray* corners, cv::_InputArray* ids, cv::_InputArray* counter, cv::aruco::Board* board, CvSize* imageSize, cv::_InputOutputArray* cameraMatrix, cv::_InputOutputArray* distCoeffs, cv::_OutputArray* rvecs, cv::_OutputArray* tvecs, cv::_OutputArray* stdDeviationsIntrinsics, cv::_OutputArray* stdDeviationsExtrinsics, cv::_OutputArray* perViewErrors, int flags, CvTermCriteria* criteria);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveArucoCalibrateCameraAruco", "ptr", $corners, "ptr", $ids, "ptr", $counter, "ptr", $board, "struct*", $imageSize, "ptr", $cameraMatrix, "ptr", $distCoeffs, "ptr", $rvecs, "ptr", $tvecs, "ptr", $stdDeviationsIntrinsics, "ptr", $stdDeviationsExtrinsics, "ptr", $perViewErrors, "int", $flags, "struct*", $criteria), "cveArucoCalibrateCameraAruco", @error)
 EndFunc   ;==>_cveArucoCalibrateCameraAruco
 
-Func _cveArucoCalibrateCameraArucoMat(ByRef $matCorners, ByRef $matIds, ByRef $matCounter, ByRef $board, ByRef $imageSize, ByRef $matCameraMatrix, ByRef $matDistCoeffs, ByRef $matRvecs, ByRef $matTvecs, ByRef $matStdDeviationsIntrinsics, ByRef $matStdDeviationsExtrinsics, ByRef $matPerViewErrors, $flags, ByRef $criteria)
+Func _cveArucoCalibrateCameraArucoMat($matCorners, $matIds, $matCounter, $board, $imageSize, $matCameraMatrix, $matDistCoeffs, $matRvecs, $matTvecs, $matStdDeviationsIntrinsics, $matStdDeviationsExtrinsics, $matPerViewErrors, $flags, $criteria)
     ; cveArucoCalibrateCameraAruco using cv::Mat instead of _*Array
 
     Local $iArrCorners, $vectorOfMatCorners, $iArrCornersSize
@@ -956,12 +1050,12 @@ Func _cveArucoCalibrateCameraArucoMat(ByRef $matCorners, ByRef $matIds, ByRef $m
     Return $retval
 EndFunc   ;==>_cveArucoCalibrateCameraArucoMat
 
-Func _cveArucoCalibrateCameraCharuco(ByRef $charucoCorners, ByRef $charucoIds, ByRef $board, ByRef $imageSize, ByRef $cameraMatrix, ByRef $distCoeffs, ByRef $rvecs, ByRef $tvecs, ByRef $stdDeviationsIntrinsics, ByRef $stdDeviationsExtrinsics, ByRef $perViewErrors, $flags, ByRef $criteria)
+Func _cveArucoCalibrateCameraCharuco($charucoCorners, $charucoIds, $board, $imageSize, $cameraMatrix, $distCoeffs, $rvecs, $tvecs, $stdDeviationsIntrinsics, $stdDeviationsExtrinsics, $perViewErrors, $flags, $criteria)
     ; CVAPI(double) cveArucoCalibrateCameraCharuco(cv::_InputArray* charucoCorners, cv::_InputArray* charucoIds, cv::aruco::CharucoBoard* board, CvSize* imageSize, cv::_InputOutputArray* cameraMatrix, cv::_InputOutputArray* distCoeffs, cv::_OutputArray* rvecs, cv::_OutputArray* tvecs, cv::_OutputArray* stdDeviationsIntrinsics, cv::_OutputArray* stdDeviationsExtrinsics, cv::_OutputArray* perViewErrors, int flags, CvTermCriteria* criteria);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveArucoCalibrateCameraCharuco", "ptr", $charucoCorners, "ptr", $charucoIds, "ptr", $board, "struct*", $imageSize, "ptr", $cameraMatrix, "ptr", $distCoeffs, "ptr", $rvecs, "ptr", $tvecs, "ptr", $stdDeviationsIntrinsics, "ptr", $stdDeviationsExtrinsics, "ptr", $perViewErrors, "int", $flags, "struct*", $criteria), "cveArucoCalibrateCameraCharuco", @error)
 EndFunc   ;==>_cveArucoCalibrateCameraCharuco
 
-Func _cveArucoCalibrateCameraCharucoMat(ByRef $matCharucoCorners, ByRef $matCharucoIds, ByRef $board, ByRef $imageSize, ByRef $matCameraMatrix, ByRef $matDistCoeffs, ByRef $matRvecs, ByRef $matTvecs, ByRef $matStdDeviationsIntrinsics, ByRef $matStdDeviationsExtrinsics, ByRef $matPerViewErrors, $flags, ByRef $criteria)
+Func _cveArucoCalibrateCameraCharucoMat($matCharucoCorners, $matCharucoIds, $board, $imageSize, $matCameraMatrix, $matDistCoeffs, $matRvecs, $matTvecs, $matStdDeviationsIntrinsics, $matStdDeviationsExtrinsics, $matPerViewErrors, $flags, $criteria)
     ; cveArucoCalibrateCameraCharuco using cv::Mat instead of _*Array
 
     Local $iArrCharucoCorners, $vectorOfMatCharucoCorners, $iArrCharucoCornersSize
@@ -1167,17 +1261,17 @@ Func _cveArucoCalibrateCameraCharucoMat(ByRef $matCharucoCorners, ByRef $matChar
     Return $retval
 EndFunc   ;==>_cveArucoCalibrateCameraCharucoMat
 
-Func _cveArucoDetectorParametersGetDefault(ByRef $parameters)
+Func _cveArucoDetectorParametersGetDefault($parameters)
     ; CVAPI(void) cveArucoDetectorParametersGetDefault(cv::aruco::DetectorParameters* parameters);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDetectorParametersGetDefault", "ptr", $parameters), "cveArucoDetectorParametersGetDefault", @error)
 EndFunc   ;==>_cveArucoDetectorParametersGetDefault
 
-Func _cveArucoInterpolateCornersCharuco(ByRef $markerCorners, ByRef $markerIds, ByRef $image, ByRef $board, ByRef $charucoCorners, ByRef $charucoIds, ByRef $cameraMatrix, ByRef $distCoeffs, $minMarkers)
+Func _cveArucoInterpolateCornersCharuco($markerCorners, $markerIds, $image, $board, $charucoCorners, $charucoIds, $cameraMatrix, $distCoeffs, $minMarkers)
     ; CVAPI(int) cveArucoInterpolateCornersCharuco(cv::_InputArray* markerCorners, cv::_InputArray* markerIds, cv::_InputArray* image, cv::aruco::CharucoBoard* board, cv::_OutputArray* charucoCorners, cv::_OutputArray* charucoIds, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, int minMarkers);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveArucoInterpolateCornersCharuco", "ptr", $markerCorners, "ptr", $markerIds, "ptr", $image, "ptr", $board, "ptr", $charucoCorners, "ptr", $charucoIds, "ptr", $cameraMatrix, "ptr", $distCoeffs, "int", $minMarkers), "cveArucoInterpolateCornersCharuco", @error)
 EndFunc   ;==>_cveArucoInterpolateCornersCharuco
 
-Func _cveArucoInterpolateCornersCharucoMat(ByRef $matMarkerCorners, ByRef $matMarkerIds, ByRef $matImage, ByRef $board, ByRef $matCharucoCorners, ByRef $matCharucoIds, ByRef $matCameraMatrix, ByRef $matDistCoeffs, $minMarkers)
+Func _cveArucoInterpolateCornersCharucoMat($matMarkerCorners, $matMarkerIds, $matImage, $board, $matCharucoCorners, $matCharucoIds, $matCameraMatrix, $matDistCoeffs, $minMarkers)
     ; cveArucoInterpolateCornersCharuco using cv::Mat instead of _*Array
 
     Local $iArrMarkerCorners, $vectorOfMatMarkerCorners, $iArrMarkerCornersSize
@@ -1339,12 +1433,12 @@ Func _cveArucoInterpolateCornersCharucoMat(ByRef $matMarkerCorners, ByRef $matMa
     Return $retval
 EndFunc   ;==>_cveArucoInterpolateCornersCharucoMat
 
-Func _cveArucoDrawDetectedCornersCharuco(ByRef $image, ByRef $charucoCorners, ByRef $charucoIds, ByRef $cornerColor)
+Func _cveArucoDrawDetectedCornersCharuco($image, $charucoCorners, $charucoIds, $cornerColor)
     ; CVAPI(void) cveArucoDrawDetectedCornersCharuco(cv::_InputOutputArray* image, cv::_InputArray* charucoCorners, cv::_InputArray* charucoIds, CvScalar* cornerColor);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawDetectedCornersCharuco", "ptr", $image, "ptr", $charucoCorners, "ptr", $charucoIds, "struct*", $cornerColor), "cveArucoDrawDetectedCornersCharuco", @error)
 EndFunc   ;==>_cveArucoDrawDetectedCornersCharuco
 
-Func _cveArucoDrawDetectedCornersCharucoMat(ByRef $matImage, ByRef $matCharucoCorners, ByRef $matCharucoIds, ByRef $cornerColor)
+Func _cveArucoDrawDetectedCornersCharucoMat($matImage, $matCharucoCorners, $matCharucoIds, $cornerColor)
     ; cveArucoDrawDetectedCornersCharuco using cv::Mat instead of _*Array
 
     Local $ioArrImage, $vectorOfMatImage, $iArrImageSize
@@ -1416,12 +1510,12 @@ Func _cveArucoDrawDetectedCornersCharucoMat(ByRef $matImage, ByRef $matCharucoCo
     _cveInputOutputArrayRelease($ioArrImage)
 EndFunc   ;==>_cveArucoDrawDetectedCornersCharucoMat
 
-Func _cveArucoEstimatePoseCharucoBoard(ByRef $charucoCorners, ByRef $charucoIds, ByRef $board, ByRef $cameraMatrix, ByRef $distCoeffs, ByRef $rvec, ByRef $tvec, $useExtrinsicGuess)
+Func _cveArucoEstimatePoseCharucoBoard($charucoCorners, $charucoIds, $board, $cameraMatrix, $distCoeffs, $rvec, $tvec, $useExtrinsicGuess)
     ; CVAPI(bool) cveArucoEstimatePoseCharucoBoard(cv::_InputArray* charucoCorners, cv::_InputArray* charucoIds, cv::aruco::CharucoBoard* board, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_InputOutputArray* rvec, cv::_InputOutputArray* tvec, bool useExtrinsicGuess);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveArucoEstimatePoseCharucoBoard", "ptr", $charucoCorners, "ptr", $charucoIds, "ptr", $board, "ptr", $cameraMatrix, "ptr", $distCoeffs, "ptr", $rvec, "ptr", $tvec, "boolean", $useExtrinsicGuess), "cveArucoEstimatePoseCharucoBoard", @error)
 EndFunc   ;==>_cveArucoEstimatePoseCharucoBoard
 
-Func _cveArucoEstimatePoseCharucoBoardMat(ByRef $matCharucoCorners, ByRef $matCharucoIds, ByRef $board, ByRef $matCameraMatrix, ByRef $matDistCoeffs, ByRef $matRvec, ByRef $matTvec, $useExtrinsicGuess)
+Func _cveArucoEstimatePoseCharucoBoardMat($matCharucoCorners, $matCharucoIds, $board, $matCameraMatrix, $matDistCoeffs, $matRvec, $matTvec, $useExtrinsicGuess)
     ; cveArucoEstimatePoseCharucoBoard using cv::Mat instead of _*Array
 
     Local $iArrCharucoCorners, $vectorOfMatCharucoCorners, $iArrCharucoCornersSize
@@ -1561,12 +1655,12 @@ Func _cveArucoEstimatePoseCharucoBoardMat(ByRef $matCharucoCorners, ByRef $matCh
     Return $retval
 EndFunc   ;==>_cveArucoEstimatePoseCharucoBoardMat
 
-Func _cveArucoDetectCharucoDiamond(ByRef $image, ByRef $markerCorners, ByRef $markerIds, $squareMarkerLengthRate, ByRef $diamondCorners, ByRef $diamondIds, ByRef $cameraMatrix, ByRef $distCoeffs)
+Func _cveArucoDetectCharucoDiamond($image, $markerCorners, $markerIds, $squareMarkerLengthRate, $diamondCorners, $diamondIds, $cameraMatrix, $distCoeffs)
     ; CVAPI(void) cveArucoDetectCharucoDiamond(cv::_InputArray* image, cv::_InputArray* markerCorners, cv::_InputArray* markerIds, float squareMarkerLengthRate, cv::_OutputArray* diamondCorners, cv::_OutputArray* diamondIds, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDetectCharucoDiamond", "ptr", $image, "ptr", $markerCorners, "ptr", $markerIds, "float", $squareMarkerLengthRate, "ptr", $diamondCorners, "ptr", $diamondIds, "ptr", $cameraMatrix, "ptr", $distCoeffs), "cveArucoDetectCharucoDiamond", @error)
 EndFunc   ;==>_cveArucoDetectCharucoDiamond
 
-Func _cveArucoDetectCharucoDiamondMat(ByRef $matImage, ByRef $matMarkerCorners, ByRef $matMarkerIds, $squareMarkerLengthRate, ByRef $matDiamondCorners, ByRef $matDiamondIds, ByRef $matCameraMatrix, ByRef $matDistCoeffs)
+Func _cveArucoDetectCharucoDiamondMat($matImage, $matMarkerCorners, $matMarkerIds, $squareMarkerLengthRate, $matDiamondCorners, $matDiamondIds, $matCameraMatrix, $matDistCoeffs)
     ; cveArucoDetectCharucoDiamond using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -1726,12 +1820,12 @@ Func _cveArucoDetectCharucoDiamondMat(ByRef $matImage, ByRef $matMarkerCorners, 
     _cveInputArrayRelease($iArrImage)
 EndFunc   ;==>_cveArucoDetectCharucoDiamondMat
 
-Func _cveArucoDrawDetectedDiamonds(ByRef $image, ByRef $diamondCorners, ByRef $diamondIds, ByRef $borderColor)
+Func _cveArucoDrawDetectedDiamonds($image, $diamondCorners, $diamondIds, $borderColor)
     ; CVAPI(void) cveArucoDrawDetectedDiamonds(cv::_InputOutputArray* image, cv::_InputArray* diamondCorners, cv::_InputArray* diamondIds, CvScalar* borderColor);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawDetectedDiamonds", "ptr", $image, "ptr", $diamondCorners, "ptr", $diamondIds, "struct*", $borderColor), "cveArucoDrawDetectedDiamonds", @error)
 EndFunc   ;==>_cveArucoDrawDetectedDiamonds
 
-Func _cveArucoDrawDetectedDiamondsMat(ByRef $matImage, ByRef $matDiamondCorners, ByRef $matDiamondIds, ByRef $borderColor)
+Func _cveArucoDrawDetectedDiamondsMat($matImage, $matDiamondCorners, $matDiamondIds, $borderColor)
     ; cveArucoDrawDetectedDiamonds using cv::Mat instead of _*Array
 
     Local $ioArrImage, $vectorOfMatImage, $iArrImageSize
@@ -1803,12 +1897,12 @@ Func _cveArucoDrawDetectedDiamondsMat(ByRef $matImage, ByRef $matDiamondCorners,
     _cveInputOutputArrayRelease($ioArrImage)
 EndFunc   ;==>_cveArucoDrawDetectedDiamondsMat
 
-Func _cveArucoDrawCharucoDiamond(ByRef $dictionary, ByRef $ids, $squareLength, $markerLength, ByRef $img, $marginSize, $borderBits)
+Func _cveArucoDrawCharucoDiamond($dictionary, $ids, $squareLength, $markerLength, $img, $marginSize, $borderBits)
     ; CVAPI(void) cveArucoDrawCharucoDiamond(cv::aruco::Dictionary* dictionary, int* ids, int squareLength, int markerLength, cv::_OutputArray* img, int marginSize, int borderBits);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawCharucoDiamond", "ptr", $dictionary, "struct*", $ids, "int", $squareLength, "int", $markerLength, "ptr", $img, "int", $marginSize, "int", $borderBits), "cveArucoDrawCharucoDiamond", @error)
 EndFunc   ;==>_cveArucoDrawCharucoDiamond
 
-Func _cveArucoDrawCharucoDiamondMat(ByRef $dictionary, ByRef $ids, $squareLength, $markerLength, ByRef $matImg, $marginSize, $borderBits)
+Func _cveArucoDrawCharucoDiamondMat($dictionary, $ids, $squareLength, $markerLength, $matImg, $marginSize, $borderBits)
     ; cveArucoDrawCharucoDiamond using cv::Mat instead of _*Array
 
     Local $oArrImg, $vectorOfMatImg, $iArrImgSize
@@ -1836,12 +1930,12 @@ Func _cveArucoDrawCharucoDiamondMat(ByRef $dictionary, ByRef $ids, $squareLength
     _cveOutputArrayRelease($oArrImg)
 EndFunc   ;==>_cveArucoDrawCharucoDiamondMat
 
-Func _cveArucoDrawPlanarBoard(ByRef $board, ByRef $outSize, ByRef $img, $marginSize, $borderBits)
+Func _cveArucoDrawPlanarBoard($board, $outSize, $img, $marginSize, $borderBits)
     ; CVAPI(void) cveArucoDrawPlanarBoard(cv::aruco::Board* board, CvSize* outSize, cv::_OutputArray* img, int marginSize, int borderBits);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawPlanarBoard", "ptr", $board, "struct*", $outSize, "ptr", $img, "int", $marginSize, "int", $borderBits), "cveArucoDrawPlanarBoard", @error)
 EndFunc   ;==>_cveArucoDrawPlanarBoard
 
-Func _cveArucoDrawPlanarBoardMat(ByRef $board, ByRef $outSize, ByRef $matImg, $marginSize, $borderBits)
+Func _cveArucoDrawPlanarBoardMat($board, $outSize, $matImg, $marginSize, $borderBits)
     ; cveArucoDrawPlanarBoard using cv::Mat instead of _*Array
 
     Local $oArrImg, $vectorOfMatImg, $iArrImgSize
@@ -1869,12 +1963,12 @@ Func _cveArucoDrawPlanarBoardMat(ByRef $board, ByRef $outSize, ByRef $matImg, $m
     _cveOutputArrayRelease($oArrImg)
 EndFunc   ;==>_cveArucoDrawPlanarBoardMat
 
-Func _cveArucoEstimatePoseBoard(ByRef $corners, ByRef $ids, ByRef $board, ByRef $cameraMatrix, ByRef $distCoeffs, ByRef $rvec, ByRef $tvec, $useExtrinsicGuess)
+Func _cveArucoEstimatePoseBoard($corners, $ids, $board, $cameraMatrix, $distCoeffs, $rvec, $tvec, $useExtrinsicGuess)
     ; CVAPI(int) cveArucoEstimatePoseBoard(cv::_InputArray* corners, cv::_InputArray* ids, cv::aruco::Board* board, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_InputOutputArray* rvec, cv::_InputOutputArray* tvec, bool useExtrinsicGuess);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveArucoEstimatePoseBoard", "ptr", $corners, "ptr", $ids, "ptr", $board, "ptr", $cameraMatrix, "ptr", $distCoeffs, "ptr", $rvec, "ptr", $tvec, "boolean", $useExtrinsicGuess), "cveArucoEstimatePoseBoard", @error)
 EndFunc   ;==>_cveArucoEstimatePoseBoard
 
-Func _cveArucoEstimatePoseBoardMat(ByRef $matCorners, ByRef $matIds, ByRef $board, ByRef $matCameraMatrix, ByRef $matDistCoeffs, ByRef $matRvec, ByRef $matTvec, $useExtrinsicGuess)
+Func _cveArucoEstimatePoseBoardMat($matCorners, $matIds, $board, $matCameraMatrix, $matDistCoeffs, $matRvec, $matTvec, $useExtrinsicGuess)
     ; cveArucoEstimatePoseBoard using cv::Mat instead of _*Array
 
     Local $iArrCorners, $vectorOfMatCorners, $iArrCornersSize
@@ -2014,12 +2108,12 @@ Func _cveArucoEstimatePoseBoardMat(ByRef $matCorners, ByRef $matIds, ByRef $boar
     Return $retval
 EndFunc   ;==>_cveArucoEstimatePoseBoardMat
 
-Func _cveArucoGetBoardObjectAndImagePoints(ByRef $board, ByRef $detectedCorners, ByRef $detectedIds, ByRef $objPoints, ByRef $imgPoints)
+Func _cveArucoGetBoardObjectAndImagePoints($board, $detectedCorners, $detectedIds, $objPoints, $imgPoints)
     ; CVAPI(void) cveArucoGetBoardObjectAndImagePoints(cv::aruco::Board* board, cv::_InputArray* detectedCorners, cv::_InputArray* detectedIds, cv::_OutputArray* objPoints, cv::_OutputArray* imgPoints);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoGetBoardObjectAndImagePoints", "ptr", $board, "ptr", $detectedCorners, "ptr", $detectedIds, "ptr", $objPoints, "ptr", $imgPoints), "cveArucoGetBoardObjectAndImagePoints", @error)
 EndFunc   ;==>_cveArucoGetBoardObjectAndImagePoints
 
-Func _cveArucoGetBoardObjectAndImagePointsMat(ByRef $board, ByRef $matDetectedCorners, ByRef $matDetectedIds, ByRef $matObjPoints, ByRef $matImgPoints)
+Func _cveArucoGetBoardObjectAndImagePointsMat($board, $matDetectedCorners, $matDetectedIds, $matObjPoints, $matImgPoints)
     ; cveArucoGetBoardObjectAndImagePoints using cv::Mat instead of _*Array
 
     Local $iArrDetectedCorners, $vectorOfMatDetectedCorners, $iArrDetectedCornersSize

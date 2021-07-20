@@ -1,12 +1,12 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cudaPyrDown(ByRef $src, ByRef $dst, ByRef $stream)
+Func _cudaPyrDown($src, $dst, $stream)
     ; CVAPI(void) cudaPyrDown(cv::_InputArray* src, cv::_OutputArray* dst, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaPyrDown", "ptr", $src, "ptr", $dst, "ptr", $stream), "cudaPyrDown", @error)
 EndFunc   ;==>_cudaPyrDown
 
-Func _cudaPyrDownMat(ByRef $matSrc, ByRef $matDst, ByRef $stream)
+Func _cudaPyrDownMat($matSrc, $matDst, $stream)
     ; cudaPyrDown using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -56,12 +56,12 @@ Func _cudaPyrDownMat(ByRef $matSrc, ByRef $matDst, ByRef $stream)
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaPyrDownMat
 
-Func _cudaPyrUp(ByRef $src, ByRef $dst, ByRef $stream)
+Func _cudaPyrUp($src, $dst, $stream)
     ; CVAPI(void) cudaPyrUp(cv::_InputArray* src, cv::_OutputArray* dst, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaPyrUp", "ptr", $src, "ptr", $dst, "ptr", $stream), "cudaPyrUp", @error)
 EndFunc   ;==>_cudaPyrUp
 
-Func _cudaPyrUpMat(ByRef $matSrc, ByRef $matDst, ByRef $stream)
+Func _cudaPyrUpMat($matSrc, $matDst, $stream)
     ; cudaPyrUp using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -111,12 +111,12 @@ Func _cudaPyrUpMat(ByRef $matSrc, ByRef $matDst, ByRef $stream)
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaPyrUpMat
 
-Func _cudaWarpAffine(ByRef $src, ByRef $dst, ByRef $M, ByRef $dSize, $flags, $borderMode, ByRef $borderValue, ByRef $stream)
+Func _cudaWarpAffine($src, $dst, $M, $dSize, $flags, $borderMode, $borderValue, $stream)
     ; CVAPI(void) cudaWarpAffine(cv::_InputArray* src, cv::_OutputArray* dst, cv::_InputArray* M, CvSize* dSize, int flags, int borderMode, CvScalar* borderValue, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaWarpAffine", "ptr", $src, "ptr", $dst, "ptr", $M, "struct*", $dSize, "int", $flags, "int", $borderMode, "struct*", $borderValue, "ptr", $stream), "cudaWarpAffine", @error)
 EndFunc   ;==>_cudaWarpAffine
 
-Func _cudaWarpAffineMat(ByRef $matSrc, ByRef $matDst, ByRef $matM, ByRef $dSize, $flags, $borderMode, ByRef $borderValue, ByRef $stream)
+Func _cudaWarpAffineMat($matSrc, $matDst, $matM, $dSize, $flags, $borderMode, $borderValue, $stream)
     ; cudaWarpAffine using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -188,12 +188,12 @@ Func _cudaWarpAffineMat(ByRef $matSrc, ByRef $matDst, ByRef $matM, ByRef $dSize,
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaWarpAffineMat
 
-Func _cudaWarpPerspective(ByRef $src, ByRef $dst, ByRef $M, ByRef $size, $flags, $borderMode, ByRef $borderValue, ByRef $stream)
+Func _cudaWarpPerspective($src, $dst, $M, $size, $flags, $borderMode, $borderValue, $stream)
     ; CVAPI(void) cudaWarpPerspective(cv::_InputArray* src, cv::_OutputArray* dst, cv::_InputArray* M, CvSize* size, int flags, int borderMode, CvScalar* borderValue, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaWarpPerspective", "ptr", $src, "ptr", $dst, "ptr", $M, "struct*", $size, "int", $flags, "int", $borderMode, "struct*", $borderValue, "ptr", $stream), "cudaWarpPerspective", @error)
 EndFunc   ;==>_cudaWarpPerspective
 
-Func _cudaWarpPerspectiveMat(ByRef $matSrc, ByRef $matDst, ByRef $matM, ByRef $size, $flags, $borderMode, ByRef $borderValue, ByRef $stream)
+Func _cudaWarpPerspectiveMat($matSrc, $matDst, $matM, $size, $flags, $borderMode, $borderValue, $stream)
     ; cudaWarpPerspective using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -265,12 +265,12 @@ Func _cudaWarpPerspectiveMat(ByRef $matSrc, ByRef $matDst, ByRef $matM, ByRef $s
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaWarpPerspectiveMat
 
-Func _cudaRemap(ByRef $src, ByRef $dst, ByRef $xmap, ByRef $ymap, $interpolation, $borderMode, ByRef $borderValue, ByRef $stream)
+Func _cudaRemap($src, $dst, $xmap, $ymap, $interpolation, $borderMode, $borderValue, $stream)
     ; CVAPI(void) cudaRemap(cv::_InputArray* src, cv::_OutputArray* dst, cv::_InputArray* xmap, cv::_InputArray* ymap, int interpolation, int borderMode, CvScalar* borderValue, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaRemap", "ptr", $src, "ptr", $dst, "ptr", $xmap, "ptr", $ymap, "int", $interpolation, "int", $borderMode, "struct*", $borderValue, "ptr", $stream), "cudaRemap", @error)
 EndFunc   ;==>_cudaRemap
 
-Func _cudaRemapMat(ByRef $matSrc, ByRef $matDst, ByRef $matXmap, ByRef $matYmap, $interpolation, $borderMode, ByRef $borderValue, ByRef $stream)
+Func _cudaRemapMat($matSrc, $matDst, $matXmap, $matYmap, $interpolation, $borderMode, $borderValue, $stream)
     ; cudaRemap using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -364,12 +364,12 @@ Func _cudaRemapMat(ByRef $matSrc, ByRef $matDst, ByRef $matXmap, ByRef $matYmap,
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaRemapMat
 
-Func _cudaResize(ByRef $src, ByRef $dst, ByRef $dsize, $fx, $fy, $interpolation, ByRef $stream)
+Func _cudaResize($src, $dst, $dsize, $fx, $fy, $interpolation, $stream)
     ; CVAPI(void) cudaResize(cv::_InputArray* src, cv::_OutputArray* dst, CvSize* dsize, double fx, double fy, int interpolation, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaResize", "ptr", $src, "ptr", $dst, "struct*", $dsize, "double", $fx, "double", $fy, "int", $interpolation, "ptr", $stream), "cudaResize", @error)
 EndFunc   ;==>_cudaResize
 
-Func _cudaResizeMat(ByRef $matSrc, ByRef $matDst, ByRef $dsize, $fx, $fy, $interpolation, ByRef $stream)
+Func _cudaResizeMat($matSrc, $matDst, $dsize, $fx, $fy, $interpolation, $stream)
     ; cudaResize using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -419,12 +419,12 @@ Func _cudaResizeMat(ByRef $matSrc, ByRef $matDst, ByRef $dsize, $fx, $fy, $inter
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaResizeMat
 
-Func _cudaRotate(ByRef $src, ByRef $dst, ByRef $dSize, $angle, $xShift, $yShift, $interpolation, ByRef $s)
+Func _cudaRotate($src, $dst, $dSize, $angle, $xShift, $yShift, $interpolation, $s)
     ; CVAPI(void) cudaRotate(cv::_InputArray* src, cv::_OutputArray* dst, CvSize* dSize, double angle, double xShift, double yShift, int interpolation, cv::cuda::Stream* s);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaRotate", "ptr", $src, "ptr", $dst, "struct*", $dSize, "double", $angle, "double", $xShift, "double", $yShift, "int", $interpolation, "ptr", $s), "cudaRotate", @error)
 EndFunc   ;==>_cudaRotate
 
-Func _cudaRotateMat(ByRef $matSrc, ByRef $matDst, ByRef $dSize, $angle, $xShift, $yShift, $interpolation, ByRef $s)
+Func _cudaRotateMat($matSrc, $matDst, $dSize, $angle, $xShift, $yShift, $interpolation, $s)
     ; cudaRotate using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize

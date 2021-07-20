@@ -1,22 +1,37 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveRetinaCreate(ByRef $inputSize, $colorMode, $colorSamplingMethod, $useRetinaLogSampling, $reductionFactor, $samplingStrength, ByRef $sharedPtr)
+Func _cveRetinaCreate($inputSize, $colorMode, $colorSamplingMethod, $useRetinaLogSampling, $reductionFactor, $samplingStrength, $sharedPtr)
     ; CVAPI(cv::bioinspired::Retina*) cveRetinaCreate(CvSize* inputSize, const bool colorMode, int colorSamplingMethod, const bool useRetinaLogSampling, const double reductionFactor, const double samplingStrength, cv::Ptr<cv::bioinspired::Retina>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveRetinaCreate", "struct*", $inputSize, "const bool", $colorMode, "int", $colorSamplingMethod, "const bool", $useRetinaLogSampling, "const double", $reductionFactor, "const double", $samplingStrength, "ptr*", $sharedPtr), "cveRetinaCreate", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveRetinaCreate", "struct*", $inputSize, "const bool", $colorMode, "int", $colorSamplingMethod, "const bool", $useRetinaLogSampling, "const double", $reductionFactor, "const double", $samplingStrength, $bSharedPtrDllType, $sharedPtr), "cveRetinaCreate", @error)
 EndFunc   ;==>_cveRetinaCreate
 
-Func _cveRetinaRelease(ByRef $sharedPtr)
+Func _cveRetinaRelease($sharedPtr)
     ; CVAPI(void) cveRetinaRelease(cv::Ptr<cv::bioinspired::Retina>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRetinaRelease", "ptr*", $sharedPtr), "cveRetinaRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRetinaRelease", $bSharedPtrDllType, $sharedPtr), "cveRetinaRelease", @error)
 EndFunc   ;==>_cveRetinaRelease
 
-Func _cveRetinaRun(ByRef $retina, ByRef $image)
+Func _cveRetinaRun($retina, $image)
     ; CVAPI(void) cveRetinaRun(cv::bioinspired::Retina* retina, cv::_InputArray* image);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRetinaRun", "ptr", $retina, "ptr", $image), "cveRetinaRun", @error)
 EndFunc   ;==>_cveRetinaRun
 
-Func _cveRetinaRunMat(ByRef $retina, ByRef $matImage)
+Func _cveRetinaRunMat($retina, $matImage)
     ; cveRetinaRun using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -44,12 +59,12 @@ Func _cveRetinaRunMat(ByRef $retina, ByRef $matImage)
     _cveInputArrayRelease($iArrImage)
 EndFunc   ;==>_cveRetinaRunMat
 
-Func _cveRetinaGetParvo(ByRef $retina, ByRef $parvo)
+Func _cveRetinaGetParvo($retina, $parvo)
     ; CVAPI(void) cveRetinaGetParvo(cv::bioinspired::Retina* retina, cv::_OutputArray* parvo);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRetinaGetParvo", "ptr", $retina, "ptr", $parvo), "cveRetinaGetParvo", @error)
 EndFunc   ;==>_cveRetinaGetParvo
 
-Func _cveRetinaGetParvoMat(ByRef $retina, ByRef $matParvo)
+Func _cveRetinaGetParvoMat($retina, $matParvo)
     ; cveRetinaGetParvo using cv::Mat instead of _*Array
 
     Local $oArrParvo, $vectorOfMatParvo, $iArrParvoSize
@@ -77,12 +92,12 @@ Func _cveRetinaGetParvoMat(ByRef $retina, ByRef $matParvo)
     _cveOutputArrayRelease($oArrParvo)
 EndFunc   ;==>_cveRetinaGetParvoMat
 
-Func _cveRetinaGetMagno(ByRef $retina, ByRef $magno)
+Func _cveRetinaGetMagno($retina, $magno)
     ; CVAPI(void) cveRetinaGetMagno(cv::bioinspired::Retina* retina, cv::_OutputArray* magno);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRetinaGetMagno", "ptr", $retina, "ptr", $magno), "cveRetinaGetMagno", @error)
 EndFunc   ;==>_cveRetinaGetMagno
 
-Func _cveRetinaGetMagnoMat(ByRef $retina, ByRef $matMagno)
+Func _cveRetinaGetMagnoMat($retina, $matMagno)
     ; cveRetinaGetMagno using cv::Mat instead of _*Array
 
     Local $oArrMagno, $vectorOfMatMagno, $iArrMagnoSize
@@ -110,37 +125,44 @@ Func _cveRetinaGetMagnoMat(ByRef $retina, ByRef $matMagno)
     _cveOutputArrayRelease($oArrMagno)
 EndFunc   ;==>_cveRetinaGetMagnoMat
 
-Func _cveRetinaClearBuffers(ByRef $retina)
+Func _cveRetinaClearBuffers($retina)
     ; CVAPI(void) cveRetinaClearBuffers(cv::bioinspired::Retina* retina);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRetinaClearBuffers", "ptr", $retina), "cveRetinaClearBuffers", @error)
 EndFunc   ;==>_cveRetinaClearBuffers
 
-Func _cveRetinaGetParameters(ByRef $retina, ByRef $p)
+Func _cveRetinaGetParameters($retina, $p)
     ; CVAPI(void) cveRetinaGetParameters(cv::bioinspired::Retina* retina, cv::bioinspired::RetinaParameters* p);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRetinaGetParameters", "ptr", $retina, "ptr", $p), "cveRetinaGetParameters", @error)
 EndFunc   ;==>_cveRetinaGetParameters
 
-Func _cveRetinaSetParameters(ByRef $retina, ByRef $p)
+Func _cveRetinaSetParameters($retina, $p)
     ; CVAPI(void) cveRetinaSetParameters(cv::bioinspired::Retina* retina, cv::bioinspired::RetinaParameters* p);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRetinaSetParameters", "ptr", $retina, "ptr", $p), "cveRetinaSetParameters", @error)
 EndFunc   ;==>_cveRetinaSetParameters
 
-Func _cveRetinaFastToneMappingCreate(ByRef $inputSize, ByRef $sharedPtr)
+Func _cveRetinaFastToneMappingCreate($inputSize, $sharedPtr)
     ; CVAPI(cv::bioinspired::RetinaFastToneMapping*) cveRetinaFastToneMappingCreate(CvSize* inputSize, cv::Ptr<cv::bioinspired::RetinaFastToneMapping>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveRetinaFastToneMappingCreate", "struct*", $inputSize, "ptr*", $sharedPtr), "cveRetinaFastToneMappingCreate", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveRetinaFastToneMappingCreate", "struct*", $inputSize, $bSharedPtrDllType, $sharedPtr), "cveRetinaFastToneMappingCreate", @error)
 EndFunc   ;==>_cveRetinaFastToneMappingCreate
 
-Func _cveRetinaFastToneMappingSetup(ByRef $toneMapping, $photoreceptorsNeighborhoodRadius, $ganglioncellsNeighborhoodRadius, $meanLuminanceModulatorK)
+Func _cveRetinaFastToneMappingSetup($toneMapping, $photoreceptorsNeighborhoodRadius, $ganglioncellsNeighborhoodRadius, $meanLuminanceModulatorK)
     ; CVAPI(void) cveRetinaFastToneMappingSetup(cv::bioinspired::RetinaFastToneMapping* toneMapping, float photoreceptorsNeighborhoodRadius, float ganglioncellsNeighborhoodRadius, float meanLuminanceModulatorK);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRetinaFastToneMappingSetup", "ptr", $toneMapping, "float", $photoreceptorsNeighborhoodRadius, "float", $ganglioncellsNeighborhoodRadius, "float", $meanLuminanceModulatorK), "cveRetinaFastToneMappingSetup", @error)
 EndFunc   ;==>_cveRetinaFastToneMappingSetup
 
-Func _cveRetinaFastToneMappingApplyFastToneMapping(ByRef $toneMapping, ByRef $inputImage, ByRef $outputToneMappedImage)
+Func _cveRetinaFastToneMappingApplyFastToneMapping($toneMapping, $inputImage, $outputToneMappedImage)
     ; CVAPI(void) cveRetinaFastToneMappingApplyFastToneMapping(cv::bioinspired::RetinaFastToneMapping* toneMapping, cv::_InputArray* inputImage, cv::_OutputArray* outputToneMappedImage);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRetinaFastToneMappingApplyFastToneMapping", "ptr", $toneMapping, "ptr", $inputImage, "ptr", $outputToneMappedImage), "cveRetinaFastToneMappingApplyFastToneMapping", @error)
 EndFunc   ;==>_cveRetinaFastToneMappingApplyFastToneMapping
 
-Func _cveRetinaFastToneMappingApplyFastToneMappingMat(ByRef $toneMapping, ByRef $matInputImage, ByRef $matOutputToneMappedImage)
+Func _cveRetinaFastToneMappingApplyFastToneMappingMat($toneMapping, $matInputImage, $matOutputToneMappedImage)
     ; cveRetinaFastToneMappingApplyFastToneMapping using cv::Mat instead of _*Array
 
     Local $iArrInputImage, $vectorOfMatInputImage, $iArrInputImageSize
@@ -190,7 +212,15 @@ Func _cveRetinaFastToneMappingApplyFastToneMappingMat(ByRef $toneMapping, ByRef 
     _cveInputArrayRelease($iArrInputImage)
 EndFunc   ;==>_cveRetinaFastToneMappingApplyFastToneMappingMat
 
-Func _cveRetinaFastToneMappingRelease(ByRef $sharedPtr)
+Func _cveRetinaFastToneMappingRelease($sharedPtr)
     ; CVAPI(void) cveRetinaFastToneMappingRelease(cv::Ptr<cv::bioinspired::RetinaFastToneMapping>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRetinaFastToneMappingRelease", "ptr*", $sharedPtr), "cveRetinaFastToneMappingRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRetinaFastToneMappingRelease", $bSharedPtrDllType, $sharedPtr), "cveRetinaFastToneMappingRelease", @error)
 EndFunc   ;==>_cveRetinaFastToneMappingRelease

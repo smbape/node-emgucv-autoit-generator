@@ -1,7 +1,7 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveDPMDetectorCreate(ByRef $filenames, ByRef $classNames, ByRef $sharedPtr)
+Func _cveDPMDetectorCreate($filenames, $classNames, $sharedPtr)
     ; CVAPI(DPMDetector*) cveDPMDetectorCreate(std::vector<cv::String>* filenames, std::vector<cv::String>* classNames, cv::Ptr<cv::dpm::DPMDetector>** sharedPtr);
 
     Local $vecFilenames, $iArrFilenamesSize
@@ -32,7 +32,14 @@ Func _cveDPMDetectorCreate(ByRef $filenames, ByRef $classNames, ByRef $sharedPtr
         $vecClassNames = $classNames
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDPMDetectorCreate", "ptr", $vecFilenames, "ptr", $vecClassNames, "ptr*", $sharedPtr), "cveDPMDetectorCreate", @error)
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDPMDetectorCreate", "ptr", $vecFilenames, "ptr", $vecClassNames, $bSharedPtrDllType, $sharedPtr), "cveDPMDetectorCreate", @error)
 
     If $bClassNamesIsArray Then
         _VectorOfCvStringRelease($vecClassNames)
@@ -45,7 +52,7 @@ Func _cveDPMDetectorCreate(ByRef $filenames, ByRef $classNames, ByRef $sharedPtr
     Return $retval
 EndFunc   ;==>_cveDPMDetectorCreate
 
-Func _cveDPMDetectorDetect(ByRef $dpm, ByRef $image, ByRef $rects, ByRef $scores, ByRef $classIds)
+Func _cveDPMDetectorDetect($dpm, $image, $rects, $scores, $classIds)
     ; CVAPI(void) cveDPMDetectorDetect(DPMDetector* dpm, cv::Mat* image, std::vector<CvRect>* rects, std::vector<float>* scores, std::vector<int>* classIds);
 
     Local $vecScores, $iArrScoresSize
@@ -87,12 +94,12 @@ Func _cveDPMDetectorDetect(ByRef $dpm, ByRef $image, ByRef $rects, ByRef $scores
     EndIf
 EndFunc   ;==>_cveDPMDetectorDetect
 
-Func _cveDPMDetectorGetClassCount(ByRef $dpm)
+Func _cveDPMDetectorGetClassCount($dpm)
     ; CVAPI(size_t) cveDPMDetectorGetClassCount(DPMDetector* dpm);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ulong_ptr:cdecl", "cveDPMDetectorGetClassCount", "struct*", $dpm), "cveDPMDetectorGetClassCount", @error)
 EndFunc   ;==>_cveDPMDetectorGetClassCount
 
-Func _cveDPMDetectorGetClassNames(ByRef $dpm, ByRef $names)
+Func _cveDPMDetectorGetClassNames($dpm, $names)
     ; CVAPI(void) cveDPMDetectorGetClassNames(DPMDetector* dpm, std::vector<cv::String>* names);
 
     Local $vecNames, $iArrNamesSize
@@ -116,12 +123,20 @@ Func _cveDPMDetectorGetClassNames(ByRef $dpm, ByRef $names)
     EndIf
 EndFunc   ;==>_cveDPMDetectorGetClassNames
 
-Func _cveDPMDetectorIsEmpty(ByRef $dpm)
+Func _cveDPMDetectorIsEmpty($dpm)
     ; CVAPI(bool) cveDPMDetectorIsEmpty(DPMDetector* dpm);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveDPMDetectorIsEmpty", "struct*", $dpm), "cveDPMDetectorIsEmpty", @error)
 EndFunc   ;==>_cveDPMDetectorIsEmpty
 
-Func _cveDPMDetectorRelease(ByRef $sharedPtr)
+Func _cveDPMDetectorRelease($sharedPtr)
     ; CVAPI(void) cveDPMDetectorRelease(cv::Ptr<cv::dpm::DPMDetector>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDPMDetectorRelease", "ptr*", $sharedPtr), "cveDPMDetectorRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDPMDetectorRelease", $bSharedPtrDllType, $sharedPtr), "cveDPMDetectorRelease", @error)
 EndFunc   ;==>_cveDPMDetectorRelease

@@ -21,47 +21,55 @@ Func _cudaResetDevice()
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaResetDevice"), "cudaResetDevice", @error)
 EndFunc   ;==>_cudaResetDevice
 
-Func _cudaDeviceInfoCreate(ByRef $deviceId)
+Func _cudaDeviceInfoCreate($deviceId)
     ; CVAPI(cv::cuda::DeviceInfo*) cudaDeviceInfoCreate(int* deviceId);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaDeviceInfoCreate", "struct*", $deviceId), "cudaDeviceInfoCreate", @error)
 EndFunc   ;==>_cudaDeviceInfoCreate
 
-Func _cudaDeviceInfoRelease(ByRef $di)
+Func _cudaDeviceInfoRelease($di)
     ; CVAPI(void) cudaDeviceInfoRelease(cv::cuda::DeviceInfo** di);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDeviceInfoRelease", "ptr*", $di), "cudaDeviceInfoRelease", @error)
+
+    Local $bDiDllType
+    If VarGetType($di) == "DLLStruct" Then
+        $bDiDllType = "struct*"
+    Else
+        $bDiDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDeviceInfoRelease", $bDiDllType, $di), "cudaDeviceInfoRelease", @error)
 EndFunc   ;==>_cudaDeviceInfoRelease
 
-Func _cudaDeviceInfoDeviceName(ByRef $device, ByRef $name, $maxSizeInBytes)
+Func _cudaDeviceInfoDeviceName($device, $name, $maxSizeInBytes)
     ; CVAPI(void) cudaDeviceInfoDeviceName(cv::cuda::DeviceInfo* device, char* name, int maxSizeInBytes);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDeviceInfoDeviceName", "ptr", $device, "struct*", $name, "int", $maxSizeInBytes), "cudaDeviceInfoDeviceName", @error)
 EndFunc   ;==>_cudaDeviceInfoDeviceName
 
-Func _cudaDeviceInfoComputeCapability(ByRef $device, ByRef $major, ByRef $minor)
+Func _cudaDeviceInfoComputeCapability($device, $major, $minor)
     ; CVAPI(void) cudaDeviceInfoComputeCapability(cv::cuda::DeviceInfo* device, int* major, int* minor);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDeviceInfoComputeCapability", "ptr", $device, "struct*", $major, "struct*", $minor), "cudaDeviceInfoComputeCapability", @error)
 EndFunc   ;==>_cudaDeviceInfoComputeCapability
 
-Func _cudaDeviceInfoMultiProcessorCount(ByRef $device)
+Func _cudaDeviceInfoMultiProcessorCount($device)
     ; CVAPI(int) cudaDeviceInfoMultiProcessorCount(cv::cuda::DeviceInfo* device);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cudaDeviceInfoMultiProcessorCount", "ptr", $device), "cudaDeviceInfoMultiProcessorCount", @error)
 EndFunc   ;==>_cudaDeviceInfoMultiProcessorCount
 
-Func _cudaDeviceInfoFreeMemInfo(ByRef $info, ByRef $free)
+Func _cudaDeviceInfoFreeMemInfo($info, $free)
     ; CVAPI(void) cudaDeviceInfoFreeMemInfo(cv::cuda::DeviceInfo* info, size_t* free);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDeviceInfoFreeMemInfo", "ptr", $info, "struct*", $free), "cudaDeviceInfoFreeMemInfo", @error)
 EndFunc   ;==>_cudaDeviceInfoFreeMemInfo
 
-Func _cudaDeviceInfoTotalMemInfo(ByRef $info, ByRef $total)
+Func _cudaDeviceInfoTotalMemInfo($info, $total)
     ; CVAPI(void) cudaDeviceInfoTotalMemInfo(cv::cuda::DeviceInfo* info, size_t* total);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDeviceInfoTotalMemInfo", "ptr", $info, "struct*", $total), "cudaDeviceInfoTotalMemInfo", @error)
 EndFunc   ;==>_cudaDeviceInfoTotalMemInfo
 
-Func _cudaDeviceInfoSupports(ByRef $device, $feature)
+Func _cudaDeviceInfoSupports($device, $feature)
     ; CVAPI(bool) cudaDeviceInfoSupports(cv::cuda::DeviceInfo* device, cv::cuda::FeatureSet feature);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cudaDeviceInfoSupports", "ptr", $device, "cv::cuda::FeatureSet", $feature), "cudaDeviceInfoSupports", @error)
 EndFunc   ;==>_cudaDeviceInfoSupports
 
-Func _cudaDeviceInfoIsCompatible(ByRef $device)
+Func _cudaDeviceInfoIsCompatible($device)
     ; CVAPI(bool) cudaDeviceInfoIsCompatible(cv::cuda::DeviceInfo* device);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cudaDeviceInfoIsCompatible", "ptr", $device), "cudaDeviceInfoIsCompatible", @error)
 EndFunc   ;==>_cudaDeviceInfoIsCompatible
@@ -76,12 +84,12 @@ Func _cudaPrintShortCudaDeviceInfo($device)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaPrintShortCudaDeviceInfo", "int", $device), "cudaPrintShortCudaDeviceInfo", @error)
 EndFunc   ;==>_cudaPrintShortCudaDeviceInfo
 
-Func _cudaConvertFp16(ByRef $src, ByRef $dst, ByRef $stream)
+Func _cudaConvertFp16($src, $dst, $stream)
     ; CVAPI(void) cudaConvertFp16(cv::_InputArray* src, cv::_OutputArray* dst, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaConvertFp16", "ptr", $src, "ptr", $dst, "ptr", $stream), "cudaConvertFp16", @error)
 EndFunc   ;==>_cudaConvertFp16
 
-Func _cudaConvertFp16Mat(ByRef $matSrc, ByRef $matDst, ByRef $stream)
+Func _cudaConvertFp16Mat($matSrc, $matDst, $stream)
     ; cudaConvertFp16 using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -176,7 +184,7 @@ Func _gpuMatCreateDefault()
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "gpuMatCreateDefault"), "gpuMatCreateDefault", @error)
 EndFunc   ;==>_gpuMatCreateDefault
 
-Func _gpuMatCreate(ByRef $m, $rows, $cols, $type)
+Func _gpuMatCreate($m, $rows, $cols, $type)
     ; CVAPI(void) gpuMatCreate(cv::cuda::GpuMat* m, int rows, int cols, int type);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "gpuMatCreate", "ptr", $m, "int", $rows, "int", $cols, "int", $type), "gpuMatCreate", @error)
 EndFunc   ;==>_gpuMatCreate
@@ -186,27 +194,35 @@ Func _gpuMatCreateContinuous($rows, $cols, $type)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "gpuMatCreateContinuous", "int", $rows, "int", $cols, "int", $type), "gpuMatCreateContinuous", @error)
 EndFunc   ;==>_gpuMatCreateContinuous
 
-Func _gpuMatIsContinuous(ByRef $gpuMat)
+Func _gpuMatIsContinuous($gpuMat)
     ; CVAPI(bool) gpuMatIsContinuous(cv::cuda::GpuMat* gpuMat);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "gpuMatIsContinuous", "ptr", $gpuMat), "gpuMatIsContinuous", @error)
 EndFunc   ;==>_gpuMatIsContinuous
 
-Func _gpuMatGetRegion(ByRef $other, ByRef $rowRange, ByRef $colRange)
+Func _gpuMatGetRegion($other, $rowRange, $colRange)
     ; CVAPI(cv::cuda::GpuMat*) gpuMatGetRegion(cv::cuda::GpuMat* other, cv::Range* rowRange, cv::Range* colRange);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "gpuMatGetRegion", "ptr", $other, "ptr", $rowRange, "ptr", $colRange), "gpuMatGetRegion", @error)
 EndFunc   ;==>_gpuMatGetRegion
 
-Func _gpuMatRelease(ByRef $mat)
+Func _gpuMatRelease($mat)
     ; CVAPI(void) gpuMatRelease(cv::cuda::GpuMat** mat);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "gpuMatRelease", "ptr*", $mat), "gpuMatRelease", @error)
+
+    Local $bMatDllType
+    If VarGetType($mat) == "DLLStruct" Then
+        $bMatDllType = "struct*"
+    Else
+        $bMatDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "gpuMatRelease", $bMatDllType, $mat), "gpuMatRelease", @error)
 EndFunc   ;==>_gpuMatRelease
 
-Func _gpuMatCreateFromInputArray(ByRef $arr)
+Func _gpuMatCreateFromInputArray($arr)
     ; CVAPI(cv::cuda::GpuMat*) gpuMatCreateFromInputArray(cv::_InputArray* arr);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "gpuMatCreateFromInputArray", "ptr", $arr), "gpuMatCreateFromInputArray", @error)
 EndFunc   ;==>_gpuMatCreateFromInputArray
 
-Func _gpuMatCreateFromInputArrayMat(ByRef $matArr)
+Func _gpuMatCreateFromInputArrayMat($matArr)
     ; gpuMatCreateFromInputArray using cv::Mat instead of _*Array
 
     Local $iArrArr, $vectorOfMatArr, $iArrArrSize
@@ -236,37 +252,37 @@ Func _gpuMatCreateFromInputArrayMat(ByRef $matArr)
     Return $retval
 EndFunc   ;==>_gpuMatCreateFromInputArrayMat
 
-Func _gpuMatGetSize(ByRef $gpuMat, ByRef $size)
+Func _gpuMatGetSize($gpuMat, $size)
     ; CVAPI(void) gpuMatGetSize(cv::cuda::GpuMat* gpuMat, CvSize* size);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "gpuMatGetSize", "ptr", $gpuMat, "struct*", $size), "gpuMatGetSize", @error)
 EndFunc   ;==>_gpuMatGetSize
 
-Func _gpuMatIsEmpty(ByRef $gpuMat)
+Func _gpuMatIsEmpty($gpuMat)
     ; CVAPI(bool) gpuMatIsEmpty(cv::cuda::GpuMat* gpuMat);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "gpuMatIsEmpty", "ptr", $gpuMat), "gpuMatIsEmpty", @error)
 EndFunc   ;==>_gpuMatIsEmpty
 
-Func _gpuMatGetChannels(ByRef $gpuMat)
+Func _gpuMatGetChannels($gpuMat)
     ; CVAPI(int) gpuMatGetChannels(cv::cuda::GpuMat* gpuMat);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "gpuMatGetChannels", "ptr", $gpuMat), "gpuMatGetChannels", @error)
 EndFunc   ;==>_gpuMatGetChannels
 
-Func _gpuMatGetType(ByRef $gpuMat)
+Func _gpuMatGetType($gpuMat)
     ; CVAPI(int) gpuMatGetType(cv::cuda::GpuMat* gpuMat);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "gpuMatGetType", "ptr", $gpuMat), "gpuMatGetType", @error)
 EndFunc   ;==>_gpuMatGetType
 
-Func _gpuMatGetDepth(ByRef $gpuMat)
+Func _gpuMatGetDepth($gpuMat)
     ; CVAPI(int) gpuMatGetDepth(cv::cuda::GpuMat* gpuMat);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "gpuMatGetDepth", "ptr", $gpuMat), "gpuMatGetDepth", @error)
 EndFunc   ;==>_gpuMatGetDepth
 
-Func _gpuMatUpload(ByRef $gpuMat, ByRef $arr, ByRef $stream)
+Func _gpuMatUpload($gpuMat, $arr, $stream)
     ; CVAPI(void) gpuMatUpload(cv::cuda::GpuMat* gpuMat, cv::_InputArray* arr, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "gpuMatUpload", "ptr", $gpuMat, "ptr", $arr, "ptr", $stream), "gpuMatUpload", @error)
 EndFunc   ;==>_gpuMatUpload
 
-Func _gpuMatUploadMat(ByRef $gpuMat, ByRef $matArr, ByRef $stream)
+Func _gpuMatUploadMat($gpuMat, $matArr, $stream)
     ; gpuMatUpload using cv::Mat instead of _*Array
 
     Local $iArrArr, $vectorOfMatArr, $iArrArrSize
@@ -294,12 +310,12 @@ Func _gpuMatUploadMat(ByRef $gpuMat, ByRef $matArr, ByRef $stream)
     _cveInputArrayRelease($iArrArr)
 EndFunc   ;==>_gpuMatUploadMat
 
-Func _gpuMatDownload(ByRef $gpuMat, ByRef $arr, ByRef $stream)
+Func _gpuMatDownload($gpuMat, $arr, $stream)
     ; CVAPI(void) gpuMatDownload(cv::cuda::GpuMat* gpuMat, cv::_OutputArray* arr, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "gpuMatDownload", "ptr", $gpuMat, "ptr", $arr, "ptr", $stream), "gpuMatDownload", @error)
 EndFunc   ;==>_gpuMatDownload
 
-Func _gpuMatDownloadMat(ByRef $gpuMat, ByRef $matArr, ByRef $stream)
+Func _gpuMatDownloadMat($gpuMat, $matArr, $stream)
     ; gpuMatDownload using cv::Mat instead of _*Array
 
     Local $oArrArr, $vectorOfMatArr, $iArrArrSize
@@ -327,12 +343,12 @@ Func _gpuMatDownloadMat(ByRef $gpuMat, ByRef $matArr, ByRef $stream)
     _cveOutputArrayRelease($oArrArr)
 EndFunc   ;==>_gpuMatDownloadMat
 
-Func _gpuMatConvertTo($src, ByRef $dst, $rtype, $alpha, $beta, ByRef $stream)
+Func _gpuMatConvertTo($src, $dst, $rtype, $alpha, $beta, $stream)
     ; CVAPI(void) gpuMatConvertTo(const cv::cuda::GpuMat* src, cv::_OutputArray* dst, int rtype, double alpha, double beta, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "gpuMatConvertTo", "ptr", $src, "ptr", $dst, "int", $rtype, "double", $alpha, "double", $beta, "ptr", $stream), "gpuMatConvertTo", @error)
 EndFunc   ;==>_gpuMatConvertTo
 
-Func _gpuMatConvertToMat($src, ByRef $matDst, $rtype, $alpha, $beta, ByRef $stream)
+Func _gpuMatConvertToMat($src, $matDst, $rtype, $alpha, $beta, $stream)
     ; gpuMatConvertTo using cv::Mat instead of _*Array
 
     Local $oArrDst, $vectorOfMatDst, $iArrDstSize
@@ -360,12 +376,12 @@ Func _gpuMatConvertToMat($src, ByRef $matDst, $rtype, $alpha, $beta, ByRef $stre
     _cveOutputArrayRelease($oArrDst)
 EndFunc   ;==>_gpuMatConvertToMat
 
-Func _gpuMatCopyTo($src, ByRef $dst, $mask, ByRef $stream)
+Func _gpuMatCopyTo($src, $dst, $mask, $stream)
     ; CVAPI(void) gpuMatCopyTo(const cv::cuda::GpuMat* src, cv::_OutputArray* dst, const cv::_InputArray* mask, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "gpuMatCopyTo", "ptr", $src, "ptr", $dst, "ptr", $mask, "ptr", $stream), "gpuMatCopyTo", @error)
 EndFunc   ;==>_gpuMatCopyTo
 
-Func _gpuMatCopyToMat($src, ByRef $matDst, ByRef $matMask, ByRef $stream)
+Func _gpuMatCopyToMat($src, $matDst, $matMask, $stream)
     ; gpuMatCopyTo using cv::Mat instead of _*Array
 
     Local $oArrDst, $vectorOfMatDst, $iArrDstSize
@@ -415,12 +431,12 @@ Func _gpuMatCopyToMat($src, ByRef $matDst, ByRef $matMask, ByRef $stream)
     _cveOutputArrayRelease($oArrDst)
 EndFunc   ;==>_gpuMatCopyToMat
 
-Func _gpuMatSetTo(ByRef $mat, $s, ByRef $mask, ByRef $stream)
+Func _gpuMatSetTo($mat, $s, $mask, $stream)
     ; CVAPI(void) gpuMatSetTo(cv::cuda::GpuMat* mat, const CvScalar* s, cv::_InputArray* mask, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "gpuMatSetTo", "ptr", $mat, "ptr", $s, "ptr", $mask, "ptr", $stream), "gpuMatSetTo", @error)
 EndFunc   ;==>_gpuMatSetTo
 
-Func _gpuMatSetToMat(ByRef $mat, $s, ByRef $matMask, ByRef $stream)
+Func _gpuMatSetToMat($mat, $s, $matMask, $stream)
     ; gpuMatSetTo using cv::Mat instead of _*Array
 
     Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
@@ -448,12 +464,12 @@ Func _gpuMatSetToMat(ByRef $mat, $s, ByRef $matMask, ByRef $stream)
     _cveInputArrayRelease($iArrMask)
 EndFunc   ;==>_gpuMatSetToMat
 
-Func _gpuMatReshape($src, ByRef $dst, $cn, $rows)
+Func _gpuMatReshape($src, $dst, $cn, $rows)
     ; CVAPI(void) gpuMatReshape(const cv::cuda::GpuMat* src, cv::cuda::GpuMat* dst, int cn, int rows);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "gpuMatReshape", "ptr", $src, "ptr", $dst, "int", $cn, "int", $rows), "gpuMatReshape", @error)
 EndFunc   ;==>_gpuMatReshape
 
-Func _gpuMatGetSubRect($arr, ByRef $rect)
+Func _gpuMatGetSubRect($arr, $rect)
     ; CVAPI(cv::cuda::GpuMat*) gpuMatGetSubRect(const cv::cuda::GpuMat* arr, CvRect* rect);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "gpuMatGetSubRect", "ptr", $arr, "struct*", $rect), "gpuMatGetSubRect", @error)
 EndFunc   ;==>_gpuMatGetSubRect
@@ -468,17 +484,25 @@ Func _streamCreateWithFlag($flag)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "streamCreateWithFlag", "int", $flag), "streamCreateWithFlag", @error)
 EndFunc   ;==>_streamCreateWithFlag
 
-Func _streamRelease(ByRef $stream)
+Func _streamRelease($stream)
     ; CVAPI(void) streamRelease(cv::cuda::Stream** stream);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "streamRelease", "ptr*", $stream), "streamRelease", @error)
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "streamRelease", $bStreamDllType, $stream), "streamRelease", @error)
 EndFunc   ;==>_streamRelease
 
-Func _streamWaitForCompletion(ByRef $stream)
+Func _streamWaitForCompletion($stream)
     ; CVAPI(void) streamWaitForCompletion(cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "streamWaitForCompletion", "ptr", $stream), "streamWaitForCompletion", @error)
 EndFunc   ;==>_streamWaitForCompletion
 
-Func _streamQueryIfComplete(ByRef $stream)
+Func _streamQueryIfComplete($stream)
     ; CVAPI(bool) streamQueryIfComplete(cv::cuda::Stream* stream);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "streamQueryIfComplete", "ptr", $stream), "streamQueryIfComplete", @error)
 EndFunc   ;==>_streamQueryIfComplete

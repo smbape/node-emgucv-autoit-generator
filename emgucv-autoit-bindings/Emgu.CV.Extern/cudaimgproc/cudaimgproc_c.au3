@@ -1,12 +1,12 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cudaBlendLinear(ByRef $img1, ByRef $img2, ByRef $weights1, ByRef $weights2, ByRef $result, ByRef $stream)
+Func _cudaBlendLinear($img1, $img2, $weights1, $weights2, $result, $stream)
     ; CVAPI(void) cudaBlendLinear(cv::_InputArray* img1, cv::_InputArray* img2, cv::_InputArray* weights1, cv::_InputArray* weights2, cv::_OutputArray* result, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaBlendLinear", "ptr", $img1, "ptr", $img2, "ptr", $weights1, "ptr", $weights2, "ptr", $result, "ptr", $stream), "cudaBlendLinear", @error)
 EndFunc   ;==>_cudaBlendLinear
 
-Func _cudaBlendLinearMat(ByRef $matImg1, ByRef $matImg2, ByRef $matWeights1, ByRef $matWeights2, ByRef $matResult, ByRef $stream)
+Func _cudaBlendLinearMat($matImg1, $matImg2, $matWeights1, $matWeights2, $matResult, $stream)
     ; cudaBlendLinear using cv::Mat instead of _*Array
 
     Local $iArrImg1, $vectorOfMatImg1, $iArrImg1Size
@@ -122,12 +122,12 @@ Func _cudaBlendLinearMat(ByRef $matImg1, ByRef $matImg2, ByRef $matWeights1, ByR
     _cveInputArrayRelease($iArrImg1)
 EndFunc   ;==>_cudaBlendLinearMat
 
-Func _cudaCvtColor(ByRef $src, ByRef $dst, $code, $dcn, ByRef $stream)
+Func _cudaCvtColor($src, $dst, $code, $dcn, $stream)
     ; CVAPI(void) cudaCvtColor(cv::_InputArray* src, cv::_OutputArray* dst, int code, int dcn, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCvtColor", "ptr", $src, "ptr", $dst, "int", $code, "int", $dcn, "ptr", $stream), "cudaCvtColor", @error)
 EndFunc   ;==>_cudaCvtColor
 
-Func _cudaCvtColorMat(ByRef $matSrc, ByRef $matDst, $code, $dcn, ByRef $stream)
+Func _cudaCvtColorMat($matSrc, $matDst, $code, $dcn, $stream)
     ; cudaCvtColor using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -177,12 +177,12 @@ Func _cudaCvtColorMat(ByRef $matSrc, ByRef $matDst, $code, $dcn, ByRef $stream)
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaCvtColorMat
 
-Func _cudaDemosaicing(ByRef $src, ByRef $dst, $code, $dcn, ByRef $stream)
+Func _cudaDemosaicing($src, $dst, $code, $dcn, $stream)
     ; CVAPI(void) cudaDemosaicing(cv::_InputArray* src, cv::_OutputArray* dst, int code, int dcn, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDemosaicing", "ptr", $src, "ptr", $dst, "int", $code, "int", $dcn, "ptr", $stream), "cudaDemosaicing", @error)
 EndFunc   ;==>_cudaDemosaicing
 
-Func _cudaDemosaicingMat(ByRef $matSrc, ByRef $matDst, $code, $dcn, ByRef $stream)
+Func _cudaDemosaicingMat($matSrc, $matDst, $code, $dcn, $stream)
     ; cudaDemosaicing using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -232,12 +232,12 @@ Func _cudaDemosaicingMat(ByRef $matSrc, ByRef $matDst, $code, $dcn, ByRef $strea
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaDemosaicingMat
 
-Func _cudaSwapChannels(ByRef $image, $dstOrder, ByRef $stream)
+Func _cudaSwapChannels($image, $dstOrder, $stream)
     ; CVAPI(void) cudaSwapChannels(cv::_InputOutputArray* image, const int* dstOrder, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaSwapChannels", "ptr", $image, "const int*", $dstOrder, "ptr", $stream), "cudaSwapChannels", @error)
 EndFunc   ;==>_cudaSwapChannels
 
-Func _cudaSwapChannelsMat(ByRef $matImage, $dstOrder, ByRef $stream)
+Func _cudaSwapChannelsMat($matImage, $dstOrder, $stream)
     ; cudaSwapChannels using cv::Mat instead of _*Array
 
     Local $ioArrImage, $vectorOfMatImage, $iArrImageSize
@@ -265,12 +265,12 @@ Func _cudaSwapChannelsMat(ByRef $matImage, $dstOrder, ByRef $stream)
     _cveInputOutputArrayRelease($ioArrImage)
 EndFunc   ;==>_cudaSwapChannelsMat
 
-Func _cudaAlphaComp(ByRef $img1, ByRef $img2, ByRef $dst, $alphaOp, ByRef $stream)
+Func _cudaAlphaComp($img1, $img2, $dst, $alphaOp, $stream)
     ; CVAPI(void) cudaAlphaComp(cv::_InputArray* img1, cv::_InputArray* img2, cv::_OutputArray* dst, int alphaOp, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaAlphaComp", "ptr", $img1, "ptr", $img2, "ptr", $dst, "int", $alphaOp, "ptr", $stream), "cudaAlphaComp", @error)
 EndFunc   ;==>_cudaAlphaComp
 
-Func _cudaAlphaCompMat(ByRef $matImg1, ByRef $matImg2, ByRef $matDst, $alphaOp, ByRef $stream)
+Func _cudaAlphaCompMat($matImg1, $matImg2, $matDst, $alphaOp, $stream)
     ; cudaAlphaComp using cv::Mat instead of _*Array
 
     Local $iArrImg1, $vectorOfMatImg1, $iArrImg1Size
@@ -342,12 +342,12 @@ Func _cudaAlphaCompMat(ByRef $matImg1, ByRef $matImg2, ByRef $matDst, $alphaOp, 
     _cveInputArrayRelease($iArrImg1)
 EndFunc   ;==>_cudaAlphaCompMat
 
-Func _cudaMeanShiftFiltering(ByRef $src, ByRef $dst, $sp, $sr, ByRef $criteria, ByRef $stream)
+Func _cudaMeanShiftFiltering($src, $dst, $sp, $sr, $criteria, $stream)
     ; CVAPI(void) cudaMeanShiftFiltering(cv::_InputArray* src, cv::_OutputArray* dst, int sp, int sr, CvTermCriteria* criteria, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaMeanShiftFiltering", "ptr", $src, "ptr", $dst, "int", $sp, "int", $sr, "struct*", $criteria, "ptr", $stream), "cudaMeanShiftFiltering", @error)
 EndFunc   ;==>_cudaMeanShiftFiltering
 
-Func _cudaMeanShiftFilteringMat(ByRef $matSrc, ByRef $matDst, $sp, $sr, ByRef $criteria, ByRef $stream)
+Func _cudaMeanShiftFilteringMat($matSrc, $matDst, $sp, $sr, $criteria, $stream)
     ; cudaMeanShiftFiltering using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -397,12 +397,12 @@ Func _cudaMeanShiftFilteringMat(ByRef $matSrc, ByRef $matDst, $sp, $sr, ByRef $c
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaMeanShiftFilteringMat
 
-Func _cudaMeanShiftProc(ByRef $src, ByRef $dstr, ByRef $dstsp, $sp, $sr, ByRef $criteria, ByRef $stream)
+Func _cudaMeanShiftProc($src, $dstr, $dstsp, $sp, $sr, $criteria, $stream)
     ; CVAPI(void) cudaMeanShiftProc(cv::_InputArray* src, cv::_OutputArray* dstr, cv::_OutputArray* dstsp, int sp, int sr, CvTermCriteria* criteria, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaMeanShiftProc", "ptr", $src, "ptr", $dstr, "ptr", $dstsp, "int", $sp, "int", $sr, "struct*", $criteria, "ptr", $stream), "cudaMeanShiftProc", @error)
 EndFunc   ;==>_cudaMeanShiftProc
 
-Func _cudaMeanShiftProcMat(ByRef $matSrc, ByRef $matDstr, ByRef $matDstsp, $sp, $sr, ByRef $criteria, ByRef $stream)
+Func _cudaMeanShiftProcMat($matSrc, $matDstr, $matDstsp, $sp, $sr, $criteria, $stream)
     ; cudaMeanShiftProc using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -474,12 +474,12 @@ Func _cudaMeanShiftProcMat(ByRef $matSrc, ByRef $matDstr, ByRef $matDstsp, $sp, 
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaMeanShiftProcMat
 
-Func _cudaMeanShiftSegmentation(ByRef $src, ByRef $dst, $sp, $sr, $minsize, ByRef $criteria, ByRef $stream)
+Func _cudaMeanShiftSegmentation($src, $dst, $sp, $sr, $minsize, $criteria, $stream)
     ; CVAPI(void) cudaMeanShiftSegmentation(cv::_InputArray* src, cv::_OutputArray* dst, int sp, int sr, int minsize, CvTermCriteria* criteria, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaMeanShiftSegmentation", "ptr", $src, "ptr", $dst, "int", $sp, "int", $sr, "int", $minsize, "struct*", $criteria, "ptr", $stream), "cudaMeanShiftSegmentation", @error)
 EndFunc   ;==>_cudaMeanShiftSegmentation
 
-Func _cudaMeanShiftSegmentationMat(ByRef $matSrc, ByRef $matDst, $sp, $sr, $minsize, ByRef $criteria, ByRef $stream)
+Func _cudaMeanShiftSegmentationMat($matSrc, $matDst, $sp, $sr, $minsize, $criteria, $stream)
     ; cudaMeanShiftSegmentation using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -529,12 +529,12 @@ Func _cudaMeanShiftSegmentationMat(ByRef $matSrc, ByRef $matDst, $sp, $sr, $mins
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaMeanShiftSegmentationMat
 
-Func _cudaCalcHist(ByRef $src, ByRef $hist, ByRef $stream)
+Func _cudaCalcHist($src, $hist, $stream)
     ; CVAPI(void) cudaCalcHist(cv::_InputArray* src, cv::_OutputArray* hist, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCalcHist", "ptr", $src, "ptr", $hist, "ptr", $stream), "cudaCalcHist", @error)
 EndFunc   ;==>_cudaCalcHist
 
-Func _cudaCalcHistMat(ByRef $matSrc, ByRef $matHist, ByRef $stream)
+Func _cudaCalcHistMat($matSrc, $matHist, $stream)
     ; cudaCalcHist using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -584,12 +584,12 @@ Func _cudaCalcHistMat(ByRef $matSrc, ByRef $matHist, ByRef $stream)
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaCalcHistMat
 
-Func _cudaEqualizeHist(ByRef $src, ByRef $dst, ByRef $stream)
+Func _cudaEqualizeHist($src, $dst, $stream)
     ; CVAPI(void) cudaEqualizeHist(cv::_InputArray* src, cv::_OutputArray* dst, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaEqualizeHist", "ptr", $src, "ptr", $dst, "ptr", $stream), "cudaEqualizeHist", @error)
 EndFunc   ;==>_cudaEqualizeHist
 
-Func _cudaEqualizeHistMat(ByRef $matSrc, ByRef $matDst, ByRef $stream)
+Func _cudaEqualizeHistMat($matSrc, $matDst, $stream)
     ; cudaEqualizeHist using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -639,12 +639,12 @@ Func _cudaEqualizeHistMat(ByRef $matSrc, ByRef $matDst, ByRef $stream)
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaEqualizeHistMat
 
-Func _cudaHistEven(ByRef $src, ByRef $hist, $histSize, $lowerLevel, $upperLevel, ByRef $stream)
+Func _cudaHistEven($src, $hist, $histSize, $lowerLevel, $upperLevel, $stream)
     ; CVAPI(void) cudaHistEven(cv::_InputArray* src, cv::_OutputArray* hist, int histSize, int lowerLevel, int upperLevel, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHistEven", "ptr", $src, "ptr", $hist, "int", $histSize, "int", $lowerLevel, "int", $upperLevel, "ptr", $stream), "cudaHistEven", @error)
 EndFunc   ;==>_cudaHistEven
 
-Func _cudaHistEvenMat(ByRef $matSrc, ByRef $matHist, $histSize, $lowerLevel, $upperLevel, ByRef $stream)
+Func _cudaHistEvenMat($matSrc, $matHist, $histSize, $lowerLevel, $upperLevel, $stream)
     ; cudaHistEven using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -694,12 +694,12 @@ Func _cudaHistEvenMat(ByRef $matSrc, ByRef $matHist, $histSize, $lowerLevel, $up
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaHistEvenMat
 
-Func _cudaHistRange(ByRef $src, ByRef $hist, ByRef $levels, ByRef $stream)
+Func _cudaHistRange($src, $hist, $levels, $stream)
     ; CVAPI(void) cudaHistRange(cv::_InputArray* src, cv::_OutputArray* hist, cv::_InputArray* levels, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHistRange", "ptr", $src, "ptr", $hist, "ptr", $levels, "ptr", $stream), "cudaHistRange", @error)
 EndFunc   ;==>_cudaHistRange
 
-Func _cudaHistRangeMat(ByRef $matSrc, ByRef $matHist, ByRef $matLevels, ByRef $stream)
+Func _cudaHistRangeMat($matSrc, $matHist, $matLevels, $stream)
     ; cudaHistRange using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -771,12 +771,12 @@ Func _cudaHistRangeMat(ByRef $matSrc, ByRef $matHist, ByRef $matLevels, ByRef $s
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaHistRangeMat
 
-Func _cudaBilateralFilter(ByRef $src, ByRef $dst, $kernelSize, $sigmaColor, $sigmaSpatial, $borderMode, ByRef $stream)
+Func _cudaBilateralFilter($src, $dst, $kernelSize, $sigmaColor, $sigmaSpatial, $borderMode, $stream)
     ; CVAPI(void) cudaBilateralFilter(cv::_InputArray* src, cv::_OutputArray* dst, int kernelSize, float sigmaColor, float sigmaSpatial, int borderMode, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaBilateralFilter", "ptr", $src, "ptr", $dst, "int", $kernelSize, "float", $sigmaColor, "float", $sigmaSpatial, "int", $borderMode, "ptr", $stream), "cudaBilateralFilter", @error)
 EndFunc   ;==>_cudaBilateralFilter
 
-Func _cudaBilateralFilterMat(ByRef $matSrc, ByRef $matDst, $kernelSize, $sigmaColor, $sigmaSpatial, $borderMode, ByRef $stream)
+Func _cudaBilateralFilterMat($matSrc, $matDst, $kernelSize, $sigmaColor, $sigmaSpatial, $borderMode, $stream)
     ; cudaBilateralFilter using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -826,22 +826,36 @@ Func _cudaBilateralFilterMat(ByRef $matSrc, ByRef $matDst, $kernelSize, $sigmaCo
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaBilateralFilterMat
 
-Func _cudaCreateHarrisCorner($srcType, $blockSize, $ksize, $k, $borderType, ByRef $sharedPtr)
+Func _cudaCreateHarrisCorner($srcType, $blockSize, $ksize, $k, $borderType, $sharedPtr)
     ; CVAPI(cv::cuda::CornernessCriteria*) cudaCreateHarrisCorner(int srcType, int blockSize, int ksize, double k, int borderType, cv::Ptr<cv::cuda::CornernessCriteria>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateHarrisCorner", "int", $srcType, "int", $blockSize, "int", $ksize, "double", $k, "int", $borderType, "ptr*", $sharedPtr), "cudaCreateHarrisCorner", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateHarrisCorner", "int", $srcType, "int", $blockSize, "int", $ksize, "double", $k, "int", $borderType, $bSharedPtrDllType, $sharedPtr), "cudaCreateHarrisCorner", @error)
 EndFunc   ;==>_cudaCreateHarrisCorner
 
-Func _cudaCreateMinEigenValCorner($srcType, $blockSize, $ksize, $borderType, ByRef $sharedPtr)
+Func _cudaCreateMinEigenValCorner($srcType, $blockSize, $ksize, $borderType, $sharedPtr)
     ; CVAPI(cv::cuda::CornernessCriteria*) cudaCreateMinEigenValCorner(int srcType, int blockSize, int ksize, int borderType, cv::Ptr<cv::cuda::CornernessCriteria>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateMinEigenValCorner", "int", $srcType, "int", $blockSize, "int", $ksize, "int", $borderType, "ptr*", $sharedPtr), "cudaCreateMinEigenValCorner", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateMinEigenValCorner", "int", $srcType, "int", $blockSize, "int", $ksize, "int", $borderType, $bSharedPtrDllType, $sharedPtr), "cudaCreateMinEigenValCorner", @error)
 EndFunc   ;==>_cudaCreateMinEigenValCorner
 
-Func _cudaCornernessCriteriaCompute(ByRef $detector, ByRef $src, ByRef $dst, ByRef $stream)
+Func _cudaCornernessCriteriaCompute($detector, $src, $dst, $stream)
     ; CVAPI(void) cudaCornernessCriteriaCompute(cv::Ptr<cv::cuda::CornernessCriteria>* detector, cv::_InputArray* src, cv::_OutputArray* dst, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCornernessCriteriaCompute", "ptr", $detector, "ptr", $src, "ptr", $dst, "ptr", $stream), "cudaCornernessCriteriaCompute", @error)
 EndFunc   ;==>_cudaCornernessCriteriaCompute
 
-Func _cudaCornernessCriteriaComputeMat(ByRef $detector, ByRef $matSrc, ByRef $matDst, ByRef $stream)
+Func _cudaCornernessCriteriaComputeMat($detector, $matSrc, $matDst, $stream)
     ; cudaCornernessCriteriaCompute using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -891,22 +905,37 @@ Func _cudaCornernessCriteriaComputeMat(ByRef $detector, ByRef $matSrc, ByRef $ma
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaCornernessCriteriaComputeMat
 
-Func _cudaCornernessCriteriaRelease(ByRef $detector)
+Func _cudaCornernessCriteriaRelease($detector)
     ; CVAPI(void) cudaCornernessCriteriaRelease(cv::Ptr<cv::cuda::CornernessCriteria>** detector);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCornernessCriteriaRelease", "ptr*", $detector), "cudaCornernessCriteriaRelease", @error)
+
+    Local $bDetectorDllType
+    If VarGetType($detector) == "DLLStruct" Then
+        $bDetectorDllType = "struct*"
+    Else
+        $bDetectorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCornernessCriteriaRelease", $bDetectorDllType, $detector), "cudaCornernessCriteriaRelease", @error)
 EndFunc   ;==>_cudaCornernessCriteriaRelease
 
-Func _cudaCLAHECreate($clipLimit, ByRef $tileGridSize, ByRef $sharedPtr)
+Func _cudaCLAHECreate($clipLimit, $tileGridSize, $sharedPtr)
     ; CVAPI(cv::cuda::CLAHE*) cudaCLAHECreate(double clipLimit, CvSize* tileGridSize, cv::Ptr<cv::cuda::CLAHE>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCLAHECreate", "double", $clipLimit, "struct*", $tileGridSize, "ptr*", $sharedPtr), "cudaCLAHECreate", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCLAHECreate", "double", $clipLimit, "struct*", $tileGridSize, $bSharedPtrDllType, $sharedPtr), "cudaCLAHECreate", @error)
 EndFunc   ;==>_cudaCLAHECreate
 
-Func _cudaCLAHEApply(ByRef $clahe, ByRef $src, ByRef $dst, ByRef $stream)
+Func _cudaCLAHEApply($clahe, $src, $dst, $stream)
     ; CVAPI(void) cudaCLAHEApply(cv::cuda::CLAHE* clahe, cv::_InputArray* src, cv::_OutputArray* dst, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCLAHEApply", "ptr", $clahe, "ptr", $src, "ptr", $dst, "ptr", $stream), "cudaCLAHEApply", @error)
 EndFunc   ;==>_cudaCLAHEApply
 
-Func _cudaCLAHEApplyMat(ByRef $clahe, ByRef $matSrc, ByRef $matDst, ByRef $stream)
+Func _cudaCLAHEApplyMat($clahe, $matSrc, $matDst, $stream)
     ; cudaCLAHEApply using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -956,22 +985,37 @@ Func _cudaCLAHEApplyMat(ByRef $clahe, ByRef $matSrc, ByRef $matDst, ByRef $strea
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaCLAHEApplyMat
 
-Func _cudaCLAHERelease(ByRef $clahe)
+Func _cudaCLAHERelease($clahe)
     ; CVAPI(void) cudaCLAHERelease(cv::Ptr<cv::cuda::CLAHE>** clahe);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCLAHERelease", "ptr*", $clahe), "cudaCLAHERelease", @error)
+
+    Local $bClaheDllType
+    If VarGetType($clahe) == "DLLStruct" Then
+        $bClaheDllType = "struct*"
+    Else
+        $bClaheDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCLAHERelease", $bClaheDllType, $clahe), "cudaCLAHERelease", @error)
 EndFunc   ;==>_cudaCLAHERelease
 
-Func _cudaCreateCannyEdgeDetector($lowThreshold, $highThreshold, $apertureSize, $L2gradient, ByRef $sharedPtr)
+Func _cudaCreateCannyEdgeDetector($lowThreshold, $highThreshold, $apertureSize, $L2gradient, $sharedPtr)
     ; CVAPI(cv::cuda::CannyEdgeDetector*) cudaCreateCannyEdgeDetector(double lowThreshold, double highThreshold, int apertureSize, bool L2gradient, cv::Ptr<cv::cuda::CannyEdgeDetector>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateCannyEdgeDetector", "double", $lowThreshold, "double", $highThreshold, "int", $apertureSize, "boolean", $L2gradient, "ptr*", $sharedPtr), "cudaCreateCannyEdgeDetector", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateCannyEdgeDetector", "double", $lowThreshold, "double", $highThreshold, "int", $apertureSize, "boolean", $L2gradient, $bSharedPtrDllType, $sharedPtr), "cudaCreateCannyEdgeDetector", @error)
 EndFunc   ;==>_cudaCreateCannyEdgeDetector
 
-Func _cudaCannyEdgeDetectorDetect(ByRef $detector, ByRef $src, ByRef $edges, ByRef $stream)
+Func _cudaCannyEdgeDetectorDetect($detector, $src, $edges, $stream)
     ; CVAPI(void) cudaCannyEdgeDetectorDetect(cv::cuda::CannyEdgeDetector* detector, cv::_InputArray* src, cv::_OutputArray* edges, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCannyEdgeDetectorDetect", "ptr", $detector, "ptr", $src, "ptr", $edges, "ptr", $stream), "cudaCannyEdgeDetectorDetect", @error)
 EndFunc   ;==>_cudaCannyEdgeDetectorDetect
 
-Func _cudaCannyEdgeDetectorDetectMat(ByRef $detector, ByRef $matSrc, ByRef $matEdges, ByRef $stream)
+Func _cudaCannyEdgeDetectorDetectMat($detector, $matSrc, $matEdges, $stream)
     ; cudaCannyEdgeDetectorDetect using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -1021,22 +1065,37 @@ Func _cudaCannyEdgeDetectorDetectMat(ByRef $detector, ByRef $matSrc, ByRef $matE
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaCannyEdgeDetectorDetectMat
 
-Func _cudaCannyEdgeDetectorRelease(ByRef $detector)
+Func _cudaCannyEdgeDetectorRelease($detector)
     ; CVAPI(void) cudaCannyEdgeDetectorRelease(cv::Ptr<cv::cuda::CannyEdgeDetector>** detector);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCannyEdgeDetectorRelease", "ptr*", $detector), "cudaCannyEdgeDetectorRelease", @error)
+
+    Local $bDetectorDllType
+    If VarGetType($detector) == "DLLStruct" Then
+        $bDetectorDllType = "struct*"
+    Else
+        $bDetectorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCannyEdgeDetectorRelease", $bDetectorDllType, $detector), "cudaCannyEdgeDetectorRelease", @error)
 EndFunc   ;==>_cudaCannyEdgeDetectorRelease
 
-Func _cudaGoodFeaturesToTrackDetectorCreate($srcType, $maxCorners, $qualityLevel, $minDistance, $blockSize, $useHarrisDetector, $harrisK, ByRef $sharedPtr)
+Func _cudaGoodFeaturesToTrackDetectorCreate($srcType, $maxCorners, $qualityLevel, $minDistance, $blockSize, $useHarrisDetector, $harrisK, $sharedPtr)
     ; CVAPI(cv::cuda::CornersDetector*) cudaGoodFeaturesToTrackDetectorCreate(int srcType, int maxCorners, double qualityLevel, double minDistance, int blockSize, bool useHarrisDetector, double harrisK, cv::Ptr<cv::cuda::CornersDetector>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaGoodFeaturesToTrackDetectorCreate", "int", $srcType, "int", $maxCorners, "double", $qualityLevel, "double", $minDistance, "int", $blockSize, "boolean", $useHarrisDetector, "double", $harrisK, "ptr*", $sharedPtr), "cudaGoodFeaturesToTrackDetectorCreate", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaGoodFeaturesToTrackDetectorCreate", "int", $srcType, "int", $maxCorners, "double", $qualityLevel, "double", $minDistance, "int", $blockSize, "boolean", $useHarrisDetector, "double", $harrisK, $bSharedPtrDllType, $sharedPtr), "cudaGoodFeaturesToTrackDetectorCreate", @error)
 EndFunc   ;==>_cudaGoodFeaturesToTrackDetectorCreate
 
-Func _cudaCornersDetectorDetect(ByRef $detector, ByRef $image, ByRef $corners, ByRef $mask, ByRef $stream)
+Func _cudaCornersDetectorDetect($detector, $image, $corners, $mask, $stream)
     ; CVAPI(void) cudaCornersDetectorDetect(cv::cuda::CornersDetector* detector, cv::_InputArray* image, cv::_OutputArray* corners, cv::_InputArray* mask, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCornersDetectorDetect", "ptr", $detector, "ptr", $image, "ptr", $corners, "ptr", $mask, "ptr", $stream), "cudaCornersDetectorDetect", @error)
 EndFunc   ;==>_cudaCornersDetectorDetect
 
-Func _cudaCornersDetectorDetectMat(ByRef $detector, ByRef $matImage, ByRef $matCorners, ByRef $matMask, ByRef $stream)
+Func _cudaCornersDetectorDetectMat($detector, $matImage, $matCorners, $matMask, $stream)
     ; cudaCornersDetectorDetect using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -1108,27 +1167,50 @@ Func _cudaCornersDetectorDetectMat(ByRef $detector, ByRef $matImage, ByRef $matC
     _cveInputArrayRelease($iArrImage)
 EndFunc   ;==>_cudaCornersDetectorDetectMat
 
-Func _cudaCornersDetectorRelease(ByRef $detector)
+Func _cudaCornersDetectorRelease($detector)
     ; CVAPI(void) cudaCornersDetectorRelease(cv::Ptr<cv::cuda::CornersDetector>** detector);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCornersDetectorRelease", "ptr*", $detector), "cudaCornersDetectorRelease", @error)
+
+    Local $bDetectorDllType
+    If VarGetType($detector) == "DLLStruct" Then
+        $bDetectorDllType = "struct*"
+    Else
+        $bDetectorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCornersDetectorRelease", $bDetectorDllType, $detector), "cudaCornersDetectorRelease", @error)
 EndFunc   ;==>_cudaCornersDetectorRelease
 
-Func _cudaTemplateMatchingCreate($srcType, $method, ByRef $blockSize, ByRef $sharedPtr)
+Func _cudaTemplateMatchingCreate($srcType, $method, $blockSize, $sharedPtr)
     ; CVAPI(cv::cuda::TemplateMatching*) cudaTemplateMatchingCreate(int srcType, int method, CvSize* blockSize, cv::Ptr<cv::cuda::TemplateMatching>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaTemplateMatchingCreate", "int", $srcType, "int", $method, "struct*", $blockSize, "ptr*", $sharedPtr), "cudaTemplateMatchingCreate", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaTemplateMatchingCreate", "int", $srcType, "int", $method, "struct*", $blockSize, $bSharedPtrDllType, $sharedPtr), "cudaTemplateMatchingCreate", @error)
 EndFunc   ;==>_cudaTemplateMatchingCreate
 
-Func _cudaTemplateMatchingRelease(ByRef $tm)
+Func _cudaTemplateMatchingRelease($tm)
     ; CVAPI(void) cudaTemplateMatchingRelease(cv::Ptr<cv::cuda::TemplateMatching>** tm);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaTemplateMatchingRelease", "ptr*", $tm), "cudaTemplateMatchingRelease", @error)
+
+    Local $bTmDllType
+    If VarGetType($tm) == "DLLStruct" Then
+        $bTmDllType = "struct*"
+    Else
+        $bTmDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaTemplateMatchingRelease", $bTmDllType, $tm), "cudaTemplateMatchingRelease", @error)
 EndFunc   ;==>_cudaTemplateMatchingRelease
 
-Func _cudaTemplateMatchingMatch(ByRef $tm, ByRef $image, ByRef $templ, ByRef $result, ByRef $stream)
+Func _cudaTemplateMatchingMatch($tm, $image, $templ, $result, $stream)
     ; CVAPI(void) cudaTemplateMatchingMatch(cv::cuda::TemplateMatching* tm, cv::_InputArray* image, cv::_InputArray* templ, cv::_OutputArray* result, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaTemplateMatchingMatch", "ptr", $tm, "ptr", $image, "ptr", $templ, "ptr", $result, "ptr", $stream), "cudaTemplateMatchingMatch", @error)
 EndFunc   ;==>_cudaTemplateMatchingMatch
 
-Func _cudaTemplateMatchingMatchMat(ByRef $tm, ByRef $matImage, ByRef $matTempl, ByRef $matResult, ByRef $stream)
+Func _cudaTemplateMatchingMatchMat($tm, $matImage, $matTempl, $matResult, $stream)
     ; cudaTemplateMatchingMatch using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -1200,17 +1282,24 @@ Func _cudaTemplateMatchingMatchMat(ByRef $tm, ByRef $matImage, ByRef $matTempl, 
     _cveInputArrayRelease($iArrImage)
 EndFunc   ;==>_cudaTemplateMatchingMatchMat
 
-Func _cudaHoughLinesDetectorCreate($rho, $theta, $threshold, $doSort, $maxLines, ByRef $sharedPtr)
+Func _cudaHoughLinesDetectorCreate($rho, $theta, $threshold, $doSort, $maxLines, $sharedPtr)
     ; CVAPI(cv::cuda::HoughLinesDetector*) cudaHoughLinesDetectorCreate(float rho, float theta, int threshold, bool doSort, int maxLines, cv::Ptr<cv::cuda::HoughLinesDetector>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaHoughLinesDetectorCreate", "float", $rho, "float", $theta, "int", $threshold, "boolean", $doSort, "int", $maxLines, "ptr*", $sharedPtr), "cudaHoughLinesDetectorCreate", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaHoughLinesDetectorCreate", "float", $rho, "float", $theta, "int", $threshold, "boolean", $doSort, "int", $maxLines, $bSharedPtrDllType, $sharedPtr), "cudaHoughLinesDetectorCreate", @error)
 EndFunc   ;==>_cudaHoughLinesDetectorCreate
 
-Func _cudaHoughLinesDetectorDetect(ByRef $detector, ByRef $src, ByRef $lines, ByRef $stream)
+Func _cudaHoughLinesDetectorDetect($detector, $src, $lines, $stream)
     ; CVAPI(void) cudaHoughLinesDetectorDetect(cv::cuda::HoughLinesDetector* detector, cv::_InputArray* src, cv::_OutputArray* lines, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughLinesDetectorDetect", "ptr", $detector, "ptr", $src, "ptr", $lines, "ptr", $stream), "cudaHoughLinesDetectorDetect", @error)
 EndFunc   ;==>_cudaHoughLinesDetectorDetect
 
-Func _cudaHoughLinesDetectorDetectMat(ByRef $detector, ByRef $matSrc, ByRef $matLines, ByRef $stream)
+Func _cudaHoughLinesDetectorDetectMat($detector, $matSrc, $matLines, $stream)
     ; cudaHoughLinesDetectorDetect using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -1260,22 +1349,37 @@ Func _cudaHoughLinesDetectorDetectMat(ByRef $detector, ByRef $matSrc, ByRef $mat
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaHoughLinesDetectorDetectMat
 
-Func _cudaHoughLinesDetectorRelease(ByRef $detector)
+Func _cudaHoughLinesDetectorRelease($detector)
     ; CVAPI(void) cudaHoughLinesDetectorRelease(cv::Ptr<cv::cuda::HoughLinesDetector>** detector);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughLinesDetectorRelease", "ptr*", $detector), "cudaHoughLinesDetectorRelease", @error)
+
+    Local $bDetectorDllType
+    If VarGetType($detector) == "DLLStruct" Then
+        $bDetectorDllType = "struct*"
+    Else
+        $bDetectorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughLinesDetectorRelease", $bDetectorDllType, $detector), "cudaHoughLinesDetectorRelease", @error)
 EndFunc   ;==>_cudaHoughLinesDetectorRelease
 
-Func _cudaHoughSegmentDetectorCreate($rho, $theta, $minLineLength, $maxLineGap, $maxLines, ByRef $sharedPtr)
+Func _cudaHoughSegmentDetectorCreate($rho, $theta, $minLineLength, $maxLineGap, $maxLines, $sharedPtr)
     ; CVAPI(cv::cuda::HoughSegmentDetector*) cudaHoughSegmentDetectorCreate(float rho, float theta, int minLineLength, int maxLineGap, int maxLines, cv::Ptr<cv::cuda::HoughSegmentDetector>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaHoughSegmentDetectorCreate", "float", $rho, "float", $theta, "int", $minLineLength, "int", $maxLineGap, "int", $maxLines, "ptr*", $sharedPtr), "cudaHoughSegmentDetectorCreate", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaHoughSegmentDetectorCreate", "float", $rho, "float", $theta, "int", $minLineLength, "int", $maxLineGap, "int", $maxLines, $bSharedPtrDllType, $sharedPtr), "cudaHoughSegmentDetectorCreate", @error)
 EndFunc   ;==>_cudaHoughSegmentDetectorCreate
 
-Func _cudaHoughSegmentDetectorDetect(ByRef $detector, ByRef $src, ByRef $lines, ByRef $stream)
+Func _cudaHoughSegmentDetectorDetect($detector, $src, $lines, $stream)
     ; CVAPI(void) cudaHoughSegmentDetectorDetect(cv::cuda::HoughSegmentDetector* detector, cv::_InputArray* src, cv::_OutputArray* lines, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughSegmentDetectorDetect", "ptr", $detector, "ptr", $src, "ptr", $lines, "ptr", $stream), "cudaHoughSegmentDetectorDetect", @error)
 EndFunc   ;==>_cudaHoughSegmentDetectorDetect
 
-Func _cudaHoughSegmentDetectorDetectMat(ByRef $detector, ByRef $matSrc, ByRef $matLines, ByRef $stream)
+Func _cudaHoughSegmentDetectorDetectMat($detector, $matSrc, $matLines, $stream)
     ; cudaHoughSegmentDetectorDetect using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -1325,22 +1429,37 @@ Func _cudaHoughSegmentDetectorDetectMat(ByRef $detector, ByRef $matSrc, ByRef $m
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaHoughSegmentDetectorDetectMat
 
-Func _cudaHoughSegmentDetectorRelease(ByRef $detector)
+Func _cudaHoughSegmentDetectorRelease($detector)
     ; CVAPI(void) cudaHoughSegmentDetectorRelease(cv::Ptr<cv::cuda::HoughSegmentDetector>** detector);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughSegmentDetectorRelease", "ptr*", $detector), "cudaHoughSegmentDetectorRelease", @error)
+
+    Local $bDetectorDllType
+    If VarGetType($detector) == "DLLStruct" Then
+        $bDetectorDllType = "struct*"
+    Else
+        $bDetectorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughSegmentDetectorRelease", $bDetectorDllType, $detector), "cudaHoughSegmentDetectorRelease", @error)
 EndFunc   ;==>_cudaHoughSegmentDetectorRelease
 
-Func _cudaHoughCirclesDetectorCreate($dp, $minDist, $cannyThreshold, $votesThreshold, $minRadius, $maxRadius, $maxCircles, ByRef $sharedPtr)
+Func _cudaHoughCirclesDetectorCreate($dp, $minDist, $cannyThreshold, $votesThreshold, $minRadius, $maxRadius, $maxCircles, $sharedPtr)
     ; CVAPI(cv::cuda::HoughCirclesDetector*) cudaHoughCirclesDetectorCreate(float dp, float minDist, int cannyThreshold, int votesThreshold, int minRadius, int maxRadius, int maxCircles, cv::Ptr<cv::cuda::HoughCirclesDetector>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaHoughCirclesDetectorCreate", "float", $dp, "float", $minDist, "int", $cannyThreshold, "int", $votesThreshold, "int", $minRadius, "int", $maxRadius, "int", $maxCircles, "ptr*", $sharedPtr), "cudaHoughCirclesDetectorCreate", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaHoughCirclesDetectorCreate", "float", $dp, "float", $minDist, "int", $cannyThreshold, "int", $votesThreshold, "int", $minRadius, "int", $maxRadius, "int", $maxCircles, $bSharedPtrDllType, $sharedPtr), "cudaHoughCirclesDetectorCreate", @error)
 EndFunc   ;==>_cudaHoughCirclesDetectorCreate
 
-Func _cudaHoughCirclesDetectorDetect(ByRef $detector, ByRef $src, ByRef $circles, ByRef $stream)
+Func _cudaHoughCirclesDetectorDetect($detector, $src, $circles, $stream)
     ; CVAPI(void) cudaHoughCirclesDetectorDetect(cv::cuda::HoughCirclesDetector* detector, cv::_InputArray* src, cv::_OutputArray* circles, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughCirclesDetectorDetect", "ptr", $detector, "ptr", $src, "ptr", $circles, "ptr", $stream), "cudaHoughCirclesDetectorDetect", @error)
 EndFunc   ;==>_cudaHoughCirclesDetectorDetect
 
-Func _cudaHoughCirclesDetectorDetectMat(ByRef $detector, ByRef $matSrc, ByRef $matCircles, ByRef $stream)
+Func _cudaHoughCirclesDetectorDetectMat($detector, $matSrc, $matCircles, $stream)
     ; cudaHoughCirclesDetectorDetect using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -1390,17 +1509,25 @@ Func _cudaHoughCirclesDetectorDetectMat(ByRef $detector, ByRef $matSrc, ByRef $m
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cudaHoughCirclesDetectorDetectMat
 
-Func _cudaHoughCirclesDetectorRelease(ByRef $detector)
+Func _cudaHoughCirclesDetectorRelease($detector)
     ; CVAPI(void) cudaHoughCirclesDetectorRelease(cv::Ptr<cv::cuda::HoughCirclesDetector>** detector);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughCirclesDetectorRelease", "ptr*", $detector), "cudaHoughCirclesDetectorRelease", @error)
+
+    Local $bDetectorDllType
+    If VarGetType($detector) == "DLLStruct" Then
+        $bDetectorDllType = "struct*"
+    Else
+        $bDetectorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughCirclesDetectorRelease", $bDetectorDllType, $detector), "cudaHoughCirclesDetectorRelease", @error)
 EndFunc   ;==>_cudaHoughCirclesDetectorRelease
 
-Func _cudaGammaCorrection(ByRef $src, ByRef $dst, $forward, ByRef $stream)
+Func _cudaGammaCorrection($src, $dst, $forward, $stream)
     ; CVAPI(void) cudaGammaCorrection(cv::_InputArray* src, cv::_OutputArray* dst, bool forward, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaGammaCorrection", "ptr", $src, "ptr", $dst, "boolean", $forward, "ptr", $stream), "cudaGammaCorrection", @error)
 EndFunc   ;==>_cudaGammaCorrection
 
-Func _cudaGammaCorrectionMat(ByRef $matSrc, ByRef $matDst, $forward, ByRef $stream)
+Func _cudaGammaCorrectionMat($matSrc, $matDst, $forward, $stream)
     ; cudaGammaCorrection using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize

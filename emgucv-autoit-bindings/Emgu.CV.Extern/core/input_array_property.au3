@@ -1,12 +1,12 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveInputArrayIsMat(ByRef $obj)
+Func _cveInputArrayIsMat($obj)
     ; CVAPI(bool) cveInputArrayIsMat(cv::_InputArray* obj);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsMat", "ptr", $obj), "cveInputArrayIsMat", @error)
 EndFunc   ;==>_cveInputArrayIsMat
 
-Func _cveInputArrayIsMatMat(ByRef $matObj)
+Func _cveInputArrayIsMatMat($matObj)
     ; cveInputArrayIsMat using cv::Mat instead of _*Array
 
     Local $iArrObj, $vectorOfMatObj, $iArrObjSize
@@ -36,12 +36,12 @@ Func _cveInputArrayIsMatMat(ByRef $matObj)
     Return $retval
 EndFunc   ;==>_cveInputArrayIsMatMat
 
-Func _cveInputArrayIsUMat(ByRef $obj)
+Func _cveInputArrayIsUMat($obj)
     ; CVAPI(bool) cveInputArrayIsUMat(cv::_InputArray* obj);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsUMat", "ptr", $obj), "cveInputArrayIsUMat", @error)
 EndFunc   ;==>_cveInputArrayIsUMat
 
-Func _cveInputArrayIsUMatMat(ByRef $matObj)
+Func _cveInputArrayIsUMatMat($matObj)
     ; cveInputArrayIsUMat using cv::Mat instead of _*Array
 
     Local $iArrObj, $vectorOfMatObj, $iArrObjSize
@@ -71,12 +71,12 @@ Func _cveInputArrayIsUMatMat(ByRef $matObj)
     Return $retval
 EndFunc   ;==>_cveInputArrayIsUMatMat
 
-Func _cveInputArrayIsMatVector(ByRef $obj)
+Func _cveInputArrayIsMatVector($obj)
     ; CVAPI(bool) cveInputArrayIsMatVector(cv::_InputArray* obj);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsMatVector", "ptr", $obj), "cveInputArrayIsMatVector", @error)
 EndFunc   ;==>_cveInputArrayIsMatVector
 
-Func _cveInputArrayIsMatVectorMat(ByRef $matObj)
+Func _cveInputArrayIsMatVectorMat($matObj)
     ; cveInputArrayIsMatVector using cv::Mat instead of _*Array
 
     Local $iArrObj, $vectorOfMatObj, $iArrObjSize
@@ -106,12 +106,12 @@ Func _cveInputArrayIsMatVectorMat(ByRef $matObj)
     Return $retval
 EndFunc   ;==>_cveInputArrayIsMatVectorMat
 
-Func _cveInputArrayIsUMatVector(ByRef $obj)
+Func _cveInputArrayIsUMatVector($obj)
     ; CVAPI(bool) cveInputArrayIsUMatVector(cv::_InputArray* obj);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsUMatVector", "ptr", $obj), "cveInputArrayIsUMatVector", @error)
 EndFunc   ;==>_cveInputArrayIsUMatVector
 
-Func _cveInputArrayIsUMatVectorMat(ByRef $matObj)
+Func _cveInputArrayIsUMatVectorMat($matObj)
     ; cveInputArrayIsUMatVector using cv::Mat instead of _*Array
 
     Local $iArrObj, $vectorOfMatObj, $iArrObjSize
@@ -141,12 +141,12 @@ Func _cveInputArrayIsUMatVectorMat(ByRef $matObj)
     Return $retval
 EndFunc   ;==>_cveInputArrayIsUMatVectorMat
 
-Func _cveInputArrayIsMatx(ByRef $obj)
+Func _cveInputArrayIsMatx($obj)
     ; CVAPI(bool) cveInputArrayIsMatx(cv::_InputArray* obj);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsMatx", "ptr", $obj), "cveInputArrayIsMatx", @error)
 EndFunc   ;==>_cveInputArrayIsMatx
 
-Func _cveInputArrayIsMatxMat(ByRef $matObj)
+Func _cveInputArrayIsMatxMat($matObj)
     ; cveInputArrayIsMatx using cv::Mat instead of _*Array
 
     Local $iArrObj, $vectorOfMatObj, $iArrObjSize
@@ -176,12 +176,12 @@ Func _cveInputArrayIsMatxMat(ByRef $matObj)
     Return $retval
 EndFunc   ;==>_cveInputArrayIsMatxMat
 
-Func _cveInputArrayKind(ByRef $obj)
+Func _cveInputArrayKind($obj)
     ; CVAPI(int) cveInputArrayKind(cv::_InputArray* obj);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveInputArrayKind", "ptr", $obj), "cveInputArrayKind", @error)
 EndFunc   ;==>_cveInputArrayKind
 
-Func _cveInputArrayKindMat(ByRef $matObj)
+Func _cveInputArrayKindMat($matObj)
     ; cveInputArrayKind using cv::Mat instead of _*Array
 
     Local $iArrObj, $vectorOfMatObj, $iArrObjSize

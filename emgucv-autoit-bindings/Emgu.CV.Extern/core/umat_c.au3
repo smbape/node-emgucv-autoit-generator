@@ -6,37 +6,45 @@ Func _cveUMatCreate($flags)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveUMatCreate", "cv::UMatUsageFlags", $flags), "cveUMatCreate", @error)
 EndFunc   ;==>_cveUMatCreate
 
-Func _cveUMatCreateData(ByRef $mat, $row, $cols, $type, $flags)
+Func _cveUMatCreateData($mat, $row, $cols, $type, $flags)
     ; CVAPI(void) cveUMatCreateData(cv::UMat* mat, int row, int cols, int type, cv::UMatUsageFlags flags);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUMatCreateData", "ptr", $mat, "int", $row, "int", $cols, "int", $type, "cv::UMatUsageFlags", $flags), "cveUMatCreateData", @error)
 EndFunc   ;==>_cveUMatCreateData
 
-Func _cveUMatCreateFromRect(ByRef $mat, ByRef $roi)
+Func _cveUMatCreateFromRect($mat, $roi)
     ; CVAPI(cv::UMat*) cveUMatCreateFromRect(cv::UMat* mat, CvRect* roi);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveUMatCreateFromRect", "ptr", $mat, "struct*", $roi), "cveUMatCreateFromRect", @error)
 EndFunc   ;==>_cveUMatCreateFromRect
 
-Func _cveUMatCreateFromRange(ByRef $mat, ByRef $rowRange, ByRef $colRange)
+Func _cveUMatCreateFromRange($mat, $rowRange, $colRange)
     ; CVAPI(cv::UMat*) cveUMatCreateFromRange(cv::UMat* mat, cv::Range* rowRange, cv::Range* colRange);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveUMatCreateFromRange", "ptr", $mat, "ptr", $rowRange, "ptr", $colRange), "cveUMatCreateFromRange", @error)
 EndFunc   ;==>_cveUMatCreateFromRange
 
-Func _cveUMatRelease(ByRef $mat)
+Func _cveUMatRelease($mat)
     ; CVAPI(void) cveUMatRelease(cv::UMat** mat);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUMatRelease", "ptr*", $mat), "cveUMatRelease", @error)
+
+    Local $bMatDllType
+    If VarGetType($mat) == "DLLStruct" Then
+        $bMatDllType = "struct*"
+    Else
+        $bMatDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUMatRelease", $bMatDllType, $mat), "cveUMatRelease", @error)
 EndFunc   ;==>_cveUMatRelease
 
-Func _cveUMatGetSize(ByRef $mat, ByRef $size)
+Func _cveUMatGetSize($mat, $size)
     ; CVAPI(void) cveUMatGetSize(cv::UMat* mat, CvSize* size);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUMatGetSize", "ptr", $mat, "struct*", $size), "cveUMatGetSize", @error)
 EndFunc   ;==>_cveUMatGetSize
 
-Func _cveUMatCopyTo(ByRef $mat, ByRef $m, ByRef $mask)
+Func _cveUMatCopyTo($mat, $m, $mask)
     ; CVAPI(void) cveUMatCopyTo(cv::UMat* mat, cv::_OutputArray* m, cv::_InputArray* mask);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUMatCopyTo", "ptr", $mat, "ptr", $m, "ptr", $mask), "cveUMatCopyTo", @error)
 EndFunc   ;==>_cveUMatCopyTo
 
-Func _cveUMatCopyToMat(ByRef $mat, ByRef $matM, ByRef $matMask)
+Func _cveUMatCopyToMat($mat, $matM, $matMask)
     ; cveUMatCopyTo using cv::Mat instead of _*Array
 
     Local $oArrM, $vectorOfMatM, $iArrMSize
@@ -86,17 +94,17 @@ Func _cveUMatCopyToMat(ByRef $mat, ByRef $matM, ByRef $matMask)
     _cveOutputArrayRelease($oArrM)
 EndFunc   ;==>_cveUMatCopyToMat
 
-Func _cveUMatGetElementSize(ByRef $mat)
+Func _cveUMatGetElementSize($mat)
     ; CVAPI(int) cveUMatGetElementSize(cv::UMat* mat);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveUMatGetElementSize", "ptr", $mat), "cveUMatGetElementSize", @error)
 EndFunc   ;==>_cveUMatGetElementSize
 
-Func _cveUMatSetTo(ByRef $mat, ByRef $value, ByRef $mask)
+Func _cveUMatSetTo($mat, $value, $mask)
     ; CVAPI(void) cveUMatSetTo(cv::UMat* mat, cv::_InputArray* value, cv::_InputArray* mask);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUMatSetTo", "ptr", $mat, "ptr", $value, "ptr", $mask), "cveUMatSetTo", @error)
 EndFunc   ;==>_cveUMatSetTo
 
-Func _cveUMatSetToMat(ByRef $mat, ByRef $matValue, ByRef $matMask)
+Func _cveUMatSetToMat($mat, $matValue, $matMask)
     ; cveUMatSetTo using cv::Mat instead of _*Array
 
     Local $iArrValue, $vectorOfMatValue, $iArrValueSize
@@ -146,17 +154,17 @@ Func _cveUMatSetToMat(ByRef $mat, ByRef $matValue, ByRef $matMask)
     _cveInputArrayRelease($iArrValue)
 EndFunc   ;==>_cveUMatSetToMat
 
-Func _cveUMatGetMat(ByRef $mat, $access)
+Func _cveUMatGetMat($mat, $access)
     ; CVAPI(cv::Mat*) cveUMatGetMat(cv::UMat* mat, int access);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveUMatGetMat", "ptr", $mat, "int", $access), "cveUMatGetMat", @error)
 EndFunc   ;==>_cveUMatGetMat
 
-Func _cveUMatConvertTo(ByRef $mat, ByRef $out, $rtype, $alpha, $beta)
+Func _cveUMatConvertTo($mat, $out, $rtype, $alpha, $beta)
     ; CVAPI(void) cveUMatConvertTo(cv::UMat* mat, cv::_OutputArray* out, int rtype, double alpha, double beta);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUMatConvertTo", "ptr", $mat, "ptr", $out, "int", $rtype, "double", $alpha, "double", $beta), "cveUMatConvertTo", @error)
 EndFunc   ;==>_cveUMatConvertTo
 
-Func _cveUMatConvertToMat(ByRef $mat, ByRef $matOut, $rtype, $alpha, $beta)
+Func _cveUMatConvertToMat($mat, $matOut, $rtype, $alpha, $beta)
     ; cveUMatConvertTo using cv::Mat instead of _*Array
 
     Local $oArrOut, $vectorOfMatOut, $iArrOutSize
@@ -184,27 +192,27 @@ Func _cveUMatConvertToMat(ByRef $mat, ByRef $matOut, $rtype, $alpha, $beta)
     _cveOutputArrayRelease($oArrOut)
 EndFunc   ;==>_cveUMatConvertToMat
 
-Func _cveUMatReshape(ByRef $mat, $cn, $rows)
+Func _cveUMatReshape($mat, $cn, $rows)
     ; CVAPI(cv::UMat*) cveUMatReshape(cv::UMat* mat, int cn, int rows);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveUMatReshape", "ptr", $mat, "int", $cn, "int", $rows), "cveUMatReshape", @error)
 EndFunc   ;==>_cveUMatReshape
 
-Func _cveUMatCopyDataTo(ByRef $mat, ByRef $dest)
+Func _cveUMatCopyDataTo($mat, $dest)
     ; CVAPI(void) cveUMatCopyDataTo(cv::UMat* mat, unsigned char* dest);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUMatCopyDataTo", "ptr", $mat, "ptr", $dest), "cveUMatCopyDataTo", @error)
 EndFunc   ;==>_cveUMatCopyDataTo
 
-Func _cveUMatCopyDataFrom(ByRef $mat, ByRef $source)
+Func _cveUMatCopyDataFrom($mat, $source)
     ; CVAPI(void) cveUMatCopyDataFrom(cv::UMat* mat, unsigned char* source);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUMatCopyDataFrom", "ptr", $mat, "ptr", $source), "cveUMatCopyDataFrom", @error)
 EndFunc   ;==>_cveUMatCopyDataFrom
 
-Func _cveUMatDot(ByRef $mat, ByRef $m)
+Func _cveUMatDot($mat, $m)
     ; CVAPI(double) cveUMatDot(cv::UMat* mat, cv::_InputArray* m);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveUMatDot", "ptr", $mat, "ptr", $m), "cveUMatDot", @error)
 EndFunc   ;==>_cveUMatDot
 
-Func _cveUMatDotMat(ByRef $mat, ByRef $matM)
+Func _cveUMatDotMat($mat, $matM)
     ; cveUMatDot using cv::Mat instead of _*Array
 
     Local $iArrM, $vectorOfMatM, $iArrMSize
@@ -234,7 +242,7 @@ Func _cveUMatDotMat(ByRef $mat, ByRef $matM)
     Return $retval
 EndFunc   ;==>_cveUMatDotMat
 
-Func _cveSwapUMat(ByRef $mat1, ByRef $mat2)
+Func _cveSwapUMat($mat1, $mat2)
     ; CVAPI(void) cveSwapUMat(cv::UMat* mat1, cv::UMat* mat2);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSwapUMat", "ptr", $mat1, "ptr", $mat2), "cveSwapUMat", @error)
 EndFunc   ;==>_cveSwapUMat

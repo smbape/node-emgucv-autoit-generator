@@ -45,17 +45,25 @@ Func _cveWeChatQRCodeCreate($detectorPrototxtPath, $detectorCaffeModelPath, $sup
     Return $retval
 EndFunc   ;==>_cveWeChatQRCodeCreate
 
-Func _cveWeChatQRCodeRelease(ByRef $detector)
+Func _cveWeChatQRCodeRelease($detector)
     ; CVAPI(void) cveWeChatQRCodeRelease(cv::wechat_qrcode::WeChatQRCode** detector);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWeChatQRCodeRelease", "ptr*", $detector), "cveWeChatQRCodeRelease", @error)
+
+    Local $bDetectorDllType
+    If VarGetType($detector) == "DLLStruct" Then
+        $bDetectorDllType = "struct*"
+    Else
+        $bDetectorDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWeChatQRCodeRelease", $bDetectorDllType, $detector), "cveWeChatQRCodeRelease", @error)
 EndFunc   ;==>_cveWeChatQRCodeRelease
 
-Func _cveWeChatQRCodeDetectAndDecode(ByRef $detector, ByRef $img, ByRef $points, ByRef $results)
+Func _cveWeChatQRCodeDetectAndDecode($detector, $img, $points, $results)
     ; CVAPI(void) cveWeChatQRCodeDetectAndDecode(cv::wechat_qrcode::WeChatQRCode* detector, cv::_InputArray* img, cv::_OutputArray* points, std::vector<std::string>* results);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWeChatQRCodeDetectAndDecode", "ptr", $detector, "ptr", $img, "ptr", $points, "ptr", $results), "cveWeChatQRCodeDetectAndDecode", @error)
 EndFunc   ;==>_cveWeChatQRCodeDetectAndDecode
 
-Func _cveWeChatQRCodeDetectAndDecodeMat(ByRef $detector, ByRef $matImg, ByRef $matPoints, ByRef $results)
+Func _cveWeChatQRCodeDetectAndDecodeMat($detector, $matImg, $matPoints, $results)
     ; cveWeChatQRCodeDetectAndDecode using cv::Mat instead of _*Array
 
     Local $iArrImg, $vectorOfMatImg, $iArrImgSize

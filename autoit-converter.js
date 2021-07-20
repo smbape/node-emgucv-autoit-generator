@@ -60,6 +60,7 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
 
     for (const arg of args) {
         const [argType, argName, defaultValue] = arg;
+        const capitalCasedName = argName[0].toUpperCase() + argName.slice(1);
 
         let byRef = arg[3];
         if (byRef === undefined) {
@@ -93,32 +94,41 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
         if (arg[2] !== undefined) {
             autoItArgs.push(`${ autoItArgName } = ${ arg[2] }`);
         } else {
-            autoItArgs.push((byRef && !isString ? "ByRef " : "") + autoItArgName);
+            autoItArgs.push(autoItArgName);
         }
 
         let autoItDllType;
 
         if (isString) {
-            autoItDllType = argType.endsWith("**") ? "struct*" : "str";
+            autoItDllType = `"${ argType.endsWith("**") ? "struct*" : "str" }"`;
         } else if (byRef) {
             if (argType.endsWith("**")) {
-                autoItDllType = "ptr*";
+                declarations.push(""); // new line
+                declarations.push(...`
+                    Local $b${ capitalCasedName }DllType
+                    If VarGetType(${ autoItArgName }) == "DLLStruct" Then
+                        $b${ capitalCasedName }DllType = "struct*"
+                    Else
+                        $b${ capitalCasedName }DllType = "ptr*"
+                    EndIf
+                `.replace(/^ {20}/mg, "").trim().split("\n"));
+                autoItDllType = `$b${ capitalCasedName }DllType`;
             } else if (isString) {
-                autoItDllType = "str";
+                autoItDllType = `"${ "str" }"`;
             } else if (/^\w+\*$/.test(argType)) {
-                autoItDllType = "struct*";
+                autoItDllType = `"${ "struct*" }"`;
             } else {
-                autoItDllType = "ptr";
+                autoItDllType = `"${ "ptr" }"`;
             }
         } else {
-            autoItDllType = getAutoItType(argType, isNativeType);
+            autoItDllType = `"${ getAutoItType(argType, isNativeType) }"`;
         }
 
         if (typeof _getAutoItType === "function") {
             autoItDllType = _getAutoItType(autoItDllType, isNativeType, arg, entry, options);
         }
 
-        dllArgs.push(`"${ autoItDllType }"`, dllArgName);
+        dllArgs.push(autoItDllType, dllArgName);
     }
 
 
@@ -133,9 +143,6 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
             canDefault = hasDefault;
         } else if (hasDefault) {
             autoItArgs[i] = value.slice(0, pos);
-            if (arg[3] && !/^const char\*\*?$/.test(argType)) {
-                autoItArgs[i] = `ByRef ${ autoItArgs[i] }`;
-            }
             arg[4] = false;
         }
     }
@@ -152,7 +159,7 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
     }
 
     const indent = " ".repeat(12);
-    const hasDeclarationOrDesctructor = declarations.length !== 0 || destructors.length !== 0;
+    const hasDesctructor = destructors.length !== 0;
 
     const body = [];
     body.push(`; ${ returnType } ${ name }(${ declArgs.join(", ") });`);
@@ -163,7 +170,7 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
             body.push(""); // new line
         }
         body.push(retval);
-    } else if (hasDeclarationOrDesctructor) {
+    } else if (hasDesctructor) {
         if (declarations.length !== 0) {
             body.push(""); // new line
         }
@@ -174,7 +181,7 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
 
     body.push(...destructors);
 
-    if (!isVoid && hasDeclarationOrDesctructor) {
+    if (!isVoid && hasDesctructor) {
         body.push(""); // new line
         body.push("Return $retval");
     }

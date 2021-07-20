@@ -1,12 +1,12 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveAlphamatInfoFlow(ByRef $image, ByRef $tmap, ByRef $result)
+Func _cveAlphamatInfoFlow($image, $tmap, $result)
     ; CVAPI(void) cveAlphamatInfoFlow(cv::_InputArray* image, cv::_InputArray* tmap, cv::_OutputArray* result);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAlphamatInfoFlow", "ptr", $image, "ptr", $tmap, "ptr", $result), "cveAlphamatInfoFlow", @error)
 EndFunc   ;==>_cveAlphamatInfoFlow
 
-Func _cveAlphamatInfoFlowMat(ByRef $matImage, ByRef $matTmap, ByRef $matResult)
+Func _cveAlphamatInfoFlowMat($matImage, $matTmap, $matResult)
     ; cveAlphamatInfoFlow using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize

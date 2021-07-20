@@ -11,7 +11,7 @@ Func _VectorOfKeyLineCreateSize($size)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfKeyLineCreateSize", "int", $size), "VectorOfKeyLineCreateSize", @error)
 EndFunc   ;==>_VectorOfKeyLineCreateSize
 
-Func _VectorOfKeyLineGetSize(ByRef $v)
+Func _VectorOfKeyLineGetSize($v)
     ; CVAPI(int) VectorOfKeyLineGetSize(std::vector< cv::line_descriptor::KeyLine >* v);
 
     Local $vecV, $iArrVSize
@@ -37,7 +37,7 @@ Func _VectorOfKeyLineGetSize(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfKeyLineGetSize
 
-Func _VectorOfKeyLinePush(ByRef $v, ByRef $value)
+Func _VectorOfKeyLinePush($v, $value)
     ; CVAPI(void) VectorOfKeyLinePush(std::vector< cv::line_descriptor::KeyLine >* v, cv::line_descriptor::KeyLine* value);
 
     Local $vecV, $iArrVSize
@@ -61,7 +61,7 @@ Func _VectorOfKeyLinePush(ByRef $v, ByRef $value)
     EndIf
 EndFunc   ;==>_VectorOfKeyLinePush
 
-Func _VectorOfKeyLinePushMulti(ByRef $v, ByRef $values, $count)
+Func _VectorOfKeyLinePushMulti($v, $values, $count)
     ; CVAPI(void) VectorOfKeyLinePushMulti(std::vector< cv::line_descriptor::KeyLine >* v, cv::line_descriptor::KeyLine* values, int count);
 
     Local $vecV, $iArrVSize
@@ -85,7 +85,7 @@ Func _VectorOfKeyLinePushMulti(ByRef $v, ByRef $values, $count)
     EndIf
 EndFunc   ;==>_VectorOfKeyLinePushMulti
 
-Func _VectorOfKeyLinePushVector(ByRef $v, ByRef $other)
+Func _VectorOfKeyLinePushVector($v, $other)
     ; CVAPI(void) VectorOfKeyLinePushVector(std::vector< cv::line_descriptor::KeyLine >* v, std::vector< cv::line_descriptor::KeyLine >* other);
 
     Local $vecV, $iArrVSize
@@ -127,7 +127,7 @@ Func _VectorOfKeyLinePushVector(ByRef $v, ByRef $other)
     EndIf
 EndFunc   ;==>_VectorOfKeyLinePushVector
 
-Func _VectorOfKeyLineClear(ByRef $v)
+Func _VectorOfKeyLineClear($v)
     ; CVAPI(void) VectorOfKeyLineClear(std::vector< cv::line_descriptor::KeyLine >* v);
 
     Local $vecV, $iArrVSize
@@ -151,7 +151,7 @@ Func _VectorOfKeyLineClear(ByRef $v)
     EndIf
 EndFunc   ;==>_VectorOfKeyLineClear
 
-Func _VectorOfKeyLineRelease(ByRef $v)
+Func _VectorOfKeyLineRelease($v)
     ; CVAPI(void) VectorOfKeyLineRelease(std::vector< cv::line_descriptor::KeyLine >** v);
 
     Local $vecV, $iArrVSize
@@ -168,14 +168,21 @@ Func _VectorOfKeyLineRelease(ByRef $v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfKeyLineRelease", "ptr*", $vecV), "VectorOfKeyLineRelease", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfKeyLineRelease", $bVDllType, $vecV), "VectorOfKeyLineRelease", @error)
 
     If $bVIsArray Then
         _VectorOfKeyLineRelease($vecV)
     EndIf
 EndFunc   ;==>_VectorOfKeyLineRelease
 
-Func _VectorOfKeyLineCopyData(ByRef $v, ByRef $data)
+Func _VectorOfKeyLineCopyData($v, $data)
     ; CVAPI(void) VectorOfKeyLineCopyData(std::vector< cv::line_descriptor::KeyLine >* v, cv::line_descriptor::KeyLine* data);
 
     Local $vecV, $iArrVSize
@@ -199,7 +206,7 @@ Func _VectorOfKeyLineCopyData(ByRef $v, ByRef $data)
     EndIf
 EndFunc   ;==>_VectorOfKeyLineCopyData
 
-Func _VectorOfKeyLineGetStartAddress(ByRef $v)
+Func _VectorOfKeyLineGetStartAddress($v)
     ; CVAPI(cv::line_descriptor::KeyLine*) VectorOfKeyLineGetStartAddress(std::vector< cv::line_descriptor::KeyLine >* v);
 
     Local $vecV, $iArrVSize
@@ -225,7 +232,7 @@ Func _VectorOfKeyLineGetStartAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfKeyLineGetStartAddress
 
-Func _VectorOfKeyLineGetEndAddress(ByRef $v)
+Func _VectorOfKeyLineGetEndAddress($v)
     ; CVAPI(void*) VectorOfKeyLineGetEndAddress(std::vector< cv::line_descriptor::KeyLine >* v);
 
     Local $vecV, $iArrVSize
@@ -251,7 +258,7 @@ Func _VectorOfKeyLineGetEndAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfKeyLineGetEndAddress
 
-Func _VectorOfKeyLineGetItem(ByRef $vec, $index, ByRef $element)
+Func _VectorOfKeyLineGetItem($vec, $index, $element)
     ; CVAPI(void) VectorOfKeyLineGetItem(std::vector<  cv::line_descriptor::KeyLine >* vec, int index, cv::line_descriptor::KeyLine* element);
 
     Local $vecVec, $iArrVecSize
@@ -275,7 +282,7 @@ Func _VectorOfKeyLineGetItem(ByRef $vec, $index, ByRef $element)
     EndIf
 EndFunc   ;==>_VectorOfKeyLineGetItem
 
-Func _VectorOfKeyLineGetItemPtr(ByRef $vec, $index, ByRef $element)
+Func _VectorOfKeyLineGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfKeyLineGetItemPtr(std::vector<  cv::line_descriptor::KeyLine >* vec, int index, cv::line_descriptor::KeyLine** element);
 
     Local $vecVec, $iArrVecSize
@@ -292,14 +299,21 @@ Func _VectorOfKeyLineGetItemPtr(ByRef $vec, $index, ByRef $element)
         $vecVec = $vec
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfKeyLineGetItemPtr", "ptr", $vecVec, "int", $index, "ptr*", $element), "VectorOfKeyLineGetItemPtr", @error)
+    Local $bElementDllType
+    If VarGetType($element) == "DLLStruct" Then
+        $bElementDllType = "struct*"
+    Else
+        $bElementDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfKeyLineGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $element), "VectorOfKeyLineGetItemPtr", @error)
 
     If $bVecIsArray Then
         _VectorOfKeyLineRelease($vecVec)
     EndIf
 EndFunc   ;==>_VectorOfKeyLineGetItemPtr
 
-Func _cveInputArrayFromVectorOfKeyLine(ByRef $vec)
+Func _cveInputArrayFromVectorOfKeyLine($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfKeyLine(std::vector< cv::line_descriptor::KeyLine >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -325,7 +339,7 @@ Func _cveInputArrayFromVectorOfKeyLine(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveInputArrayFromVectorOfKeyLine
 
-Func _cveOutputArrayFromVectorOfKeyLine(ByRef $vec)
+Func _cveOutputArrayFromVectorOfKeyLine($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfKeyLine(std::vector< cv::line_descriptor::KeyLine >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -351,7 +365,7 @@ Func _cveOutputArrayFromVectorOfKeyLine(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveOutputArrayFromVectorOfKeyLine
 
-Func _cveInputOutputArrayFromVectorOfKeyLine(ByRef $vec)
+Func _cveInputOutputArrayFromVectorOfKeyLine($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfKeyLine(std::vector< cv::line_descriptor::KeyLine >* vec);
 
     Local $vecVec, $iArrVecSize

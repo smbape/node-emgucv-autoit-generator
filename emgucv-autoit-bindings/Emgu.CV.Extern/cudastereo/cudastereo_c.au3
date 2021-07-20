@@ -1,17 +1,24 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cudaStereoBMCreate($numDisparities, $blockSize, ByRef $sharedPtr)
+Func _cudaStereoBMCreate($numDisparities, $blockSize, $sharedPtr)
     ; CVAPI(cv::cuda::StereoBM*) cudaStereoBMCreate(int numDisparities, int blockSize, cv::Ptr<cv::cuda::StereoBM>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaStereoBMCreate", "int", $numDisparities, "int", $blockSize, "ptr*", $sharedPtr), "cudaStereoBMCreate", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaStereoBMCreate", "int", $numDisparities, "int", $blockSize, $bSharedPtrDllType, $sharedPtr), "cudaStereoBMCreate", @error)
 EndFunc   ;==>_cudaStereoBMCreate
 
-Func _cudaStereoBMFindStereoCorrespondence(ByRef $stereo, ByRef $left, ByRef $right, ByRef $disparity, ByRef $stream)
+Func _cudaStereoBMFindStereoCorrespondence($stereo, $left, $right, $disparity, $stream)
     ; CVAPI(void) cudaStereoBMFindStereoCorrespondence(cv::cuda::StereoBM* stereo, cv::_InputArray* left, cv::_InputArray* right, cv::_OutputArray* disparity, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaStereoBMFindStereoCorrespondence", "ptr", $stereo, "ptr", $left, "ptr", $right, "ptr", $disparity, "ptr", $stream), "cudaStereoBMFindStereoCorrespondence", @error)
 EndFunc   ;==>_cudaStereoBMFindStereoCorrespondence
 
-Func _cudaStereoBMFindStereoCorrespondenceMat(ByRef $stereo, ByRef $matLeft, ByRef $matRight, ByRef $matDisparity, ByRef $stream)
+Func _cudaStereoBMFindStereoCorrespondenceMat($stereo, $matLeft, $matRight, $matDisparity, $stream)
     ; cudaStereoBMFindStereoCorrespondence using cv::Mat instead of _*Array
 
     Local $iArrLeft, $vectorOfMatLeft, $iArrLeftSize
@@ -83,22 +90,37 @@ Func _cudaStereoBMFindStereoCorrespondenceMat(ByRef $stereo, ByRef $matLeft, ByR
     _cveInputArrayRelease($iArrLeft)
 EndFunc   ;==>_cudaStereoBMFindStereoCorrespondenceMat
 
-Func _cudaStereoBMRelease(ByRef $stereoBM)
+Func _cudaStereoBMRelease($stereoBM)
     ; CVAPI(void) cudaStereoBMRelease(cv::Ptr<cv::cuda::StereoBM>** stereoBM);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaStereoBMRelease", "ptr*", $stereoBM), "cudaStereoBMRelease", @error)
+
+    Local $bStereoBMDllType
+    If VarGetType($stereoBM) == "DLLStruct" Then
+        $bStereoBMDllType = "struct*"
+    Else
+        $bStereoBMDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaStereoBMRelease", $bStereoBMDllType, $stereoBM), "cudaStereoBMRelease", @error)
 EndFunc   ;==>_cudaStereoBMRelease
 
-Func _cudaStereoConstantSpaceBPCreate($ndisp, $iters, $levels, $nr_plane, ByRef $sharedPtr)
+Func _cudaStereoConstantSpaceBPCreate($ndisp, $iters, $levels, $nr_plane, $sharedPtr)
     ; CVAPI(cv::cuda::StereoConstantSpaceBP*) cudaStereoConstantSpaceBPCreate(int ndisp, int iters, int levels, int nr_plane, cv::Ptr<cv::cuda::StereoConstantSpaceBP>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaStereoConstantSpaceBPCreate", "int", $ndisp, "int", $iters, "int", $levels, "int", $nr_plane, "ptr*", $sharedPtr), "cudaStereoConstantSpaceBPCreate", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaStereoConstantSpaceBPCreate", "int", $ndisp, "int", $iters, "int", $levels, "int", $nr_plane, $bSharedPtrDllType, $sharedPtr), "cudaStereoConstantSpaceBPCreate", @error)
 EndFunc   ;==>_cudaStereoConstantSpaceBPCreate
 
-Func _cudaStereoConstantSpaceBPFindStereoCorrespondence(ByRef $stereo, ByRef $left, ByRef $right, ByRef $disparity, ByRef $stream)
+Func _cudaStereoConstantSpaceBPFindStereoCorrespondence($stereo, $left, $right, $disparity, $stream)
     ; CVAPI(void) cudaStereoConstantSpaceBPFindStereoCorrespondence(cv::cuda::StereoConstantSpaceBP* stereo, cv::_InputArray* left, cv::_InputArray* right, cv::_OutputArray* disparity, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaStereoConstantSpaceBPFindStereoCorrespondence", "ptr", $stereo, "ptr", $left, "ptr", $right, "ptr", $disparity, "ptr", $stream), "cudaStereoConstantSpaceBPFindStereoCorrespondence", @error)
 EndFunc   ;==>_cudaStereoConstantSpaceBPFindStereoCorrespondence
 
-Func _cudaStereoConstantSpaceBPFindStereoCorrespondenceMat(ByRef $stereo, ByRef $matLeft, ByRef $matRight, ByRef $matDisparity, ByRef $stream)
+Func _cudaStereoConstantSpaceBPFindStereoCorrespondenceMat($stereo, $matLeft, $matRight, $matDisparity, $stream)
     ; cudaStereoConstantSpaceBPFindStereoCorrespondence using cv::Mat instead of _*Array
 
     Local $iArrLeft, $vectorOfMatLeft, $iArrLeftSize
@@ -170,22 +192,37 @@ Func _cudaStereoConstantSpaceBPFindStereoCorrespondenceMat(ByRef $stereo, ByRef 
     _cveInputArrayRelease($iArrLeft)
 EndFunc   ;==>_cudaStereoConstantSpaceBPFindStereoCorrespondenceMat
 
-Func _cudaStereoConstantSpaceBPRelease(ByRef $stereo)
+Func _cudaStereoConstantSpaceBPRelease($stereo)
     ; CVAPI(void) cudaStereoConstantSpaceBPRelease(cv::Ptr<cv::cuda::StereoConstantSpaceBP>** stereo);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaStereoConstantSpaceBPRelease", "ptr*", $stereo), "cudaStereoConstantSpaceBPRelease", @error)
+
+    Local $bStereoDllType
+    If VarGetType($stereo) == "DLLStruct" Then
+        $bStereoDllType = "struct*"
+    Else
+        $bStereoDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaStereoConstantSpaceBPRelease", $bStereoDllType, $stereo), "cudaStereoConstantSpaceBPRelease", @error)
 EndFunc   ;==>_cudaStereoConstantSpaceBPRelease
 
-Func _cudaDisparityBilateralFilterCreate($ndisp, $radius, $iters, ByRef $sharedPtr)
+Func _cudaDisparityBilateralFilterCreate($ndisp, $radius, $iters, $sharedPtr)
     ; CVAPI(cv::cuda::DisparityBilateralFilter*) cudaDisparityBilateralFilterCreate(int ndisp, int radius, int iters, cv::Ptr<cv::cuda::DisparityBilateralFilter>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaDisparityBilateralFilterCreate", "int", $ndisp, "int", $radius, "int", $iters, "ptr*", $sharedPtr), "cudaDisparityBilateralFilterCreate", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaDisparityBilateralFilterCreate", "int", $ndisp, "int", $radius, "int", $iters, $bSharedPtrDllType, $sharedPtr), "cudaDisparityBilateralFilterCreate", @error)
 EndFunc   ;==>_cudaDisparityBilateralFilterCreate
 
-Func _cudaDisparityBilateralFilterApply(ByRef $filter, ByRef $disparity, ByRef $image, ByRef $dst, ByRef $stream)
+Func _cudaDisparityBilateralFilterApply($filter, $disparity, $image, $dst, $stream)
     ; CVAPI(void) cudaDisparityBilateralFilterApply(cv::cuda::DisparityBilateralFilter* filter, cv::_InputArray* disparity, cv::_InputArray* image, cv::_OutputArray* dst, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDisparityBilateralFilterApply", "ptr", $filter, "ptr", $disparity, "ptr", $image, "ptr", $dst, "ptr", $stream), "cudaDisparityBilateralFilterApply", @error)
 EndFunc   ;==>_cudaDisparityBilateralFilterApply
 
-Func _cudaDisparityBilateralFilterApplyMat(ByRef $filter, ByRef $matDisparity, ByRef $matImage, ByRef $matDst, ByRef $stream)
+Func _cudaDisparityBilateralFilterApplyMat($filter, $matDisparity, $matImage, $matDst, $stream)
     ; cudaDisparityBilateralFilterApply using cv::Mat instead of _*Array
 
     Local $iArrDisparity, $vectorOfMatDisparity, $iArrDisparitySize
@@ -257,17 +294,25 @@ Func _cudaDisparityBilateralFilterApplyMat(ByRef $filter, ByRef $matDisparity, B
     _cveInputArrayRelease($iArrDisparity)
 EndFunc   ;==>_cudaDisparityBilateralFilterApplyMat
 
-Func _cudaDisparityBilateralFilterRelease(ByRef $filter)
+Func _cudaDisparityBilateralFilterRelease($filter)
     ; CVAPI(void) cudaDisparityBilateralFilterRelease(cv::Ptr<cv::cuda::DisparityBilateralFilter>** filter);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDisparityBilateralFilterRelease", "ptr*", $filter), "cudaDisparityBilateralFilterRelease", @error)
+
+    Local $bFilterDllType
+    If VarGetType($filter) == "DLLStruct" Then
+        $bFilterDllType = "struct*"
+    Else
+        $bFilterDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDisparityBilateralFilterRelease", $bFilterDllType, $filter), "cudaDisparityBilateralFilterRelease", @error)
 EndFunc   ;==>_cudaDisparityBilateralFilterRelease
 
-Func _cudaDrawColorDisp(ByRef $srcDisp, ByRef $dstDisp, $ndisp, ByRef $stream)
+Func _cudaDrawColorDisp($srcDisp, $dstDisp, $ndisp, $stream)
     ; CVAPI(void) cudaDrawColorDisp(cv::_InputArray* srcDisp, cv::_OutputArray* dstDisp, int ndisp, cv::cuda::Stream* stream);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDrawColorDisp", "ptr", $srcDisp, "ptr", $dstDisp, "int", $ndisp, "ptr", $stream), "cudaDrawColorDisp", @error)
 EndFunc   ;==>_cudaDrawColorDisp
 
-Func _cudaDrawColorDispMat(ByRef $matSrcDisp, ByRef $matDstDisp, $ndisp, ByRef $stream)
+Func _cudaDrawColorDispMat($matSrcDisp, $matDstDisp, $ndisp, $stream)
     ; cudaDrawColorDisp using cv::Mat instead of _*Array
 
     Local $iArrSrcDisp, $vectorOfMatSrcDisp, $iArrSrcDispSize

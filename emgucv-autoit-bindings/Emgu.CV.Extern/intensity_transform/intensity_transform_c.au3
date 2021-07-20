@@ -1,32 +1,32 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveLogTransform(ByRef $input, ByRef $output)
+Func _cveLogTransform($input, $output)
     ; CVAPI(void) cveLogTransform(cv::Mat* input, cv::Mat* output);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLogTransform", "ptr", $input, "ptr", $output), "cveLogTransform", @error)
 EndFunc   ;==>_cveLogTransform
 
-Func _cveGammaCorrection(ByRef $input, ByRef $output, $gamma)
+Func _cveGammaCorrection($input, $output, $gamma)
     ; CVAPI(void) cveGammaCorrection(cv::Mat* input, cv::Mat* output, float gamma);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGammaCorrection", "ptr", $input, "ptr", $output, "float", $gamma), "cveGammaCorrection", @error)
 EndFunc   ;==>_cveGammaCorrection
 
-Func _cveAutoscaling(ByRef $input, ByRef $output)
+Func _cveAutoscaling($input, $output)
     ; CVAPI(void) cveAutoscaling(cv::Mat* input, cv::Mat* output);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAutoscaling", "ptr", $input, "ptr", $output), "cveAutoscaling", @error)
 EndFunc   ;==>_cveAutoscaling
 
-Func _cveContrastStretching(ByRef $input, ByRef $output, $r1, $s1, $r2, $s2)
+Func _cveContrastStretching($input, $output, $r1, $s1, $r2, $s2)
     ; CVAPI(void) cveContrastStretching(cv::Mat* input, cv::Mat* output, int r1, int s1, int r2, int s2);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveContrastStretching", "ptr", $input, "ptr", $output, "int", $r1, "int", $s1, "int", $r2, "int", $s2), "cveContrastStretching", @error)
 EndFunc   ;==>_cveContrastStretching
 
-Func _cveBIMEF(ByRef $input, ByRef $output, $mu, $a, $b)
+Func _cveBIMEF($input, $output, $mu, $a, $b)
     ; CVAPI(void) cveBIMEF(cv::_InputArray* input, cv::_OutputArray* output, float mu, float a, float b);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBIMEF", "ptr", $input, "ptr", $output, "float", $mu, "float", $a, "float", $b), "cveBIMEF", @error)
 EndFunc   ;==>_cveBIMEF
 
-Func _cveBIMEFMat(ByRef $matInput, ByRef $matOutput, $mu, $a, $b)
+Func _cveBIMEFMat($matInput, $matOutput, $mu, $a, $b)
     ; cveBIMEF using cv::Mat instead of _*Array
 
     Local $iArrInput, $vectorOfMatInput, $iArrInputSize
@@ -76,12 +76,12 @@ Func _cveBIMEFMat(ByRef $matInput, ByRef $matOutput, $mu, $a, $b)
     _cveInputArrayRelease($iArrInput)
 EndFunc   ;==>_cveBIMEFMat
 
-Func _cveBIMEF2(ByRef $input, ByRef $output, $k, $mu, $a, $b)
+Func _cveBIMEF2($input, $output, $k, $mu, $a, $b)
     ; CVAPI(void) cveBIMEF2(cv::_InputArray* input, cv::_OutputArray* output, float k, float mu, float a, float b);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBIMEF2", "ptr", $input, "ptr", $output, "float", $k, "float", $mu, "float", $a, "float", $b), "cveBIMEF2", @error)
 EndFunc   ;==>_cveBIMEF2
 
-Func _cveBIMEF2Mat(ByRef $matInput, ByRef $matOutput, $k, $mu, $a, $b)
+Func _cveBIMEF2Mat($matInput, $matOutput, $k, $mu, $a, $b)
     ; cveBIMEF2 using cv::Mat instead of _*Array
 
     Local $iArrInput, $vectorOfMatInput, $iArrInputSize

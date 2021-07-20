@@ -11,7 +11,7 @@ Func _VectorOfVectorOfRectCreateSize($size)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfVectorOfRectCreateSize", "int", $size), "VectorOfVectorOfRectCreateSize", @error)
 EndFunc   ;==>_VectorOfVectorOfRectCreateSize
 
-Func _VectorOfVectorOfRectGetSize(ByRef $v)
+Func _VectorOfVectorOfRectGetSize($v)
     ; CVAPI(int) VectorOfVectorOfRectGetSize(std::vector< std::vector< cv::Rect > >* v);
 
     Local $vecV, $iArrVSize
@@ -37,7 +37,7 @@ Func _VectorOfVectorOfRectGetSize(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfVectorOfRectGetSize
 
-Func _VectorOfVectorOfRectPush(ByRef $v, ByRef $value)
+Func _VectorOfVectorOfRectPush($v, $value)
     ; CVAPI(void) VectorOfVectorOfRectPush(std::vector< std::vector< cv::Rect > >* v, std::vector< cv::Rect >* value);
 
     Local $vecV, $iArrVSize
@@ -79,7 +79,7 @@ Func _VectorOfVectorOfRectPush(ByRef $v, ByRef $value)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfRectPush
 
-Func _VectorOfVectorOfRectPushVector(ByRef $v, ByRef $other)
+Func _VectorOfVectorOfRectPushVector($v, $other)
     ; CVAPI(void) VectorOfVectorOfRectPushVector(std::vector< std::vector< cv::Rect > >* v, std::vector< std::vector< cv::Rect > >* other);
 
     Local $vecV, $iArrVSize
@@ -121,7 +121,7 @@ Func _VectorOfVectorOfRectPushVector(ByRef $v, ByRef $other)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfRectPushVector
 
-Func _VectorOfVectorOfRectGetStartAddress(ByRef $v)
+Func _VectorOfVectorOfRectGetStartAddress($v)
     ; CVAPI(std::vector< cv::Rect >*) VectorOfVectorOfRectGetStartAddress(std::vector< std::vector< cv::Rect > >* v);
 
     Local $vecV, $iArrVSize
@@ -147,7 +147,7 @@ Func _VectorOfVectorOfRectGetStartAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfVectorOfRectGetStartAddress
 
-Func _VectorOfVectorOfRectGetEndAddress(ByRef $v)
+Func _VectorOfVectorOfRectGetEndAddress($v)
     ; CVAPI(void*) VectorOfVectorOfRectGetEndAddress(std::vector< std::vector< cv::Rect > >* v);
 
     Local $vecV, $iArrVSize
@@ -173,7 +173,7 @@ Func _VectorOfVectorOfRectGetEndAddress(ByRef $v)
     Return $retval
 EndFunc   ;==>_VectorOfVectorOfRectGetEndAddress
 
-Func _VectorOfVectorOfRectClear(ByRef $v)
+Func _VectorOfVectorOfRectClear($v)
     ; CVAPI(void) VectorOfVectorOfRectClear(std::vector< std::vector< cv::Rect > >* v);
 
     Local $vecV, $iArrVSize
@@ -197,7 +197,7 @@ Func _VectorOfVectorOfRectClear(ByRef $v)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfRectClear
 
-Func _VectorOfVectorOfRectRelease(ByRef $v)
+Func _VectorOfVectorOfRectRelease($v)
     ; CVAPI(void) VectorOfVectorOfRectRelease(std::vector< std::vector< cv::Rect > >** v);
 
     Local $vecV, $iArrVSize
@@ -214,14 +214,21 @@ Func _VectorOfVectorOfRectRelease(ByRef $v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVectorOfRectRelease", "ptr*", $vecV), "VectorOfVectorOfRectRelease", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVectorOfRectRelease", $bVDllType, $vecV), "VectorOfVectorOfRectRelease", @error)
 
     If $bVIsArray Then
         _VectorOfVectorOfRectRelease($vecV)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfRectRelease
 
-Func _VectorOfVectorOfRectCopyData(ByRef $v, ByRef $data)
+Func _VectorOfVectorOfRectCopyData($v, $data)
     ; CVAPI(void) VectorOfVectorOfRectCopyData(std::vector< std::vector< cv::Rect > >* v, std::vector< cv::Rect >* data);
 
     Local $vecV, $iArrVSize
@@ -263,7 +270,7 @@ Func _VectorOfVectorOfRectCopyData(ByRef $v, ByRef $data)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfRectCopyData
 
-Func _VectorOfVectorOfRectGetItemPtr(ByRef $vec, $index, ByRef $element)
+Func _VectorOfVectorOfRectGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfVectorOfRectGetItemPtr(std::vector<  std::vector< cv::Rect > >* vec, int index, std::vector< cv::Rect >** element);
 
     Local $vecVec, $iArrVecSize
@@ -294,7 +301,14 @@ Func _VectorOfVectorOfRectGetItemPtr(ByRef $vec, $index, ByRef $element)
         $vecElement = $element
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVectorOfRectGetItemPtr", "ptr", $vecVec, "int", $index, "ptr*", $vecElement), "VectorOfVectorOfRectGetItemPtr", @error)
+    Local $bElementDllType
+    If VarGetType($element) == "DLLStruct" Then
+        $bElementDllType = "struct*"
+    Else
+        $bElementDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVectorOfRectGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $vecElement), "VectorOfVectorOfRectGetItemPtr", @error)
 
     If $bElementIsArray Then
         _VectorOfRectRelease($vecElement)
@@ -305,7 +319,7 @@ Func _VectorOfVectorOfRectGetItemPtr(ByRef $vec, $index, ByRef $element)
     EndIf
 EndFunc   ;==>_VectorOfVectorOfRectGetItemPtr
 
-Func _cveInputArrayFromVectorOfVectorOfRect(ByRef $vec)
+Func _cveInputArrayFromVectorOfVectorOfRect($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfVectorOfRect(std::vector< std::vector< cv::Rect > >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -331,7 +345,7 @@ Func _cveInputArrayFromVectorOfVectorOfRect(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveInputArrayFromVectorOfVectorOfRect
 
-Func _cveOutputArrayFromVectorOfVectorOfRect(ByRef $vec)
+Func _cveOutputArrayFromVectorOfVectorOfRect($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfVectorOfRect(std::vector< std::vector< cv::Rect > >* vec);
 
     Local $vecVec, $iArrVecSize
@@ -357,7 +371,7 @@ Func _cveOutputArrayFromVectorOfVectorOfRect(ByRef $vec)
     Return $retval
 EndFunc   ;==>_cveOutputArrayFromVectorOfVectorOfRect
 
-Func _cveInputOutputArrayFromVectorOfVectorOfRect(ByRef $vec)
+Func _cveInputOutputArrayFromVectorOfVectorOfRect($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfVectorOfRect(std::vector< std::vector< cv::Rect > >* vec);
 
     Local $vecVec, $iArrVecSize

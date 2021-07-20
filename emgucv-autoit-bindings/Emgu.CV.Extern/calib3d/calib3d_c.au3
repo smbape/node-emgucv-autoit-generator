@@ -1,12 +1,12 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveEstimateAffine3D(ByRef $src, ByRef $dst, ByRef $out, ByRef $inliers, $ransacThreshold = 3, $confidence = 0.99)
+Func _cveEstimateAffine3D($src, $dst, $out, $inliers, $ransacThreshold = 3, $confidence = 0.99)
     ; CVAPI(int) cveEstimateAffine3D(cv::_InputArray* src, cv::_InputArray* dst, cv::_OutputArray* out, cv::_OutputArray* inliers, double ransacThreshold, double confidence);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveEstimateAffine3D", "ptr", $src, "ptr", $dst, "ptr", $out, "ptr", $inliers, "double", $ransacThreshold, "double", $confidence), "cveEstimateAffine3D", @error)
 EndFunc   ;==>_cveEstimateAffine3D
 
-Func _cveEstimateAffine3DMat(ByRef $matSrc, ByRef $matDst, ByRef $matOut, ByRef $matInliers, $ransacThreshold = 3, $confidence = 0.99)
+Func _cveEstimateAffine3DMat($matSrc, $matDst, $matOut, $matInliers, $ransacThreshold = 3, $confidence = 0.99)
     ; cveEstimateAffine3D using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -102,27 +102,56 @@ Func _cveEstimateAffine3DMat(ByRef $matSrc, ByRef $matDst, ByRef $matOut, ByRef 
     Return $retval
 EndFunc   ;==>_cveEstimateAffine3DMat
 
-Func _cveStereoSGBMCreate($minDisparity, $numDisparities, $blockSize, $P1, $P2, $disp12MaxDiff, $preFilterCap, $uniquenessRatio, $speckleWindowSize, $speckleRange, $mode, ByRef $stereoMatcher, ByRef $sharedPtr)
+Func _cveStereoSGBMCreate($minDisparity, $numDisparities, $blockSize, $P1, $P2, $disp12MaxDiff, $preFilterCap, $uniquenessRatio, $speckleWindowSize, $speckleRange, $mode, $stereoMatcher, $sharedPtr)
     ; CVAPI(cv::StereoSGBM*) cveStereoSGBMCreate(int minDisparity, int numDisparities, int blockSize, int P1, int P2, int disp12MaxDiff, int preFilterCap, int uniquenessRatio, int speckleWindowSize, int speckleRange, int mode, cv::StereoMatcher** stereoMatcher, cv::Ptr<cv::StereoSGBM>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveStereoSGBMCreate", "int", $minDisparity, "int", $numDisparities, "int", $blockSize, "int", $P1, "int", $P2, "int", $disp12MaxDiff, "int", $preFilterCap, "int", $uniquenessRatio, "int", $speckleWindowSize, "int", $speckleRange, "int", $mode, "ptr*", $stereoMatcher, "ptr*", $sharedPtr), "cveStereoSGBMCreate", @error)
+
+    Local $bStereoMatcherDllType
+    If VarGetType($stereoMatcher) == "DLLStruct" Then
+        $bStereoMatcherDllType = "struct*"
+    Else
+        $bStereoMatcherDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveStereoSGBMCreate", "int", $minDisparity, "int", $numDisparities, "int", $blockSize, "int", $P1, "int", $P2, "int", $disp12MaxDiff, "int", $preFilterCap, "int", $uniquenessRatio, "int", $speckleWindowSize, "int", $speckleRange, "int", $mode, $bStereoMatcherDllType, $stereoMatcher, $bSharedPtrDllType, $sharedPtr), "cveStereoSGBMCreate", @error)
 EndFunc   ;==>_cveStereoSGBMCreate
 
-Func _cveStereoSGBMRelease(ByRef $sharedPtr)
+Func _cveStereoSGBMRelease($sharedPtr)
     ; CVAPI(void) cveStereoSGBMRelease(cv::Ptr<cv::StereoSGBM>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStereoSGBMRelease", "ptr*", $sharedPtr), "cveStereoSGBMRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStereoSGBMRelease", $bSharedPtrDllType, $sharedPtr), "cveStereoSGBMRelease", @error)
 EndFunc   ;==>_cveStereoSGBMRelease
 
-Func _cveStereoBMCreate($mode, $numberOfDisparities, ByRef $sharedPtr)
+Func _cveStereoBMCreate($mode, $numberOfDisparities, $sharedPtr)
     ; CVAPI(cv::StereoMatcher*) cveStereoBMCreate(int mode, int numberOfDisparities, cv::Ptr<cv::StereoMatcher>** sharedPtr);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveStereoBMCreate", "int", $mode, "int", $numberOfDisparities, "ptr*", $sharedPtr), "cveStereoBMCreate", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveStereoBMCreate", "int", $mode, "int", $numberOfDisparities, $bSharedPtrDllType, $sharedPtr), "cveStereoBMCreate", @error)
 EndFunc   ;==>_cveStereoBMCreate
 
-Func _cveStereoMatcherCompute(ByRef $disparitySolver, ByRef $left, ByRef $right, ByRef $disparity)
+Func _cveStereoMatcherCompute($disparitySolver, $left, $right, $disparity)
     ; CVAPI(void) cveStereoMatcherCompute(cv::StereoMatcher* disparitySolver, cv::_InputArray* left, cv::_InputArray* right, cv::_OutputArray* disparity);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStereoMatcherCompute", "ptr", $disparitySolver, "ptr", $left, "ptr", $right, "ptr", $disparity), "cveStereoMatcherCompute", @error)
 EndFunc   ;==>_cveStereoMatcherCompute
 
-Func _cveStereoMatcherComputeMat(ByRef $disparitySolver, ByRef $matLeft, ByRef $matRight, ByRef $matDisparity)
+Func _cveStereoMatcherComputeMat($disparitySolver, $matLeft, $matRight, $matDisparity)
     ; cveStereoMatcherCompute using cv::Mat instead of _*Array
 
     Local $iArrLeft, $vectorOfMatLeft, $iArrLeftSize
@@ -194,12 +223,20 @@ Func _cveStereoMatcherComputeMat(ByRef $disparitySolver, ByRef $matLeft, ByRef $
     _cveInputArrayRelease($iArrLeft)
 EndFunc   ;==>_cveStereoMatcherComputeMat
 
-Func _cveStereoMatcherRelease(ByRef $sharedPtr)
+Func _cveStereoMatcherRelease($sharedPtr)
     ; CVAPI(void) cveStereoMatcherRelease(cv::Ptr<cv::StereoMatcher>** sharedPtr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStereoMatcherRelease", "ptr*", $sharedPtr), "cveStereoMatcherRelease", @error)
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStereoMatcherRelease", $bSharedPtrDllType, $sharedPtr), "cveStereoMatcherRelease", @error)
 EndFunc   ;==>_cveStereoMatcherRelease
 
-Func _getHomographyMatrixFromMatchedFeatures(ByRef $model, ByRef $observed, ByRef $matches, ByRef $mask, $randsacThreshold, ByRef $homography)
+Func _getHomographyMatrixFromMatchedFeatures($model, $observed, $matches, $mask, $randsacThreshold, $homography)
     ; CVAPI(bool) getHomographyMatrixFromMatchedFeatures(std::vector<cv::KeyPoint>* model, std::vector<cv::KeyPoint>* observed, std::vector< std::vector< cv::DMatch > >* matches, cv::Mat* mask, double randsacThreshold, cv::Mat* homography);
 
     Local $vecModel, $iArrModelSize
@@ -261,12 +298,12 @@ Func _getHomographyMatrixFromMatchedFeatures(ByRef $model, ByRef $observed, ByRe
     Return $retval
 EndFunc   ;==>_getHomographyMatrixFromMatchedFeatures
 
-Func _cveFindCirclesGrid(ByRef $image, ByRef $patternSize, ByRef $centers, $flags, ByRef $blobDetector)
+Func _cveFindCirclesGrid($image, $patternSize, $centers, $flags, $blobDetector)
     ; CVAPI(bool) cveFindCirclesGrid(cv::_InputArray* image, CvSize* patternSize, cv::_OutputArray* centers, int flags, cv::Feature2D* blobDetector);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveFindCirclesGrid", "ptr", $image, "struct*", $patternSize, "ptr", $centers, "int", $flags, "ptr", $blobDetector), "cveFindCirclesGrid", @error)
 EndFunc   ;==>_cveFindCirclesGrid
 
-Func _cveFindCirclesGridMat(ByRef $matImage, ByRef $patternSize, ByRef $matCenters, $flags, ByRef $blobDetector)
+Func _cveFindCirclesGridMat($matImage, $patternSize, $matCenters, $flags, $blobDetector)
     ; cveFindCirclesGrid using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -318,12 +355,12 @@ Func _cveFindCirclesGridMat(ByRef $matImage, ByRef $patternSize, ByRef $matCente
     Return $retval
 EndFunc   ;==>_cveFindCirclesGridMat
 
-Func _cveTriangulatePoints(ByRef $projMat1, ByRef $projMat2, ByRef $projPoints1, ByRef $projPoints2, ByRef $points4D)
+Func _cveTriangulatePoints($projMat1, $projMat2, $projPoints1, $projPoints2, $points4D)
     ; CVAPI(void) cveTriangulatePoints(cv::_InputArray* projMat1, cv::_InputArray* projMat2, cv::_InputArray* projPoints1, cv::_InputArray* projPoints2, cv::_OutputArray* points4D);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTriangulatePoints", "ptr", $projMat1, "ptr", $projMat2, "ptr", $projPoints1, "ptr", $projPoints2, "ptr", $points4D), "cveTriangulatePoints", @error)
 EndFunc   ;==>_cveTriangulatePoints
 
-Func _cveTriangulatePointsMat(ByRef $matProjMat1, ByRef $matProjMat2, ByRef $matProjPoints1, ByRef $matProjPoints2, ByRef $matPoints4D)
+Func _cveTriangulatePointsMat($matProjMat1, $matProjMat2, $matProjPoints1, $matProjPoints2, $matPoints4D)
     ; cveTriangulatePoints using cv::Mat instead of _*Array
 
     Local $iArrProjMat1, $vectorOfMatProjMat1, $iArrProjMat1Size
@@ -439,12 +476,12 @@ Func _cveTriangulatePointsMat(ByRef $matProjMat1, ByRef $matProjMat2, ByRef $mat
     _cveInputArrayRelease($iArrProjMat1)
 EndFunc   ;==>_cveTriangulatePointsMat
 
-Func _cveCorrectMatches(ByRef $f, ByRef $points1, ByRef $points2, ByRef $newPoints1, ByRef $newPoints2)
+Func _cveCorrectMatches($f, $points1, $points2, $newPoints1, $newPoints2)
     ; CVAPI(void) cveCorrectMatches(cv::_InputArray* f, cv::_InputArray* points1, cv::_InputArray* points2, cv::_OutputArray* newPoints1, cv::_OutputArray* newPoints2);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCorrectMatches", "ptr", $f, "ptr", $points1, "ptr", $points2, "ptr", $newPoints1, "ptr", $newPoints2), "cveCorrectMatches", @error)
 EndFunc   ;==>_cveCorrectMatches
 
-Func _cveCorrectMatchesMat(ByRef $matF, ByRef $matPoints1, ByRef $matPoints2, ByRef $matNewPoints1, ByRef $matNewPoints2)
+Func _cveCorrectMatchesMat($matF, $matPoints1, $matPoints2, $matNewPoints1, $matNewPoints2)
     ; cveCorrectMatches using cv::Mat instead of _*Array
 
     Local $iArrF, $vectorOfMatF, $iArrFSize
@@ -560,12 +597,12 @@ Func _cveCorrectMatchesMat(ByRef $matF, ByRef $matPoints1, ByRef $matPoints2, By
     _cveInputArrayRelease($iArrF)
 EndFunc   ;==>_cveCorrectMatchesMat
 
-Func _cveFindChessboardCornersSB(ByRef $image, ByRef $patternSize, ByRef $corners, $flags)
+Func _cveFindChessboardCornersSB($image, $patternSize, $corners, $flags)
     ; CVAPI(bool) cveFindChessboardCornersSB(cv::_InputArray* image, CvSize* patternSize, cv::_OutputArray* corners, int flags);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveFindChessboardCornersSB", "ptr", $image, "struct*", $patternSize, "ptr", $corners, "int", $flags), "cveFindChessboardCornersSB", @error)
 EndFunc   ;==>_cveFindChessboardCornersSB
 
-Func _cveFindChessboardCornersSBMat(ByRef $matImage, ByRef $patternSize, ByRef $matCorners, $flags)
+Func _cveFindChessboardCornersSBMat($matImage, $patternSize, $matCorners, $flags)
     ; cveFindChessboardCornersSB using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -617,12 +654,12 @@ Func _cveFindChessboardCornersSBMat(ByRef $matImage, ByRef $patternSize, ByRef $
     Return $retval
 EndFunc   ;==>_cveFindChessboardCornersSBMat
 
-Func _cveEstimateChessboardSharpness(ByRef $image, ByRef $patternSize, ByRef $corners, $riseDistance, $vertical, ByRef $sharpness, ByRef $result)
+Func _cveEstimateChessboardSharpness($image, $patternSize, $corners, $riseDistance, $vertical, $sharpness, $result)
     ; CVAPI(void) cveEstimateChessboardSharpness(cv::_InputArray* image, CvSize* patternSize, cv::_InputArray* corners, float riseDistance, bool vertical, cv::_OutputArray* sharpness, CvScalar* result);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEstimateChessboardSharpness", "ptr", $image, "struct*", $patternSize, "ptr", $corners, "float", $riseDistance, "boolean", $vertical, "ptr", $sharpness, "struct*", $result), "cveEstimateChessboardSharpness", @error)
 EndFunc   ;==>_cveEstimateChessboardSharpness
 
-Func _cveEstimateChessboardSharpnessMat(ByRef $matImage, ByRef $patternSize, ByRef $matCorners, $riseDistance, $vertical, ByRef $matSharpness, ByRef $result)
+Func _cveEstimateChessboardSharpnessMat($matImage, $patternSize, $matCorners, $riseDistance, $vertical, $matSharpness, $result)
     ; cveEstimateChessboardSharpness using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -694,12 +731,12 @@ Func _cveEstimateChessboardSharpnessMat(ByRef $matImage, ByRef $patternSize, ByR
     _cveInputArrayRelease($iArrImage)
 EndFunc   ;==>_cveEstimateChessboardSharpnessMat
 
-Func _cveDrawChessboardCorners(ByRef $image, ByRef $patternSize, ByRef $corners, $patternWasFound)
+Func _cveDrawChessboardCorners($image, $patternSize, $corners, $patternWasFound)
     ; CVAPI(void) cveDrawChessboardCorners(cv::_InputOutputArray* image, CvSize* patternSize, cv::_InputArray* corners, bool patternWasFound);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDrawChessboardCorners", "ptr", $image, "struct*", $patternSize, "ptr", $corners, "boolean", $patternWasFound), "cveDrawChessboardCorners", @error)
 EndFunc   ;==>_cveDrawChessboardCorners
 
-Func _cveDrawChessboardCornersMat(ByRef $matImage, ByRef $patternSize, ByRef $matCorners, $patternWasFound)
+Func _cveDrawChessboardCornersMat($matImage, $patternSize, $matCorners, $patternWasFound)
     ; cveDrawChessboardCorners using cv::Mat instead of _*Array
 
     Local $ioArrImage, $vectorOfMatImage, $iArrImageSize
@@ -749,12 +786,12 @@ Func _cveDrawChessboardCornersMat(ByRef $matImage, ByRef $patternSize, ByRef $ma
     _cveInputOutputArrayRelease($ioArrImage)
 EndFunc   ;==>_cveDrawChessboardCornersMat
 
-Func _cveFilterSpeckles(ByRef $img, $newVal, $maxSpeckleSize, $maxDiff, $buf = _cveNoArray())
+Func _cveFilterSpeckles($img, $newVal, $maxSpeckleSize, $maxDiff, $buf = _cveNoArray())
     ; CVAPI(void) cveFilterSpeckles(cv::_InputOutputArray* img, double newVal, int maxSpeckleSize, double maxDiff, cv::_InputOutputArray* buf);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFilterSpeckles", "ptr", $img, "double", $newVal, "int", $maxSpeckleSize, "double", $maxDiff, "ptr", $buf), "cveFilterSpeckles", @error)
 EndFunc   ;==>_cveFilterSpeckles
 
-Func _cveFilterSpecklesMat(ByRef $matImg, $newVal, $maxSpeckleSize, $maxDiff, $matBuf = _cveNoArrayMat())
+Func _cveFilterSpecklesMat($matImg, $newVal, $maxSpeckleSize, $maxDiff, $matBuf = _cveNoArrayMat())
     ; cveFilterSpeckles using cv::Mat instead of _*Array
 
     Local $ioArrImg, $vectorOfMatImg, $iArrImgSize
@@ -804,12 +841,12 @@ Func _cveFilterSpecklesMat(ByRef $matImg, $newVal, $maxSpeckleSize, $maxDiff, $m
     _cveInputOutputArrayRelease($ioArrImg)
 EndFunc   ;==>_cveFilterSpecklesMat
 
-Func _cveFindChessboardCorners(ByRef $image, ByRef $patternSize, ByRef $corners, $flags = $CV_CALIB_CB_ADAPTIVE_THRESH + $CV_CALIB_CB_NORMALIZE_IMAGE)
+Func _cveFindChessboardCorners($image, $patternSize, $corners, $flags = $CV_CALIB_CB_ADAPTIVE_THRESH + $CV_CALIB_CB_NORMALIZE_IMAGE)
     ; CVAPI(bool) cveFindChessboardCorners(cv::_InputArray* image, CvSize* patternSize, cv::_OutputArray* corners, int flags);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveFindChessboardCorners", "ptr", $image, "struct*", $patternSize, "ptr", $corners, "int", $flags), "cveFindChessboardCorners", @error)
 EndFunc   ;==>_cveFindChessboardCorners
 
-Func _cveFindChessboardCornersMat(ByRef $matImage, ByRef $patternSize, ByRef $matCorners, $flags = $CV_CALIB_CB_ADAPTIVE_THRESH + $CV_CALIB_CB_NORMALIZE_IMAGE)
+Func _cveFindChessboardCornersMat($matImage, $patternSize, $matCorners, $flags = $CV_CALIB_CB_ADAPTIVE_THRESH + $CV_CALIB_CB_NORMALIZE_IMAGE)
     ; cveFindChessboardCorners using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -861,12 +898,12 @@ Func _cveFindChessboardCornersMat(ByRef $matImage, ByRef $patternSize, ByRef $ma
     Return $retval
 EndFunc   ;==>_cveFindChessboardCornersMat
 
-Func _cveFind4QuadCornerSubpix(ByRef $image, ByRef $corners, ByRef $regionSize)
+Func _cveFind4QuadCornerSubpix($image, $corners, $regionSize)
     ; CVAPI(bool) cveFind4QuadCornerSubpix(cv::_InputArray* image, cv::_InputOutputArray* corners, CvSize* regionSize);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveFind4QuadCornerSubpix", "ptr", $image, "ptr", $corners, "struct*", $regionSize), "cveFind4QuadCornerSubpix", @error)
 EndFunc   ;==>_cveFind4QuadCornerSubpix
 
-Func _cveFind4QuadCornerSubpixMat(ByRef $matImage, ByRef $matCorners, ByRef $regionSize)
+Func _cveFind4QuadCornerSubpixMat($matImage, $matCorners, $regionSize)
     ; cveFind4QuadCornerSubpix using cv::Mat instead of _*Array
 
     Local $iArrImage, $vectorOfMatImage, $iArrImageSize
@@ -918,12 +955,12 @@ Func _cveFind4QuadCornerSubpixMat(ByRef $matImage, ByRef $matCorners, ByRef $reg
     Return $retval
 EndFunc   ;==>_cveFind4QuadCornerSubpixMat
 
-Func _cveStereoRectifyUncalibrated(ByRef $points1, ByRef $points2, ByRef $f, ByRef $imgSize, ByRef $h1, ByRef $h2, $threshold = 5)
+Func _cveStereoRectifyUncalibrated($points1, $points2, $f, $imgSize, $h1, $h2, $threshold = 5)
     ; CVAPI(bool) cveStereoRectifyUncalibrated(cv::_InputArray* points1, cv::_InputArray* points2, cv::_InputArray* f, CvSize* imgSize, cv::_OutputArray* h1, cv::_OutputArray* h2, double threshold);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveStereoRectifyUncalibrated", "ptr", $points1, "ptr", $points2, "ptr", $f, "struct*", $imgSize, "ptr", $h1, "ptr", $h2, "double", $threshold), "cveStereoRectifyUncalibrated", @error)
 EndFunc   ;==>_cveStereoRectifyUncalibrated
 
-Func _cveStereoRectifyUncalibratedMat(ByRef $matPoints1, ByRef $matPoints2, ByRef $matF, ByRef $imgSize, ByRef $matH1, ByRef $matH2, $threshold = 5)
+Func _cveStereoRectifyUncalibratedMat($matPoints1, $matPoints2, $matF, $imgSize, $matH1, $matH2, $threshold = 5)
     ; cveStereoRectifyUncalibrated using cv::Mat instead of _*Array
 
     Local $iArrPoints1, $vectorOfMatPoints1, $iArrPoints1Size
@@ -1041,12 +1078,12 @@ Func _cveStereoRectifyUncalibratedMat(ByRef $matPoints1, ByRef $matPoints2, ByRe
     Return $retval
 EndFunc   ;==>_cveStereoRectifyUncalibratedMat
 
-Func _cveStereoRectify(ByRef $cameraMatrix1, ByRef $distCoeffs1, ByRef $cameraMatrix2, ByRef $distCoeffs2, ByRef $imageSize, ByRef $r, ByRef $t, ByRef $r1, ByRef $r2, ByRef $p1, ByRef $p2, ByRef $q, $flags = $CV_CALIB_ZERO_DISPARITY, $alpha = -1, $newImageSize = _cvSize(), $validPixROI1 = 0, $validPixROI2 = 0)
+Func _cveStereoRectify($cameraMatrix1, $distCoeffs1, $cameraMatrix2, $distCoeffs2, $imageSize, $r, $t, $r1, $r2, $p1, $p2, $q, $flags = $CV_CALIB_ZERO_DISPARITY, $alpha = -1, $newImageSize = _cvSize(), $validPixROI1 = 0, $validPixROI2 = 0)
     ; CVAPI(void) cveStereoRectify(cv::_InputArray* cameraMatrix1, cv::_InputArray* distCoeffs1, cv::_InputArray* cameraMatrix2, cv::_InputArray* distCoeffs2, CvSize* imageSize, cv::_InputArray* r, cv::_InputArray* t, cv::_OutputArray* r1, cv::_OutputArray* r2, cv::_OutputArray* p1, cv::_OutputArray* p2, cv::_OutputArray* q, int flags, double alpha, CvSize* newImageSize, CvRect* validPixROI1, CvRect* validPixROI2);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStereoRectify", "ptr", $cameraMatrix1, "ptr", $distCoeffs1, "ptr", $cameraMatrix2, "ptr", $distCoeffs2, "struct*", $imageSize, "ptr", $r, "ptr", $t, "ptr", $r1, "ptr", $r2, "ptr", $p1, "ptr", $p2, "ptr", $q, "int", $flags, "double", $alpha, "struct*", $newImageSize, "struct*", $validPixROI1, "struct*", $validPixROI2), "cveStereoRectify", @error)
 EndFunc   ;==>_cveStereoRectify
 
-Func _cveStereoRectifyMat(ByRef $matCameraMatrix1, ByRef $matDistCoeffs1, ByRef $matCameraMatrix2, ByRef $matDistCoeffs2, ByRef $imageSize, ByRef $matR, ByRef $matT, ByRef $matR1, ByRef $matR2, ByRef $matP1, ByRef $matP2, ByRef $matQ, $flags = $CV_CALIB_ZERO_DISPARITY, $alpha = -1, $newImageSize = _cvSize(), $validPixROI1 = 0, $validPixROI2 = 0)
+Func _cveStereoRectifyMat($matCameraMatrix1, $matDistCoeffs1, $matCameraMatrix2, $matDistCoeffs2, $imageSize, $matR, $matT, $matR1, $matR2, $matP1, $matP2, $matQ, $flags = $CV_CALIB_ZERO_DISPARITY, $alpha = -1, $newImageSize = _cvSize(), $validPixROI1 = 0, $validPixROI2 = 0)
     ; cveStereoRectify using cv::Mat instead of _*Array
 
     Local $iArrCameraMatrix1, $vectorOfMatCameraMatrix1, $iArrCameraMatrix1Size
@@ -1294,12 +1331,12 @@ Func _cveStereoRectifyMat(ByRef $matCameraMatrix1, ByRef $matDistCoeffs1, ByRef 
     _cveInputArrayRelease($iArrCameraMatrix1)
 EndFunc   ;==>_cveStereoRectifyMat
 
-Func _cveRodrigues(ByRef $src, ByRef $dst, $jacobian = _cveNoArray())
+Func _cveRodrigues($src, $dst, $jacobian = _cveNoArray())
     ; CVAPI(void) cveRodrigues(cv::_InputArray* src, cv::_OutputArray* dst, cv::_OutputArray* jacobian);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRodrigues", "ptr", $src, "ptr", $dst, "ptr", $jacobian), "cveRodrigues", @error)
 EndFunc   ;==>_cveRodrigues
 
-Func _cveRodriguesMat(ByRef $matSrc, ByRef $matDst, $matJacobian = _cveNoArrayMat())
+Func _cveRodriguesMat($matSrc, $matDst, $matJacobian = _cveNoArrayMat())
     ; cveRodrigues using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -1371,12 +1408,12 @@ Func _cveRodriguesMat(ByRef $matSrc, ByRef $matDst, $matJacobian = _cveNoArrayMa
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveRodriguesMat
 
-Func _cveCalibrateCamera(ByRef $objectPoints, ByRef $imagePoints, ByRef $imageSize, ByRef $cameraMatrix, ByRef $distCoeffs, ByRef $rvecs, ByRef $tvecs, $flags = 0, $criteria = _cvTermCriteria( $CV_TERM_CRITERIA_COUNT + $CV_TERM_CRITERIA_EPS, 30, $CV_DBL_EPSILON))
+Func _cveCalibrateCamera($objectPoints, $imagePoints, $imageSize, $cameraMatrix, $distCoeffs, $rvecs, $tvecs, $flags = 0, $criteria = _cvTermCriteria( $CV_TERM_CRITERIA_COUNT + $CV_TERM_CRITERIA_EPS, 30, $CV_DBL_EPSILON))
     ; CVAPI(double) cveCalibrateCamera(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints, CvSize* imageSize, cv::_InputOutputArray* cameraMatrix, cv::_InputOutputArray* distCoeffs, cv::_OutputArray* rvecs, cv::_OutputArray* tvecs, int flags, CvTermCriteria* criteria);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveCalibrateCamera", "ptr", $objectPoints, "ptr", $imagePoints, "struct*", $imageSize, "ptr", $cameraMatrix, "ptr", $distCoeffs, "ptr", $rvecs, "ptr", $tvecs, "int", $flags, "struct*", $criteria), "cveCalibrateCamera", @error)
 EndFunc   ;==>_cveCalibrateCamera
 
-Func _cveCalibrateCameraMat(ByRef $matObjectPoints, ByRef $matImagePoints, ByRef $imageSize, ByRef $matCameraMatrix, ByRef $matDistCoeffs, ByRef $matRvecs, ByRef $matTvecs, $flags = 0, $criteria = _cvTermCriteria( $CV_TERM_CRITERIA_COUNT + $CV_TERM_CRITERIA_EPS, 30, $CV_DBL_EPSILON))
+Func _cveCalibrateCameraMat($matObjectPoints, $matImagePoints, $imageSize, $matCameraMatrix, $matDistCoeffs, $matRvecs, $matTvecs, $flags = 0, $criteria = _cvTermCriteria( $CV_TERM_CRITERIA_COUNT + $CV_TERM_CRITERIA_EPS, 30, $CV_DBL_EPSILON))
     ; cveCalibrateCamera using cv::Mat instead of _*Array
 
     Local $iArrObjectPoints, $vectorOfMatObjectPoints, $iArrObjectPointsSize
@@ -1516,12 +1553,12 @@ Func _cveCalibrateCameraMat(ByRef $matObjectPoints, ByRef $matImagePoints, ByRef
     Return $retval
 EndFunc   ;==>_cveCalibrateCameraMat
 
-Func _cveReprojectImageTo3D(ByRef $disparity, ByRef $threeDImage, ByRef $q, $handleMissingValues = false, $ddepth = -1)
+Func _cveReprojectImageTo3D($disparity, $threeDImage, $q, $handleMissingValues = false, $ddepth = -1)
     ; CVAPI(void) cveReprojectImageTo3D(cv::_InputArray* disparity, cv::_OutputArray* threeDImage, cv::_InputArray* q, bool handleMissingValues, int ddepth);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveReprojectImageTo3D", "ptr", $disparity, "ptr", $threeDImage, "ptr", $q, "boolean", $handleMissingValues, "int", $ddepth), "cveReprojectImageTo3D", @error)
 EndFunc   ;==>_cveReprojectImageTo3D
 
-Func _cveReprojectImageTo3DMat(ByRef $matDisparity, ByRef $matThreeDImage, ByRef $matQ, $handleMissingValues = false, $ddepth = -1)
+Func _cveReprojectImageTo3DMat($matDisparity, $matThreeDImage, $matQ, $handleMissingValues = false, $ddepth = -1)
     ; cveReprojectImageTo3D using cv::Mat instead of _*Array
 
     Local $iArrDisparity, $vectorOfMatDisparity, $iArrDisparitySize
@@ -1593,12 +1630,12 @@ Func _cveReprojectImageTo3DMat(ByRef $matDisparity, ByRef $matThreeDImage, ByRef
     _cveInputArrayRelease($iArrDisparity)
 EndFunc   ;==>_cveReprojectImageTo3DMat
 
-Func _cveConvertPointsToHomogeneous(ByRef $src, ByRef $dst)
+Func _cveConvertPointsToHomogeneous($src, $dst)
     ; CVAPI(void) cveConvertPointsToHomogeneous(cv::_InputArray* src, cv::_OutputArray* dst);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveConvertPointsToHomogeneous", "ptr", $src, "ptr", $dst), "cveConvertPointsToHomogeneous", @error)
 EndFunc   ;==>_cveConvertPointsToHomogeneous
 
-Func _cveConvertPointsToHomogeneousMat(ByRef $matSrc, ByRef $matDst)
+Func _cveConvertPointsToHomogeneousMat($matSrc, $matDst)
     ; cveConvertPointsToHomogeneous using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -1648,12 +1685,12 @@ Func _cveConvertPointsToHomogeneousMat(ByRef $matSrc, ByRef $matDst)
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveConvertPointsToHomogeneousMat
 
-Func _cveConvertPointsFromHomogeneous(ByRef $src, ByRef $dst)
+Func _cveConvertPointsFromHomogeneous($src, $dst)
     ; CVAPI(void) cveConvertPointsFromHomogeneous(cv::_InputArray* src, cv::_OutputArray* dst);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveConvertPointsFromHomogeneous", "ptr", $src, "ptr", $dst), "cveConvertPointsFromHomogeneous", @error)
 EndFunc   ;==>_cveConvertPointsFromHomogeneous
 
-Func _cveConvertPointsFromHomogeneousMat(ByRef $matSrc, ByRef $matDst)
+Func _cveConvertPointsFromHomogeneousMat($matSrc, $matDst)
     ; cveConvertPointsFromHomogeneous using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -1703,12 +1740,12 @@ Func _cveConvertPointsFromHomogeneousMat(ByRef $matSrc, ByRef $matDst)
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveConvertPointsFromHomogeneousMat
 
-Func _cveFindEssentialMat(ByRef $points1, ByRef $points2, ByRef $cameraMatrix, $method, $prob, $threshold, ByRef $mask, ByRef $essentialMat)
+Func _cveFindEssentialMat($points1, $points2, $cameraMatrix, $method, $prob, $threshold, $mask, $essentialMat)
     ; CVAPI(void) cveFindEssentialMat(cv::_InputArray* points1, cv::_InputArray* points2, cv::_InputArray* cameraMatrix, int method, double prob, double threshold, cv::_OutputArray* mask, cv::Mat* essentialMat);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFindEssentialMat", "ptr", $points1, "ptr", $points2, "ptr", $cameraMatrix, "int", $method, "double", $prob, "double", $threshold, "ptr", $mask, "ptr", $essentialMat), "cveFindEssentialMat", @error)
 EndFunc   ;==>_cveFindEssentialMat
 
-Func _cveFindEssentialMatMat(ByRef $matPoints1, ByRef $matPoints2, ByRef $matCameraMatrix, $method, $prob, $threshold, ByRef $matMask, ByRef $essentialMat)
+Func _cveFindEssentialMatMat($matPoints1, $matPoints2, $matCameraMatrix, $method, $prob, $threshold, $matMask, $essentialMat)
     ; cveFindEssentialMat using cv::Mat instead of _*Array
 
     Local $iArrPoints1, $vectorOfMatPoints1, $iArrPoints1Size
@@ -1802,12 +1839,12 @@ Func _cveFindEssentialMatMat(ByRef $matPoints1, ByRef $matPoints2, ByRef $matCam
     _cveInputArrayRelease($iArrPoints1)
 EndFunc   ;==>_cveFindEssentialMatMat
 
-Func _cveFindFundamentalMat(ByRef $points1, ByRef $points2, ByRef $dst, $method, $param1, $param2, $mask = _cveNoArray())
+Func _cveFindFundamentalMat($points1, $points2, $dst, $method, $param1, $param2, $mask = _cveNoArray())
     ; CVAPI(void) cveFindFundamentalMat(cv::_InputArray* points1, cv::_InputArray* points2, cv::_OutputArray* dst, int method, double param1, double param2, cv::_OutputArray* mask);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFindFundamentalMat", "ptr", $points1, "ptr", $points2, "ptr", $dst, "int", $method, "double", $param1, "double", $param2, "ptr", $mask), "cveFindFundamentalMat", @error)
 EndFunc   ;==>_cveFindFundamentalMat
 
-Func _cveFindFundamentalMatMat(ByRef $matPoints1, ByRef $matPoints2, ByRef $matDst, $method, $param1, $param2, $matMask = _cveNoArrayMat())
+Func _cveFindFundamentalMatMat($matPoints1, $matPoints2, $matDst, $method, $param1, $param2, $matMask = _cveNoArrayMat())
     ; cveFindFundamentalMat using cv::Mat instead of _*Array
 
     Local $iArrPoints1, $vectorOfMatPoints1, $iArrPoints1Size
@@ -1901,12 +1938,12 @@ Func _cveFindFundamentalMatMat(ByRef $matPoints1, ByRef $matPoints2, ByRef $matD
     _cveInputArrayRelease($iArrPoints1)
 EndFunc   ;==>_cveFindFundamentalMatMat
 
-Func _cveFindHomography(ByRef $srcPoints, ByRef $dstPoints, ByRef $dst, $method = 0, $ransacReprojThreshold = 3, $mask = _cveNoArray())
+Func _cveFindHomography($srcPoints, $dstPoints, $dst, $method = 0, $ransacReprojThreshold = 3, $mask = _cveNoArray())
     ; CVAPI(void) cveFindHomography(cv::_InputArray* srcPoints, cv::_InputArray* dstPoints, cv::_OutputArray* dst, int method, double ransacReprojThreshold, cv::_OutputArray* mask);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFindHomography", "ptr", $srcPoints, "ptr", $dstPoints, "ptr", $dst, "int", $method, "double", $ransacReprojThreshold, "ptr", $mask), "cveFindHomography", @error)
 EndFunc   ;==>_cveFindHomography
 
-Func _cveFindHomographyMat(ByRef $matSrcPoints, ByRef $matDstPoints, ByRef $matDst, $method = 0, $ransacReprojThreshold = 3, $matMask = _cveNoArrayMat())
+Func _cveFindHomographyMat($matSrcPoints, $matDstPoints, $matDst, $method = 0, $ransacReprojThreshold = 3, $matMask = _cveNoArrayMat())
     ; cveFindHomography using cv::Mat instead of _*Array
 
     Local $iArrSrcPoints, $vectorOfMatSrcPoints, $iArrSrcPointsSize
@@ -2000,12 +2037,12 @@ Func _cveFindHomographyMat(ByRef $matSrcPoints, ByRef $matDstPoints, ByRef $matD
     _cveInputArrayRelease($iArrSrcPoints)
 EndFunc   ;==>_cveFindHomographyMat
 
-Func _cveComputeCorrespondEpilines(ByRef $points, $whichImage, ByRef $f, ByRef $lines)
+Func _cveComputeCorrespondEpilines($points, $whichImage, $f, $lines)
     ; CVAPI(void) cveComputeCorrespondEpilines(cv::_InputArray* points, int whichImage, cv::_InputArray* f, cv::_OutputArray* lines);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveComputeCorrespondEpilines", "ptr", $points, "int", $whichImage, "ptr", $f, "ptr", $lines), "cveComputeCorrespondEpilines", @error)
 EndFunc   ;==>_cveComputeCorrespondEpilines
 
-Func _cveComputeCorrespondEpilinesMat(ByRef $matPoints, $whichImage, ByRef $matF, ByRef $matLines)
+Func _cveComputeCorrespondEpilinesMat($matPoints, $whichImage, $matF, $matLines)
     ; cveComputeCorrespondEpilines using cv::Mat instead of _*Array
 
     Local $iArrPoints, $vectorOfMatPoints, $iArrPointsSize
@@ -2077,12 +2114,12 @@ Func _cveComputeCorrespondEpilinesMat(ByRef $matPoints, $whichImage, ByRef $matF
     _cveInputArrayRelease($iArrPoints)
 EndFunc   ;==>_cveComputeCorrespondEpilinesMat
 
-Func _cveProjectPoints(ByRef $objPoints, ByRef $rvec, ByRef $tvec, ByRef $cameraMatrix, ByRef $distCoeffs, ByRef $imagePoints, $jacobian = _cveNoArray(), $aspectRatio = 0)
+Func _cveProjectPoints($objPoints, $rvec, $tvec, $cameraMatrix, $distCoeffs, $imagePoints, $jacobian = _cveNoArray(), $aspectRatio = 0)
     ; CVAPI(void) cveProjectPoints(cv::_InputArray* objPoints, cv::_InputArray* rvec, cv::_InputArray* tvec, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_OutputArray* imagePoints, cv::_OutputArray* jacobian, double aspectRatio);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveProjectPoints", "ptr", $objPoints, "ptr", $rvec, "ptr", $tvec, "ptr", $cameraMatrix, "ptr", $distCoeffs, "ptr", $imagePoints, "ptr", $jacobian, "double", $aspectRatio), "cveProjectPoints", @error)
 EndFunc   ;==>_cveProjectPoints
 
-Func _cveProjectPointsMat(ByRef $matObjPoints, ByRef $matRvec, ByRef $matTvec, ByRef $matCameraMatrix, ByRef $matDistCoeffs, ByRef $matImagePoints, $matJacobian = _cveNoArrayMat(), $aspectRatio = 0)
+Func _cveProjectPointsMat($matObjPoints, $matRvec, $matTvec, $matCameraMatrix, $matDistCoeffs, $matImagePoints, $matJacobian = _cveNoArrayMat(), $aspectRatio = 0)
     ; cveProjectPoints using cv::Mat instead of _*Array
 
     Local $iArrObjPoints, $vectorOfMatObjPoints, $iArrObjPointsSize
@@ -2242,12 +2279,12 @@ Func _cveProjectPointsMat(ByRef $matObjPoints, ByRef $matRvec, ByRef $matTvec, B
     _cveInputArrayRelease($iArrObjPoints)
 EndFunc   ;==>_cveProjectPointsMat
 
-Func _cveCalibrationMatrixValues(ByRef $cameraMatrix, ByRef $imageSize, $apertureWidth, $apertureHeight, ByRef $fovx, ByRef $fovy, ByRef $focalLength, ByRef $principalPoint, ByRef $aspectRatio)
+Func _cveCalibrationMatrixValues($cameraMatrix, $imageSize, $apertureWidth, $apertureHeight, $fovx, $fovy, $focalLength, $principalPoint, $aspectRatio)
     ; CVAPI(void) cveCalibrationMatrixValues(cv::_InputArray* cameraMatrix, CvSize* imageSize, double apertureWidth, double apertureHeight, double* fovx, double* fovy, double* focalLength, CvPoint2D64f* principalPoint, double* aspectRatio);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCalibrationMatrixValues", "ptr", $cameraMatrix, "struct*", $imageSize, "double", $apertureWidth, "double", $apertureHeight, "struct*", $fovx, "struct*", $fovy, "struct*", $focalLength, "struct*", $principalPoint, "struct*", $aspectRatio), "cveCalibrationMatrixValues", @error)
 EndFunc   ;==>_cveCalibrationMatrixValues
 
-Func _cveCalibrationMatrixValuesMat(ByRef $matCameraMatrix, ByRef $imageSize, $apertureWidth, $apertureHeight, ByRef $fovx, ByRef $fovy, ByRef $focalLength, ByRef $principalPoint, ByRef $aspectRatio)
+Func _cveCalibrationMatrixValuesMat($matCameraMatrix, $imageSize, $apertureWidth, $apertureHeight, $fovx, $fovy, $focalLength, $principalPoint, $aspectRatio)
     ; cveCalibrationMatrixValues using cv::Mat instead of _*Array
 
     Local $iArrCameraMatrix, $vectorOfMatCameraMatrix, $iArrCameraMatrixSize
@@ -2275,12 +2312,12 @@ Func _cveCalibrationMatrixValuesMat(ByRef $matCameraMatrix, ByRef $imageSize, $a
     _cveInputArrayRelease($iArrCameraMatrix)
 EndFunc   ;==>_cveCalibrationMatrixValuesMat
 
-Func _cveStereoCalibrate(ByRef $objectPoints, ByRef $imagePoints1, ByRef $imagePoints2, ByRef $cameraMatrix1, ByRef $distCoeffs1, ByRef $cameraMatrix2, ByRef $distCoeffs2, ByRef $imageSize, ByRef $r, ByRef $t, ByRef $e, ByRef $f, $flags = $CV_CALIB_FIX_INTRINSIC, $criteria = _cvTermCriteria($CV_TERM_CRITERIA_COUNT+$CV_TERM_CRITERIA_EPS, 30, 1e-6))
+Func _cveStereoCalibrate($objectPoints, $imagePoints1, $imagePoints2, $cameraMatrix1, $distCoeffs1, $cameraMatrix2, $distCoeffs2, $imageSize, $r, $t, $e, $f, $flags = $CV_CALIB_FIX_INTRINSIC, $criteria = _cvTermCriteria($CV_TERM_CRITERIA_COUNT+$CV_TERM_CRITERIA_EPS, 30, 1e-6))
     ; CVAPI(double) cveStereoCalibrate(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints1, cv::_InputArray* imagePoints2, cv::_InputOutputArray* cameraMatrix1, cv::_InputOutputArray* distCoeffs1, cv::_InputOutputArray* cameraMatrix2, cv::_InputOutputArray* distCoeffs2, CvSize* imageSize, cv::_OutputArray* r, cv::_OutputArray* t, cv::_OutputArray* e, cv::_OutputArray* f, int flags, CvTermCriteria* criteria);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveStereoCalibrate", "ptr", $objectPoints, "ptr", $imagePoints1, "ptr", $imagePoints2, "ptr", $cameraMatrix1, "ptr", $distCoeffs1, "ptr", $cameraMatrix2, "ptr", $distCoeffs2, "struct*", $imageSize, "ptr", $r, "ptr", $t, "ptr", $e, "ptr", $f, "int", $flags, "struct*", $criteria), "cveStereoCalibrate", @error)
 EndFunc   ;==>_cveStereoCalibrate
 
-Func _cveStereoCalibrateMat(ByRef $matObjectPoints, ByRef $matImagePoints1, ByRef $matImagePoints2, ByRef $matCameraMatrix1, ByRef $matDistCoeffs1, ByRef $matCameraMatrix2, ByRef $matDistCoeffs2, ByRef $imageSize, ByRef $matR, ByRef $matT, ByRef $matE, ByRef $matF, $flags = $CV_CALIB_FIX_INTRINSIC, $criteria = _cvTermCriteria($CV_TERM_CRITERIA_COUNT+$CV_TERM_CRITERIA_EPS, 30, 1e-6))
+Func _cveStereoCalibrateMat($matObjectPoints, $matImagePoints1, $matImagePoints2, $matCameraMatrix1, $matDistCoeffs1, $matCameraMatrix2, $matDistCoeffs2, $imageSize, $matR, $matT, $matE, $matF, $flags = $CV_CALIB_FIX_INTRINSIC, $criteria = _cvTermCriteria($CV_TERM_CRITERIA_COUNT+$CV_TERM_CRITERIA_EPS, 30, 1e-6))
     ; cveStereoCalibrate using cv::Mat instead of _*Array
 
     Local $iArrObjectPoints, $vectorOfMatObjectPoints, $iArrObjectPointsSize
@@ -2530,12 +2567,12 @@ Func _cveStereoCalibrateMat(ByRef $matObjectPoints, ByRef $matImagePoints1, ByRe
     Return $retval
 EndFunc   ;==>_cveStereoCalibrateMat
 
-Func _cveSolvePnP(ByRef $objectPoints, ByRef $imagePoints, ByRef $cameraMatrix, ByRef $distCoeffs, ByRef $rvec, ByRef $tvec, $useExtrinsicGuess = false, $flags = $CV_SOLVEPNP_ITERATIVE)
+Func _cveSolvePnP($objectPoints, $imagePoints, $cameraMatrix, $distCoeffs, $rvec, $tvec, $useExtrinsicGuess = false, $flags = $CV_SOLVEPNP_ITERATIVE)
     ; CVAPI(bool) cveSolvePnP(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_OutputArray* rvec, cv::_OutputArray* tvec, bool useExtrinsicGuess, int flags);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveSolvePnP", "ptr", $objectPoints, "ptr", $imagePoints, "ptr", $cameraMatrix, "ptr", $distCoeffs, "ptr", $rvec, "ptr", $tvec, "boolean", $useExtrinsicGuess, "int", $flags), "cveSolvePnP", @error)
 EndFunc   ;==>_cveSolvePnP
 
-Func _cveSolvePnPMat(ByRef $matObjectPoints, ByRef $matImagePoints, ByRef $matCameraMatrix, ByRef $matDistCoeffs, ByRef $matRvec, ByRef $matTvec, $useExtrinsicGuess = false, $flags = $CV_SOLVEPNP_ITERATIVE)
+Func _cveSolvePnPMat($matObjectPoints, $matImagePoints, $matCameraMatrix, $matDistCoeffs, $matRvec, $matTvec, $useExtrinsicGuess = false, $flags = $CV_SOLVEPNP_ITERATIVE)
     ; cveSolvePnP using cv::Mat instead of _*Array
 
     Local $iArrObjectPoints, $vectorOfMatObjectPoints, $iArrObjectPointsSize
@@ -2675,12 +2712,12 @@ Func _cveSolvePnPMat(ByRef $matObjectPoints, ByRef $matImagePoints, ByRef $matCa
     Return $retval
 EndFunc   ;==>_cveSolvePnPMat
 
-Func _cveSolvePnPRansac(ByRef $objectPoints, ByRef $imagePoints, ByRef $cameraMatrix, ByRef $distCoeffs, ByRef $rvec, ByRef $tvec, $useExtrinsicGuess, $iterationsCount, $reprojectionError, $confident, $inliers = _cveNoArray(), $flags = $CV_SOLVEPNP_ITERATIVE)
+Func _cveSolvePnPRansac($objectPoints, $imagePoints, $cameraMatrix, $distCoeffs, $rvec, $tvec, $useExtrinsicGuess, $iterationsCount, $reprojectionError, $confident, $inliers = _cveNoArray(), $flags = $CV_SOLVEPNP_ITERATIVE)
     ; CVAPI(bool) cveSolvePnPRansac(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_OutputArray* rvec, cv::_OutputArray* tvec, bool useExtrinsicGuess, int iterationsCount, float reprojectionError, double confident, cv::_OutputArray* inliers, int flags);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveSolvePnPRansac", "ptr", $objectPoints, "ptr", $imagePoints, "ptr", $cameraMatrix, "ptr", $distCoeffs, "ptr", $rvec, "ptr", $tvec, "boolean", $useExtrinsicGuess, "int", $iterationsCount, "float", $reprojectionError, "double", $confident, "ptr", $inliers, "int", $flags), "cveSolvePnPRansac", @error)
 EndFunc   ;==>_cveSolvePnPRansac
 
-Func _cveSolvePnPRansacMat(ByRef $matObjectPoints, ByRef $matImagePoints, ByRef $matCameraMatrix, ByRef $matDistCoeffs, ByRef $matRvec, ByRef $matTvec, $useExtrinsicGuess, $iterationsCount, $reprojectionError, $confident, $matInliers = _cveNoArrayMat(), $flags = $CV_SOLVEPNP_ITERATIVE)
+Func _cveSolvePnPRansacMat($matObjectPoints, $matImagePoints, $matCameraMatrix, $matDistCoeffs, $matRvec, $matTvec, $useExtrinsicGuess, $iterationsCount, $reprojectionError, $confident, $matInliers = _cveNoArrayMat(), $flags = $CV_SOLVEPNP_ITERATIVE)
     ; cveSolvePnPRansac using cv::Mat instead of _*Array
 
     Local $iArrObjectPoints, $vectorOfMatObjectPoints, $iArrObjectPointsSize
@@ -2842,12 +2879,12 @@ Func _cveSolvePnPRansacMat(ByRef $matObjectPoints, ByRef $matImagePoints, ByRef 
     Return $retval
 EndFunc   ;==>_cveSolvePnPRansacMat
 
-Func _cveSolveP3P(ByRef $objectPoints, ByRef $imagePoints, ByRef $cameraMatrix, ByRef $distCoeffs, ByRef $rvecs, ByRef $tvecs, $flags)
+Func _cveSolveP3P($objectPoints, $imagePoints, $cameraMatrix, $distCoeffs, $rvecs, $tvecs, $flags)
     ; CVAPI(int) cveSolveP3P(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_OutputArray* rvecs, cv::_OutputArray* tvecs, int flags);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveSolveP3P", "ptr", $objectPoints, "ptr", $imagePoints, "ptr", $cameraMatrix, "ptr", $distCoeffs, "ptr", $rvecs, "ptr", $tvecs, "int", $flags), "cveSolveP3P", @error)
 EndFunc   ;==>_cveSolveP3P
 
-Func _cveSolveP3PMat(ByRef $matObjectPoints, ByRef $matImagePoints, ByRef $matCameraMatrix, ByRef $matDistCoeffs, ByRef $matRvecs, ByRef $matTvecs, $flags)
+Func _cveSolveP3PMat($matObjectPoints, $matImagePoints, $matCameraMatrix, $matDistCoeffs, $matRvecs, $matTvecs, $flags)
     ; cveSolveP3P using cv::Mat instead of _*Array
 
     Local $iArrObjectPoints, $vectorOfMatObjectPoints, $iArrObjectPointsSize
@@ -2987,12 +3024,12 @@ Func _cveSolveP3PMat(ByRef $matObjectPoints, ByRef $matImagePoints, ByRef $matCa
     Return $retval
 EndFunc   ;==>_cveSolveP3PMat
 
-Func _cveSolvePnPRefineLM(ByRef $objectPoints, ByRef $imagePoints, ByRef $cameraMatrix, ByRef $distCoeffs, ByRef $rvec, ByRef $tvec, $criteria = _cvTermCriteria($CV_TERM_CRITERIA_EPS + $CV_TERM_CRITERIA_COUNT, 20, $CV_FLT_EPSILON))
+Func _cveSolvePnPRefineLM($objectPoints, $imagePoints, $cameraMatrix, $distCoeffs, $rvec, $tvec, $criteria = _cvTermCriteria($CV_TERM_CRITERIA_EPS + $CV_TERM_CRITERIA_COUNT, 20, $CV_FLT_EPSILON))
     ; CVAPI(void) cveSolvePnPRefineLM(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_InputOutputArray* rvec, cv::_InputOutputArray* tvec, CvTermCriteria* criteria);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSolvePnPRefineLM", "ptr", $objectPoints, "ptr", $imagePoints, "ptr", $cameraMatrix, "ptr", $distCoeffs, "ptr", $rvec, "ptr", $tvec, "struct*", $criteria), "cveSolvePnPRefineLM", @error)
 EndFunc   ;==>_cveSolvePnPRefineLM
 
-Func _cveSolvePnPRefineLMMat(ByRef $matObjectPoints, ByRef $matImagePoints, ByRef $matCameraMatrix, ByRef $matDistCoeffs, ByRef $matRvec, ByRef $matTvec, $criteria = _cvTermCriteria($CV_TERM_CRITERIA_EPS + $CV_TERM_CRITERIA_COUNT, 20, $CV_FLT_EPSILON))
+Func _cveSolvePnPRefineLMMat($matObjectPoints, $matImagePoints, $matCameraMatrix, $matDistCoeffs, $matRvec, $matTvec, $criteria = _cvTermCriteria($CV_TERM_CRITERIA_EPS + $CV_TERM_CRITERIA_COUNT, 20, $CV_FLT_EPSILON))
     ; cveSolvePnPRefineLM using cv::Mat instead of _*Array
 
     Local $iArrObjectPoints, $vectorOfMatObjectPoints, $iArrObjectPointsSize
@@ -3130,12 +3167,12 @@ Func _cveSolvePnPRefineLMMat(ByRef $matObjectPoints, ByRef $matImagePoints, ByRe
     _cveInputArrayRelease($iArrObjectPoints)
 EndFunc   ;==>_cveSolvePnPRefineLMMat
 
-Func _cveSolvePnPRefineVVS(ByRef $objectPoints, ByRef $imagePoints, ByRef $cameraMatrix, ByRef $distCoeffs, ByRef $rvec, ByRef $tvec, $criteria = _cvTermCriteria($CV_TERM_CRITERIA_EPS + $CV_TERM_CRITERIA_COUNT, 20, $CV_FLT_EPSILON), $VVSlambda = 1)
+Func _cveSolvePnPRefineVVS($objectPoints, $imagePoints, $cameraMatrix, $distCoeffs, $rvec, $tvec, $criteria = _cvTermCriteria($CV_TERM_CRITERIA_EPS + $CV_TERM_CRITERIA_COUNT, 20, $CV_FLT_EPSILON), $VVSlambda = 1)
     ; CVAPI(void) cveSolvePnPRefineVVS(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_InputOutputArray* rvec, cv::_InputOutputArray* tvec, CvTermCriteria* criteria, double VVSlambda);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSolvePnPRefineVVS", "ptr", $objectPoints, "ptr", $imagePoints, "ptr", $cameraMatrix, "ptr", $distCoeffs, "ptr", $rvec, "ptr", $tvec, "struct*", $criteria, "double", $VVSlambda), "cveSolvePnPRefineVVS", @error)
 EndFunc   ;==>_cveSolvePnPRefineVVS
 
-Func _cveSolvePnPRefineVVSMat(ByRef $matObjectPoints, ByRef $matImagePoints, ByRef $matCameraMatrix, ByRef $matDistCoeffs, ByRef $matRvec, ByRef $matTvec, $criteria = _cvTermCriteria($CV_TERM_CRITERIA_EPS + $CV_TERM_CRITERIA_COUNT, 20, $CV_FLT_EPSILON), $VVSlambda = 1)
+Func _cveSolvePnPRefineVVSMat($matObjectPoints, $matImagePoints, $matCameraMatrix, $matDistCoeffs, $matRvec, $matTvec, $criteria = _cvTermCriteria($CV_TERM_CRITERIA_EPS + $CV_TERM_CRITERIA_COUNT, 20, $CV_FLT_EPSILON), $VVSlambda = 1)
     ; cveSolvePnPRefineVVS using cv::Mat instead of _*Array
 
     Local $iArrObjectPoints, $vectorOfMatObjectPoints, $iArrObjectPointsSize
@@ -3273,12 +3310,12 @@ Func _cveSolvePnPRefineVVSMat(ByRef $matObjectPoints, ByRef $matImagePoints, ByR
     _cveInputArrayRelease($iArrObjectPoints)
 EndFunc   ;==>_cveSolvePnPRefineVVSMat
 
-Func _cveSolvePnPGeneric(ByRef $objectPoints, ByRef $imagePoints, ByRef $cameraMatrix, ByRef $distCoeffs, ByRef $rvecs, ByRef $tvecs, $useExtrinsicGuess = false, $flags = $CV_SOLVEPNP_ITERATIVE, $rvec = _cveNoArray(), $tvec = _cveNoArray(), $reprojectionError = _cveNoArray())
+Func _cveSolvePnPGeneric($objectPoints, $imagePoints, $cameraMatrix, $distCoeffs, $rvecs, $tvecs, $useExtrinsicGuess = false, $flags = $CV_SOLVEPNP_ITERATIVE, $rvec = _cveNoArray(), $tvec = _cveNoArray(), $reprojectionError = _cveNoArray())
     ; CVAPI(int) cveSolvePnPGeneric(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_OutputArray* rvecs, cv::_OutputArray* tvecs, bool useExtrinsicGuess, int flags, cv::_InputArray* rvec, cv::_InputArray* tvec, cv::_OutputArray* reprojectionError);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveSolvePnPGeneric", "ptr", $objectPoints, "ptr", $imagePoints, "ptr", $cameraMatrix, "ptr", $distCoeffs, "ptr", $rvecs, "ptr", $tvecs, "boolean", $useExtrinsicGuess, "int", $flags, "ptr", $rvec, "ptr", $tvec, "ptr", $reprojectionError), "cveSolvePnPGeneric", @error)
 EndFunc   ;==>_cveSolvePnPGeneric
 
-Func _cveSolvePnPGenericMat(ByRef $matObjectPoints, ByRef $matImagePoints, ByRef $matCameraMatrix, ByRef $matDistCoeffs, ByRef $matRvecs, ByRef $matTvecs, $useExtrinsicGuess = false, $flags = $CV_SOLVEPNP_ITERATIVE, $matRvec = _cveNoArrayMat(), $matTvec = _cveNoArrayMat(), $matReprojectionError = _cveNoArrayMat())
+Func _cveSolvePnPGenericMat($matObjectPoints, $matImagePoints, $matCameraMatrix, $matDistCoeffs, $matRvecs, $matTvecs, $useExtrinsicGuess = false, $flags = $CV_SOLVEPNP_ITERATIVE, $matRvec = _cveNoArrayMat(), $matTvec = _cveNoArrayMat(), $matReprojectionError = _cveNoArrayMat())
     ; cveSolvePnPGeneric using cv::Mat instead of _*Array
 
     Local $iArrObjectPoints, $vectorOfMatObjectPoints, $iArrObjectPointsSize
@@ -3484,12 +3521,12 @@ Func _cveSolvePnPGenericMat(ByRef $matObjectPoints, ByRef $matImagePoints, ByRef
     Return $retval
 EndFunc   ;==>_cveSolvePnPGenericMat
 
-Func _cveGetOptimalNewCameraMatrix(ByRef $cameraMatrix, ByRef $distCoeffs, ByRef $imageSize, $alpha, ByRef $newImgSize, ByRef $validPixROI, $centerPrincipalPoint, ByRef $newCameraMatrix)
+Func _cveGetOptimalNewCameraMatrix($cameraMatrix, $distCoeffs, $imageSize, $alpha, $newImgSize, $validPixROI, $centerPrincipalPoint, $newCameraMatrix)
     ; CVAPI(void) cveGetOptimalNewCameraMatrix(cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, CvSize* imageSize, double alpha, CvSize* newImgSize, CvRect* validPixROI, bool centerPrincipalPoint, cv::Mat* newCameraMatrix);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetOptimalNewCameraMatrix", "ptr", $cameraMatrix, "ptr", $distCoeffs, "struct*", $imageSize, "double", $alpha, "struct*", $newImgSize, "struct*", $validPixROI, "boolean", $centerPrincipalPoint, "ptr", $newCameraMatrix), "cveGetOptimalNewCameraMatrix", @error)
 EndFunc   ;==>_cveGetOptimalNewCameraMatrix
 
-Func _cveGetOptimalNewCameraMatrixMat(ByRef $matCameraMatrix, ByRef $matDistCoeffs, ByRef $imageSize, $alpha, ByRef $newImgSize, ByRef $validPixROI, $centerPrincipalPoint, ByRef $newCameraMatrix)
+Func _cveGetOptimalNewCameraMatrixMat($matCameraMatrix, $matDistCoeffs, $imageSize, $alpha, $newImgSize, $validPixROI, $centerPrincipalPoint, $newCameraMatrix)
     ; cveGetOptimalNewCameraMatrix using cv::Mat instead of _*Array
 
     Local $iArrCameraMatrix, $vectorOfMatCameraMatrix, $iArrCameraMatrixSize
@@ -3539,12 +3576,12 @@ Func _cveGetOptimalNewCameraMatrixMat(ByRef $matCameraMatrix, ByRef $matDistCoef
     _cveInputArrayRelease($iArrCameraMatrix)
 EndFunc   ;==>_cveGetOptimalNewCameraMatrixMat
 
-Func _cveInitCameraMatrix2D(ByRef $objectPoints, ByRef $imagePoints, ByRef $imageSize, $aspectRatio, ByRef $cameraMatrix)
+Func _cveInitCameraMatrix2D($objectPoints, $imagePoints, $imageSize, $aspectRatio, $cameraMatrix)
     ; CVAPI(void) cveInitCameraMatrix2D(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints, CvSize* imageSize, double aspectRatio, cv::Mat* cameraMatrix);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveInitCameraMatrix2D", "ptr", $objectPoints, "ptr", $imagePoints, "struct*", $imageSize, "double", $aspectRatio, "ptr", $cameraMatrix), "cveInitCameraMatrix2D", @error)
 EndFunc   ;==>_cveInitCameraMatrix2D
 
-Func _cveInitCameraMatrix2DMat(ByRef $matObjectPoints, ByRef $matImagePoints, ByRef $imageSize, $aspectRatio, ByRef $cameraMatrix)
+Func _cveInitCameraMatrix2DMat($matObjectPoints, $matImagePoints, $imageSize, $aspectRatio, $cameraMatrix)
     ; cveInitCameraMatrix2D using cv::Mat instead of _*Array
 
     Local $iArrObjectPoints, $vectorOfMatObjectPoints, $iArrObjectPointsSize
@@ -3594,12 +3631,12 @@ Func _cveInitCameraMatrix2DMat(ByRef $matObjectPoints, ByRef $matImagePoints, By
     _cveInputArrayRelease($iArrObjectPoints)
 EndFunc   ;==>_cveInitCameraMatrix2DMat
 
-Func _cveFisheyeProjectPoints(ByRef $objectPoints, ByRef $imagePoints, ByRef $rvec, ByRef $tvec, ByRef $K, ByRef $D, $alpha, ByRef $jacobian)
+Func _cveFisheyeProjectPoints($objectPoints, $imagePoints, $rvec, $tvec, $K, $D, $alpha, $jacobian)
     ; CVAPI(void) cveFisheyeProjectPoints(cv::_InputArray* objectPoints, cv::_OutputArray* imagePoints, cv::_InputArray* rvec, cv::_InputArray* tvec, cv::_InputArray* K, cv::_InputArray* D, double alpha, cv::_OutputArray* jacobian);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeProjectPoints", "ptr", $objectPoints, "ptr", $imagePoints, "ptr", $rvec, "ptr", $tvec, "ptr", $K, "ptr", $D, "double", $alpha, "ptr", $jacobian), "cveFisheyeProjectPoints", @error)
 EndFunc   ;==>_cveFisheyeProjectPoints
 
-Func _cveFisheyeProjectPointsMat(ByRef $matObjectPoints, ByRef $matImagePoints, ByRef $matRvec, ByRef $matTvec, ByRef $matK, ByRef $matD, $alpha, ByRef $matJacobian)
+Func _cveFisheyeProjectPointsMat($matObjectPoints, $matImagePoints, $matRvec, $matTvec, $matK, $matD, $alpha, $matJacobian)
     ; cveFisheyeProjectPoints using cv::Mat instead of _*Array
 
     Local $iArrObjectPoints, $vectorOfMatObjectPoints, $iArrObjectPointsSize
@@ -3759,12 +3796,12 @@ Func _cveFisheyeProjectPointsMat(ByRef $matObjectPoints, ByRef $matImagePoints, 
     _cveInputArrayRelease($iArrObjectPoints)
 EndFunc   ;==>_cveFisheyeProjectPointsMat
 
-Func _cveFisheyeDistortPoints(ByRef $undistored, ByRef $distorted, ByRef $K, ByRef $D, $alpha)
+Func _cveFisheyeDistortPoints($undistored, $distorted, $K, $D, $alpha)
     ; CVAPI(void) cveFisheyeDistortPoints(cv::_InputArray* undistored, cv::_OutputArray* distorted, cv::_InputArray* K, cv::_InputArray* D, double alpha);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeDistortPoints", "ptr", $undistored, "ptr", $distorted, "ptr", $K, "ptr", $D, "double", $alpha), "cveFisheyeDistortPoints", @error)
 EndFunc   ;==>_cveFisheyeDistortPoints
 
-Func _cveFisheyeDistortPointsMat(ByRef $matUndistored, ByRef $matDistorted, ByRef $matK, ByRef $matD, $alpha)
+Func _cveFisheyeDistortPointsMat($matUndistored, $matDistorted, $matK, $matD, $alpha)
     ; cveFisheyeDistortPoints using cv::Mat instead of _*Array
 
     Local $iArrUndistored, $vectorOfMatUndistored, $iArrUndistoredSize
@@ -3858,12 +3895,12 @@ Func _cveFisheyeDistortPointsMat(ByRef $matUndistored, ByRef $matDistorted, ByRe
     _cveInputArrayRelease($iArrUndistored)
 EndFunc   ;==>_cveFisheyeDistortPointsMat
 
-Func _cveFisheyeUndistorPoints(ByRef $distorted, ByRef $undistorted, ByRef $K, ByRef $D, ByRef $R, ByRef $P)
+Func _cveFisheyeUndistorPoints($distorted, $undistorted, $K, $D, $R, $P)
     ; CVAPI(void) cveFisheyeUndistorPoints(cv::_InputArray* distorted, cv::_OutputArray* undistorted, cv::_InputArray* K, cv::_InputArray* D, cv::_InputArray* R, cv::_InputArray* P);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeUndistorPoints", "ptr", $distorted, "ptr", $undistorted, "ptr", $K, "ptr", $D, "ptr", $R, "ptr", $P), "cveFisheyeUndistorPoints", @error)
 EndFunc   ;==>_cveFisheyeUndistorPoints
 
-Func _cveFisheyeUndistorPointsMat(ByRef $matDistorted, ByRef $matUndistorted, ByRef $matK, ByRef $matD, ByRef $matR, ByRef $matP)
+Func _cveFisheyeUndistorPointsMat($matDistorted, $matUndistorted, $matK, $matD, $matR, $matP)
     ; cveFisheyeUndistorPoints using cv::Mat instead of _*Array
 
     Local $iArrDistorted, $vectorOfMatDistorted, $iArrDistortedSize
@@ -4001,12 +4038,12 @@ Func _cveFisheyeUndistorPointsMat(ByRef $matDistorted, ByRef $matUndistorted, By
     _cveInputArrayRelease($iArrDistorted)
 EndFunc   ;==>_cveFisheyeUndistorPointsMat
 
-Func _cveFisheyeInitUndistorRectifyMap(ByRef $K, ByRef $D, ByRef $R, ByRef $P, ByRef $size, $m1Type, ByRef $map1, ByRef $map2)
+Func _cveFisheyeInitUndistorRectifyMap($K, $D, $R, $P, $size, $m1Type, $map1, $map2)
     ; CVAPI(void) cveFisheyeInitUndistorRectifyMap(cv::_InputArray* K, cv::_InputArray* D, cv::_InputArray* R, cv::_InputArray* P, CvSize* size, int m1Type, cv::_OutputArray* map1, cv::_OutputArray* map2);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeInitUndistorRectifyMap", "ptr", $K, "ptr", $D, "ptr", $R, "ptr", $P, "struct*", $size, "int", $m1Type, "ptr", $map1, "ptr", $map2), "cveFisheyeInitUndistorRectifyMap", @error)
 EndFunc   ;==>_cveFisheyeInitUndistorRectifyMap
 
-Func _cveFisheyeInitUndistorRectifyMapMat(ByRef $matK, ByRef $matD, ByRef $matR, ByRef $matP, ByRef $size, $m1Type, ByRef $matMap1, ByRef $matMap2)
+Func _cveFisheyeInitUndistorRectifyMapMat($matK, $matD, $matR, $matP, $size, $m1Type, $matMap1, $matMap2)
     ; cveFisheyeInitUndistorRectifyMap using cv::Mat instead of _*Array
 
     Local $iArrK, $vectorOfMatK, $iArrKSize
@@ -4144,12 +4181,12 @@ Func _cveFisheyeInitUndistorRectifyMapMat(ByRef $matK, ByRef $matD, ByRef $matR,
     _cveInputArrayRelease($iArrK)
 EndFunc   ;==>_cveFisheyeInitUndistorRectifyMapMat
 
-Func _cveFisheyeUndistorImage(ByRef $distorted, ByRef $undistored, ByRef $K, ByRef $D, ByRef $Knew, ByRef $newSize)
+Func _cveFisheyeUndistorImage($distorted, $undistored, $K, $D, $Knew, $newSize)
     ; CVAPI(void) cveFisheyeUndistorImage(cv::_InputArray* distorted, cv::_OutputArray* undistored, cv::_InputArray* K, cv::_InputArray* D, cv::_InputArray* Knew, CvSize* newSize);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeUndistorImage", "ptr", $distorted, "ptr", $undistored, "ptr", $K, "ptr", $D, "ptr", $Knew, "struct*", $newSize), "cveFisheyeUndistorImage", @error)
 EndFunc   ;==>_cveFisheyeUndistorImage
 
-Func _cveFisheyeUndistorImageMat(ByRef $matDistorted, ByRef $matUndistored, ByRef $matK, ByRef $matD, ByRef $matKnew, ByRef $newSize)
+Func _cveFisheyeUndistorImageMat($matDistorted, $matUndistored, $matK, $matD, $matKnew, $newSize)
     ; cveFisheyeUndistorImage using cv::Mat instead of _*Array
 
     Local $iArrDistorted, $vectorOfMatDistorted, $iArrDistortedSize
@@ -4265,12 +4302,12 @@ Func _cveFisheyeUndistorImageMat(ByRef $matDistorted, ByRef $matUndistored, ByRe
     _cveInputArrayRelease($iArrDistorted)
 EndFunc   ;==>_cveFisheyeUndistorImageMat
 
-Func _cveFisheyeEstimateNewCameraMatrixForUndistorRectify(ByRef $K, ByRef $D, ByRef $imageSize, ByRef $R, ByRef $P, $balance, ByRef $newSize, $fovScale)
+Func _cveFisheyeEstimateNewCameraMatrixForUndistorRectify($K, $D, $imageSize, $R, $P, $balance, $newSize, $fovScale)
     ; CVAPI(void) cveFisheyeEstimateNewCameraMatrixForUndistorRectify(cv::_InputArray* K, cv::_InputArray* D, CvSize* imageSize, cv::_InputArray* R, cv::_OutputArray* P, double balance, CvSize* newSize, double fovScale);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeEstimateNewCameraMatrixForUndistorRectify", "ptr", $K, "ptr", $D, "struct*", $imageSize, "ptr", $R, "ptr", $P, "double", $balance, "struct*", $newSize, "double", $fovScale), "cveFisheyeEstimateNewCameraMatrixForUndistorRectify", @error)
 EndFunc   ;==>_cveFisheyeEstimateNewCameraMatrixForUndistorRectify
 
-Func _cveFisheyeEstimateNewCameraMatrixForUndistorRectifyMat(ByRef $matK, ByRef $matD, ByRef $imageSize, ByRef $matR, ByRef $matP, $balance, ByRef $newSize, $fovScale)
+Func _cveFisheyeEstimateNewCameraMatrixForUndistorRectifyMat($matK, $matD, $imageSize, $matR, $matP, $balance, $newSize, $fovScale)
     ; cveFisheyeEstimateNewCameraMatrixForUndistorRectify using cv::Mat instead of _*Array
 
     Local $iArrK, $vectorOfMatK, $iArrKSize
@@ -4364,12 +4401,12 @@ Func _cveFisheyeEstimateNewCameraMatrixForUndistorRectifyMat(ByRef $matK, ByRef 
     _cveInputArrayRelease($iArrK)
 EndFunc   ;==>_cveFisheyeEstimateNewCameraMatrixForUndistorRectifyMat
 
-Func _cveFisheyeStereoRectify(ByRef $K1, ByRef $D1, ByRef $K2, ByRef $D2, ByRef $imageSize, ByRef $R, ByRef $tvec, ByRef $R1, ByRef $R2, ByRef $P1, ByRef $P2, ByRef $Q, $flags, ByRef $newImageSize, $balance, $fovScale)
+Func _cveFisheyeStereoRectify($K1, $D1, $K2, $D2, $imageSize, $R, $tvec, $R1, $R2, $P1, $P2, $Q, $flags, $newImageSize, $balance, $fovScale)
     ; CVAPI(void) cveFisheyeStereoRectify(cv::_InputArray* K1, cv::_InputArray* D1, cv::_InputArray* K2, cv::_InputArray* D2, CvSize* imageSize, cv::_InputArray* R, cv::_InputArray* tvec, cv::_OutputArray* R1, cv::_OutputArray* R2, cv::_OutputArray* P1, cv::_OutputArray* P2, cv::_OutputArray* Q, int flags, CvSize* newImageSize, double balance, double fovScale);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeStereoRectify", "ptr", $K1, "ptr", $D1, "ptr", $K2, "ptr", $D2, "struct*", $imageSize, "ptr", $R, "ptr", $tvec, "ptr", $R1, "ptr", $R2, "ptr", $P1, "ptr", $P2, "ptr", $Q, "int", $flags, "struct*", $newImageSize, "double", $balance, "double", $fovScale), "cveFisheyeStereoRectify", @error)
 EndFunc   ;==>_cveFisheyeStereoRectify
 
-Func _cveFisheyeStereoRectifyMat(ByRef $matK1, ByRef $matD1, ByRef $matK2, ByRef $matD2, ByRef $imageSize, ByRef $matR, ByRef $matTvec, ByRef $matR1, ByRef $matR2, ByRef $matP1, ByRef $matP2, ByRef $matQ, $flags, ByRef $newImageSize, $balance, $fovScale)
+Func _cveFisheyeStereoRectifyMat($matK1, $matD1, $matK2, $matD2, $imageSize, $matR, $matTvec, $matR1, $matR2, $matP1, $matP2, $matQ, $flags, $newImageSize, $balance, $fovScale)
     ; cveFisheyeStereoRectify using cv::Mat instead of _*Array
 
     Local $iArrK1, $vectorOfMatK1, $iArrK1Size
@@ -4617,12 +4654,12 @@ Func _cveFisheyeStereoRectifyMat(ByRef $matK1, ByRef $matD1, ByRef $matK2, ByRef
     _cveInputArrayRelease($iArrK1)
 EndFunc   ;==>_cveFisheyeStereoRectifyMat
 
-Func _cveFisheyeCalibrate(ByRef $objectPoints, ByRef $imagePoints, ByRef $imageSize, ByRef $K, ByRef $D, ByRef $rvecs, ByRef $tvecs, $flags, ByRef $criteria)
+Func _cveFisheyeCalibrate($objectPoints, $imagePoints, $imageSize, $K, $D, $rvecs, $tvecs, $flags, $criteria)
     ; CVAPI(void) cveFisheyeCalibrate(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints, CvSize* imageSize, cv::_InputOutputArray* K, cv::_InputOutputArray* D, cv::_OutputArray* rvecs, cv::_OutputArray* tvecs, int flags, CvTermCriteria* criteria);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeCalibrate", "ptr", $objectPoints, "ptr", $imagePoints, "struct*", $imageSize, "ptr", $K, "ptr", $D, "ptr", $rvecs, "ptr", $tvecs, "int", $flags, "struct*", $criteria), "cveFisheyeCalibrate", @error)
 EndFunc   ;==>_cveFisheyeCalibrate
 
-Func _cveFisheyeCalibrateMat(ByRef $matObjectPoints, ByRef $matImagePoints, ByRef $imageSize, ByRef $matK, ByRef $matD, ByRef $matRvecs, ByRef $matTvecs, $flags, ByRef $criteria)
+Func _cveFisheyeCalibrateMat($matObjectPoints, $matImagePoints, $imageSize, $matK, $matD, $matRvecs, $matTvecs, $flags, $criteria)
     ; cveFisheyeCalibrate using cv::Mat instead of _*Array
 
     Local $iArrObjectPoints, $vectorOfMatObjectPoints, $iArrObjectPointsSize
@@ -4760,12 +4797,12 @@ Func _cveFisheyeCalibrateMat(ByRef $matObjectPoints, ByRef $matImagePoints, ByRe
     _cveInputArrayRelease($iArrObjectPoints)
 EndFunc   ;==>_cveFisheyeCalibrateMat
 
-Func _cveFisheyeStereoCalibrate(ByRef $objectPoints, ByRef $imagePoints1, ByRef $imagePoints2, ByRef $K1, ByRef $D1, ByRef $K2, ByRef $D2, ByRef $imageSize, ByRef $R, ByRef $T, $flags, ByRef $criteria)
+Func _cveFisheyeStereoCalibrate($objectPoints, $imagePoints1, $imagePoints2, $K1, $D1, $K2, $D2, $imageSize, $R, $T, $flags, $criteria)
     ; CVAPI(void) cveFisheyeStereoCalibrate(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints1, cv::_InputArray* imagePoints2, cv::_InputOutputArray* K1, cv::_InputOutputArray* D1, cv::_InputOutputArray* K2, cv::_InputOutputArray* D2, CvSize* imageSize, cv::_OutputArray* R, cv::_OutputArray* T, int flags, CvTermCriteria* criteria);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeStereoCalibrate", "ptr", $objectPoints, "ptr", $imagePoints1, "ptr", $imagePoints2, "ptr", $K1, "ptr", $D1, "ptr", $K2, "ptr", $D2, "struct*", $imageSize, "ptr", $R, "ptr", $T, "int", $flags, "struct*", $criteria), "cveFisheyeStereoCalibrate", @error)
 EndFunc   ;==>_cveFisheyeStereoCalibrate
 
-Func _cveFisheyeStereoCalibrateMat(ByRef $matObjectPoints, ByRef $matImagePoints1, ByRef $matImagePoints2, ByRef $matK1, ByRef $matD1, ByRef $matK2, ByRef $matD2, ByRef $imageSize, ByRef $matR, ByRef $matT, $flags, ByRef $criteria)
+Func _cveFisheyeStereoCalibrateMat($matObjectPoints, $matImagePoints1, $matImagePoints2, $matK1, $matD1, $matK2, $matD2, $imageSize, $matR, $matT, $flags, $criteria)
     ; cveFisheyeStereoCalibrate using cv::Mat instead of _*Array
 
     Local $iArrObjectPoints, $vectorOfMatObjectPoints, $iArrObjectPointsSize
@@ -4969,12 +5006,12 @@ Func _cveFisheyeStereoCalibrateMat(ByRef $matObjectPoints, ByRef $matImagePoints
     _cveInputArrayRelease($iArrObjectPoints)
 EndFunc   ;==>_cveFisheyeStereoCalibrateMat
 
-Func _cveInitUndistortRectifyMap(ByRef $cameraMatrix, ByRef $distCoeffs, ByRef $r, ByRef $newCameraMatrix, ByRef $size, $m1type, ByRef $map1, ByRef $map2)
+Func _cveInitUndistortRectifyMap($cameraMatrix, $distCoeffs, $r, $newCameraMatrix, $size, $m1type, $map1, $map2)
     ; CVAPI(void) cveInitUndistortRectifyMap(cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_InputArray* r, cv::_InputArray* newCameraMatrix, CvSize* size, int m1type, cv::_OutputArray* map1, cv::_OutputArray* map2);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveInitUndistortRectifyMap", "ptr", $cameraMatrix, "ptr", $distCoeffs, "ptr", $r, "ptr", $newCameraMatrix, "struct*", $size, "int", $m1type, "ptr", $map1, "ptr", $map2), "cveInitUndistortRectifyMap", @error)
 EndFunc   ;==>_cveInitUndistortRectifyMap
 
-Func _cveInitUndistortRectifyMapMat(ByRef $matCameraMatrix, ByRef $matDistCoeffs, ByRef $matR, ByRef $matNewCameraMatrix, ByRef $size, $m1type, ByRef $matMap1, ByRef $matMap2)
+Func _cveInitUndistortRectifyMapMat($matCameraMatrix, $matDistCoeffs, $matR, $matNewCameraMatrix, $size, $m1type, $matMap1, $matMap2)
     ; cveInitUndistortRectifyMap using cv::Mat instead of _*Array
 
     Local $iArrCameraMatrix, $vectorOfMatCameraMatrix, $iArrCameraMatrixSize
@@ -5112,12 +5149,12 @@ Func _cveInitUndistortRectifyMapMat(ByRef $matCameraMatrix, ByRef $matDistCoeffs
     _cveInputArrayRelease($iArrCameraMatrix)
 EndFunc   ;==>_cveInitUndistortRectifyMapMat
 
-Func _cveUndistort(ByRef $src, ByRef $dst, ByRef $cameraMatrix, ByRef $distorCoeffs, $newCameraMatrix = _cveNoArray())
+Func _cveUndistort($src, $dst, $cameraMatrix, $distorCoeffs, $newCameraMatrix = _cveNoArray())
     ; CVAPI(void) cveUndistort(cv::_InputArray* src, cv::_OutputArray* dst, cv::_InputArray* cameraMatrix, cv::_InputArray* distorCoeffs, cv::_InputArray* newCameraMatrix);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUndistort", "ptr", $src, "ptr", $dst, "ptr", $cameraMatrix, "ptr", $distorCoeffs, "ptr", $newCameraMatrix), "cveUndistort", @error)
 EndFunc   ;==>_cveUndistort
 
-Func _cveUndistortMat(ByRef $matSrc, ByRef $matDst, ByRef $matCameraMatrix, ByRef $matDistorCoeffs, $matNewCameraMatrix = _cveNoArrayMat())
+Func _cveUndistortMat($matSrc, $matDst, $matCameraMatrix, $matDistorCoeffs, $matNewCameraMatrix = _cveNoArrayMat())
     ; cveUndistort using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -5233,12 +5270,12 @@ Func _cveUndistortMat(ByRef $matSrc, ByRef $matDst, ByRef $matCameraMatrix, ByRe
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveUndistortMat
 
-Func _cveUndistortPoints(ByRef $src, ByRef $dst, ByRef $cameraMatrix, ByRef $distCoeffs, ByRef $r, ByRef $p)
+Func _cveUndistortPoints($src, $dst, $cameraMatrix, $distCoeffs, $r, $p)
     ; CVAPI(void) cveUndistortPoints(cv::_InputArray* src, cv::_OutputArray* dst, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_InputArray* r, cv::_InputArray* p);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUndistortPoints", "ptr", $src, "ptr", $dst, "ptr", $cameraMatrix, "ptr", $distCoeffs, "ptr", $r, "ptr", $p), "cveUndistortPoints", @error)
 EndFunc   ;==>_cveUndistortPoints
 
-Func _cveUndistortPointsMat(ByRef $matSrc, ByRef $matDst, ByRef $matCameraMatrix, ByRef $matDistCoeffs, ByRef $matR, ByRef $matP)
+Func _cveUndistortPointsMat($matSrc, $matDst, $matCameraMatrix, $matDistCoeffs, $matR, $matP)
     ; cveUndistortPoints using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -5376,12 +5413,12 @@ Func _cveUndistortPointsMat(ByRef $matSrc, ByRef $matDst, ByRef $matCameraMatrix
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveUndistortPointsMat
 
-Func _cveGetDefaultNewCameraMatrix(ByRef $cameraMatrix, ByRef $imgsize, $centerPrincipalPoint, ByRef $cm)
+Func _cveGetDefaultNewCameraMatrix($cameraMatrix, $imgsize, $centerPrincipalPoint, $cm)
     ; CVAPI(void) cveGetDefaultNewCameraMatrix(cv::_InputArray* cameraMatrix, CvSize* imgsize, bool centerPrincipalPoint, cv::Mat* cm);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetDefaultNewCameraMatrix", "ptr", $cameraMatrix, "struct*", $imgsize, "boolean", $centerPrincipalPoint, "ptr", $cm), "cveGetDefaultNewCameraMatrix", @error)
 EndFunc   ;==>_cveGetDefaultNewCameraMatrix
 
-Func _cveGetDefaultNewCameraMatrixMat(ByRef $matCameraMatrix, ByRef $imgsize, $centerPrincipalPoint, ByRef $cm)
+Func _cveGetDefaultNewCameraMatrixMat($matCameraMatrix, $imgsize, $centerPrincipalPoint, $cm)
     ; cveGetDefaultNewCameraMatrix using cv::Mat instead of _*Array
 
     Local $iArrCameraMatrix, $vectorOfMatCameraMatrix, $iArrCameraMatrixSize
@@ -5409,12 +5446,12 @@ Func _cveGetDefaultNewCameraMatrixMat(ByRef $matCameraMatrix, ByRef $imgsize, $c
     _cveInputArrayRelease($iArrCameraMatrix)
 EndFunc   ;==>_cveGetDefaultNewCameraMatrixMat
 
-Func _cveEstimateAffine2D(ByRef $from, ByRef $to, ByRef $inliers, $method, $ransacReprojThreshold, $maxIters, $confidence, $refineIters, ByRef $affine)
+Func _cveEstimateAffine2D($from, $to, $inliers, $method, $ransacReprojThreshold, $maxIters, $confidence, $refineIters, $affine)
     ; CVAPI(void) cveEstimateAffine2D(cv::_InputArray* from, cv::_InputArray* to, cv::_OutputArray* inliers, int method, double ransacReprojThreshold, int maxIters, double confidence, int refineIters, cv::Mat* affine);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEstimateAffine2D", "ptr", $from, "ptr", $to, "ptr", $inliers, "int", $method, "double", $ransacReprojThreshold, "int", $maxIters, "double", $confidence, "int", $refineIters, "ptr", $affine), "cveEstimateAffine2D", @error)
 EndFunc   ;==>_cveEstimateAffine2D
 
-Func _cveEstimateAffine2DMat(ByRef $matFrom, ByRef $matTo, ByRef $matInliers, $method, $ransacReprojThreshold, $maxIters, $confidence, $refineIters, ByRef $affine)
+Func _cveEstimateAffine2DMat($matFrom, $matTo, $matInliers, $method, $ransacReprojThreshold, $maxIters, $confidence, $refineIters, $affine)
     ; cveEstimateAffine2D using cv::Mat instead of _*Array
 
     Local $iArrFrom, $vectorOfMatFrom, $iArrFromSize
@@ -5486,12 +5523,12 @@ Func _cveEstimateAffine2DMat(ByRef $matFrom, ByRef $matTo, ByRef $matInliers, $m
     _cveInputArrayRelease($iArrFrom)
 EndFunc   ;==>_cveEstimateAffine2DMat
 
-Func _cveEstimateAffinePartial2D(ByRef $from, ByRef $to, ByRef $inliers, $method, $ransacReprojThreshold, $maxIters, $confidence, $refineIters, ByRef $affine)
+Func _cveEstimateAffinePartial2D($from, $to, $inliers, $method, $ransacReprojThreshold, $maxIters, $confidence, $refineIters, $affine)
     ; CVAPI(void) cveEstimateAffinePartial2D(cv::_InputArray* from, cv::_InputArray* to, cv::_OutputArray* inliers, int method, double ransacReprojThreshold, int maxIters, double confidence, int refineIters, cv::Mat* affine);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEstimateAffinePartial2D", "ptr", $from, "ptr", $to, "ptr", $inliers, "int", $method, "double", $ransacReprojThreshold, "int", $maxIters, "double", $confidence, "int", $refineIters, "ptr", $affine), "cveEstimateAffinePartial2D", @error)
 EndFunc   ;==>_cveEstimateAffinePartial2D
 
-Func _cveEstimateAffinePartial2DMat(ByRef $matFrom, ByRef $matTo, ByRef $matInliers, $method, $ransacReprojThreshold, $maxIters, $confidence, $refineIters, ByRef $affine)
+Func _cveEstimateAffinePartial2DMat($matFrom, $matTo, $matInliers, $method, $ransacReprojThreshold, $maxIters, $confidence, $refineIters, $affine)
     ; cveEstimateAffinePartial2D using cv::Mat instead of _*Array
 
     Local $iArrFrom, $vectorOfMatFrom, $iArrFromSize
@@ -5563,12 +5600,12 @@ Func _cveEstimateAffinePartial2DMat(ByRef $matFrom, ByRef $matTo, ByRef $matInli
     _cveInputArrayRelease($iArrFrom)
 EndFunc   ;==>_cveEstimateAffinePartial2DMat
 
-Func _cveCalibrateHandEye(ByRef $R_gripper2base, ByRef $t_gripper2base, ByRef $R_target2cam, ByRef $t_target2cam, ByRef $R_cam2gripper, ByRef $t_cam2gripper, $method = $CV_CALIB_HAND_EYE_TSAI)
+Func _cveCalibrateHandEye($R_gripper2base, $t_gripper2base, $R_target2cam, $t_target2cam, $R_cam2gripper, $t_cam2gripper, $method = $CV_CALIB_HAND_EYE_TSAI)
     ; CVAPI(void) cveCalibrateHandEye(cv::_InputArray* R_gripper2base, cv::_InputArray* t_gripper2base, cv::_InputArray* R_target2cam, cv::_InputArray* t_target2cam, cv::_OutputArray* R_cam2gripper, cv::_OutputArray* t_cam2gripper, int method);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCalibrateHandEye", "ptr", $R_gripper2base, "ptr", $t_gripper2base, "ptr", $R_target2cam, "ptr", $t_target2cam, "ptr", $R_cam2gripper, "ptr", $t_cam2gripper, "int", $method), "cveCalibrateHandEye", @error)
 EndFunc   ;==>_cveCalibrateHandEye
 
-Func _cveCalibrateHandEyeMat(ByRef $matR_gripper2base, ByRef $matT_gripper2base, ByRef $matR_target2cam, ByRef $matT_target2cam, ByRef $matR_cam2gripper, ByRef $matT_cam2gripper, $method = $CV_CALIB_HAND_EYE_TSAI)
+Func _cveCalibrateHandEyeMat($matR_gripper2base, $matT_gripper2base, $matR_target2cam, $matT_target2cam, $matR_cam2gripper, $matT_cam2gripper, $method = $CV_CALIB_HAND_EYE_TSAI)
     ; cveCalibrateHandEye using cv::Mat instead of _*Array
 
     Local $iArrR_gripper2base, $vectorOfMatR_gripper2base, $iArrR_gripper2baseSize
@@ -5706,12 +5743,12 @@ Func _cveCalibrateHandEyeMat(ByRef $matR_gripper2base, ByRef $matT_gripper2base,
     _cveInputArrayRelease($iArrR_gripper2base)
 EndFunc   ;==>_cveCalibrateHandEyeMat
 
-Func _cveRQDecomp3x3(ByRef $src, ByRef $out, ByRef $mtxR, ByRef $mtxQ, $Qx = _cveNoArray(), $Qy = _cveNoArray(), $Qz = _cveNoArray())
+Func _cveRQDecomp3x3($src, $out, $mtxR, $mtxQ, $Qx = _cveNoArray(), $Qy = _cveNoArray(), $Qz = _cveNoArray())
     ; CVAPI(void) cveRQDecomp3x3(cv::_InputArray* src, CvPoint3D64f* out, cv::_OutputArray* mtxR, cv::_OutputArray* mtxQ, cv::_OutputArray* Qx, cv::_OutputArray* Qy, cv::_OutputArray* Qz);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRQDecomp3x3", "ptr", $src, "struct*", $out, "ptr", $mtxR, "ptr", $mtxQ, "ptr", $Qx, "ptr", $Qy, "ptr", $Qz), "cveRQDecomp3x3", @error)
 EndFunc   ;==>_cveRQDecomp3x3
 
-Func _cveRQDecomp3x3Mat(ByRef $matSrc, ByRef $out, ByRef $matMtxR, ByRef $matMtxQ, $matQx = _cveNoArrayMat(), $matQy = _cveNoArrayMat(), $matQz = _cveNoArrayMat())
+Func _cveRQDecomp3x3Mat($matSrc, $out, $matMtxR, $matMtxQ, $matQx = _cveNoArrayMat(), $matQy = _cveNoArrayMat(), $matQz = _cveNoArrayMat())
     ; cveRQDecomp3x3 using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -5849,12 +5886,12 @@ Func _cveRQDecomp3x3Mat(ByRef $matSrc, ByRef $out, ByRef $matMtxR, ByRef $matMtx
     _cveInputArrayRelease($iArrSrc)
 EndFunc   ;==>_cveRQDecomp3x3Mat
 
-Func _cveDecomposeProjectionMatrix(ByRef $projMatrix, ByRef $cameraMatrix, ByRef $rotMatrix, ByRef $transVect, $rotMatrixX = _cveNoArray(), $rotMatrixY = _cveNoArray(), $rotMatrixZ = _cveNoArray(), $eulerAngles = _cveNoArray())
+Func _cveDecomposeProjectionMatrix($projMatrix, $cameraMatrix, $rotMatrix, $transVect, $rotMatrixX = _cveNoArray(), $rotMatrixY = _cveNoArray(), $rotMatrixZ = _cveNoArray(), $eulerAngles = _cveNoArray())
     ; CVAPI(void) cveDecomposeProjectionMatrix(cv::_InputArray* projMatrix, cv::_OutputArray* cameraMatrix, cv::_OutputArray* rotMatrix, cv::_OutputArray* transVect, cv::_OutputArray* rotMatrixX, cv::_OutputArray* rotMatrixY, cv::_OutputArray* rotMatrixZ, cv::_OutputArray* eulerAngles);
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDecomposeProjectionMatrix", "ptr", $projMatrix, "ptr", $cameraMatrix, "ptr", $rotMatrix, "ptr", $transVect, "ptr", $rotMatrixX, "ptr", $rotMatrixY, "ptr", $rotMatrixZ, "ptr", $eulerAngles), "cveDecomposeProjectionMatrix", @error)
 EndFunc   ;==>_cveDecomposeProjectionMatrix
 
-Func _cveDecomposeProjectionMatrixMat(ByRef $matProjMatrix, ByRef $matCameraMatrix, ByRef $matRotMatrix, ByRef $matTransVect, $matRotMatrixX = _cveNoArrayMat(), $matRotMatrixY = _cveNoArrayMat(), $matRotMatrixZ = _cveNoArrayMat(), $matEulerAngles = _cveNoArrayMat())
+Func _cveDecomposeProjectionMatrixMat($matProjMatrix, $matCameraMatrix, $matRotMatrix, $matTransVect, $matRotMatrixX = _cveNoArrayMat(), $matRotMatrixY = _cveNoArrayMat(), $matRotMatrixZ = _cveNoArrayMat(), $matEulerAngles = _cveNoArrayMat())
     ; cveDecomposeProjectionMatrix using cv::Mat instead of _*Array
 
     Local $iArrProjMatrix, $vectorOfMatProjMatrix, $iArrProjMatrixSize

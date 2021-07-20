@@ -1,7 +1,7 @@
 #include-once
 #include "..\CVEUtils.au3"
 
-Func _VectorOfDMatchPushMatrix(ByRef $matches, $trainIdx, $distance = 0, $mask = 0)
+Func _VectorOfDMatchPushMatrix($matches, $trainIdx, $distance = 0, $mask = 0)
     ; CVAPI(void) VectorOfDMatchPushMatrix(std::vector<cv::DMatch>* matches, const CvMat* trainIdx, const CvMat* distance = 0, const CvMat* mask = 0);
 
     Local $vecMatches, $iArrMatchesSize
@@ -25,7 +25,7 @@ Func _VectorOfDMatchPushMatrix(ByRef $matches, $trainIdx, $distance = 0, $mask =
     EndIf
 EndFunc   ;==>_VectorOfDMatchPushMatrix
 
-Func _VectorOfDMatchToMat(ByRef $matches, ByRef $trainIdx, ByRef $distance)
+Func _VectorOfDMatchToMat($matches, $trainIdx, $distance)
     ; CVAPI(void) VectorOfDMatchToMat(std::vector< std::vector<cv::DMatch> >* matches, CvMat* trainIdx, CvMat* distance);
 
     Local $vecMatches, $iArrMatchesSize
@@ -49,7 +49,7 @@ Func _VectorOfDMatchToMat(ByRef $matches, ByRef $trainIdx, ByRef $distance)
     EndIf
 EndFunc   ;==>_VectorOfDMatchToMat
 
-Func _VectorOfKeyPointFilterByImageBorder(ByRef $keypoints, $imageSize, $borderSize)
+Func _VectorOfKeyPointFilterByImageBorder($keypoints, $imageSize, $borderSize)
     ; CVAPI(void) VectorOfKeyPointFilterByImageBorder(std::vector<cv::KeyPoint>* keypoints, CvSize imageSize, int borderSize);
 
     Local $vecKeypoints, $iArrKeypointsSize
@@ -73,7 +73,7 @@ Func _VectorOfKeyPointFilterByImageBorder(ByRef $keypoints, $imageSize, $borderS
     EndIf
 EndFunc   ;==>_VectorOfKeyPointFilterByImageBorder
 
-Func _VectorOfKeyPointFilterByKeypointSize(ByRef $keypoints, $minSize, $maxSize)
+Func _VectorOfKeyPointFilterByKeypointSize($keypoints, $minSize, $maxSize)
     ; CVAPI(void) VectorOfKeyPointFilterByKeypointSize(std::vector<cv::KeyPoint>* keypoints, float minSize, float maxSize);
 
     Local $vecKeypoints, $iArrKeypointsSize
@@ -97,7 +97,7 @@ Func _VectorOfKeyPointFilterByKeypointSize(ByRef $keypoints, $minSize, $maxSize)
     EndIf
 EndFunc   ;==>_VectorOfKeyPointFilterByKeypointSize
 
-Func _VectorOfKeyPointFilterByPixelsMask(ByRef $keypoints, ByRef $mask)
+Func _VectorOfKeyPointFilterByPixelsMask($keypoints, $mask)
     ; CVAPI(void) VectorOfKeyPointFilterByPixelsMask(std::vector<cv::KeyPoint>* keypoints, CvMat* mask);
 
     Local $vecKeypoints, $iArrKeypointsSize

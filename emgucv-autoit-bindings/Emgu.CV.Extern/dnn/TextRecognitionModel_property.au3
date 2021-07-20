@@ -1,7 +1,7 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveTextRecognitionModelGetDecodeType(ByRef $obj, $str)
+Func _cveTextRecognitionModelGetDecodeType($obj, $str)
     ; CVAPI(void) cveTextRecognitionModelGetDecodeType(cv::dnn::TextRecognitionModel* obj, cv::String* str);
 
     Local $bStrIsString = VarGetType($str) == "String"
@@ -16,7 +16,7 @@ Func _cveTextRecognitionModelGetDecodeType(ByRef $obj, $str)
     EndIf
 EndFunc   ;==>_cveTextRecognitionModelGetDecodeType
 
-Func _cveTextRecognitionModelSetDecodeType(ByRef $obj, $str)
+Func _cveTextRecognitionModelSetDecodeType($obj, $str)
     ; CVAPI(void) cveTextRecognitionModelSetDecodeType(cv::dnn::TextRecognitionModel* obj, cv::String* str);
 
     Local $bStrIsString = VarGetType($str) == "String"
