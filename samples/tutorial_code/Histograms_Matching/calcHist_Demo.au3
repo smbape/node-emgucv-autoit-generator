@@ -24,7 +24,7 @@ Local $InputSource = GUICtrlCreateInput("", 264, 24, 449, 21)
 GUICtrlSetState(-1, $GUI_DISABLE)
 Local $ButtonSource = GUICtrlCreateButton("Open", 723, 22, 75, 25)
 Local $PicSource = GUICtrlCreatePic("", 25, 56, $iPicWidth, $iPicHeight)
-Local $PicHist = GUICtrlCreatePic("", 537, 56, $iPicWidth, $iPicHeight)
+Local $PicResult = GUICtrlCreatePic("", 537, 56, $iPicWidth, $iPicHeight)
 GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
@@ -37,11 +37,9 @@ Local $tRedColor = _cvScalar(0, 0, 255)
 Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 
 Local $sImage = Null
-Local $src
-Local $brg_planes
-Local $b_hist, $g_hist, $r_hist
-Local $histImage
 Local $nMsg
+
+Local $src, $brg_planes, $histImage, $b_hist, $g_hist, $r_hist
 
 While 1
 	$nMsg = GUIGetMsg()
@@ -187,7 +185,7 @@ Func onImageChange()
 	_cveMatRelease($matSrcResized)
 
 	Local $matHistResized = _cveMatResizeAndCenter($histImage, $iPicWidth, $iPicHeight, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
-	_cveSetControlPic($PicHist, $matHistResized)
+	_cveSetControlPic($PicResult, $matHistResized)
 	_cveMatRelease($matHistResized)
 	;;! [Display]
 EndFunc   ;==>onImageChange
