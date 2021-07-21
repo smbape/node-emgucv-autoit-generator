@@ -4,14 +4,15 @@
 
 Opt("MustDeclareVars", 1)
 
-#include <Math.au3>
-#include <FileConstants.au3>
 #include <ButtonConstants.au3>
 #include <EditConstants.au3>
+#include <File.au3>
+#include <FileConstants.au3>
+#include <GDIPlus.au3>
 #include <GUIConstantsEx.au3>
+#include <Math.au3>
 #include <StaticConstants.au3>
 #include <WindowsConstants.au3>
-#include <GDIPlus.au3>
 #include "..\..\..\emgucv-autoit-bindings\cve_extra.au3"
 
 ;~ Sources:
@@ -20,19 +21,23 @@ Opt("MustDeclareVars", 1)
 
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Histogram Equalization", 1065, 617, 192, 124)
-Local $InputSource = GUICtrlCreateInput("", 264, 24, 449, 21)
+
+Local $InputSource = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\data\lena.jpg"), 264, 24, 449, 21)
 GUICtrlSetState(-1, $GUI_DISABLE)
 Local $BtnSource = GUICtrlCreateButton("Open", 723, 22, 75, 25)
+
+Local $LabelSource = GUICtrlCreateLabel("Source Image", 231, 60, 100, 20)
+GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $GroupSource = GUICtrlCreateGroup("", 20, 83, 510, 516)
 Local $PicSource = GUICtrlCreatePic("", 25, 94, 500, 500)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
-Local $LabelSource = GUICtrlCreateLabel("Source Image", 231, 60, 100, 20)
+
+Local $LabelResult = GUICtrlCreateLabel("Equalized Image", 735, 60, 120, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $GroupResult = GUICtrlCreateGroup("", 532, 83, 510, 516)
 Local $PicResult = GUICtrlCreatePic("", 537, 94, 500, 500)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
-Local $LabelResult = GUICtrlCreateLabel("Equalized Image", 735, 60, 120, 20)
-GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
+
 GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
@@ -48,6 +53,8 @@ Local $sImage = ""
 Local $nMsg
 
 Local $src, $dst
+
+main()
 
 While 1
 	$nMsg = GUIGetMsg()
@@ -72,6 +79,9 @@ _Opencv_DLLClose()
 _GDIPlus_Shutdown()
 
 Func main()
+	$sImage = ControlGetText($FormGUI, "", $InputSource)
+	If $sImage == "" Then Return
+
 	;;! [Load image]
 	$src = _cveImreadAndCheck($sImage, $CV_IMREAD_COLOR)
 	If @error Then

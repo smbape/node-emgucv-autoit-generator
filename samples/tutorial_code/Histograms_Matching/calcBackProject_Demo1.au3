@@ -5,15 +5,16 @@
 Opt("MustDeclareVars", 1)
 Opt("GUIOnEventMode", 1)
 
-#include <Math.au3>
-#include <FileConstants.au3>
 #include <ButtonConstants.au3>
 #include <EditConstants.au3>
+#include <File.au3>
+#include <FileConstants.au3>
+#include <GDIPlus.au3>
 #include <GUIConstantsEx.au3>
+#include <GuiSlider.au3>
+#include <Math.au3>
 #include <StaticConstants.au3>
 #include <WindowsConstants.au3>
-#include <GDIPlus.au3>
-#include <GuiSlider.au3>
 #include "..\..\..\emgucv-autoit-bindings\cve_extra.au3"
 #include "..\..\Table.au3"
 
@@ -24,7 +25,7 @@ Opt("GUIOnEventMode", 1)
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Back Projection", 1263, 601, 187, 122)
 
-Local $InputSource = GUICtrlCreateInput("", 364, 16, 449, 21)
+Local $InputSource = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\data\lena.jpg"), 364, 16, 449, 21)
 GUICtrlSetState(-1, $GUI_DISABLE)
 Local $BtnSource = GUICtrlCreateButton("Open", 823, 14, 75, 25)
 

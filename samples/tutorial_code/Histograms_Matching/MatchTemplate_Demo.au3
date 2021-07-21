@@ -4,18 +4,18 @@
 
 Opt("MustDeclareVars", 1)
 
-#include <Math.au3>
-#include <FileConstants.au3>
 #include <ButtonConstants.au3>
 #include <ComboConstants.au3>
 #include <EditConstants.au3>
-#include <GUIConstantsEx.au3>
-#include <StaticConstants.au3>
-#include <WindowsConstants.au3>
+#include <File.au3>
+#include <FileConstants.au3>
+#include <GDIPlus.au3>
 #include <GuiComboBox.au3>
 #include <GUIConstantsEx.au3>
-#include <GDIPlus.au3>
-#include <WinAPIDiag.au3>
+#include <GUIConstantsEx.au3>
+#include <Math.au3>
+#include <StaticConstants.au3>
+#include <WindowsConstants.au3>
 #include "..\..\..\emgucv-autoit-bindings\cve_extra.au3"
 
 ;~ Sources:
@@ -25,13 +25,13 @@ Opt("MustDeclareVars", 1)
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Template Matching", 1267, 556, 185, 122)
 
-Local $InputSource = GUICtrlCreateInput("", 366, 16, 449, 21)
+Local $InputSource = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\data\lena_tmpl.jpg"), 366, 16, 449, 21)
 Local $BtnSource = GUICtrlCreateButton("Source", 825, 14, 75, 25)
 
-Local $InputTemplate = GUICtrlCreateInput("", 366, 52, 449, 21)
+Local $InputTemplate = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\data\tmpl.png"), 366, 52, 449, 21)
 Local $BtnTemplate = GUICtrlCreateButton("Template", 825, 50, 75, 25)
 
-Local $InputMask = GUICtrlCreateInput("", 366, 88, 449, 21)
+Local $InputMask = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\data\mask.png"), 366, 88, 449, 21)
 Local $BtnMask = GUICtrlCreateButton("Mask", 825, 86, 75, 25)
 
 Local $LabelMethod = GUICtrlCreateLabel("Method:", 604, 128, 59, 20)
@@ -85,12 +85,14 @@ Local $sSource = "", $sTemplate = "", $sMask = ""
 Local $img, $templ, $mask, $match_method
 Local $nMsg
 
-Local $aMatchMethods[6] = [$CV_TM_SQDIFF, $CV_TM_SQDIFF_NORMED, $CV_TM_CCORR, $CV_TM_CCORR_NORMED, $CV_TM_CCOEFF, $CV_TM_CCOEFF_NORMED]
+Local $aMethods[6] = [$CV_TM_SQDIFF, $CV_TM_SQDIFF_NORMED, $CV_TM_CCORR, $CV_TM_CCORR_NORMED, $CV_TM_CCOEFF, $CV_TM_CCOEFF_NORMED]
 _GUICtrlComboBox_SetCurSel($ComboMethod, 3)
 
 Local $image_window = "Source Image";
 Local $result_window = "Result window";
 Local $use_mask = False
+
+main()
 
 While 1
 	$nMsg = GUIGetMsg()
@@ -196,7 +198,7 @@ Func clean()
 EndFunc   ;==>clean
 
 Func MatchingMethod()
-	$match_method = $aMatchMethods[_GUICtrlComboBox_GetCurSel($ComboMethod)]
+	$match_method = $aMethods[_GUICtrlComboBox_GetCurSel($ComboMethod)]
 
 	If $CV_TM_SQDIFF == $match_method Or $match_method == $CV_TM_CCORR_NORMED Then
 		GUICtrlSetState($InputMask, $GUI_ENABLE)

@@ -4,14 +4,15 @@
 
 Opt("MustDeclareVars", 1)
 
-#include <Math.au3>
-#include <FileConstants.au3>
 #include <ButtonConstants.au3>
 #include <EditConstants.au3>
+#include <File.au3>
+#include <FileConstants.au3>
+#include <GDIPlus.au3>
 #include <GUIConstantsEx.au3>
+#include <Math.au3>
 #include <StaticConstants.au3>
 #include <WindowsConstants.au3>
-#include <GDIPlus.au3>
 #include "..\..\..\emgucv-autoit-bindings\cve_extra.au3"
 #include "..\..\Table.au3"
 
@@ -23,31 +24,34 @@ Opt("MustDeclareVars", 1)
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Histogram Comparison", 997, 668, 192, 124)
 
+Local $InputSrcBase = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\data\Histogram_Comparison_Source_0.jpg"), 230, 16, 449, 21)
+Local $BtnSrcBase = GUICtrlCreateButton("Input 1", 689, 14, 75, 25)
+
+Local $InputSrcTest1 = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\data\Histogram_Comparison_Source_1.jpg"), 230, 52, 449, 21)
+Local $BtnSrcTest1 = GUICtrlCreateButton("Input 2", 689, 50, 75, 25)
+
+Local $InputSrcTest2 = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\data\Histogram_Comparison_Source_2.jpg"), 230, 88, 449, 21)
+Local $BtnSrcTest2 = GUICtrlCreateButton("Input 3", 689, 86, 75, 25)
+
+Local $BtnExec = GUICtrlCreateButton("Execute", 832, 48, 75, 25)
+
 Local $LabelSrcBase = GUICtrlCreateLabel("Input 1", 144, 128, 49, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
-Local $InputSrcBase = GUICtrlCreateInput("", 230, 16, 449, 21)
-Local $BtnSrcBase = GUICtrlCreateButton("Input 1", 689, 14, 75, 25)
 Local $GroupSrcBase = GUICtrlCreateGroup("", 20, 150, 310, 316)
 Local $PicSrcBase = GUICtrlCreatePic("", 25, 161, 300, 300)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 Local $LabelSrcTest1 = GUICtrlCreateLabel("Input 2", 468, 128, 49, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
-Local $InputSrcTest1 = GUICtrlCreateInput("", 230, 52, 449, 21)
-Local $BtnSrcTest1 = GUICtrlCreateButton("Input 2", 689, 50, 75, 25)
 Local $GroupSrcTest1 = GUICtrlCreateGroup("", 344, 150, 310, 316)
 Local $PicSrcTest1 = GUICtrlCreatePic("", 349, 161, 300, 300)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 Local $LabelSrcTest2 = GUICtrlCreateLabel("Input 3", 792, 128, 49, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
-Local $InputSrcTest2 = GUICtrlCreateInput("", 230, 88, 449, 21)
-Local $BtnSrcTest2 = GUICtrlCreateButton("Input 3", 689, 86, 75, 25)
 Local $GroupSrcTest2 = GUICtrlCreateGroup("", 668, 150, 310, 316)
 Local $PicSrcTest2 = GUICtrlCreatePic("", 673, 161, 300, 300)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
-
-Local $BtnExec = GUICtrlCreateButton("Execute", 832, 48, 75, 25)
 
 GUISetState(@SW_SHOW)
 
@@ -83,6 +87,8 @@ Local $src_base, $src_test1, $src_test2
 Local $hist_base, $hist_half_down, $hist_test1, $hist_test2
 Local $hsv_base, $hsv_test1, $hsv_test2, $hsv_half_down
 Local $aMethodName[4] = ["Correlation", "Chi-square", "Intersection", "Bhattacharyya"]
+
+main()
 
 While 1
 	$nMsg = GUIGetMsg()

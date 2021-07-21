@@ -62,10 +62,6 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
         const [argType, argName, defaultValue] = arg;
         const capitalCasedName = argName[0].toUpperCase() + argName.slice(1);
 
-        if (argType === "const int*") {
-            debugger;
-        }
-
         let byRef = arg[3];
         if (byRef === undefined) {
             byRef = typeof isbyref === "function" ? isbyref(argType, arg, entry, options) : argType.endsWith("*") && !argType.startsWith("const ");
