@@ -19,8 +19,8 @@ Opt("MustDeclareVars", 1)
 #include "..\..\..\emgucv-autoit-bindings\cve_extra.au3"
 
 ;~ Sources:
-;~     https:;;docs.opencv.org/4.5.2/de/da9/tutorial_template_matching.html
-;~     https:;;github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/Histograms_Matching/MatchTemplate_Demo.cpp
+;~     https://docs.opencv.org/4.5.2/de/da9/tutorial_template_matching.html
+;~     https://github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/Histograms_Matching/MatchTemplate_Demo.cpp
 
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Template Matching", 1267, 556, 185, 122)
@@ -268,8 +268,8 @@ Func MatchingMethod()
 	;;/ Show me what you got
 	Local $matchRect = _cvRect($matchLoc.x, $matchLoc.y, $cvSizeTempl.width, $cvSizeTempl.height)
 
-	_cveRectangleMat($img_display, $matchRect, $tRedColor, 2, 8, 0)  ;
-	_cveRectangleMat($result, $matchRect, $tRedColor, 2, 8, 0)  ;
+	_cveRectangleMat($img_display, $matchRect, $tGreenColor, 2, 8, 0)  ;
+	_cveRectangleMat($result, $matchRect, _cvScalarAll(0), 2, 8, 0)  ;
 
 	; _cveImshowMat( $image_window, $img_display );
 	; _cveImshowMat( $result_window, $result );
