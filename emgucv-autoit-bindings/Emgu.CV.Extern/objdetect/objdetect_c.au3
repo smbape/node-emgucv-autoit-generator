@@ -18,7 +18,14 @@ Func _cveHOGDescriptorPeopleDetectorCreate($seq)
         $vecSeq = $seq
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHOGDescriptorPeopleDetectorCreate", "ptr", $vecSeq), "cveHOGDescriptorPeopleDetectorCreate", @error)
+    Local $bSeqDllType
+    If VarGetType($seq) == "DLLStruct" Then
+        $bSeqDllType = "struct*"
+    Else
+        $bSeqDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHOGDescriptorPeopleDetectorCreate", $bSeqDllType, $vecSeq), "cveHOGDescriptorPeopleDetectorCreate", @error)
 
     If $bSeqIsArray Then
         _VectorOfFloatRelease($vecSeq)
@@ -32,11 +39,46 @@ EndFunc   ;==>_cveHOGDescriptorCreateDefault
 
 Func _cveHOGDescriptorCreate($_winSize, $_blockSize, $_blockStride, $_cellSize, $_nbins, $_derivAperture, $_winSigma, $_histogramNormType, $_L2HysThreshold, $_gammaCorrection)
     ; CVAPI(cv::HOGDescriptor*) cveHOGDescriptorCreate(CvSize* _winSize, CvSize* _blockSize, CvSize* _blockStride, CvSize* _cellSize, int _nbins, int _derivAperture, double _winSigma, int _histogramNormType, double _L2HysThreshold, bool _gammaCorrection);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHOGDescriptorCreate", "struct*", $_winSize, "struct*", $_blockSize, "struct*", $_blockStride, "struct*", $_cellSize, "int", $_nbins, "int", $_derivAperture, "double", $_winSigma, "int", $_histogramNormType, "double", $_L2HysThreshold, "boolean", $_gammaCorrection), "cveHOGDescriptorCreate", @error)
+
+    Local $b_winSizeDllType
+    If VarGetType($_winSize) == "DLLStruct" Then
+        $b_winSizeDllType = "struct*"
+    Else
+        $b_winSizeDllType = "ptr"
+    EndIf
+
+    Local $b_blockSizeDllType
+    If VarGetType($_blockSize) == "DLLStruct" Then
+        $b_blockSizeDllType = "struct*"
+    Else
+        $b_blockSizeDllType = "ptr"
+    EndIf
+
+    Local $b_blockStrideDllType
+    If VarGetType($_blockStride) == "DLLStruct" Then
+        $b_blockStrideDllType = "struct*"
+    Else
+        $b_blockStrideDllType = "ptr"
+    EndIf
+
+    Local $b_cellSizeDllType
+    If VarGetType($_cellSize) == "DLLStruct" Then
+        $b_cellSizeDllType = "struct*"
+    Else
+        $b_cellSizeDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHOGDescriptorCreate", $b_winSizeDllType, $_winSize, $b_blockSizeDllType, $_blockSize, $b_blockStrideDllType, $_blockStride, $b_cellSizeDllType, $_cellSize, "int", $_nbins, "int", $_derivAperture, "double", $_winSigma, "int", $_histogramNormType, "double", $_L2HysThreshold, "boolean", $_gammaCorrection), "cveHOGDescriptorCreate", @error)
 EndFunc   ;==>_cveHOGDescriptorCreate
 
 Func _cveHOGSetSVMDetector($descriptor, $vector)
     ; CVAPI(void) cveHOGSetSVMDetector(cv::HOGDescriptor* descriptor, std::vector<float>* vector);
+
+    Local $bDescriptorDllType
+    If VarGetType($descriptor) == "DLLStruct" Then
+        $bDescriptorDllType = "struct*"
+    Else
+        $bDescriptorDllType = "ptr"
+    EndIf
 
     Local $vecVector, $iArrVectorSize
     Local $bVectorIsArray = VarGetType($vector) == "Array"
@@ -52,7 +94,14 @@ Func _cveHOGSetSVMDetector($descriptor, $vector)
         $vecVector = $vector
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHOGSetSVMDetector", "ptr", $descriptor, "ptr", $vecVector), "cveHOGSetSVMDetector", @error)
+    Local $bVectorDllType
+    If VarGetType($vector) == "DLLStruct" Then
+        $bVectorDllType = "struct*"
+    Else
+        $bVectorDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHOGSetSVMDetector", $bDescriptorDllType, $descriptor, $bVectorDllType, $vecVector), "cveHOGSetSVMDetector", @error)
 
     If $bVectorIsArray Then
         _VectorOfFloatRelease($vecVector)
@@ -75,6 +124,20 @@ EndFunc   ;==>_cveHOGDescriptorRelease
 Func _cveHOGDescriptorDetectMultiScale($descriptor, $img, $foundLocations, $weights, $hitThreshold, $winStride, $padding, $scale, $finalThreshold, $useMeanshiftGrouping)
     ; CVAPI(void) cveHOGDescriptorDetectMultiScale(cv::HOGDescriptor* descriptor, cv::_InputArray* img, std::vector<cv::Rect>* foundLocations, std::vector<double>* weights, double hitThreshold, CvSize* winStride, CvSize* padding, double scale, double finalThreshold, bool useMeanshiftGrouping);
 
+    Local $bDescriptorDllType
+    If VarGetType($descriptor) == "DLLStruct" Then
+        $bDescriptorDllType = "struct*"
+    Else
+        $bDescriptorDllType = "ptr"
+    EndIf
+
+    Local $bImgDllType
+    If VarGetType($img) == "DLLStruct" Then
+        $bImgDllType = "struct*"
+    Else
+        $bImgDllType = "ptr"
+    EndIf
+
     Local $vecFoundLocations, $iArrFoundLocationsSize
     Local $bFoundLocationsIsArray = VarGetType($foundLocations) == "Array"
 
@@ -87,6 +150,13 @@ Func _cveHOGDescriptorDetectMultiScale($descriptor, $img, $foundLocations, $weig
         Next
     Else
         $vecFoundLocations = $foundLocations
+    EndIf
+
+    Local $bFoundLocationsDllType
+    If VarGetType($foundLocations) == "DLLStruct" Then
+        $bFoundLocationsDllType = "struct*"
+    Else
+        $bFoundLocationsDllType = "ptr"
     EndIf
 
     Local $vecWeights, $iArrWeightsSize
@@ -103,7 +173,28 @@ Func _cveHOGDescriptorDetectMultiScale($descriptor, $img, $foundLocations, $weig
         $vecWeights = $weights
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHOGDescriptorDetectMultiScale", "ptr", $descriptor, "ptr", $img, "ptr", $vecFoundLocations, "ptr", $vecWeights, "double", $hitThreshold, "struct*", $winStride, "struct*", $padding, "double", $scale, "double", $finalThreshold, "boolean", $useMeanshiftGrouping), "cveHOGDescriptorDetectMultiScale", @error)
+    Local $bWeightsDllType
+    If VarGetType($weights) == "DLLStruct" Then
+        $bWeightsDllType = "struct*"
+    Else
+        $bWeightsDllType = "ptr"
+    EndIf
+
+    Local $bWinStrideDllType
+    If VarGetType($winStride) == "DLLStruct" Then
+        $bWinStrideDllType = "struct*"
+    Else
+        $bWinStrideDllType = "ptr"
+    EndIf
+
+    Local $bPaddingDllType
+    If VarGetType($padding) == "DLLStruct" Then
+        $bPaddingDllType = "struct*"
+    Else
+        $bPaddingDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHOGDescriptorDetectMultiScale", $bDescriptorDllType, $descriptor, $bImgDllType, $img, $bFoundLocationsDllType, $vecFoundLocations, $bWeightsDllType, $vecWeights, "double", $hitThreshold, $bWinStrideDllType, $winStride, $bPaddingDllType, $padding, "double", $scale, "double", $finalThreshold, "boolean", $useMeanshiftGrouping), "cveHOGDescriptorDetectMultiScale", @error)
 
     If $bWeightsIsArray Then
         _VectorOfDoubleRelease($vecWeights)
@@ -145,6 +236,20 @@ EndFunc   ;==>_cveHOGDescriptorDetectMultiScaleMat
 Func _cveHOGDescriptorCompute($descriptor, $img, $descriptors, $winStride, $padding, $locations)
     ; CVAPI(void) cveHOGDescriptorCompute(cv::HOGDescriptor * descriptor, cv::_InputArray* img, std::vector<float> * descriptors, CvSize* winStride, CvSize* padding, std::vector< cv::Point >* locations);
 
+    Local $bDescriptorDllType
+    If VarGetType($descriptor) == "DLLStruct" Then
+        $bDescriptorDllType = "struct*"
+    Else
+        $bDescriptorDllType = "ptr"
+    EndIf
+
+    Local $bImgDllType
+    If VarGetType($img) == "DLLStruct" Then
+        $bImgDllType = "struct*"
+    Else
+        $bImgDllType = "ptr"
+    EndIf
+
     Local $vecDescriptors, $iArrDescriptorsSize
     Local $bDescriptorsIsArray = VarGetType($descriptors) == "Array"
 
@@ -157,6 +262,27 @@ Func _cveHOGDescriptorCompute($descriptor, $img, $descriptors, $winStride, $padd
         Next
     Else
         $vecDescriptors = $descriptors
+    EndIf
+
+    Local $bDescriptorsDllType
+    If VarGetType($descriptors) == "DLLStruct" Then
+        $bDescriptorsDllType = "struct*"
+    Else
+        $bDescriptorsDllType = "ptr"
+    EndIf
+
+    Local $bWinStrideDllType
+    If VarGetType($winStride) == "DLLStruct" Then
+        $bWinStrideDllType = "struct*"
+    Else
+        $bWinStrideDllType = "ptr"
+    EndIf
+
+    Local $bPaddingDllType
+    If VarGetType($padding) == "DLLStruct" Then
+        $bPaddingDllType = "struct*"
+    Else
+        $bPaddingDllType = "ptr"
     EndIf
 
     Local $vecLocations, $iArrLocationsSize
@@ -173,7 +299,14 @@ Func _cveHOGDescriptorCompute($descriptor, $img, $descriptors, $winStride, $padd
         $vecLocations = $locations
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHOGDescriptorCompute", "ptr", $descriptor, "ptr", $img, "ptr", $vecDescriptors, "struct*", $winStride, "struct*", $padding, "ptr", $vecLocations), "cveHOGDescriptorCompute", @error)
+    Local $bLocationsDllType
+    If VarGetType($locations) == "DLLStruct" Then
+        $bLocationsDllType = "struct*"
+    Else
+        $bLocationsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHOGDescriptorCompute", $bDescriptorDllType, $descriptor, $bImgDllType, $img, $bDescriptorsDllType, $vecDescriptors, $bWinStrideDllType, $winStride, $bPaddingDllType, $padding, $bLocationsDllType, $vecLocations), "cveHOGDescriptorCompute", @error)
 
     If $bLocationsIsArray Then
         _VectorOfPointRelease($vecLocations)
@@ -214,7 +347,14 @@ EndFunc   ;==>_cveHOGDescriptorComputeMat
 
 Func _cveHOGDescriptorGetDescriptorSize($descriptor)
     ; CVAPI(unsigned) cveHOGDescriptorGetDescriptorSize(cv::HOGDescriptor* descriptor);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "unsigned:cdecl", "cveHOGDescriptorGetDescriptorSize", "ptr", $descriptor), "cveHOGDescriptorGetDescriptorSize", @error)
+
+    Local $bDescriptorDllType
+    If VarGetType($descriptor) == "DLLStruct" Then
+        $bDescriptorDllType = "struct*"
+    Else
+        $bDescriptorDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "unsigned:cdecl", "cveHOGDescriptorGetDescriptorSize", $bDescriptorDllType, $descriptor), "cveHOGDescriptorGetDescriptorSize", @error)
 EndFunc   ;==>_cveHOGDescriptorGetDescriptorSize
 
 Func _cveCascadeClassifierCreate()
@@ -230,7 +370,14 @@ Func _cveCascadeClassifierCreateFromFile($fileName)
         $fileName = _cveStringCreateFromStr($fileName)
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCascadeClassifierCreateFromFile", "ptr", $fileName), "cveCascadeClassifierCreateFromFile", @error)
+    Local $bFileNameDllType
+    If VarGetType($fileName) == "DLLStruct" Then
+        $bFileNameDllType = "struct*"
+    Else
+        $bFileNameDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCascadeClassifierCreateFromFile", $bFileNameDllType, $fileName), "cveCascadeClassifierCreateFromFile", @error)
 
     If $bFileNameIsString Then
         _cveStringRelease($fileName)
@@ -241,7 +388,21 @@ EndFunc   ;==>_cveCascadeClassifierCreateFromFile
 
 Func _cveCascadeClassifierRead($classifier, $node)
     ; CVAPI(bool) cveCascadeClassifierRead(cv::CascadeClassifier* classifier, cv::FileNode* node);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveCascadeClassifierRead", "ptr", $classifier, "ptr", $node), "cveCascadeClassifierRead", @error)
+
+    Local $bClassifierDllType
+    If VarGetType($classifier) == "DLLStruct" Then
+        $bClassifierDllType = "struct*"
+    Else
+        $bClassifierDllType = "ptr"
+    EndIf
+
+    Local $bNodeDllType
+    If VarGetType($node) == "DLLStruct" Then
+        $bNodeDllType = "struct*"
+    Else
+        $bNodeDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveCascadeClassifierRead", $bClassifierDllType, $classifier, $bNodeDllType, $node), "cveCascadeClassifierRead", @error)
 EndFunc   ;==>_cveCascadeClassifierRead
 
 Func _cveCascadeClassifierRelease($classifier)
@@ -260,6 +421,20 @@ EndFunc   ;==>_cveCascadeClassifierRelease
 Func _cveCascadeClassifierDetectMultiScale($classifier, $image, $objects, $scaleFactor, $minNeighbors, $flags, $minSize, $maxSize)
     ; CVAPI(void) cveCascadeClassifierDetectMultiScale(cv::CascadeClassifier* classifier, cv::_InputArray* image, std::vector<cv::Rect>* objects, double scaleFactor, int minNeighbors, int flags, CvSize* minSize, CvSize* maxSize);
 
+    Local $bClassifierDllType
+    If VarGetType($classifier) == "DLLStruct" Then
+        $bClassifierDllType = "struct*"
+    Else
+        $bClassifierDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
     Local $vecObjects, $iArrObjectsSize
     Local $bObjectsIsArray = VarGetType($objects) == "Array"
 
@@ -274,7 +449,28 @@ Func _cveCascadeClassifierDetectMultiScale($classifier, $image, $objects, $scale
         $vecObjects = $objects
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCascadeClassifierDetectMultiScale", "ptr", $classifier, "ptr", $image, "ptr", $vecObjects, "double", $scaleFactor, "int", $minNeighbors, "int", $flags, "struct*", $minSize, "struct*", $maxSize), "cveCascadeClassifierDetectMultiScale", @error)
+    Local $bObjectsDllType
+    If VarGetType($objects) == "DLLStruct" Then
+        $bObjectsDllType = "struct*"
+    Else
+        $bObjectsDllType = "ptr"
+    EndIf
+
+    Local $bMinSizeDllType
+    If VarGetType($minSize) == "DLLStruct" Then
+        $bMinSizeDllType = "struct*"
+    Else
+        $bMinSizeDllType = "ptr"
+    EndIf
+
+    Local $bMaxSizeDllType
+    If VarGetType($maxSize) == "DLLStruct" Then
+        $bMaxSizeDllType = "struct*"
+    Else
+        $bMaxSizeDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCascadeClassifierDetectMultiScale", $bClassifierDllType, $classifier, $bImageDllType, $image, $bObjectsDllType, $vecObjects, "double", $scaleFactor, "int", $minNeighbors, "int", $flags, $bMinSizeDllType, $minSize, $bMaxSizeDllType, $maxSize), "cveCascadeClassifierDetectMultiScale", @error)
 
     If $bObjectsIsArray Then
         _VectorOfRectRelease($vecObjects)
@@ -311,12 +507,34 @@ EndFunc   ;==>_cveCascadeClassifierDetectMultiScaleMat
 
 Func _cveCascadeClassifierIsOldFormatCascade($classifier)
     ; CVAPI(bool) cveCascadeClassifierIsOldFormatCascade(cv::CascadeClassifier* classifier);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveCascadeClassifierIsOldFormatCascade", "ptr", $classifier), "cveCascadeClassifierIsOldFormatCascade", @error)
+
+    Local $bClassifierDllType
+    If VarGetType($classifier) == "DLLStruct" Then
+        $bClassifierDllType = "struct*"
+    Else
+        $bClassifierDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveCascadeClassifierIsOldFormatCascade", $bClassifierDllType, $classifier), "cveCascadeClassifierIsOldFormatCascade", @error)
 EndFunc   ;==>_cveCascadeClassifierIsOldFormatCascade
 
 Func _cveCascadeClassifierGetOriginalWindowSize($classifier, $size)
     ; CVAPI(void) cveCascadeClassifierGetOriginalWindowSize(cv::CascadeClassifier* classifier, CvSize* size);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCascadeClassifierGetOriginalWindowSize", "ptr", $classifier, "struct*", $size), "cveCascadeClassifierGetOriginalWindowSize", @error)
+
+    Local $bClassifierDllType
+    If VarGetType($classifier) == "DLLStruct" Then
+        $bClassifierDllType = "struct*"
+    Else
+        $bClassifierDllType = "ptr"
+    EndIf
+
+    Local $bSizeDllType
+    If VarGetType($size) == "DLLStruct" Then
+        $bSizeDllType = "struct*"
+    Else
+        $bSizeDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCascadeClassifierGetOriginalWindowSize", $bClassifierDllType, $classifier, $bSizeDllType, $size), "cveCascadeClassifierGetOriginalWindowSize", @error)
 EndFunc   ;==>_cveCascadeClassifierGetOriginalWindowSize
 
 Func _cveGroupRectangles1($rectList, $groupThreshold, $eps)
@@ -336,7 +554,14 @@ Func _cveGroupRectangles1($rectList, $groupThreshold, $eps)
         $vecRectList = $rectList
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGroupRectangles1", "ptr", $vecRectList, "int", $groupThreshold, "double", $eps), "cveGroupRectangles1", @error)
+    Local $bRectListDllType
+    If VarGetType($rectList) == "DLLStruct" Then
+        $bRectListDllType = "struct*"
+    Else
+        $bRectListDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGroupRectangles1", $bRectListDllType, $vecRectList, "int", $groupThreshold, "double", $eps), "cveGroupRectangles1", @error)
 
     If $bRectListIsArray Then
         _VectorOfRectRelease($vecRectList)
@@ -360,6 +585,13 @@ Func _cveGroupRectangles2($rectList, $weights, $groupThreshold, $eps)
         $vecRectList = $rectList
     EndIf
 
+    Local $bRectListDllType
+    If VarGetType($rectList) == "DLLStruct" Then
+        $bRectListDllType = "struct*"
+    Else
+        $bRectListDllType = "ptr"
+    EndIf
+
     Local $vecWeights, $iArrWeightsSize
     Local $bWeightsIsArray = VarGetType($weights) == "Array"
 
@@ -374,7 +606,14 @@ Func _cveGroupRectangles2($rectList, $weights, $groupThreshold, $eps)
         $vecWeights = $weights
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGroupRectangles2", "ptr", $vecRectList, "ptr", $vecWeights, "int", $groupThreshold, "double", $eps), "cveGroupRectangles2", @error)
+    Local $bWeightsDllType
+    If VarGetType($weights) == "DLLStruct" Then
+        $bWeightsDllType = "struct*"
+    Else
+        $bWeightsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGroupRectangles2", $bRectListDllType, $vecRectList, $bWeightsDllType, $vecWeights, "int", $groupThreshold, "double", $eps), "cveGroupRectangles2", @error)
 
     If $bWeightsIsArray Then
         _VectorOfIntRelease($vecWeights)
@@ -402,6 +641,13 @@ Func _cveGroupRectangles3($rectList, $groupThreshold, $eps, $weights, $levelWeig
         $vecRectList = $rectList
     EndIf
 
+    Local $bRectListDllType
+    If VarGetType($rectList) == "DLLStruct" Then
+        $bRectListDllType = "struct*"
+    Else
+        $bRectListDllType = "ptr"
+    EndIf
+
     Local $vecWeights, $iArrWeightsSize
     Local $bWeightsIsArray = VarGetType($weights) == "Array"
 
@@ -414,6 +660,13 @@ Func _cveGroupRectangles3($rectList, $groupThreshold, $eps, $weights, $levelWeig
         Next
     Else
         $vecWeights = $weights
+    EndIf
+
+    Local $bWeightsDllType
+    If VarGetType($weights) == "DLLStruct" Then
+        $bWeightsDllType = "struct*"
+    Else
+        $bWeightsDllType = "ptr"
     EndIf
 
     Local $vecLevelWeights, $iArrLevelWeightsSize
@@ -430,7 +683,14 @@ Func _cveGroupRectangles3($rectList, $groupThreshold, $eps, $weights, $levelWeig
         $vecLevelWeights = $levelWeights
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGroupRectangles3", "ptr", $vecRectList, "int", $groupThreshold, "double", $eps, "ptr", $vecWeights, "ptr", $vecLevelWeights), "cveGroupRectangles3", @error)
+    Local $bLevelWeightsDllType
+    If VarGetType($levelWeights) == "DLLStruct" Then
+        $bLevelWeightsDllType = "struct*"
+    Else
+        $bLevelWeightsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGroupRectangles3", $bRectListDllType, $vecRectList, "int", $groupThreshold, "double", $eps, $bWeightsDllType, $vecWeights, $bLevelWeightsDllType, $vecLevelWeights), "cveGroupRectangles3", @error)
 
     If $bLevelWeightsIsArray Then
         _VectorOfDoubleRelease($vecLevelWeights)
@@ -462,6 +722,13 @@ Func _cveGroupRectangles4($rectList, $rejectLevels, $levelWeights, $groupThresho
         $vecRectList = $rectList
     EndIf
 
+    Local $bRectListDllType
+    If VarGetType($rectList) == "DLLStruct" Then
+        $bRectListDllType = "struct*"
+    Else
+        $bRectListDllType = "ptr"
+    EndIf
+
     Local $vecRejectLevels, $iArrRejectLevelsSize
     Local $bRejectLevelsIsArray = VarGetType($rejectLevels) == "Array"
 
@@ -474,6 +741,13 @@ Func _cveGroupRectangles4($rectList, $rejectLevels, $levelWeights, $groupThresho
         Next
     Else
         $vecRejectLevels = $rejectLevels
+    EndIf
+
+    Local $bRejectLevelsDllType
+    If VarGetType($rejectLevels) == "DLLStruct" Then
+        $bRejectLevelsDllType = "struct*"
+    Else
+        $bRejectLevelsDllType = "ptr"
     EndIf
 
     Local $vecLevelWeights, $iArrLevelWeightsSize
@@ -490,7 +764,14 @@ Func _cveGroupRectangles4($rectList, $rejectLevels, $levelWeights, $groupThresho
         $vecLevelWeights = $levelWeights
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGroupRectangles4", "ptr", $vecRectList, "ptr", $vecRejectLevels, "ptr", $vecLevelWeights, "int", $groupThreshold, "double", $eps), "cveGroupRectangles4", @error)
+    Local $bLevelWeightsDllType
+    If VarGetType($levelWeights) == "DLLStruct" Then
+        $bLevelWeightsDllType = "struct*"
+    Else
+        $bLevelWeightsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGroupRectangles4", $bRectListDllType, $vecRectList, $bRejectLevelsDllType, $vecRejectLevels, $bLevelWeightsDllType, $vecLevelWeights, "int", $groupThreshold, "double", $eps), "cveGroupRectangles4", @error)
 
     If $bLevelWeightsIsArray Then
         _VectorOfDoubleRelease($vecLevelWeights)
@@ -522,6 +803,13 @@ Func _cveGroupRectanglesMeanshift($rectList, $foundWeights, $foundScales, $detec
         $vecRectList = $rectList
     EndIf
 
+    Local $bRectListDllType
+    If VarGetType($rectList) == "DLLStruct" Then
+        $bRectListDllType = "struct*"
+    Else
+        $bRectListDllType = "ptr"
+    EndIf
+
     Local $vecFoundWeights, $iArrFoundWeightsSize
     Local $bFoundWeightsIsArray = VarGetType($foundWeights) == "Array"
 
@@ -534,6 +822,13 @@ Func _cveGroupRectanglesMeanshift($rectList, $foundWeights, $foundScales, $detec
         Next
     Else
         $vecFoundWeights = $foundWeights
+    EndIf
+
+    Local $bFoundWeightsDllType
+    If VarGetType($foundWeights) == "DLLStruct" Then
+        $bFoundWeightsDllType = "struct*"
+    Else
+        $bFoundWeightsDllType = "ptr"
     EndIf
 
     Local $vecFoundScales, $iArrFoundScalesSize
@@ -550,7 +845,21 @@ Func _cveGroupRectanglesMeanshift($rectList, $foundWeights, $foundScales, $detec
         $vecFoundScales = $foundScales
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGroupRectanglesMeanshift", "ptr", $vecRectList, "ptr", $vecFoundWeights, "ptr", $vecFoundScales, "double", $detectThreshold, "struct*", $winDetSize), "cveGroupRectanglesMeanshift", @error)
+    Local $bFoundScalesDllType
+    If VarGetType($foundScales) == "DLLStruct" Then
+        $bFoundScalesDllType = "struct*"
+    Else
+        $bFoundScalesDllType = "ptr"
+    EndIf
+
+    Local $bWinDetSizeDllType
+    If VarGetType($winDetSize) == "DLLStruct" Then
+        $bWinDetSizeDllType = "struct*"
+    Else
+        $bWinDetSizeDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGroupRectanglesMeanshift", $bRectListDllType, $vecRectList, $bFoundWeightsDllType, $vecFoundWeights, $bFoundScalesDllType, $vecFoundScales, "double", $detectThreshold, $bWinDetSizeDllType, $winDetSize), "cveGroupRectanglesMeanshift", @error)
 
     If $bFoundScalesIsArray Then
         _VectorOfDoubleRelease($vecFoundScales)
@@ -585,7 +894,28 @@ EndFunc   ;==>_cveQRCodeDetectorRelease
 
 Func _cveQRCodeDetectorDetect($detector, $img, $points)
     ; CVAPI(bool) cveQRCodeDetectorDetect(cv::QRCodeDetector* detector, cv::_InputArray* img, cv::_OutputArray* points);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveQRCodeDetectorDetect", "ptr", $detector, "ptr", $img, "ptr", $points), "cveQRCodeDetectorDetect", @error)
+
+    Local $bDetectorDllType
+    If VarGetType($detector) == "DLLStruct" Then
+        $bDetectorDllType = "struct*"
+    Else
+        $bDetectorDllType = "ptr"
+    EndIf
+
+    Local $bImgDllType
+    If VarGetType($img) == "DLLStruct" Then
+        $bImgDllType = "struct*"
+    Else
+        $bImgDllType = "ptr"
+    EndIf
+
+    Local $bPointsDllType
+    If VarGetType($points) == "DLLStruct" Then
+        $bPointsDllType = "struct*"
+    Else
+        $bPointsDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveQRCodeDetectorDetect", $bDetectorDllType, $detector, $bImgDllType, $img, $bPointsDllType, $points), "cveQRCodeDetectorDetect", @error)
 EndFunc   ;==>_cveQRCodeDetectorDetect
 
 Func _cveQRCodeDetectorDetectMat($detector, $matImg, $matPoints)
@@ -642,7 +972,28 @@ EndFunc   ;==>_cveQRCodeDetectorDetectMat
 
 Func _cveQRCodeDetectorDetectMulti($detector, $img, $points)
     ; CVAPI(bool) cveQRCodeDetectorDetectMulti(cv::QRCodeDetector* detector, cv::_InputArray* img, cv::_OutputArray* points);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveQRCodeDetectorDetectMulti", "ptr", $detector, "ptr", $img, "ptr", $points), "cveQRCodeDetectorDetectMulti", @error)
+
+    Local $bDetectorDllType
+    If VarGetType($detector) == "DLLStruct" Then
+        $bDetectorDllType = "struct*"
+    Else
+        $bDetectorDllType = "ptr"
+    EndIf
+
+    Local $bImgDllType
+    If VarGetType($img) == "DLLStruct" Then
+        $bImgDllType = "struct*"
+    Else
+        $bImgDllType = "ptr"
+    EndIf
+
+    Local $bPointsDllType
+    If VarGetType($points) == "DLLStruct" Then
+        $bPointsDllType = "struct*"
+    Else
+        $bPointsDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveQRCodeDetectorDetectMulti", $bDetectorDllType, $detector, $bImgDllType, $img, $bPointsDllType, $points), "cveQRCodeDetectorDetectMulti", @error)
 EndFunc   ;==>_cveQRCodeDetectorDetectMulti
 
 Func _cveQRCodeDetectorDetectMultiMat($detector, $matImg, $matPoints)
@@ -700,12 +1051,47 @@ EndFunc   ;==>_cveQRCodeDetectorDetectMultiMat
 Func _cveQRCodeDetectorDecode($detector, $img, $points, $decodedInfo, $straightQrcode)
     ; CVAPI(void) cveQRCodeDetectorDecode(cv::QRCodeDetector* detector, cv::_InputArray* img, cv::_InputArray* points, cv::String* decodedInfo, cv::_OutputArray* straightQrcode);
 
+    Local $bDetectorDllType
+    If VarGetType($detector) == "DLLStruct" Then
+        $bDetectorDllType = "struct*"
+    Else
+        $bDetectorDllType = "ptr"
+    EndIf
+
+    Local $bImgDllType
+    If VarGetType($img) == "DLLStruct" Then
+        $bImgDllType = "struct*"
+    Else
+        $bImgDllType = "ptr"
+    EndIf
+
+    Local $bPointsDllType
+    If VarGetType($points) == "DLLStruct" Then
+        $bPointsDllType = "struct*"
+    Else
+        $bPointsDllType = "ptr"
+    EndIf
+
     Local $bDecodedInfoIsString = VarGetType($decodedInfo) == "String"
     If $bDecodedInfoIsString Then
         $decodedInfo = _cveStringCreateFromStr($decodedInfo)
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQRCodeDetectorDecode", "ptr", $detector, "ptr", $img, "ptr", $points, "ptr", $decodedInfo, "ptr", $straightQrcode), "cveQRCodeDetectorDecode", @error)
+    Local $bDecodedInfoDllType
+    If VarGetType($decodedInfo) == "DLLStruct" Then
+        $bDecodedInfoDllType = "struct*"
+    Else
+        $bDecodedInfoDllType = "ptr"
+    EndIf
+
+    Local $bStraightQrcodeDllType
+    If VarGetType($straightQrcode) == "DLLStruct" Then
+        $bStraightQrcodeDllType = "struct*"
+    Else
+        $bStraightQrcodeDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQRCodeDetectorDecode", $bDetectorDllType, $detector, $bImgDllType, $img, $bPointsDllType, $points, $bDecodedInfoDllType, $decodedInfo, $bStraightQrcodeDllType, $straightQrcode), "cveQRCodeDetectorDecode", @error)
 
     If $bDecodedInfoIsString Then
         _cveStringRelease($decodedInfo)
@@ -787,12 +1173,47 @@ EndFunc   ;==>_cveQRCodeDetectorDecodeMat
 Func _cveQRCodeDetectorDecodeCurved($detector, $img, $points, $decodedInfo, $straightQrcode)
     ; CVAPI(void) cveQRCodeDetectorDecodeCurved(cv::QRCodeDetector* detector, cv::_InputArray* img, cv::_InputArray* points, cv::String* decodedInfo, cv::_OutputArray* straightQrcode);
 
+    Local $bDetectorDllType
+    If VarGetType($detector) == "DLLStruct" Then
+        $bDetectorDllType = "struct*"
+    Else
+        $bDetectorDllType = "ptr"
+    EndIf
+
+    Local $bImgDllType
+    If VarGetType($img) == "DLLStruct" Then
+        $bImgDllType = "struct*"
+    Else
+        $bImgDllType = "ptr"
+    EndIf
+
+    Local $bPointsDllType
+    If VarGetType($points) == "DLLStruct" Then
+        $bPointsDllType = "struct*"
+    Else
+        $bPointsDllType = "ptr"
+    EndIf
+
     Local $bDecodedInfoIsString = VarGetType($decodedInfo) == "String"
     If $bDecodedInfoIsString Then
         $decodedInfo = _cveStringCreateFromStr($decodedInfo)
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQRCodeDetectorDecodeCurved", "ptr", $detector, "ptr", $img, "ptr", $points, "ptr", $decodedInfo, "ptr", $straightQrcode), "cveQRCodeDetectorDecodeCurved", @error)
+    Local $bDecodedInfoDllType
+    If VarGetType($decodedInfo) == "DLLStruct" Then
+        $bDecodedInfoDllType = "struct*"
+    Else
+        $bDecodedInfoDllType = "ptr"
+    EndIf
+
+    Local $bStraightQrcodeDllType
+    If VarGetType($straightQrcode) == "DLLStruct" Then
+        $bStraightQrcodeDllType = "struct*"
+    Else
+        $bStraightQrcodeDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQRCodeDetectorDecodeCurved", $bDetectorDllType, $detector, $bImgDllType, $img, $bPointsDllType, $points, $bDecodedInfoDllType, $decodedInfo, $bStraightQrcodeDllType, $straightQrcode), "cveQRCodeDetectorDecodeCurved", @error)
 
     If $bDecodedInfoIsString Then
         _cveStringRelease($decodedInfo)
@@ -873,7 +1294,42 @@ EndFunc   ;==>_cveQRCodeDetectorDecodeCurvedMat
 
 Func _cveQRCodeDetectorDecodeMulti($detector, $img, $points, $decodedInfo, $straightQrcode)
     ; CVAPI(bool) cveQRCodeDetectorDecodeMulti(cv::QRCodeDetector* detector, cv::_InputArray* img, cv::_InputArray* points, std::vector< std::string >* decodedInfo, cv::_OutputArray* straightQrcode);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveQRCodeDetectorDecodeMulti", "ptr", $detector, "ptr", $img, "ptr", $points, "ptr", $decodedInfo, "ptr", $straightQrcode), "cveQRCodeDetectorDecodeMulti", @error)
+
+    Local $bDetectorDllType
+    If VarGetType($detector) == "DLLStruct" Then
+        $bDetectorDllType = "struct*"
+    Else
+        $bDetectorDllType = "ptr"
+    EndIf
+
+    Local $bImgDllType
+    If VarGetType($img) == "DLLStruct" Then
+        $bImgDllType = "struct*"
+    Else
+        $bImgDllType = "ptr"
+    EndIf
+
+    Local $bPointsDllType
+    If VarGetType($points) == "DLLStruct" Then
+        $bPointsDllType = "struct*"
+    Else
+        $bPointsDllType = "ptr"
+    EndIf
+
+    Local $bDecodedInfoDllType
+    If VarGetType($decodedInfo) == "DLLStruct" Then
+        $bDecodedInfoDllType = "struct*"
+    Else
+        $bDecodedInfoDllType = "ptr"
+    EndIf
+
+    Local $bStraightQrcodeDllType
+    If VarGetType($straightQrcode) == "DLLStruct" Then
+        $bStraightQrcodeDllType = "struct*"
+    Else
+        $bStraightQrcodeDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveQRCodeDetectorDecodeMulti", $bDetectorDllType, $detector, $bImgDllType, $img, $bPointsDllType, $points, $bDecodedInfoDllType, $decodedInfo, $bStraightQrcodeDllType, $straightQrcode), "cveQRCodeDetectorDecodeMulti", @error)
 EndFunc   ;==>_cveQRCodeDetectorDecodeMulti
 
 Func _cveQRCodeDetectorDecodeMultiMat($detector, $matImg, $matPoints, $decodedInfo, $matStraightQrcode)

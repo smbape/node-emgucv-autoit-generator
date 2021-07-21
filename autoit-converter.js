@@ -37,7 +37,7 @@ const getAutoItType = (type, native = false) => {
         return `${ AUTOIT_TYPE_MAP[type] }*`;
     }
 
-    return type;
+    return type.replace(/^const /, "");
 };
 
 const getAutoItFunctionDefinition = (entry, options = {}) => {
@@ -61,6 +61,10 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
     for (const arg of args) {
         const [argType, argName, defaultValue] = arg;
         const capitalCasedName = argName[0].toUpperCase() + argName.slice(1);
+
+        if (argType === "const int*") {
+            debugger;
+        }
 
         let byRef = arg[3];
         if (byRef === undefined) {
@@ -99,27 +103,27 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
 
         let autoItDllType;
 
-        if (isString) {
-            autoItDllType = `"${ argType.endsWith("**") ? "struct*" : "str" }"`;
-        } else if (byRef) {
+        if (byRef || argType.endsWith("*")) {
             if (argType.endsWith("**")) {
-                declarations.push(""); // new line
-                declarations.push(...`
-                    Local $b${ capitalCasedName }DllType
-                    If VarGetType(${ autoItArgName }) == "DLLStruct" Then
-                        $b${ capitalCasedName }DllType = "struct*"
-                    Else
-                        $b${ capitalCasedName }DllType = "ptr*"
-                    EndIf
-                `.replace(/^ {20}/mg, "").trim().split("\n"));
-                autoItDllType = `$b${ capitalCasedName }DllType`;
+                autoItDllType = "ptr*"
             } else if (isString) {
-                autoItDllType = `"${ "str" }"`;
-            } else if (/^\w+\*$/.test(argType)) {
-                autoItDllType = `"${ "struct*" }"`;
+                autoItDllType = "str";
+            } else if (isNativeType) {
+                autoItDllType = getAutoItType(argType, isNativeType)
             } else {
-                autoItDllType = `"${ "ptr" }"`;
+                autoItDllType = "ptr";
             }
+
+            declarations.push(""); // new line
+            declarations.push(...`
+                Local $b${ capitalCasedName }DllType
+                If VarGetType(${ autoItArgName }) == "DLLStruct" Then
+                    $b${ capitalCasedName }DllType = "struct*"
+                Else
+                    $b${ capitalCasedName }DllType = "${ autoItDllType }"
+                EndIf
+            `.replace(/^ {16}/mg, "").trim().split("\n"));
+            autoItDllType = `$b${ capitalCasedName }DllType`;
         } else {
             autoItDllType = `"${ getAutoItType(argType, isNativeType) }"`;
         }

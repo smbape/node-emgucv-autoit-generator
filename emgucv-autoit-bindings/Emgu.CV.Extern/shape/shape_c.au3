@@ -129,6 +129,27 @@ EndFunc   ;==>_cveAffineTransformerRelease
 Func _cveShapeTransformerEstimateTransformation($transformer, $transformingShape, $targetShape, $matches)
     ; CVAPI(void) cveShapeTransformerEstimateTransformation(cv::ShapeTransformer* transformer, cv::_InputArray* transformingShape, cv::_InputArray* targetShape, std::vector<cv::DMatch>* matches);
 
+    Local $bTransformerDllType
+    If VarGetType($transformer) == "DLLStruct" Then
+        $bTransformerDllType = "struct*"
+    Else
+        $bTransformerDllType = "ptr"
+    EndIf
+
+    Local $bTransformingShapeDllType
+    If VarGetType($transformingShape) == "DLLStruct" Then
+        $bTransformingShapeDllType = "struct*"
+    Else
+        $bTransformingShapeDllType = "ptr"
+    EndIf
+
+    Local $bTargetShapeDllType
+    If VarGetType($targetShape) == "DLLStruct" Then
+        $bTargetShapeDllType = "struct*"
+    Else
+        $bTargetShapeDllType = "ptr"
+    EndIf
+
     Local $vecMatches, $iArrMatchesSize
     Local $bMatchesIsArray = VarGetType($matches) == "Array"
 
@@ -143,7 +164,14 @@ Func _cveShapeTransformerEstimateTransformation($transformer, $transformingShape
         $vecMatches = $matches
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveShapeTransformerEstimateTransformation", "ptr", $transformer, "ptr", $transformingShape, "ptr", $targetShape, "ptr", $vecMatches), "cveShapeTransformerEstimateTransformation", @error)
+    Local $bMatchesDllType
+    If VarGetType($matches) == "DLLStruct" Then
+        $bMatchesDllType = "struct*"
+    Else
+        $bMatchesDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveShapeTransformerEstimateTransformation", $bTransformerDllType, $transformer, $bTransformingShapeDllType, $transformingShape, $bTargetShapeDllType, $targetShape, $bMatchesDllType, $vecMatches), "cveShapeTransformerEstimateTransformation", @error)
 
     If $bMatchesIsArray Then
         _VectorOfDMatchRelease($vecMatches)
@@ -202,7 +230,28 @@ EndFunc   ;==>_cveShapeTransformerEstimateTransformationMat
 
 Func _cveShapeTransformerApplyTransformation($transformer, $input, $output)
     ; CVAPI(float) cveShapeTransformerApplyTransformation(cv::ShapeTransformer* transformer, cv::_InputArray* input, cv::_OutputArray* output);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveShapeTransformerApplyTransformation", "ptr", $transformer, "ptr", $input, "ptr", $output), "cveShapeTransformerApplyTransformation", @error)
+
+    Local $bTransformerDllType
+    If VarGetType($transformer) == "DLLStruct" Then
+        $bTransformerDllType = "struct*"
+    Else
+        $bTransformerDllType = "ptr"
+    EndIf
+
+    Local $bInputDllType
+    If VarGetType($input) == "DLLStruct" Then
+        $bInputDllType = "struct*"
+    Else
+        $bInputDllType = "ptr"
+    EndIf
+
+    Local $bOutputDllType
+    If VarGetType($output) == "DLLStruct" Then
+        $bOutputDllType = "struct*"
+    Else
+        $bOutputDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveShapeTransformerApplyTransformation", $bTransformerDllType, $transformer, $bInputDllType, $input, $bOutputDllType, $output), "cveShapeTransformerApplyTransformation", @error)
 EndFunc   ;==>_cveShapeTransformerApplyTransformation
 
 Func _cveShapeTransformerApplyTransformationMat($transformer, $matInput, $matOutput)
@@ -259,7 +308,36 @@ EndFunc   ;==>_cveShapeTransformerApplyTransformationMat
 
 Func _cveShapeTransformerWarpImage($transformer, $transformingImage, $output, $flags, $borderMode, $borderValue)
     ; CVAPI(void) cveShapeTransformerWarpImage(cv::ShapeTransformer* transformer, cv::_InputArray* transformingImage, cv::_OutputArray* output, int flags, int borderMode, CvScalar* borderValue);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveShapeTransformerWarpImage", "ptr", $transformer, "ptr", $transformingImage, "ptr", $output, "int", $flags, "int", $borderMode, "struct*", $borderValue), "cveShapeTransformerWarpImage", @error)
+
+    Local $bTransformerDllType
+    If VarGetType($transformer) == "DLLStruct" Then
+        $bTransformerDllType = "struct*"
+    Else
+        $bTransformerDllType = "ptr"
+    EndIf
+
+    Local $bTransformingImageDllType
+    If VarGetType($transformingImage) == "DLLStruct" Then
+        $bTransformingImageDllType = "struct*"
+    Else
+        $bTransformingImageDllType = "ptr"
+    EndIf
+
+    Local $bOutputDllType
+    If VarGetType($output) == "DLLStruct" Then
+        $bOutputDllType = "struct*"
+    Else
+        $bOutputDllType = "ptr"
+    EndIf
+
+    Local $bBorderValueDllType
+    If VarGetType($borderValue) == "DLLStruct" Then
+        $bBorderValueDllType = "struct*"
+    Else
+        $bBorderValueDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveShapeTransformerWarpImage", $bTransformerDllType, $transformer, $bTransformingImageDllType, $transformingImage, $bOutputDllType, $output, "int", $flags, "int", $borderMode, $bBorderValueDllType, $borderValue), "cveShapeTransformerWarpImage", @error)
 EndFunc   ;==>_cveShapeTransformerWarpImage
 
 Func _cveShapeTransformerWarpImageMat($transformer, $matTransformingImage, $matOutput, $flags, $borderMode, $borderValue)
@@ -314,7 +392,28 @@ EndFunc   ;==>_cveShapeTransformerWarpImageMat
 
 Func _cveShapeDistanceExtractorComputeDistance($extractor, $contour1, $contour2)
     ; CVAPI(float) cveShapeDistanceExtractorComputeDistance(cv::ShapeDistanceExtractor* extractor, cv::_InputArray* contour1, cv::_InputArray* contour2);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveShapeDistanceExtractorComputeDistance", "ptr", $extractor, "ptr", $contour1, "ptr", $contour2), "cveShapeDistanceExtractorComputeDistance", @error)
+
+    Local $bExtractorDllType
+    If VarGetType($extractor) == "DLLStruct" Then
+        $bExtractorDllType = "struct*"
+    Else
+        $bExtractorDllType = "ptr"
+    EndIf
+
+    Local $bContour1DllType
+    If VarGetType($contour1) == "DLLStruct" Then
+        $bContour1DllType = "struct*"
+    Else
+        $bContour1DllType = "ptr"
+    EndIf
+
+    Local $bContour2DllType
+    If VarGetType($contour2) == "DLLStruct" Then
+        $bContour2DllType = "struct*"
+    Else
+        $bContour2DllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveShapeDistanceExtractorComputeDistance", $bExtractorDllType, $extractor, $bContour1DllType, $contour1, $bContour2DllType, $contour2), "cveShapeDistanceExtractorComputeDistance", @error)
 EndFunc   ;==>_cveShapeDistanceExtractorComputeDistance
 
 Func _cveShapeDistanceExtractorComputeDistanceMat($extractor, $matContour1, $matContour2)
@@ -372,6 +471,20 @@ EndFunc   ;==>_cveShapeDistanceExtractorComputeDistanceMat
 Func _cveShapeContextDistanceExtractorCreate($nAngularBins, $nRadialBins, $innerRadius, $outerRadius, $iterations, $comparer, $transformer, $e, $sharedPtr)
     ; CVAPI(cv::ShapeContextDistanceExtractor*) cveShapeContextDistanceExtractorCreate(int nAngularBins, int nRadialBins, float innerRadius, float outerRadius, int iterations, cv::HistogramCostExtractor* comparer, cv::ShapeTransformer* transformer, cv::ShapeDistanceExtractor** e, cv::Ptr<cv::ShapeContextDistanceExtractor>** sharedPtr);
 
+    Local $bComparerDllType
+    If VarGetType($comparer) == "DLLStruct" Then
+        $bComparerDllType = "struct*"
+    Else
+        $bComparerDllType = "ptr"
+    EndIf
+
+    Local $bTransformerDllType
+    If VarGetType($transformer) == "DLLStruct" Then
+        $bTransformerDllType = "struct*"
+    Else
+        $bTransformerDllType = "ptr"
+    EndIf
+
     Local $bEDllType
     If VarGetType($e) == "DLLStruct" Then
         $bEDllType = "struct*"
@@ -385,7 +498,7 @@ Func _cveShapeContextDistanceExtractorCreate($nAngularBins, $nRadialBins, $inner
     Else
         $bSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveShapeContextDistanceExtractorCreate", "int", $nAngularBins, "int", $nRadialBins, "float", $innerRadius, "float", $outerRadius, "int", $iterations, "ptr", $comparer, "ptr", $transformer, $bEDllType, $e, $bSharedPtrDllType, $sharedPtr), "cveShapeContextDistanceExtractorCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveShapeContextDistanceExtractorCreate", "int", $nAngularBins, "int", $nRadialBins, "float", $innerRadius, "float", $outerRadius, "int", $iterations, $bComparerDllType, $comparer, $bTransformerDllType, $transformer, $bEDllType, $e, $bSharedPtrDllType, $sharedPtr), "cveShapeContextDistanceExtractorCreate", @error)
 EndFunc   ;==>_cveShapeContextDistanceExtractorCreate
 
 Func _cveShapeContextDistanceExtractorRelease($sharedPtr)

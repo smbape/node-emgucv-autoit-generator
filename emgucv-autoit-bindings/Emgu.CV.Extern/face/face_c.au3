@@ -114,6 +114,13 @@ EndFunc   ;==>_cveLBPHFaceRecognizerRelease
 Func _cveLBPHFaceRecognizerGetHistograms($recognizer, $histograms)
     ; CVAPI(void) cveLBPHFaceRecognizerGetHistograms(cv::face::LBPHFaceRecognizer* recognizer, std::vector<cv::Mat>* histograms);
 
+    Local $bRecognizerDllType
+    If VarGetType($recognizer) == "DLLStruct" Then
+        $bRecognizerDllType = "struct*"
+    Else
+        $bRecognizerDllType = "ptr"
+    EndIf
+
     Local $vecHistograms, $iArrHistogramsSize
     Local $bHistogramsIsArray = VarGetType($histograms) == "Array"
 
@@ -128,7 +135,14 @@ Func _cveLBPHFaceRecognizerGetHistograms($recognizer, $histograms)
         $vecHistograms = $histograms
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLBPHFaceRecognizerGetHistograms", "ptr", $recognizer, "ptr", $vecHistograms), "cveLBPHFaceRecognizerGetHistograms", @error)
+    Local $bHistogramsDllType
+    If VarGetType($histograms) == "DLLStruct" Then
+        $bHistogramsDllType = "struct*"
+    Else
+        $bHistogramsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLBPHFaceRecognizerGetHistograms", $bRecognizerDllType, $recognizer, $bHistogramsDllType, $vecHistograms), "cveLBPHFaceRecognizerGetHistograms", @error)
 
     If $bHistogramsIsArray Then
         _VectorOfMatRelease($vecHistograms)
@@ -137,7 +151,29 @@ EndFunc   ;==>_cveLBPHFaceRecognizerGetHistograms
 
 Func _cveFaceRecognizerTrain($recognizer, $images, $labels)
     ; CVAPI(void) cveFaceRecognizerTrain(cv::face::FaceRecognizer* recognizer, cv::_InputArray* images, cv::_InputArray* labels);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFaceRecognizerTrain", "ptr", $recognizer, "ptr", $images, "ptr", $labels), "cveFaceRecognizerTrain", @error)
+
+    Local $bRecognizerDllType
+    If VarGetType($recognizer) == "DLLStruct" Then
+        $bRecognizerDllType = "struct*"
+    Else
+        $bRecognizerDllType = "ptr"
+    EndIf
+
+    Local $bImagesDllType
+    If VarGetType($images) == "DLLStruct" Then
+        $bImagesDllType = "struct*"
+    Else
+        $bImagesDllType = "ptr"
+    EndIf
+
+    Local $bLabelsDllType
+    If VarGetType($labels) == "DLLStruct" Then
+        $bLabelsDllType = "struct*"
+    Else
+        $bLabelsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFaceRecognizerTrain", $bRecognizerDllType, $recognizer, $bImagesDllType, $images, $bLabelsDllType, $labels), "cveFaceRecognizerTrain", @error)
 EndFunc   ;==>_cveFaceRecognizerTrain
 
 Func _cveFaceRecognizerTrainMat($recognizer, $matImages, $matLabels)
@@ -192,7 +228,29 @@ EndFunc   ;==>_cveFaceRecognizerTrainMat
 
 Func _cveFaceRecognizerUpdate($recognizer, $images, $labels)
     ; CVAPI(void) cveFaceRecognizerUpdate(cv::face::FaceRecognizer* recognizer, cv::_InputArray* images, cv::_InputArray* labels);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFaceRecognizerUpdate", "ptr", $recognizer, "ptr", $images, "ptr", $labels), "cveFaceRecognizerUpdate", @error)
+
+    Local $bRecognizerDllType
+    If VarGetType($recognizer) == "DLLStruct" Then
+        $bRecognizerDllType = "struct*"
+    Else
+        $bRecognizerDllType = "ptr"
+    EndIf
+
+    Local $bImagesDllType
+    If VarGetType($images) == "DLLStruct" Then
+        $bImagesDllType = "struct*"
+    Else
+        $bImagesDllType = "ptr"
+    EndIf
+
+    Local $bLabelsDllType
+    If VarGetType($labels) == "DLLStruct" Then
+        $bLabelsDllType = "struct*"
+    Else
+        $bLabelsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFaceRecognizerUpdate", $bRecognizerDllType, $recognizer, $bImagesDllType, $images, $bLabelsDllType, $labels), "cveFaceRecognizerUpdate", @error)
 EndFunc   ;==>_cveFaceRecognizerUpdate
 
 Func _cveFaceRecognizerUpdateMat($recognizer, $matImages, $matLabels)
@@ -247,7 +305,36 @@ EndFunc   ;==>_cveFaceRecognizerUpdateMat
 
 Func _cveFaceRecognizerPredict($recognizer, $image, $label, $distance)
     ; CVAPI(void) cveFaceRecognizerPredict(cv::face::FaceRecognizer* recognizer, cv::_InputArray* image, int* label, double* distance);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFaceRecognizerPredict", "ptr", $recognizer, "ptr", $image, "struct*", $label, "struct*", $distance), "cveFaceRecognizerPredict", @error)
+
+    Local $bRecognizerDllType
+    If VarGetType($recognizer) == "DLLStruct" Then
+        $bRecognizerDllType = "struct*"
+    Else
+        $bRecognizerDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bLabelDllType
+    If VarGetType($label) == "DLLStruct" Then
+        $bLabelDllType = "struct*"
+    Else
+        $bLabelDllType = "int*"
+    EndIf
+
+    Local $bDistanceDllType
+    If VarGetType($distance) == "DLLStruct" Then
+        $bDistanceDllType = "struct*"
+    Else
+        $bDistanceDllType = "double*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFaceRecognizerPredict", $bRecognizerDllType, $recognizer, $bImageDllType, $image, $bLabelDllType, $label, $bDistanceDllType, $distance), "cveFaceRecognizerPredict", @error)
 EndFunc   ;==>_cveFaceRecognizerPredict
 
 Func _cveFaceRecognizerPredictMat($recognizer, $matImage, $label, $distance)
@@ -281,12 +368,26 @@ EndFunc   ;==>_cveFaceRecognizerPredictMat
 Func _cveFaceRecognizerWrite($recognizer, $fileName)
     ; CVAPI(void) cveFaceRecognizerWrite(cv::face::FaceRecognizer* recognizer, cv::String* fileName);
 
+    Local $bRecognizerDllType
+    If VarGetType($recognizer) == "DLLStruct" Then
+        $bRecognizerDllType = "struct*"
+    Else
+        $bRecognizerDllType = "ptr"
+    EndIf
+
     Local $bFileNameIsString = VarGetType($fileName) == "String"
     If $bFileNameIsString Then
         $fileName = _cveStringCreateFromStr($fileName)
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFaceRecognizerWrite", "ptr", $recognizer, "ptr", $fileName), "cveFaceRecognizerWrite", @error)
+    Local $bFileNameDllType
+    If VarGetType($fileName) == "DLLStruct" Then
+        $bFileNameDllType = "struct*"
+    Else
+        $bFileNameDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFaceRecognizerWrite", $bRecognizerDllType, $recognizer, $bFileNameDllType, $fileName), "cveFaceRecognizerWrite", @error)
 
     If $bFileNameIsString Then
         _cveStringRelease($fileName)
@@ -296,12 +397,26 @@ EndFunc   ;==>_cveFaceRecognizerWrite
 Func _cveFaceRecognizerRead($recognizer, $fileName)
     ; CVAPI(void) cveFaceRecognizerRead(cv::face::FaceRecognizer* recognizer, cv::String* fileName);
 
+    Local $bRecognizerDllType
+    If VarGetType($recognizer) == "DLLStruct" Then
+        $bRecognizerDllType = "struct*"
+    Else
+        $bRecognizerDllType = "ptr"
+    EndIf
+
     Local $bFileNameIsString = VarGetType($fileName) == "String"
     If $bFileNameIsString Then
         $fileName = _cveStringCreateFromStr($fileName)
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFaceRecognizerRead", "ptr", $recognizer, "ptr", $fileName), "cveFaceRecognizerRead", @error)
+    Local $bFileNameDllType
+    If VarGetType($fileName) == "DLLStruct" Then
+        $bFileNameDllType = "struct*"
+    Else
+        $bFileNameDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFaceRecognizerRead", $bRecognizerDllType, $recognizer, $bFileNameDllType, $fileName), "cveFaceRecognizerRead", @error)
 
     If $bFileNameIsString Then
         _cveStringRelease($fileName)
@@ -322,7 +437,29 @@ EndFunc   ;==>_cveBIFCreate
 
 Func _cveBIFCompute($bif, $image, $features)
     ; CVAPI(void) cveBIFCompute(cv::face::BIF* bif, cv::_InputArray* image, cv::_OutputArray* features);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBIFCompute", "ptr", $bif, "ptr", $image, "ptr", $features), "cveBIFCompute", @error)
+
+    Local $bBifDllType
+    If VarGetType($bif) == "DLLStruct" Then
+        $bBifDllType = "struct*"
+    Else
+        $bBifDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bFeaturesDllType
+    If VarGetType($features) == "DLLStruct" Then
+        $bFeaturesDllType = "struct*"
+    Else
+        $bFeaturesDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBIFCompute", $bBifDllType, $bif, $bImageDllType, $image, $bFeaturesDllType, $features), "cveBIFCompute", @error)
 EndFunc   ;==>_cveBIFCompute
 
 Func _cveBIFComputeMat($bif, $matImage, $matFeatures)
@@ -409,6 +546,13 @@ EndFunc   ;==>_cveFacemarkAAMParamsRelease
 Func _cveFacemarkAAMCreate($parameters, $facemark, $algorithm, $sharedPtr)
     ; CVAPI(cv::face::FacemarkAAM*) cveFacemarkAAMCreate(cv::face::FacemarkAAM::Params* parameters, cv::face::Facemark** facemark, cv::Algorithm** algorithm, cv::Ptr<cv::face::FacemarkAAM>** sharedPtr);
 
+    Local $bParametersDllType
+    If VarGetType($parameters) == "DLLStruct" Then
+        $bParametersDllType = "struct*"
+    Else
+        $bParametersDllType = "ptr"
+    EndIf
+
     Local $bFacemarkDllType
     If VarGetType($facemark) == "DLLStruct" Then
         $bFacemarkDllType = "struct*"
@@ -429,7 +573,7 @@ Func _cveFacemarkAAMCreate($parameters, $facemark, $algorithm, $sharedPtr)
     Else
         $bSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFacemarkAAMCreate", "ptr", $parameters, $bFacemarkDllType, $facemark, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveFacemarkAAMCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFacemarkAAMCreate", $bParametersDllType, $parameters, $bFacemarkDllType, $facemark, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveFacemarkAAMCreate", @error)
 EndFunc   ;==>_cveFacemarkAAMCreate
 
 Func _cveFacemarkAAMRelease($facemark, $sharedPtr)
@@ -473,6 +617,13 @@ EndFunc   ;==>_cveFacemarkLBFParamsRelease
 Func _cveFacemarkLBFCreate($parameters, $facemark, $algorithm, $sharedPtr)
     ; CVAPI(cv::face::FacemarkLBF*) cveFacemarkLBFCreate(cv::face::FacemarkLBF::Params* parameters, cv::face::Facemark** facemark, cv::Algorithm** algorithm, cv::Ptr<cv::face::FacemarkLBF>** sharedPtr);
 
+    Local $bParametersDllType
+    If VarGetType($parameters) == "DLLStruct" Then
+        $bParametersDllType = "struct*"
+    Else
+        $bParametersDllType = "ptr"
+    EndIf
+
     Local $bFacemarkDllType
     If VarGetType($facemark) == "DLLStruct" Then
         $bFacemarkDllType = "struct*"
@@ -493,7 +644,7 @@ Func _cveFacemarkLBFCreate($parameters, $facemark, $algorithm, $sharedPtr)
     Else
         $bSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFacemarkLBFCreate", "ptr", $parameters, $bFacemarkDllType, $facemark, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveFacemarkLBFCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFacemarkLBFCreate", $bParametersDllType, $parameters, $bFacemarkDllType, $facemark, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveFacemarkLBFCreate", @error)
 EndFunc   ;==>_cveFacemarkLBFCreate
 
 Func _cveFacemarkLBFRelease($facemark, $sharedPtr)
@@ -519,12 +670,26 @@ EndFunc   ;==>_cveFacemarkLBFRelease
 Func _cveFacemarkLoadModel($facemark, $model)
     ; CVAPI(void) cveFacemarkLoadModel(cv::face::Facemark* facemark, cv::String* model);
 
+    Local $bFacemarkDllType
+    If VarGetType($facemark) == "DLLStruct" Then
+        $bFacemarkDllType = "struct*"
+    Else
+        $bFacemarkDllType = "ptr"
+    EndIf
+
     Local $bModelIsString = VarGetType($model) == "String"
     If $bModelIsString Then
         $model = _cveStringCreateFromStr($model)
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFacemarkLoadModel", "ptr", $facemark, "ptr", $model), "cveFacemarkLoadModel", @error)
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFacemarkLoadModel", $bFacemarkDllType, $facemark, $bModelDllType, $model), "cveFacemarkLoadModel", @error)
 
     If $bModelIsString Then
         _cveStringRelease($model)
@@ -533,7 +698,35 @@ EndFunc   ;==>_cveFacemarkLoadModel
 
 Func _cveFacemarkFit($facemark, $image, $faces, $landmarks)
     ; CVAPI(bool) cveFacemarkFit(cv::face::Facemark* facemark, cv::_InputArray* image, cv::_InputArray* faces, cv::_InputOutputArray* landmarks);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveFacemarkFit", "ptr", $facemark, "ptr", $image, "ptr", $faces, "ptr", $landmarks), "cveFacemarkFit", @error)
+
+    Local $bFacemarkDllType
+    If VarGetType($facemark) == "DLLStruct" Then
+        $bFacemarkDllType = "struct*"
+    Else
+        $bFacemarkDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bFacesDllType
+    If VarGetType($faces) == "DLLStruct" Then
+        $bFacesDllType = "struct*"
+    Else
+        $bFacesDllType = "ptr"
+    EndIf
+
+    Local $bLandmarksDllType
+    If VarGetType($landmarks) == "DLLStruct" Then
+        $bLandmarksDllType = "struct*"
+    Else
+        $bLandmarksDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveFacemarkFit", $bFacemarkDllType, $facemark, $bImageDllType, $image, $bFacesDllType, $faces, $bLandmarksDllType, $landmarks), "cveFacemarkFit", @error)
 EndFunc   ;==>_cveFacemarkFit
 
 Func _cveFacemarkFitMat($facemark, $matImage, $matFaces, $matLandmarks)
@@ -612,7 +805,29 @@ EndFunc   ;==>_cveFacemarkFitMat
 
 Func _cveDrawFacemarks($image, $points, $color)
     ; CVAPI(void) cveDrawFacemarks(cv::_InputOutputArray* image, cv::_InputArray* points, CvScalar* color);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDrawFacemarks", "ptr", $image, "ptr", $points, "struct*", $color), "cveDrawFacemarks", @error)
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bPointsDllType
+    If VarGetType($points) == "DLLStruct" Then
+        $bPointsDllType = "struct*"
+    Else
+        $bPointsDllType = "ptr"
+    EndIf
+
+    Local $bColorDllType
+    If VarGetType($color) == "DLLStruct" Then
+        $bColorDllType = "struct*"
+    Else
+        $bColorDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDrawFacemarks", $bImageDllType, $image, $bPointsDllType, $points, $bColorDllType, $color), "cveDrawFacemarks", @error)
 EndFunc   ;==>_cveDrawFacemarks
 
 Func _cveDrawFacemarksMat($matImage, $matPoints, $color)
@@ -680,12 +895,26 @@ EndFunc   ;==>_cveMaceCreate
 Func _cveMaceSalt($mace, $passphrase)
     ; CVAPI(void) cveMaceSalt(cv::face::MACE* mace, cv::String* passphrase);
 
+    Local $bMaceDllType
+    If VarGetType($mace) == "DLLStruct" Then
+        $bMaceDllType = "struct*"
+    Else
+        $bMaceDllType = "ptr"
+    EndIf
+
     Local $bPassphraseIsString = VarGetType($passphrase) == "String"
     If $bPassphraseIsString Then
         $passphrase = _cveStringCreateFromStr($passphrase)
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMaceSalt", "ptr", $mace, "ptr", $passphrase), "cveMaceSalt", @error)
+    Local $bPassphraseDllType
+    If VarGetType($passphrase) == "DLLStruct" Then
+        $bPassphraseDllType = "struct*"
+    Else
+        $bPassphraseDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMaceSalt", $bMaceDllType, $mace, $bPassphraseDllType, $passphrase), "cveMaceSalt", @error)
 
     If $bPassphraseIsString Then
         _cveStringRelease($passphrase)
@@ -694,7 +923,22 @@ EndFunc   ;==>_cveMaceSalt
 
 Func _cveMaceTrain($mace, $images)
     ; CVAPI(void) cveMaceTrain(cv::face::MACE* mace, cv::_InputArray* images);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMaceTrain", "ptr", $mace, "ptr", $images), "cveMaceTrain", @error)
+
+    Local $bMaceDllType
+    If VarGetType($mace) == "DLLStruct" Then
+        $bMaceDllType = "struct*"
+    Else
+        $bMaceDllType = "ptr"
+    EndIf
+
+    Local $bImagesDllType
+    If VarGetType($images) == "DLLStruct" Then
+        $bImagesDllType = "struct*"
+    Else
+        $bImagesDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMaceTrain", $bMaceDllType, $mace, $bImagesDllType, $images), "cveMaceTrain", @error)
 EndFunc   ;==>_cveMaceTrain
 
 Func _cveMaceTrainMat($mace, $matImages)
@@ -727,7 +971,21 @@ EndFunc   ;==>_cveMaceTrainMat
 
 Func _cveMaceSame($mace, $query)
     ; CVAPI(bool) cveMaceSame(cv::face::MACE* mace, cv::_InputArray* query);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveMaceSame", "ptr", $mace, "ptr", $query), "cveMaceSame", @error)
+
+    Local $bMaceDllType
+    If VarGetType($mace) == "DLLStruct" Then
+        $bMaceDllType = "struct*"
+    Else
+        $bMaceDllType = "ptr"
+    EndIf
+
+    Local $bQueryDllType
+    If VarGetType($query) == "DLLStruct" Then
+        $bQueryDllType = "struct*"
+    Else
+        $bQueryDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveMaceSame", $bMaceDllType, $mace, $bQueryDllType, $query), "cveMaceSame", @error)
 EndFunc   ;==>_cveMaceSame
 
 Func _cveMaceSameMat($mace, $matQuery)

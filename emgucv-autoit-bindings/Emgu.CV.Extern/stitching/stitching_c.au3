@@ -28,117 +28,363 @@ EndFunc   ;==>_cveStitcherRelease
 
 Func _cveStitcherSetFeaturesFinder($stitcher, $finder)
     ; CVAPI(void) cveStitcherSetFeaturesFinder(cv::Stitcher* stitcher, cv::Feature2D* finder);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetFeaturesFinder", "ptr", $stitcher, "ptr", $finder), "cveStitcherSetFeaturesFinder", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+
+    Local $bFinderDllType
+    If VarGetType($finder) == "DLLStruct" Then
+        $bFinderDllType = "struct*"
+    Else
+        $bFinderDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetFeaturesFinder", $bStitcherDllType, $stitcher, $bFinderDllType, $finder), "cveStitcherSetFeaturesFinder", @error)
 EndFunc   ;==>_cveStitcherSetFeaturesFinder
 
 Func _cveStitcherSetWarper($stitcher, $creator)
     ; CVAPI(void) cveStitcherSetWarper(cv::Stitcher* stitcher, cv::WarperCreator* creator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetWarper", "ptr", $stitcher, "ptr", $creator), "cveStitcherSetWarper", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+
+    Local $bCreatorDllType
+    If VarGetType($creator) == "DLLStruct" Then
+        $bCreatorDllType = "struct*"
+    Else
+        $bCreatorDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetWarper", $bStitcherDllType, $stitcher, $bCreatorDllType, $creator), "cveStitcherSetWarper", @error)
 EndFunc   ;==>_cveStitcherSetWarper
 
 Func _cveStitcherSetBlender($stitcher, $b)
     ; CVAPI(void) cveStitcherSetBlender(cv::Stitcher* stitcher, cv::detail::Blender* b);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetBlender", "ptr", $stitcher, "ptr", $b), "cveStitcherSetBlender", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+
+    Local $bBDllType
+    If VarGetType($b) == "DLLStruct" Then
+        $bBDllType = "struct*"
+    Else
+        $bBDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetBlender", $bStitcherDllType, $stitcher, $bBDllType, $b), "cveStitcherSetBlender", @error)
 EndFunc   ;==>_cveStitcherSetBlender
 
 Func _cveStitcherSetExposureCompensator($stitcher, $exposureComp)
     ; CVAPI(void) cveStitcherSetExposureCompensator(cv::Stitcher* stitcher, cv::detail::ExposureCompensator* exposureComp);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetExposureCompensator", "ptr", $stitcher, "ptr", $exposureComp), "cveStitcherSetExposureCompensator", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+
+    Local $bExposureCompDllType
+    If VarGetType($exposureComp) == "DLLStruct" Then
+        $bExposureCompDllType = "struct*"
+    Else
+        $bExposureCompDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetExposureCompensator", $bStitcherDllType, $stitcher, $bExposureCompDllType, $exposureComp), "cveStitcherSetExposureCompensator", @error)
 EndFunc   ;==>_cveStitcherSetExposureCompensator
 
 Func _cveStitcherSetBundleAdjuster($stitcher, $bundleAdjuster)
     ; CVAPI(void) cveStitcherSetBundleAdjuster(cv::Stitcher* stitcher, cv::detail::BundleAdjusterBase* bundleAdjuster);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetBundleAdjuster", "ptr", $stitcher, "ptr", $bundleAdjuster), "cveStitcherSetBundleAdjuster", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+
+    Local $bBundleAdjusterDllType
+    If VarGetType($bundleAdjuster) == "DLLStruct" Then
+        $bBundleAdjusterDllType = "struct*"
+    Else
+        $bBundleAdjusterDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetBundleAdjuster", $bStitcherDllType, $stitcher, $bBundleAdjusterDllType, $bundleAdjuster), "cveStitcherSetBundleAdjuster", @error)
 EndFunc   ;==>_cveStitcherSetBundleAdjuster
 
 Func _cveStitcherSetSeamFinder($stitcher, $seamFinder)
     ; CVAPI(void) cveStitcherSetSeamFinder(cv::Stitcher* stitcher, cv::detail::SeamFinder* seamFinder);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetSeamFinder", "ptr", $stitcher, "ptr", $seamFinder), "cveStitcherSetSeamFinder", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+
+    Local $bSeamFinderDllType
+    If VarGetType($seamFinder) == "DLLStruct" Then
+        $bSeamFinderDllType = "struct*"
+    Else
+        $bSeamFinderDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetSeamFinder", $bStitcherDllType, $stitcher, $bSeamFinderDllType, $seamFinder), "cveStitcherSetSeamFinder", @error)
 EndFunc   ;==>_cveStitcherSetSeamFinder
 
 Func _cveStitcherSetEstimator($stitcher, $estimator)
     ; CVAPI(void) cveStitcherSetEstimator(cv::Stitcher* stitcher, cv::detail::Estimator* estimator);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetEstimator", "ptr", $stitcher, "ptr", $estimator), "cveStitcherSetEstimator", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+
+    Local $bEstimatorDllType
+    If VarGetType($estimator) == "DLLStruct" Then
+        $bEstimatorDllType = "struct*"
+    Else
+        $bEstimatorDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetEstimator", $bStitcherDllType, $stitcher, $bEstimatorDllType, $estimator), "cveStitcherSetEstimator", @error)
 EndFunc   ;==>_cveStitcherSetEstimator
 
 Func _cveStitcherSetFeaturesMatcher($stitcher, $featuresMatcher)
     ; CVAPI(void) cveStitcherSetFeaturesMatcher(cv::Stitcher* stitcher, cv::detail::FeaturesMatcher* featuresMatcher);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetFeaturesMatcher", "ptr", $stitcher, "ptr", $featuresMatcher), "cveStitcherSetFeaturesMatcher", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+
+    Local $bFeaturesMatcherDllType
+    If VarGetType($featuresMatcher) == "DLLStruct" Then
+        $bFeaturesMatcherDllType = "struct*"
+    Else
+        $bFeaturesMatcherDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetFeaturesMatcher", $bStitcherDllType, $stitcher, $bFeaturesMatcherDllType, $featuresMatcher), "cveStitcherSetFeaturesMatcher", @error)
 EndFunc   ;==>_cveStitcherSetFeaturesMatcher
 
 Func _cveStitcherSetWaveCorrection($stitcher, $flag)
     ; CVAPI(void) cveStitcherSetWaveCorrection(cv::Stitcher* stitcher, bool flag);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetWaveCorrection", "ptr", $stitcher, "boolean", $flag), "cveStitcherSetWaveCorrection", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetWaveCorrection", $bStitcherDllType, $stitcher, "boolean", $flag), "cveStitcherSetWaveCorrection", @error)
 EndFunc   ;==>_cveStitcherSetWaveCorrection
 
 Func _cveStitcherGetWaveCorrection($stitcher)
     ; CVAPI(bool) cveStitcherGetWaveCorrection(cv::Stitcher* stitcher);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveStitcherGetWaveCorrection", "ptr", $stitcher), "cveStitcherGetWaveCorrection", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveStitcherGetWaveCorrection", $bStitcherDllType, $stitcher), "cveStitcherGetWaveCorrection", @error)
 EndFunc   ;==>_cveStitcherGetWaveCorrection
 
 Func _cveStitcherSetWaveCorrectionKind($stitcher, $kind)
     ; CVAPI(void) cveStitcherSetWaveCorrectionKind(cv::Stitcher* stitcher, int kind);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetWaveCorrectionKind", "ptr", $stitcher, "int", $kind), "cveStitcherSetWaveCorrectionKind", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetWaveCorrectionKind", $bStitcherDllType, $stitcher, "int", $kind), "cveStitcherSetWaveCorrectionKind", @error)
 EndFunc   ;==>_cveStitcherSetWaveCorrectionKind
 
 Func _cveStitcherGetWaveCorrectionKind($stitcher)
     ; CVAPI(int) cveStitcherGetWaveCorrectionKind(cv::Stitcher* stitcher);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveStitcherGetWaveCorrectionKind", "ptr", $stitcher), "cveStitcherGetWaveCorrectionKind", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveStitcherGetWaveCorrectionKind", $bStitcherDllType, $stitcher), "cveStitcherGetWaveCorrectionKind", @error)
 EndFunc   ;==>_cveStitcherGetWaveCorrectionKind
 
 Func _cveStitcherSetPanoConfidenceThresh($stitcher, $confThresh)
     ; CVAPI(void) cveStitcherSetPanoConfidenceThresh(cv::Stitcher* stitcher, double confThresh);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetPanoConfidenceThresh", "ptr", $stitcher, "double", $confThresh), "cveStitcherSetPanoConfidenceThresh", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetPanoConfidenceThresh", $bStitcherDllType, $stitcher, "double", $confThresh), "cveStitcherSetPanoConfidenceThresh", @error)
 EndFunc   ;==>_cveStitcherSetPanoConfidenceThresh
 
 Func _cveStitcherGetPanoConfidenceThresh($stitcher)
     ; CVAPI(double) cveStitcherGetPanoConfidenceThresh(cv::Stitcher* stitcher);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveStitcherGetPanoConfidenceThresh", "ptr", $stitcher), "cveStitcherGetPanoConfidenceThresh", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveStitcherGetPanoConfidenceThresh", $bStitcherDllType, $stitcher), "cveStitcherGetPanoConfidenceThresh", @error)
 EndFunc   ;==>_cveStitcherGetPanoConfidenceThresh
 
 Func _cveStitcherSetCompositingResol($stitcher, $resolMpx)
     ; CVAPI(void) cveStitcherSetCompositingResol(cv::Stitcher* stitcher, double resolMpx);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetCompositingResol", "ptr", $stitcher, "double", $resolMpx), "cveStitcherSetCompositingResol", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetCompositingResol", $bStitcherDllType, $stitcher, "double", $resolMpx), "cveStitcherSetCompositingResol", @error)
 EndFunc   ;==>_cveStitcherSetCompositingResol
 
 Func _cveStitcherGetCompositingResol($stitcher)
     ; CVAPI(double) cveStitcherGetCompositingResol(cv::Stitcher* stitcher);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveStitcherGetCompositingResol", "ptr", $stitcher), "cveStitcherGetCompositingResol", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveStitcherGetCompositingResol", $bStitcherDllType, $stitcher), "cveStitcherGetCompositingResol", @error)
 EndFunc   ;==>_cveStitcherGetCompositingResol
 
 Func _cveStitcherSetSeamEstimationResol($stitcher, $resolMpx)
     ; CVAPI(void) cveStitcherSetSeamEstimationResol(cv::Stitcher* stitcher, double resolMpx);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetSeamEstimationResol", "ptr", $stitcher, "double", $resolMpx), "cveStitcherSetSeamEstimationResol", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetSeamEstimationResol", $bStitcherDllType, $stitcher, "double", $resolMpx), "cveStitcherSetSeamEstimationResol", @error)
 EndFunc   ;==>_cveStitcherSetSeamEstimationResol
 
 Func _cveStitcherGetSeamEstimationResol($stitcher)
     ; CVAPI(double) cveStitcherGetSeamEstimationResol(cv::Stitcher* stitcher);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveStitcherGetSeamEstimationResol", "ptr", $stitcher), "cveStitcherGetSeamEstimationResol", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveStitcherGetSeamEstimationResol", $bStitcherDllType, $stitcher), "cveStitcherGetSeamEstimationResol", @error)
 EndFunc   ;==>_cveStitcherGetSeamEstimationResol
 
 Func _cveStitcherSetRegistrationResol($stitcher, $resolMpx)
     ; CVAPI(void) cveStitcherSetRegistrationResol(cv::Stitcher* stitcher, double resolMpx);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetRegistrationResol", "ptr", $stitcher, "double", $resolMpx), "cveStitcherSetRegistrationResol", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetRegistrationResol", $bStitcherDllType, $stitcher, "double", $resolMpx), "cveStitcherSetRegistrationResol", @error)
 EndFunc   ;==>_cveStitcherSetRegistrationResol
 
 Func _cveStitcherGetRegistrationResol($stitcher)
     ; CVAPI(double) cveStitcherGetRegistrationResol(cv::Stitcher* stitcher);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveStitcherGetRegistrationResol", "ptr", $stitcher), "cveStitcherGetRegistrationResol", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveStitcherGetRegistrationResol", $bStitcherDllType, $stitcher), "cveStitcherGetRegistrationResol", @error)
 EndFunc   ;==>_cveStitcherGetRegistrationResol
 
 Func _cveStitcherGetInterpolationFlags($stitcher)
     ; CVAPI(int) cveStitcherGetInterpolationFlags(cv::Stitcher* stitcher);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveStitcherGetInterpolationFlags", "ptr", $stitcher), "cveStitcherGetInterpolationFlags", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveStitcherGetInterpolationFlags", $bStitcherDllType, $stitcher), "cveStitcherGetInterpolationFlags", @error)
 EndFunc   ;==>_cveStitcherGetInterpolationFlags
 
 Func _cveStitcherSetInterpolationFlags($stitcher, $interpFlags)
     ; CVAPI(void) cveStitcherSetInterpolationFlags(cv::Stitcher* stitcher, int interpFlags);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetInterpolationFlags", "ptr", $stitcher, "int", $interpFlags), "cveStitcherSetInterpolationFlags", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStitcherSetInterpolationFlags", $bStitcherDllType, $stitcher, "int", $interpFlags), "cveStitcherSetInterpolationFlags", @error)
 EndFunc   ;==>_cveStitcherSetInterpolationFlags
 
 Func _cveStitcherStitch($stitcher, $images, $pano)
     ; CVAPI(int) cveStitcherStitch(cv::Stitcher* stitcher, cv::_InputArray* images, cv::_OutputArray* pano);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveStitcherStitch", "ptr", $stitcher, "ptr", $images, "ptr", $pano), "cveStitcherStitch", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+
+    Local $bImagesDllType
+    If VarGetType($images) == "DLLStruct" Then
+        $bImagesDllType = "struct*"
+    Else
+        $bImagesDllType = "ptr"
+    EndIf
+
+    Local $bPanoDllType
+    If VarGetType($pano) == "DLLStruct" Then
+        $bPanoDllType = "struct*"
+    Else
+        $bPanoDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveStitcherStitch", $bStitcherDllType, $stitcher, $bImagesDllType, $images, $bPanoDllType, $pano), "cveStitcherStitch", @error)
 EndFunc   ;==>_cveStitcherStitch
 
 Func _cveStitcherStitchMat($stitcher, $matImages, $matPano)
@@ -195,7 +441,28 @@ EndFunc   ;==>_cveStitcherStitchMat
 
 Func _cveStitcherEstimateTransform($stitcher, $images, $masks)
     ; CVAPI(int) cveStitcherEstimateTransform(cv::Stitcher* stitcher, cv::_InputArray* images, cv::_InputArray* masks);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveStitcherEstimateTransform", "ptr", $stitcher, "ptr", $images, "ptr", $masks), "cveStitcherEstimateTransform", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+
+    Local $bImagesDllType
+    If VarGetType($images) == "DLLStruct" Then
+        $bImagesDllType = "struct*"
+    Else
+        $bImagesDllType = "ptr"
+    EndIf
+
+    Local $bMasksDllType
+    If VarGetType($masks) == "DLLStruct" Then
+        $bMasksDllType = "struct*"
+    Else
+        $bMasksDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveStitcherEstimateTransform", $bStitcherDllType, $stitcher, $bImagesDllType, $images, $bMasksDllType, $masks), "cveStitcherEstimateTransform", @error)
 EndFunc   ;==>_cveStitcherEstimateTransform
 
 Func _cveStitcherEstimateTransformMat($stitcher, $matImages, $matMasks)
@@ -252,7 +519,21 @@ EndFunc   ;==>_cveStitcherEstimateTransformMat
 
 Func _cveStitcherComposePanorama1($stitcher, $pano)
     ; CVAPI(int) cveStitcherComposePanorama1(cv::Stitcher* stitcher, cv::_OutputArray* pano);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveStitcherComposePanorama1", "ptr", $stitcher, "ptr", $pano), "cveStitcherComposePanorama1", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+
+    Local $bPanoDllType
+    If VarGetType($pano) == "DLLStruct" Then
+        $bPanoDllType = "struct*"
+    Else
+        $bPanoDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveStitcherComposePanorama1", $bStitcherDllType, $stitcher, $bPanoDllType, $pano), "cveStitcherComposePanorama1", @error)
 EndFunc   ;==>_cveStitcherComposePanorama1
 
 Func _cveStitcherComposePanorama1Mat($stitcher, $matPano)
@@ -287,7 +568,28 @@ EndFunc   ;==>_cveStitcherComposePanorama1Mat
 
 Func _cveStitcherComposePanorama2($stitcher, $images, $pano)
     ; CVAPI(int) cveStitcherComposePanorama2(cv::Stitcher* stitcher, cv::_InputArray* images, cv::_OutputArray* pano);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveStitcherComposePanorama2", "ptr", $stitcher, "ptr", $images, "ptr", $pano), "cveStitcherComposePanorama2", @error)
+
+    Local $bStitcherDllType
+    If VarGetType($stitcher) == "DLLStruct" Then
+        $bStitcherDllType = "struct*"
+    Else
+        $bStitcherDllType = "ptr"
+    EndIf
+
+    Local $bImagesDllType
+    If VarGetType($images) == "DLLStruct" Then
+        $bImagesDllType = "struct*"
+    Else
+        $bImagesDllType = "ptr"
+    EndIf
+
+    Local $bPanoDllType
+    If VarGetType($pano) == "DLLStruct" Then
+        $bPanoDllType = "struct*"
+    Else
+        $bPanoDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveStitcherComposePanorama2", $bStitcherDllType, $stitcher, $bImagesDllType, $images, $bPanoDllType, $pano), "cveStitcherComposePanorama2", @error)
 EndFunc   ;==>_cveStitcherComposePanorama2
 
 Func _cveStitcherComposePanorama2Mat($stitcher, $matImages, $matPano)
@@ -344,7 +646,57 @@ EndFunc   ;==>_cveStitcherComposePanorama2Mat
 
 Func _cveRotationWarperBuildMaps($warper, $srcSize, $K, $R, $xmap, $ymap, $boundingBox)
     ; CVAPI(void) cveRotationWarperBuildMaps(cv::detail::RotationWarper* warper, CvSize* srcSize, cv::_InputArray* K, cv::_InputArray* R, cv::_OutputArray* xmap, cv::_OutputArray* ymap, CvRect* boundingBox);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRotationWarperBuildMaps", "ptr", $warper, "struct*", $srcSize, "ptr", $K, "ptr", $R, "ptr", $xmap, "ptr", $ymap, "struct*", $boundingBox), "cveRotationWarperBuildMaps", @error)
+
+    Local $bWarperDllType
+    If VarGetType($warper) == "DLLStruct" Then
+        $bWarperDllType = "struct*"
+    Else
+        $bWarperDllType = "ptr"
+    EndIf
+
+    Local $bSrcSizeDllType
+    If VarGetType($srcSize) == "DLLStruct" Then
+        $bSrcSizeDllType = "struct*"
+    Else
+        $bSrcSizeDllType = "ptr"
+    EndIf
+
+    Local $bKDllType
+    If VarGetType($K) == "DLLStruct" Then
+        $bKDllType = "struct*"
+    Else
+        $bKDllType = "ptr"
+    EndIf
+
+    Local $bRDllType
+    If VarGetType($R) == "DLLStruct" Then
+        $bRDllType = "struct*"
+    Else
+        $bRDllType = "ptr"
+    EndIf
+
+    Local $bXmapDllType
+    If VarGetType($xmap) == "DLLStruct" Then
+        $bXmapDllType = "struct*"
+    Else
+        $bXmapDllType = "ptr"
+    EndIf
+
+    Local $bYmapDllType
+    If VarGetType($ymap) == "DLLStruct" Then
+        $bYmapDllType = "struct*"
+    Else
+        $bYmapDllType = "ptr"
+    EndIf
+
+    Local $bBoundingBoxDllType
+    If VarGetType($boundingBox) == "DLLStruct" Then
+        $bBoundingBoxDllType = "struct*"
+    Else
+        $bBoundingBoxDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRotationWarperBuildMaps", $bWarperDllType, $warper, $bSrcSizeDllType, $srcSize, $bKDllType, $K, $bRDllType, $R, $bXmapDllType, $xmap, $bYmapDllType, $ymap, $bBoundingBoxDllType, $boundingBox), "cveRotationWarperBuildMaps", @error)
 EndFunc   ;==>_cveRotationWarperBuildMaps
 
 Func _cveRotationWarperBuildMapsMat($warper, $srcSize, $matK, $matR, $matXmap, $matYmap, $boundingBox)
@@ -443,7 +795,50 @@ EndFunc   ;==>_cveRotationWarperBuildMapsMat
 
 Func _cveRotationWarperWarp($warper, $src, $K, $R, $interpMode, $borderMode, $dst, $corner)
     ; CVAPI(void) cveRotationWarperWarp(cv::detail::RotationWarper* warper, cv::_InputArray* src, cv::_InputArray* K, cv::_InputArray* R, int interpMode, int borderMode, cv::_OutputArray* dst, CvPoint* corner);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRotationWarperWarp", "ptr", $warper, "ptr", $src, "ptr", $K, "ptr", $R, "int", $interpMode, "int", $borderMode, "ptr", $dst, "struct*", $corner), "cveRotationWarperWarp", @error)
+
+    Local $bWarperDllType
+    If VarGetType($warper) == "DLLStruct" Then
+        $bWarperDllType = "struct*"
+    Else
+        $bWarperDllType = "ptr"
+    EndIf
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bKDllType
+    If VarGetType($K) == "DLLStruct" Then
+        $bKDllType = "struct*"
+    Else
+        $bKDllType = "ptr"
+    EndIf
+
+    Local $bRDllType
+    If VarGetType($R) == "DLLStruct" Then
+        $bRDllType = "struct*"
+    Else
+        $bRDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    Local $bCornerDllType
+    If VarGetType($corner) == "DLLStruct" Then
+        $bCornerDllType = "struct*"
+    Else
+        $bCornerDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRotationWarperWarp", $bWarperDllType, $warper, $bSrcDllType, $src, $bKDllType, $K, $bRDllType, $R, "int", $interpMode, "int", $borderMode, $bDstDllType, $dst, $bCornerDllType, $corner), "cveRotationWarperWarp", @error)
 EndFunc   ;==>_cveRotationWarperWarp
 
 Func _cveRotationWarperWarpMat($warper, $matSrc, $matK, $matR, $interpMode, $borderMode, $matDst, $corner)

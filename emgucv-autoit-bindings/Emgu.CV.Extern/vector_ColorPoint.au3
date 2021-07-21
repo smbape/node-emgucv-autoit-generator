@@ -28,7 +28,14 @@ Func _VectorOfColorPointGetSize($v)
         $vecV = $v
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "VectorOfColorPointGetSize", "ptr", $vecV), "VectorOfColorPointGetSize", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "VectorOfColorPointGetSize", $bVDllType, $vecV), "VectorOfColorPointGetSize", @error)
 
     If $bVIsArray Then
         _VectorOfColorPointRelease($vecV)
@@ -54,7 +61,21 @@ Func _VectorOfColorPointPush($v, $value)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfColorPointPush", "ptr", $vecV, "struct*", $value), "VectorOfColorPointPush", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $bValueDllType
+    If VarGetType($value) == "DLLStruct" Then
+        $bValueDllType = "struct*"
+    Else
+        $bValueDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfColorPointPush", $bVDllType, $vecV, $bValueDllType, $value), "VectorOfColorPointPush", @error)
 
     If $bVIsArray Then
         _VectorOfColorPointRelease($vecV)
@@ -78,7 +99,21 @@ Func _VectorOfColorPointPushMulti($v, $values, $count)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfColorPointPushMulti", "ptr", $vecV, "struct*", $values, "int", $count), "VectorOfColorPointPushMulti", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $bValuesDllType
+    If VarGetType($values) == "DLLStruct" Then
+        $bValuesDllType = "struct*"
+    Else
+        $bValuesDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfColorPointPushMulti", $bVDllType, $vecV, $bValuesDllType, $values, "int", $count), "VectorOfColorPointPushMulti", @error)
 
     If $bVIsArray Then
         _VectorOfColorPointRelease($vecV)
@@ -102,6 +137,13 @@ Func _VectorOfColorPointPushVector($v, $other)
         $vecV = $v
     EndIf
 
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
     Local $vecOther, $iArrOtherSize
     Local $bOtherIsArray = VarGetType($other) == "Array"
 
@@ -116,7 +158,14 @@ Func _VectorOfColorPointPushVector($v, $other)
         $vecOther = $other
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfColorPointPushVector", "ptr", $vecV, "ptr", $vecOther), "VectorOfColorPointPushVector", @error)
+    Local $bOtherDllType
+    If VarGetType($other) == "DLLStruct" Then
+        $bOtherDllType = "struct*"
+    Else
+        $bOtherDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfColorPointPushVector", $bVDllType, $vecV, $bOtherDllType, $vecOther), "VectorOfColorPointPushVector", @error)
 
     If $bOtherIsArray Then
         _VectorOfColorPointRelease($vecOther)
@@ -144,7 +193,14 @@ Func _VectorOfColorPointClear($v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfColorPointClear", "ptr", $vecV), "VectorOfColorPointClear", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfColorPointClear", $bVDllType, $vecV), "VectorOfColorPointClear", @error)
 
     If $bVIsArray Then
         _VectorOfColorPointRelease($vecV)
@@ -199,7 +255,21 @@ Func _VectorOfColorPointCopyData($v, $data)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfColorPointCopyData", "ptr", $vecV, "struct*", $data), "VectorOfColorPointCopyData", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $bDataDllType
+    If VarGetType($data) == "DLLStruct" Then
+        $bDataDllType = "struct*"
+    Else
+        $bDataDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfColorPointCopyData", $bVDllType, $vecV, $bDataDllType, $data), "VectorOfColorPointCopyData", @error)
 
     If $bVIsArray Then
         _VectorOfColorPointRelease($vecV)
@@ -223,7 +293,14 @@ Func _VectorOfColorPointGetStartAddress($v)
         $vecV = $v
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfColorPointGetStartAddress", "ptr", $vecV), "VectorOfColorPointGetStartAddress", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfColorPointGetStartAddress", $bVDllType, $vecV), "VectorOfColorPointGetStartAddress", @error)
 
     If $bVIsArray Then
         _VectorOfColorPointRelease($vecV)
@@ -249,7 +326,14 @@ Func _VectorOfColorPointGetEndAddress($v)
         $vecV = $v
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfColorPointGetEndAddress", "ptr", $vecV), "VectorOfColorPointGetEndAddress", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfColorPointGetEndAddress", $bVDllType, $vecV), "VectorOfColorPointGetEndAddress", @error)
 
     If $bVIsArray Then
         _VectorOfColorPointRelease($vecV)
@@ -275,7 +359,21 @@ Func _VectorOfColorPointGetItem($vec, $index, $element)
         $vecVec = $vec
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfColorPointGetItem", "ptr", $vecVec, "int", $index, "struct*", $element), "VectorOfColorPointGetItem", @error)
+    Local $bVecDllType
+    If VarGetType($vec) == "DLLStruct" Then
+        $bVecDllType = "struct*"
+    Else
+        $bVecDllType = "ptr"
+    EndIf
+
+    Local $bElementDllType
+    If VarGetType($element) == "DLLStruct" Then
+        $bElementDllType = "struct*"
+    Else
+        $bElementDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfColorPointGetItem", $bVecDllType, $vecVec, "int", $index, $bElementDllType, $element), "VectorOfColorPointGetItem", @error)
 
     If $bVecIsArray Then
         _VectorOfColorPointRelease($vecVec)
@@ -299,6 +397,13 @@ Func _VectorOfColorPointGetItemPtr($vec, $index, $element)
         $vecVec = $vec
     EndIf
 
+    Local $bVecDllType
+    If VarGetType($vec) == "DLLStruct" Then
+        $bVecDllType = "struct*"
+    Else
+        $bVecDllType = "ptr"
+    EndIf
+
     Local $bElementDllType
     If VarGetType($element) == "DLLStruct" Then
         $bElementDllType = "struct*"
@@ -306,7 +411,7 @@ Func _VectorOfColorPointGetItemPtr($vec, $index, $element)
         $bElementDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfColorPointGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $element), "VectorOfColorPointGetItemPtr", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfColorPointGetItemPtr", $bVecDllType, $vecVec, "int", $index, $bElementDllType, $element), "VectorOfColorPointGetItemPtr", @error)
 
     If $bVecIsArray Then
         _VectorOfColorPointRelease($vecVec)
@@ -330,7 +435,14 @@ Func _cveInputArrayFromVectorOfColorPoint($vec)
         $vecVec = $vec
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputArrayFromVectorOfColorPoint", "ptr", $vecVec), "cveInputArrayFromVectorOfColorPoint", @error)
+    Local $bVecDllType
+    If VarGetType($vec) == "DLLStruct" Then
+        $bVecDllType = "struct*"
+    Else
+        $bVecDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputArrayFromVectorOfColorPoint", $bVecDllType, $vecVec), "cveInputArrayFromVectorOfColorPoint", @error)
 
     If $bVecIsArray Then
         _VectorOfColorPointRelease($vecVec)
@@ -356,7 +468,14 @@ Func _cveOutputArrayFromVectorOfColorPoint($vec)
         $vecVec = $vec
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOutputArrayFromVectorOfColorPoint", "ptr", $vecVec), "cveOutputArrayFromVectorOfColorPoint", @error)
+    Local $bVecDllType
+    If VarGetType($vec) == "DLLStruct" Then
+        $bVecDllType = "struct*"
+    Else
+        $bVecDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOutputArrayFromVectorOfColorPoint", $bVecDllType, $vecVec), "cveOutputArrayFromVectorOfColorPoint", @error)
 
     If $bVecIsArray Then
         _VectorOfColorPointRelease($vecVec)
@@ -382,7 +501,14 @@ Func _cveInputOutputArrayFromVectorOfColorPoint($vec)
         $vecVec = $vec
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputOutputArrayFromVectorOfColorPoint", "ptr", $vecVec), "cveInputOutputArrayFromVectorOfColorPoint", @error)
+    Local $bVecDllType
+    If VarGetType($vec) == "DLLStruct" Then
+        $bVecDllType = "struct*"
+    Else
+        $bVecDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputOutputArrayFromVectorOfColorPoint", $bVecDllType, $vecVec), "cveInputOutputArrayFromVectorOfColorPoint", @error)
 
     If $bVecIsArray Then
         _VectorOfColorPointRelease($vecVec)

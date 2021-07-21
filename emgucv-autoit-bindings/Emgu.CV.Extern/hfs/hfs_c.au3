@@ -35,7 +35,29 @@ EndFunc   ;==>_cveHfsSegmentRelease
 
 Func _cveHfsPerformSegment($hfsSegment, $src, $dst, $ifDraw, $useGpu)
     ; CVAPI(void) cveHfsPerformSegment(cv::hfs::HfsSegment* hfsSegment, cv::_InputArray* src, cv::Mat* dst, bool ifDraw, bool useGpu);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHfsPerformSegment", "ptr", $hfsSegment, "ptr", $src, "ptr", $dst, "boolean", $ifDraw, "boolean", $useGpu), "cveHfsPerformSegment", @error)
+
+    Local $bHfsSegmentDllType
+    If VarGetType($hfsSegment) == "DLLStruct" Then
+        $bHfsSegmentDllType = "struct*"
+    Else
+        $bHfsSegmentDllType = "ptr"
+    EndIf
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHfsPerformSegment", $bHfsSegmentDllType, $hfsSegment, $bSrcDllType, $src, $bDstDllType, $dst, "boolean", $ifDraw, "boolean", $useGpu), "cveHfsPerformSegment", @error)
 EndFunc   ;==>_cveHfsPerformSegment
 
 Func _cveHfsPerformSegmentMat($hfsSegment, $matSrc, $dst, $ifDraw, $useGpu)

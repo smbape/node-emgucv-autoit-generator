@@ -3,7 +3,29 @@
 
 Func _cudaPyrDown($src, $dst, $stream)
     ; CVAPI(void) cudaPyrDown(cv::_InputArray* src, cv::_OutputArray* dst, cv::cuda::Stream* stream);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaPyrDown", "ptr", $src, "ptr", $dst, "ptr", $stream), "cudaPyrDown", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaPyrDown", $bSrcDllType, $src, $bDstDllType, $dst, $bStreamDllType, $stream), "cudaPyrDown", @error)
 EndFunc   ;==>_cudaPyrDown
 
 Func _cudaPyrDownMat($matSrc, $matDst, $stream)
@@ -58,7 +80,29 @@ EndFunc   ;==>_cudaPyrDownMat
 
 Func _cudaPyrUp($src, $dst, $stream)
     ; CVAPI(void) cudaPyrUp(cv::_InputArray* src, cv::_OutputArray* dst, cv::cuda::Stream* stream);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaPyrUp", "ptr", $src, "ptr", $dst, "ptr", $stream), "cudaPyrUp", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaPyrUp", $bSrcDllType, $src, $bDstDllType, $dst, $bStreamDllType, $stream), "cudaPyrUp", @error)
 EndFunc   ;==>_cudaPyrUp
 
 Func _cudaPyrUpMat($matSrc, $matDst, $stream)
@@ -113,7 +157,50 @@ EndFunc   ;==>_cudaPyrUpMat
 
 Func _cudaWarpAffine($src, $dst, $M, $dSize, $flags, $borderMode, $borderValue, $stream)
     ; CVAPI(void) cudaWarpAffine(cv::_InputArray* src, cv::_OutputArray* dst, cv::_InputArray* M, CvSize* dSize, int flags, int borderMode, CvScalar* borderValue, cv::cuda::Stream* stream);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaWarpAffine", "ptr", $src, "ptr", $dst, "ptr", $M, "struct*", $dSize, "int", $flags, "int", $borderMode, "struct*", $borderValue, "ptr", $stream), "cudaWarpAffine", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    Local $bMDllType
+    If VarGetType($M) == "DLLStruct" Then
+        $bMDllType = "struct*"
+    Else
+        $bMDllType = "ptr"
+    EndIf
+
+    Local $bDSizeDllType
+    If VarGetType($dSize) == "DLLStruct" Then
+        $bDSizeDllType = "struct*"
+    Else
+        $bDSizeDllType = "ptr"
+    EndIf
+
+    Local $bBorderValueDllType
+    If VarGetType($borderValue) == "DLLStruct" Then
+        $bBorderValueDllType = "struct*"
+    Else
+        $bBorderValueDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaWarpAffine", $bSrcDllType, $src, $bDstDllType, $dst, $bMDllType, $M, $bDSizeDllType, $dSize, "int", $flags, "int", $borderMode, $bBorderValueDllType, $borderValue, $bStreamDllType, $stream), "cudaWarpAffine", @error)
 EndFunc   ;==>_cudaWarpAffine
 
 Func _cudaWarpAffineMat($matSrc, $matDst, $matM, $dSize, $flags, $borderMode, $borderValue, $stream)
@@ -190,7 +277,50 @@ EndFunc   ;==>_cudaWarpAffineMat
 
 Func _cudaWarpPerspective($src, $dst, $M, $size, $flags, $borderMode, $borderValue, $stream)
     ; CVAPI(void) cudaWarpPerspective(cv::_InputArray* src, cv::_OutputArray* dst, cv::_InputArray* M, CvSize* size, int flags, int borderMode, CvScalar* borderValue, cv::cuda::Stream* stream);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaWarpPerspective", "ptr", $src, "ptr", $dst, "ptr", $M, "struct*", $size, "int", $flags, "int", $borderMode, "struct*", $borderValue, "ptr", $stream), "cudaWarpPerspective", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    Local $bMDllType
+    If VarGetType($M) == "DLLStruct" Then
+        $bMDllType = "struct*"
+    Else
+        $bMDllType = "ptr"
+    EndIf
+
+    Local $bSizeDllType
+    If VarGetType($size) == "DLLStruct" Then
+        $bSizeDllType = "struct*"
+    Else
+        $bSizeDllType = "ptr"
+    EndIf
+
+    Local $bBorderValueDllType
+    If VarGetType($borderValue) == "DLLStruct" Then
+        $bBorderValueDllType = "struct*"
+    Else
+        $bBorderValueDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaWarpPerspective", $bSrcDllType, $src, $bDstDllType, $dst, $bMDllType, $M, $bSizeDllType, $size, "int", $flags, "int", $borderMode, $bBorderValueDllType, $borderValue, $bStreamDllType, $stream), "cudaWarpPerspective", @error)
 EndFunc   ;==>_cudaWarpPerspective
 
 Func _cudaWarpPerspectiveMat($matSrc, $matDst, $matM, $size, $flags, $borderMode, $borderValue, $stream)
@@ -267,7 +397,50 @@ EndFunc   ;==>_cudaWarpPerspectiveMat
 
 Func _cudaRemap($src, $dst, $xmap, $ymap, $interpolation, $borderMode, $borderValue, $stream)
     ; CVAPI(void) cudaRemap(cv::_InputArray* src, cv::_OutputArray* dst, cv::_InputArray* xmap, cv::_InputArray* ymap, int interpolation, int borderMode, CvScalar* borderValue, cv::cuda::Stream* stream);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaRemap", "ptr", $src, "ptr", $dst, "ptr", $xmap, "ptr", $ymap, "int", $interpolation, "int", $borderMode, "struct*", $borderValue, "ptr", $stream), "cudaRemap", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    Local $bXmapDllType
+    If VarGetType($xmap) == "DLLStruct" Then
+        $bXmapDllType = "struct*"
+    Else
+        $bXmapDllType = "ptr"
+    EndIf
+
+    Local $bYmapDllType
+    If VarGetType($ymap) == "DLLStruct" Then
+        $bYmapDllType = "struct*"
+    Else
+        $bYmapDllType = "ptr"
+    EndIf
+
+    Local $bBorderValueDllType
+    If VarGetType($borderValue) == "DLLStruct" Then
+        $bBorderValueDllType = "struct*"
+    Else
+        $bBorderValueDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaRemap", $bSrcDllType, $src, $bDstDllType, $dst, $bXmapDllType, $xmap, $bYmapDllType, $ymap, "int", $interpolation, "int", $borderMode, $bBorderValueDllType, $borderValue, $bStreamDllType, $stream), "cudaRemap", @error)
 EndFunc   ;==>_cudaRemap
 
 Func _cudaRemapMat($matSrc, $matDst, $matXmap, $matYmap, $interpolation, $borderMode, $borderValue, $stream)
@@ -366,7 +539,36 @@ EndFunc   ;==>_cudaRemapMat
 
 Func _cudaResize($src, $dst, $dsize, $fx, $fy, $interpolation, $stream)
     ; CVAPI(void) cudaResize(cv::_InputArray* src, cv::_OutputArray* dst, CvSize* dsize, double fx, double fy, int interpolation, cv::cuda::Stream* stream);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaResize", "ptr", $src, "ptr", $dst, "struct*", $dsize, "double", $fx, "double", $fy, "int", $interpolation, "ptr", $stream), "cudaResize", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    Local $bDsizeDllType
+    If VarGetType($dsize) == "DLLStruct" Then
+        $bDsizeDllType = "struct*"
+    Else
+        $bDsizeDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaResize", $bSrcDllType, $src, $bDstDllType, $dst, $bDsizeDllType, $dsize, "double", $fx, "double", $fy, "int", $interpolation, $bStreamDllType, $stream), "cudaResize", @error)
 EndFunc   ;==>_cudaResize
 
 Func _cudaResizeMat($matSrc, $matDst, $dsize, $fx, $fy, $interpolation, $stream)
@@ -421,7 +623,36 @@ EndFunc   ;==>_cudaResizeMat
 
 Func _cudaRotate($src, $dst, $dSize, $angle, $xShift, $yShift, $interpolation, $s)
     ; CVAPI(void) cudaRotate(cv::_InputArray* src, cv::_OutputArray* dst, CvSize* dSize, double angle, double xShift, double yShift, int interpolation, cv::cuda::Stream* s);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaRotate", "ptr", $src, "ptr", $dst, "struct*", $dSize, "double", $angle, "double", $xShift, "double", $yShift, "int", $interpolation, "ptr", $s), "cudaRotate", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    Local $bDSizeDllType
+    If VarGetType($dSize) == "DLLStruct" Then
+        $bDSizeDllType = "struct*"
+    Else
+        $bDSizeDllType = "ptr"
+    EndIf
+
+    Local $bSDllType
+    If VarGetType($s) == "DLLStruct" Then
+        $bSDllType = "struct*"
+    Else
+        $bSDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaRotate", $bSrcDllType, $src, $bDstDllType, $dst, $bDSizeDllType, $dSize, "double", $angle, "double", $xShift, "double", $yShift, "int", $interpolation, $bSDllType, $s), "cudaRotate", @error)
 EndFunc   ;==>_cudaRotate
 
 Func _cudaRotateMat($matSrc, $matDst, $dSize, $angle, $xShift, $yShift, $interpolation, $s)

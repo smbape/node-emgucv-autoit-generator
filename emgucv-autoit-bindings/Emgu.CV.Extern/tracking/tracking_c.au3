@@ -48,6 +48,13 @@ Func _cveTrackerCSRTCreate($use_hog, $use_color_names, $use_gray, $use_rgb, $use
         $window_function = _cveStringCreateFromStr($window_function)
     EndIf
 
+    Local $bWindow_functionDllType
+    If VarGetType($window_function) == "DLLStruct" Then
+        $bWindow_functionDllType = "struct*"
+    Else
+        $bWindow_functionDllType = "ptr"
+    EndIf
+
     Local $bTrackerDllType
     If VarGetType($tracker) == "DLLStruct" Then
         $bTrackerDllType = "struct*"
@@ -62,7 +69,7 @@ Func _cveTrackerCSRTCreate($use_hog, $use_color_names, $use_gray, $use_rgb, $use
         $bSharedPtrDllType = "ptr*"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTrackerCSRTCreate", "boolean", $use_hog, "boolean", $use_color_names, "boolean", $use_gray, "boolean", $use_rgb, "boolean", $use_channel_weights, "boolean", $use_segmentation, "ptr", $window_function, "float", $kaiser_alpha, "float", $cheb_attenuation, "float", $template_size, "float", $gsl_sigma, "float", $hog_orientations, "float", $hog_clip, "float", $padding, "float", $filter_lr, "float", $weights_lr, "int", $num_hog_channels_used, "int", $admm_iterations, "int", $histogram_bins, "float", $histogram_lr, "int", $background_ratio, "int", $number_of_scales, "float", $scale_sigma_factor, "float", $scale_model_max_area, "float", $scale_lr, "float", $scale_step, $bTrackerDllType, $tracker, $bSharedPtrDllType, $sharedPtr), "cveTrackerCSRTCreate", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTrackerCSRTCreate", "boolean", $use_hog, "boolean", $use_color_names, "boolean", $use_gray, "boolean", $use_rgb, "boolean", $use_channel_weights, "boolean", $use_segmentation, $bWindow_functionDllType, $window_function, "float", $kaiser_alpha, "float", $cheb_attenuation, "float", $template_size, "float", $gsl_sigma, "float", $hog_orientations, "float", $hog_clip, "float", $padding, "float", $filter_lr, "float", $weights_lr, "int", $num_hog_channels_used, "int", $admm_iterations, "int", $histogram_bins, "float", $histogram_lr, "int", $background_ratio, "int", $number_of_scales, "float", $scale_sigma_factor, "float", $scale_model_max_area, "float", $scale_lr, "float", $scale_step, $bTrackerDllType, $tracker, $bSharedPtrDllType, $sharedPtr), "cveTrackerCSRTCreate", @error)
 
     If $bWindow_functionIsString Then
         _cveStringRelease($window_function)
@@ -93,12 +100,54 @@ EndFunc   ;==>_cveTrackerCSRTRelease
 
 Func _cveLegacyTrackerInit($tracker, $image, $boundingBox)
     ; CVAPI(bool) cveLegacyTrackerInit(cv::legacy::Tracker* tracker, cv::Mat* image, CvRect* boundingBox);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveLegacyTrackerInit", "ptr", $tracker, "ptr", $image, "struct*", $boundingBox), "cveLegacyTrackerInit", @error)
+
+    Local $bTrackerDllType
+    If VarGetType($tracker) == "DLLStruct" Then
+        $bTrackerDllType = "struct*"
+    Else
+        $bTrackerDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bBoundingBoxDllType
+    If VarGetType($boundingBox) == "DLLStruct" Then
+        $bBoundingBoxDllType = "struct*"
+    Else
+        $bBoundingBoxDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveLegacyTrackerInit", $bTrackerDllType, $tracker, $bImageDllType, $image, $bBoundingBoxDllType, $boundingBox), "cveLegacyTrackerInit", @error)
 EndFunc   ;==>_cveLegacyTrackerInit
 
 Func _cveLegacyTrackerUpdate($tracker, $image, $boundingBox)
     ; CVAPI(bool) cveLegacyTrackerUpdate(cv::legacy::Tracker* tracker, cv::Mat* image, CvRect* boundingBox);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveLegacyTrackerUpdate", "ptr", $tracker, "ptr", $image, "struct*", $boundingBox), "cveLegacyTrackerUpdate", @error)
+
+    Local $bTrackerDllType
+    If VarGetType($tracker) == "DLLStruct" Then
+        $bTrackerDllType = "struct*"
+    Else
+        $bTrackerDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bBoundingBoxDllType
+    If VarGetType($boundingBox) == "DLLStruct" Then
+        $bBoundingBoxDllType = "struct*"
+    Else
+        $bBoundingBoxDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveLegacyTrackerUpdate", $bTrackerDllType, $tracker, $bImageDllType, $image, $bBoundingBoxDllType, $boundingBox), "cveLegacyTrackerUpdate", @error)
 EndFunc   ;==>_cveLegacyTrackerUpdate
 
 Func _cveTrackerBoostingCreate($numClassifiers, $samplerOverlap, $samplerSearchFactor, $iterationInit, $featureSetNumFeatures, $tracker, $sharedPtr)
@@ -143,6 +192,27 @@ EndFunc   ;==>_cveTrackerBoostingRelease
 Func _cveTrackerMedianFlowCreate($pointsInGrid, $winSize, $maxLevel, $termCriteria, $winSizeNCC, $maxMedianLengthOfDisplacementDifference, $tracker, $sharedPtr)
     ; CVAPI(cv::legacy::TrackerMedianFlow*) cveTrackerMedianFlowCreate(int pointsInGrid, CvSize* winSize, int maxLevel, CvTermCriteria* termCriteria, CvSize* winSizeNCC, double maxMedianLengthOfDisplacementDifference, cv::legacy::Tracker** tracker, cv::Ptr<cv::legacy::TrackerMedianFlow>** sharedPtr);
 
+    Local $bWinSizeDllType
+    If VarGetType($winSize) == "DLLStruct" Then
+        $bWinSizeDllType = "struct*"
+    Else
+        $bWinSizeDllType = "ptr"
+    EndIf
+
+    Local $bTermCriteriaDllType
+    If VarGetType($termCriteria) == "DLLStruct" Then
+        $bTermCriteriaDllType = "struct*"
+    Else
+        $bTermCriteriaDllType = "ptr"
+    EndIf
+
+    Local $bWinSizeNCCDllType
+    If VarGetType($winSizeNCC) == "DLLStruct" Then
+        $bWinSizeNCCDllType = "struct*"
+    Else
+        $bWinSizeNCCDllType = "ptr"
+    EndIf
+
     Local $bTrackerDllType
     If VarGetType($tracker) == "DLLStruct" Then
         $bTrackerDllType = "struct*"
@@ -156,7 +226,7 @@ Func _cveTrackerMedianFlowCreate($pointsInGrid, $winSize, $maxLevel, $termCriter
     Else
         $bSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTrackerMedianFlowCreate", "int", $pointsInGrid, "struct*", $winSize, "int", $maxLevel, "struct*", $termCriteria, "struct*", $winSizeNCC, "double", $maxMedianLengthOfDisplacementDifference, $bTrackerDllType, $tracker, $bSharedPtrDllType, $sharedPtr), "cveTrackerMedianFlowCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTrackerMedianFlowCreate", "int", $pointsInGrid, $bWinSizeDllType, $winSize, "int", $maxLevel, $bTermCriteriaDllType, $termCriteria, $bWinSizeNCCDllType, $winSizeNCC, "double", $maxMedianLengthOfDisplacementDifference, $bTrackerDllType, $tracker, $bSharedPtrDllType, $sharedPtr), "cveTrackerMedianFlowCreate", @error)
 EndFunc   ;==>_cveTrackerMedianFlowCreate
 
 Func _cveTrackerMedianFlowRelease($tracker, $sharedPtr)
@@ -264,7 +334,35 @@ EndFunc   ;==>_cveMultiTrackerCreate
 
 Func _cveMultiTrackerAdd($multiTracker, $tracker, $image, $boundingBox)
     ; CVAPI(bool) cveMultiTrackerAdd(cv::legacy::MultiTracker* multiTracker, cv::legacy::Tracker* tracker, cv::_InputArray* image, CvRect* boundingBox);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveMultiTrackerAdd", "ptr", $multiTracker, "ptr", $tracker, "ptr", $image, "struct*", $boundingBox), "cveMultiTrackerAdd", @error)
+
+    Local $bMultiTrackerDllType
+    If VarGetType($multiTracker) == "DLLStruct" Then
+        $bMultiTrackerDllType = "struct*"
+    Else
+        $bMultiTrackerDllType = "ptr"
+    EndIf
+
+    Local $bTrackerDllType
+    If VarGetType($tracker) == "DLLStruct" Then
+        $bTrackerDllType = "struct*"
+    Else
+        $bTrackerDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bBoundingBoxDllType
+    If VarGetType($boundingBox) == "DLLStruct" Then
+        $bBoundingBoxDllType = "struct*"
+    Else
+        $bBoundingBoxDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveMultiTrackerAdd", $bMultiTrackerDllType, $multiTracker, $bTrackerDllType, $tracker, $bImageDllType, $image, $bBoundingBoxDllType, $boundingBox), "cveMultiTrackerAdd", @error)
 EndFunc   ;==>_cveMultiTrackerAdd
 
 Func _cveMultiTrackerAddMat($multiTracker, $tracker, $matImage, $boundingBox)
@@ -299,7 +397,28 @@ EndFunc   ;==>_cveMultiTrackerAddMat
 
 Func _cveMultiTrackerUpdate($tracker, $image, $boundingBox)
     ; CVAPI(bool) cveMultiTrackerUpdate(cv::legacy::MultiTracker* tracker, cv::Mat* image, std::vector<CvRect>* boundingBox);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveMultiTrackerUpdate", "ptr", $tracker, "ptr", $image, "ptr", $boundingBox), "cveMultiTrackerUpdate", @error)
+
+    Local $bTrackerDllType
+    If VarGetType($tracker) == "DLLStruct" Then
+        $bTrackerDllType = "struct*"
+    Else
+        $bTrackerDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bBoundingBoxDllType
+    If VarGetType($boundingBox) == "DLLStruct" Then
+        $bBoundingBoxDllType = "struct*"
+    Else
+        $bBoundingBoxDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveMultiTrackerUpdate", $bTrackerDllType, $tracker, $bImageDllType, $image, $bBoundingBoxDllType, $boundingBox), "cveMultiTrackerUpdate", @error)
 EndFunc   ;==>_cveMultiTrackerUpdate
 
 Func _cveMultiTrackerRelease($tracker)
@@ -317,5 +436,20 @@ EndFunc   ;==>_cveMultiTrackerRelease
 
 Func _cveMultiTrackerGetObjects($tracker, $boundingBox)
     ; CVAPI(void) cveMultiTrackerGetObjects(cv::legacy::MultiTracker* tracker, std::vector<CvRect>* boundingBox);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMultiTrackerGetObjects", "ptr", $tracker, "ptr", $boundingBox), "cveMultiTrackerGetObjects", @error)
+
+    Local $bTrackerDllType
+    If VarGetType($tracker) == "DLLStruct" Then
+        $bTrackerDllType = "struct*"
+    Else
+        $bTrackerDllType = "ptr"
+    EndIf
+
+    Local $bBoundingBoxDllType
+    If VarGetType($boundingBox) == "DLLStruct" Then
+        $bBoundingBoxDllType = "struct*"
+    Else
+        $bBoundingBoxDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMultiTrackerGetObjects", $bTrackerDllType, $tracker, $bBoundingBoxDllType, $boundingBox), "cveMultiTrackerGetObjects", @error)
 EndFunc   ;==>_cveMultiTrackerGetObjects

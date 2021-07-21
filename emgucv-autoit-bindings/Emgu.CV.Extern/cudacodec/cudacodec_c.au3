@@ -9,6 +9,20 @@ Func _cudaVideoWriterCreate($fileName, $frameSize, $fps, $format, $sharedPtr)
         $fileName = _cveStringCreateFromStr($fileName)
     EndIf
 
+    Local $bFileNameDllType
+    If VarGetType($fileName) == "DLLStruct" Then
+        $bFileNameDllType = "struct*"
+    Else
+        $bFileNameDllType = "ptr"
+    EndIf
+
+    Local $bFrameSizeDllType
+    If VarGetType($frameSize) == "DLLStruct" Then
+        $bFrameSizeDllType = "struct*"
+    Else
+        $bFrameSizeDllType = "ptr"
+    EndIf
+
     Local $bSharedPtrDllType
     If VarGetType($sharedPtr) == "DLLStruct" Then
         $bSharedPtrDllType = "struct*"
@@ -16,7 +30,7 @@ Func _cudaVideoWriterCreate($fileName, $frameSize, $fps, $format, $sharedPtr)
         $bSharedPtrDllType = "ptr*"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaVideoWriterCreate", "ptr", $fileName, "struct*", $frameSize, "double", $fps, "cv::cudacodec::SurfaceFormat", $format, $bSharedPtrDllType, $sharedPtr), "cudaVideoWriterCreate", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaVideoWriterCreate", $bFileNameDllType, $fileName, $bFrameSizeDllType, $frameSize, "double", $fps, "cv::cudacodec::SurfaceFormat", $format, $bSharedPtrDllType, $sharedPtr), "cudaVideoWriterCreate", @error)
 
     If $bFileNameIsString Then
         _cveStringRelease($fileName)
@@ -40,7 +54,22 @@ EndFunc   ;==>_cudaVideoWriterRelease
 
 Func _cudaVideoWriterWrite($writer, $frame, $lastFrame)
     ; CVAPI(void) cudaVideoWriterWrite(cv::cudacodec::VideoWriter* writer, cv::_InputArray* frame, bool lastFrame);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaVideoWriterWrite", "ptr", $writer, "ptr", $frame, "boolean", $lastFrame), "cudaVideoWriterWrite", @error)
+
+    Local $bWriterDllType
+    If VarGetType($writer) == "DLLStruct" Then
+        $bWriterDllType = "struct*"
+    Else
+        $bWriterDllType = "ptr"
+    EndIf
+
+    Local $bFrameDllType
+    If VarGetType($frame) == "DLLStruct" Then
+        $bFrameDllType = "struct*"
+    Else
+        $bFrameDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaVideoWriterWrite", $bWriterDllType, $writer, $bFrameDllType, $frame, "boolean", $lastFrame), "cudaVideoWriterWrite", @error)
 EndFunc   ;==>_cudaVideoWriterWrite
 
 Func _cudaVideoWriterWriteMat($writer, $matFrame, $lastFrame)
@@ -79,6 +108,13 @@ Func _cudaVideoReaderCreate($fileName, $sharedPtr)
         $fileName = _cveStringCreateFromStr($fileName)
     EndIf
 
+    Local $bFileNameDllType
+    If VarGetType($fileName) == "DLLStruct" Then
+        $bFileNameDllType = "struct*"
+    Else
+        $bFileNameDllType = "ptr"
+    EndIf
+
     Local $bSharedPtrDllType
     If VarGetType($sharedPtr) == "DLLStruct" Then
         $bSharedPtrDllType = "struct*"
@@ -86,7 +122,7 @@ Func _cudaVideoReaderCreate($fileName, $sharedPtr)
         $bSharedPtrDllType = "ptr*"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaVideoReaderCreate", "ptr", $fileName, $bSharedPtrDllType, $sharedPtr), "cudaVideoReaderCreate", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaVideoReaderCreate", $bFileNameDllType, $fileName, $bSharedPtrDllType, $sharedPtr), "cudaVideoReaderCreate", @error)
 
     If $bFileNameIsString Then
         _cveStringRelease($fileName)
@@ -110,10 +146,46 @@ EndFunc   ;==>_cudaVideoReaderRelease
 
 Func _cudaVideoReaderNextFrame($reader, $frame, $stream)
     ; CVAPI(bool) cudaVideoReaderNextFrame(cv::cudacodec::VideoReader* reader, cv::cuda::GpuMat* frame, cv::cuda::Stream* stream);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cudaVideoReaderNextFrame", "ptr", $reader, "ptr", $frame, "ptr", $stream), "cudaVideoReaderNextFrame", @error)
+
+    Local $bReaderDllType
+    If VarGetType($reader) == "DLLStruct" Then
+        $bReaderDllType = "struct*"
+    Else
+        $bReaderDllType = "ptr"
+    EndIf
+
+    Local $bFrameDllType
+    If VarGetType($frame) == "DLLStruct" Then
+        $bFrameDllType = "struct*"
+    Else
+        $bFrameDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cudaVideoReaderNextFrame", $bReaderDllType, $reader, $bFrameDllType, $frame, $bStreamDllType, $stream), "cudaVideoReaderNextFrame", @error)
 EndFunc   ;==>_cudaVideoReaderNextFrame
 
 Func _cudaVideoReaderFormat($reader, $formatInfo)
     ; CVAPI(void) cudaVideoReaderFormat(cv::cudacodec::VideoReader* reader, cv::cudacodec::FormatInfo* formatInfo);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaVideoReaderFormat", "ptr", $reader, "ptr", $formatInfo), "cudaVideoReaderFormat", @error)
+
+    Local $bReaderDllType
+    If VarGetType($reader) == "DLLStruct" Then
+        $bReaderDllType = "struct*"
+    Else
+        $bReaderDllType = "ptr"
+    EndIf
+
+    Local $bFormatInfoDllType
+    If VarGetType($formatInfo) == "DLLStruct" Then
+        $bFormatInfoDllType = "struct*"
+    Else
+        $bFormatInfoDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaVideoReaderFormat", $bReaderDllType, $reader, $bFormatInfoDllType, $formatInfo), "cudaVideoReaderFormat", @error)
 EndFunc   ;==>_cudaVideoReaderFormat

@@ -28,7 +28,14 @@ Func _VectorOfGpuMatGetSize($v)
         $vecV = $v
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "VectorOfGpuMatGetSize", "ptr", $vecV), "VectorOfGpuMatGetSize", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "VectorOfGpuMatGetSize", $bVDllType, $vecV), "VectorOfGpuMatGetSize", @error)
 
     If $bVIsArray Then
         _VectorOfGpuMatRelease($vecV)
@@ -54,7 +61,21 @@ Func _VectorOfGpuMatPush($v, $value)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfGpuMatPush", "ptr", $vecV, "ptr", $value), "VectorOfGpuMatPush", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $bValueDllType
+    If VarGetType($value) == "DLLStruct" Then
+        $bValueDllType = "struct*"
+    Else
+        $bValueDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfGpuMatPush", $bVDllType, $vecV, $bValueDllType, $value), "VectorOfGpuMatPush", @error)
 
     If $bVIsArray Then
         _VectorOfGpuMatRelease($vecV)
@@ -78,6 +99,13 @@ Func _VectorOfGpuMatPushVector($v, $other)
         $vecV = $v
     EndIf
 
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
     Local $vecOther, $iArrOtherSize
     Local $bOtherIsArray = VarGetType($other) == "Array"
 
@@ -92,7 +120,14 @@ Func _VectorOfGpuMatPushVector($v, $other)
         $vecOther = $other
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfGpuMatPushVector", "ptr", $vecV, "ptr", $vecOther), "VectorOfGpuMatPushVector", @error)
+    Local $bOtherDllType
+    If VarGetType($other) == "DLLStruct" Then
+        $bOtherDllType = "struct*"
+    Else
+        $bOtherDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfGpuMatPushVector", $bVDllType, $vecV, $bOtherDllType, $vecOther), "VectorOfGpuMatPushVector", @error)
 
     If $bOtherIsArray Then
         _VectorOfGpuMatRelease($vecOther)
@@ -120,7 +155,14 @@ Func _VectorOfGpuMatGetStartAddress($v)
         $vecV = $v
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfGpuMatGetStartAddress", "ptr", $vecV), "VectorOfGpuMatGetStartAddress", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfGpuMatGetStartAddress", $bVDllType, $vecV), "VectorOfGpuMatGetStartAddress", @error)
 
     If $bVIsArray Then
         _VectorOfGpuMatRelease($vecV)
@@ -146,7 +188,14 @@ Func _VectorOfGpuMatGetEndAddress($v)
         $vecV = $v
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfGpuMatGetEndAddress", "ptr", $vecV), "VectorOfGpuMatGetEndAddress", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfGpuMatGetEndAddress", $bVDllType, $vecV), "VectorOfGpuMatGetEndAddress", @error)
 
     If $bVIsArray Then
         _VectorOfGpuMatRelease($vecV)
@@ -172,7 +221,14 @@ Func _VectorOfGpuMatClear($v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfGpuMatClear", "ptr", $vecV), "VectorOfGpuMatClear", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfGpuMatClear", $bVDllType, $vecV), "VectorOfGpuMatClear", @error)
 
     If $bVIsArray Then
         _VectorOfGpuMatRelease($vecV)
@@ -227,7 +283,21 @@ Func _VectorOfGpuMatCopyData($v, $data)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfGpuMatCopyData", "ptr", $vecV, "ptr", $data), "VectorOfGpuMatCopyData", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $bDataDllType
+    If VarGetType($data) == "DLLStruct" Then
+        $bDataDllType = "struct*"
+    Else
+        $bDataDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfGpuMatCopyData", $bVDllType, $vecV, $bDataDllType, $data), "VectorOfGpuMatCopyData", @error)
 
     If $bVIsArray Then
         _VectorOfGpuMatRelease($vecV)
@@ -251,6 +321,13 @@ Func _VectorOfGpuMatGetItemPtr($vec, $index, $element)
         $vecVec = $vec
     EndIf
 
+    Local $bVecDllType
+    If VarGetType($vec) == "DLLStruct" Then
+        $bVecDllType = "struct*"
+    Else
+        $bVecDllType = "ptr"
+    EndIf
+
     Local $bElementDllType
     If VarGetType($element) == "DLLStruct" Then
         $bElementDllType = "struct*"
@@ -258,7 +335,7 @@ Func _VectorOfGpuMatGetItemPtr($vec, $index, $element)
         $bElementDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfGpuMatGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $element), "VectorOfGpuMatGetItemPtr", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfGpuMatGetItemPtr", $bVecDllType, $vecVec, "int", $index, $bElementDllType, $element), "VectorOfGpuMatGetItemPtr", @error)
 
     If $bVecIsArray Then
         _VectorOfGpuMatRelease($vecVec)
@@ -282,7 +359,14 @@ Func _cveInputArrayFromVectorOfGpuMat($vec)
         $vecVec = $vec
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputArrayFromVectorOfGpuMat", "ptr", $vecVec), "cveInputArrayFromVectorOfGpuMat", @error)
+    Local $bVecDllType
+    If VarGetType($vec) == "DLLStruct" Then
+        $bVecDllType = "struct*"
+    Else
+        $bVecDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputArrayFromVectorOfGpuMat", $bVecDllType, $vecVec), "cveInputArrayFromVectorOfGpuMat", @error)
 
     If $bVecIsArray Then
         _VectorOfGpuMatRelease($vecVec)
@@ -308,7 +392,14 @@ Func _cveOutputArrayFromVectorOfGpuMat($vec)
         $vecVec = $vec
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOutputArrayFromVectorOfGpuMat", "ptr", $vecVec), "cveOutputArrayFromVectorOfGpuMat", @error)
+    Local $bVecDllType
+    If VarGetType($vec) == "DLLStruct" Then
+        $bVecDllType = "struct*"
+    Else
+        $bVecDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOutputArrayFromVectorOfGpuMat", $bVecDllType, $vecVec), "cveOutputArrayFromVectorOfGpuMat", @error)
 
     If $bVecIsArray Then
         _VectorOfGpuMatRelease($vecVec)
@@ -334,7 +425,14 @@ Func _cveInputOutputArrayFromVectorOfGpuMat($vec)
         $vecVec = $vec
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputOutputArrayFromVectorOfGpuMat", "ptr", $vecVec), "cveInputOutputArrayFromVectorOfGpuMat", @error)
+    Local $bVecDllType
+    If VarGetType($vec) == "DLLStruct" Then
+        $bVecDllType = "struct*"
+    Else
+        $bVecDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputOutputArrayFromVectorOfGpuMat", $bVecDllType, $vecVec), "cveInputOutputArrayFromVectorOfGpuMat", @error)
 
     If $bVecIsArray Then
         _VectorOfGpuMatRelease($vecVec)

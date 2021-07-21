@@ -9,9 +9,23 @@ Func _cveWeChatQRCodeCreate($detectorPrototxtPath, $detectorCaffeModelPath, $sup
         $detectorPrototxtPath = _cveStringCreateFromStr($detectorPrototxtPath)
     EndIf
 
+    Local $bDetectorPrototxtPathDllType
+    If VarGetType($detectorPrototxtPath) == "DLLStruct" Then
+        $bDetectorPrototxtPathDllType = "struct*"
+    Else
+        $bDetectorPrototxtPathDllType = "ptr"
+    EndIf
+
     Local $bDetectorCaffeModelPathIsString = VarGetType($detectorCaffeModelPath) == "String"
     If $bDetectorCaffeModelPathIsString Then
         $detectorCaffeModelPath = _cveStringCreateFromStr($detectorCaffeModelPath)
+    EndIf
+
+    Local $bDetectorCaffeModelPathDllType
+    If VarGetType($detectorCaffeModelPath) == "DLLStruct" Then
+        $bDetectorCaffeModelPathDllType = "struct*"
+    Else
+        $bDetectorCaffeModelPathDllType = "ptr"
     EndIf
 
     Local $bSuperResolutionPrototxtPathIsString = VarGetType($superResolutionPrototxtPath) == "String"
@@ -19,12 +33,26 @@ Func _cveWeChatQRCodeCreate($detectorPrototxtPath, $detectorCaffeModelPath, $sup
         $superResolutionPrototxtPath = _cveStringCreateFromStr($superResolutionPrototxtPath)
     EndIf
 
+    Local $bSuperResolutionPrototxtPathDllType
+    If VarGetType($superResolutionPrototxtPath) == "DLLStruct" Then
+        $bSuperResolutionPrototxtPathDllType = "struct*"
+    Else
+        $bSuperResolutionPrototxtPathDllType = "ptr"
+    EndIf
+
     Local $bSuperResolutionCaffeModelPathIsString = VarGetType($superResolutionCaffeModelPath) == "String"
     If $bSuperResolutionCaffeModelPathIsString Then
         $superResolutionCaffeModelPath = _cveStringCreateFromStr($superResolutionCaffeModelPath)
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWeChatQRCodeCreate", "ptr", $detectorPrototxtPath, "ptr", $detectorCaffeModelPath, "ptr", $superResolutionPrototxtPath, "ptr", $superResolutionCaffeModelPath), "cveWeChatQRCodeCreate", @error)
+    Local $bSuperResolutionCaffeModelPathDllType
+    If VarGetType($superResolutionCaffeModelPath) == "DLLStruct" Then
+        $bSuperResolutionCaffeModelPathDllType = "struct*"
+    Else
+        $bSuperResolutionCaffeModelPathDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWeChatQRCodeCreate", $bDetectorPrototxtPathDllType, $detectorPrototxtPath, $bDetectorCaffeModelPathDllType, $detectorCaffeModelPath, $bSuperResolutionPrototxtPathDllType, $superResolutionPrototxtPath, $bSuperResolutionCaffeModelPathDllType, $superResolutionCaffeModelPath), "cveWeChatQRCodeCreate", @error)
 
     If $bSuperResolutionCaffeModelPathIsString Then
         _cveStringRelease($superResolutionCaffeModelPath)
@@ -60,7 +88,36 @@ EndFunc   ;==>_cveWeChatQRCodeRelease
 
 Func _cveWeChatQRCodeDetectAndDecode($detector, $img, $points, $results)
     ; CVAPI(void) cveWeChatQRCodeDetectAndDecode(cv::wechat_qrcode::WeChatQRCode* detector, cv::_InputArray* img, cv::_OutputArray* points, std::vector<std::string>* results);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWeChatQRCodeDetectAndDecode", "ptr", $detector, "ptr", $img, "ptr", $points, "ptr", $results), "cveWeChatQRCodeDetectAndDecode", @error)
+
+    Local $bDetectorDllType
+    If VarGetType($detector) == "DLLStruct" Then
+        $bDetectorDllType = "struct*"
+    Else
+        $bDetectorDllType = "ptr"
+    EndIf
+
+    Local $bImgDllType
+    If VarGetType($img) == "DLLStruct" Then
+        $bImgDllType = "struct*"
+    Else
+        $bImgDllType = "ptr"
+    EndIf
+
+    Local $bPointsDllType
+    If VarGetType($points) == "DLLStruct" Then
+        $bPointsDllType = "struct*"
+    Else
+        $bPointsDllType = "ptr"
+    EndIf
+
+    Local $bResultsDllType
+    If VarGetType($results) == "DLLStruct" Then
+        $bResultsDllType = "struct*"
+    Else
+        $bResultsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWeChatQRCodeDetectAndDecode", $bDetectorDllType, $detector, $bImgDllType, $img, $bPointsDllType, $points, $bResultsDllType, $results), "cveWeChatQRCodeDetectAndDecode", @error)
 EndFunc   ;==>_cveWeChatQRCodeDetectAndDecode
 
 Func _cveWeChatQRCodeDetectAndDecodeMat($detector, $matImg, $matPoints, $results)

@@ -3,7 +3,29 @@
 
 Func _cveDrawCorrespondencies($bundle, $cols, $colors)
     ; CVAPI(void) cveDrawCorrespondencies(cv::_InputOutputArray* bundle, cv::_InputArray* cols, cv::_InputArray* colors);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDrawCorrespondencies", "ptr", $bundle, "ptr", $cols, "ptr", $colors), "cveDrawCorrespondencies", @error)
+
+    Local $bBundleDllType
+    If VarGetType($bundle) == "DLLStruct" Then
+        $bBundleDllType = "struct*"
+    Else
+        $bBundleDllType = "ptr"
+    EndIf
+
+    Local $bColsDllType
+    If VarGetType($cols) == "DLLStruct" Then
+        $bColsDllType = "struct*"
+    Else
+        $bColsDllType = "ptr"
+    EndIf
+
+    Local $bColorsDllType
+    If VarGetType($colors) == "DLLStruct" Then
+        $bColorsDllType = "struct*"
+    Else
+        $bColorsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDrawCorrespondencies", $bBundleDllType, $bundle, $bColsDllType, $cols, $bColorsDllType, $colors), "cveDrawCorrespondencies", @error)
 EndFunc   ;==>_cveDrawCorrespondencies
 
 Func _cveDrawCorrespondenciesMat($matBundle, $matCols, $matColors)
@@ -80,7 +102,29 @@ EndFunc   ;==>_cveDrawCorrespondenciesMat
 
 Func _cveDrawSearchLines($img, $locations, $color)
     ; CVAPI(void) cveDrawSearchLines(cv::_InputOutputArray* img, cv::_InputArray* locations, CvScalar* color);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDrawSearchLines", "ptr", $img, "ptr", $locations, "struct*", $color), "cveDrawSearchLines", @error)
+
+    Local $bImgDllType
+    If VarGetType($img) == "DLLStruct" Then
+        $bImgDllType = "struct*"
+    Else
+        $bImgDllType = "ptr"
+    EndIf
+
+    Local $bLocationsDllType
+    If VarGetType($locations) == "DLLStruct" Then
+        $bLocationsDllType = "struct*"
+    Else
+        $bLocationsDllType = "ptr"
+    EndIf
+
+    Local $bColorDllType
+    If VarGetType($color) == "DLLStruct" Then
+        $bColorDllType = "struct*"
+    Else
+        $bColorDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDrawSearchLines", $bImgDllType, $img, $bLocationsDllType, $locations, $bColorDllType, $color), "cveDrawSearchLines", @error)
 EndFunc   ;==>_cveDrawSearchLines
 
 Func _cveDrawSearchLinesMat($matImg, $matLocations, $color)
@@ -135,7 +179,36 @@ EndFunc   ;==>_cveDrawSearchLinesMat
 
 Func _cveDrawWireframe($img, $pts2d, $tris, $color, $type, $cullBackface)
     ; CVAPI(void) cveDrawWireframe(cv::_InputOutputArray* img, cv::_InputArray* pts2d, cv::_InputArray* tris, CvScalar* color, int type, bool cullBackface);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDrawWireframe", "ptr", $img, "ptr", $pts2d, "ptr", $tris, "struct*", $color, "int", $type, "boolean", $cullBackface), "cveDrawWireframe", @error)
+
+    Local $bImgDllType
+    If VarGetType($img) == "DLLStruct" Then
+        $bImgDllType = "struct*"
+    Else
+        $bImgDllType = "ptr"
+    EndIf
+
+    Local $bPts2dDllType
+    If VarGetType($pts2d) == "DLLStruct" Then
+        $bPts2dDllType = "struct*"
+    Else
+        $bPts2dDllType = "ptr"
+    EndIf
+
+    Local $bTrisDllType
+    If VarGetType($tris) == "DLLStruct" Then
+        $bTrisDllType = "struct*"
+    Else
+        $bTrisDllType = "ptr"
+    EndIf
+
+    Local $bColorDllType
+    If VarGetType($color) == "DLLStruct" Then
+        $bColorDllType = "struct*"
+    Else
+        $bColorDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDrawWireframe", $bImgDllType, $img, $bPts2dDllType, $pts2d, $bTrisDllType, $tris, $bColorDllType, $color, "int", $type, "boolean", $cullBackface), "cveDrawWireframe", @error)
 EndFunc   ;==>_cveDrawWireframe
 
 Func _cveDrawWireframeMat($matImg, $matPts2d, $matTris, $color, $type, $cullBackface)
@@ -212,7 +285,64 @@ EndFunc   ;==>_cveDrawWireframeMat
 
 Func _cveExtractControlPoints($num, $len, $pts3d, $rvec, $tvec, $K, $imsize, $tris, $ctl2d, $ctl3d)
     ; CVAPI(void) cveExtractControlPoints(int num, int len, cv::_InputArray* pts3d, cv::_InputArray* rvec, cv::_InputArray* tvec, cv::_InputArray* K, CvSize* imsize, cv::_InputArray* tris, cv::_OutputArray* ctl2d, cv::_OutputArray* ctl3d);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveExtractControlPoints", "int", $num, "int", $len, "ptr", $pts3d, "ptr", $rvec, "ptr", $tvec, "ptr", $K, "struct*", $imsize, "ptr", $tris, "ptr", $ctl2d, "ptr", $ctl3d), "cveExtractControlPoints", @error)
+
+    Local $bPts3dDllType
+    If VarGetType($pts3d) == "DLLStruct" Then
+        $bPts3dDllType = "struct*"
+    Else
+        $bPts3dDllType = "ptr"
+    EndIf
+
+    Local $bRvecDllType
+    If VarGetType($rvec) == "DLLStruct" Then
+        $bRvecDllType = "struct*"
+    Else
+        $bRvecDllType = "ptr"
+    EndIf
+
+    Local $bTvecDllType
+    If VarGetType($tvec) == "DLLStruct" Then
+        $bTvecDllType = "struct*"
+    Else
+        $bTvecDllType = "ptr"
+    EndIf
+
+    Local $bKDllType
+    If VarGetType($K) == "DLLStruct" Then
+        $bKDllType = "struct*"
+    Else
+        $bKDllType = "ptr"
+    EndIf
+
+    Local $bImsizeDllType
+    If VarGetType($imsize) == "DLLStruct" Then
+        $bImsizeDllType = "struct*"
+    Else
+        $bImsizeDllType = "ptr"
+    EndIf
+
+    Local $bTrisDllType
+    If VarGetType($tris) == "DLLStruct" Then
+        $bTrisDllType = "struct*"
+    Else
+        $bTrisDllType = "ptr"
+    EndIf
+
+    Local $bCtl2dDllType
+    If VarGetType($ctl2d) == "DLLStruct" Then
+        $bCtl2dDllType = "struct*"
+    Else
+        $bCtl2dDllType = "ptr"
+    EndIf
+
+    Local $bCtl3dDllType
+    If VarGetType($ctl3d) == "DLLStruct" Then
+        $bCtl3dDllType = "struct*"
+    Else
+        $bCtl3dDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveExtractControlPoints", "int", $num, "int", $len, $bPts3dDllType, $pts3d, $bRvecDllType, $rvec, $bTvecDllType, $tvec, $bKDllType, $K, $bImsizeDllType, $imsize, $bTrisDllType, $tris, $bCtl2dDllType, $ctl2d, $bCtl3dDllType, $ctl3d), "cveExtractControlPoints", @error)
 EndFunc   ;==>_cveExtractControlPoints
 
 Func _cveExtractControlPointsMat($num, $len, $matPts3d, $matRvec, $matTvec, $matK, $imsize, $matTris, $matCtl2d, $matCtl3d)
@@ -377,7 +507,36 @@ EndFunc   ;==>_cveExtractControlPointsMat
 
 Func _cveExtractLineBundle($len, $ctl2d, $img, $bundle, $srcLocations)
     ; CVAPI(void) cveExtractLineBundle(int len, cv::_InputArray* ctl2d, cv::_InputArray* img, cv::_OutputArray* bundle, cv::_OutputArray* srcLocations);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveExtractLineBundle", "int", $len, "ptr", $ctl2d, "ptr", $img, "ptr", $bundle, "ptr", $srcLocations), "cveExtractLineBundle", @error)
+
+    Local $bCtl2dDllType
+    If VarGetType($ctl2d) == "DLLStruct" Then
+        $bCtl2dDllType = "struct*"
+    Else
+        $bCtl2dDllType = "ptr"
+    EndIf
+
+    Local $bImgDllType
+    If VarGetType($img) == "DLLStruct" Then
+        $bImgDllType = "struct*"
+    Else
+        $bImgDllType = "ptr"
+    EndIf
+
+    Local $bBundleDllType
+    If VarGetType($bundle) == "DLLStruct" Then
+        $bBundleDllType = "struct*"
+    Else
+        $bBundleDllType = "ptr"
+    EndIf
+
+    Local $bSrcLocationsDllType
+    If VarGetType($srcLocations) == "DLLStruct" Then
+        $bSrcLocationsDllType = "struct*"
+    Else
+        $bSrcLocationsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveExtractLineBundle", "int", $len, $bCtl2dDllType, $ctl2d, $bImgDllType, $img, $bBundleDllType, $bundle, $bSrcLocationsDllType, $srcLocations), "cveExtractLineBundle", @error)
 EndFunc   ;==>_cveExtractLineBundle
 
 Func _cveExtractLineBundleMat($len, $matCtl2d, $matImg, $matBundle, $matSrcLocations)
@@ -476,7 +635,29 @@ EndFunc   ;==>_cveExtractLineBundleMat
 
 Func _cveFindCorrespondencies($bundle, $cols, $response)
     ; CVAPI(void) cveFindCorrespondencies(cv::_InputArray* bundle, cv::_OutputArray* cols, cv::_OutputArray* response);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFindCorrespondencies", "ptr", $bundle, "ptr", $cols, "ptr", $response), "cveFindCorrespondencies", @error)
+
+    Local $bBundleDllType
+    If VarGetType($bundle) == "DLLStruct" Then
+        $bBundleDllType = "struct*"
+    Else
+        $bBundleDllType = "ptr"
+    EndIf
+
+    Local $bColsDllType
+    If VarGetType($cols) == "DLLStruct" Then
+        $bColsDllType = "struct*"
+    Else
+        $bColsDllType = "ptr"
+    EndIf
+
+    Local $bResponseDllType
+    If VarGetType($response) == "DLLStruct" Then
+        $bResponseDllType = "struct*"
+    Else
+        $bResponseDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFindCorrespondencies", $bBundleDllType, $bundle, $bColsDllType, $cols, $bResponseDllType, $response), "cveFindCorrespondencies", @error)
 EndFunc   ;==>_cveFindCorrespondencies
 
 Func _cveFindCorrespondenciesMat($matBundle, $matCols, $matResponse)
@@ -553,7 +734,43 @@ EndFunc   ;==>_cveFindCorrespondenciesMat
 
 Func _cveConvertCorrespondencies($cols, $srcLocations, $pts2d, $pts3d, $mask)
     ; CVAPI(void) cveConvertCorrespondencies(cv::_InputArray* cols, cv::_InputArray* srcLocations, cv::_OutputArray* pts2d, cv::_InputOutputArray* pts3d, cv::_InputArray* mask);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveConvertCorrespondencies", "ptr", $cols, "ptr", $srcLocations, "ptr", $pts2d, "ptr", $pts3d, "ptr", $mask), "cveConvertCorrespondencies", @error)
+
+    Local $bColsDllType
+    If VarGetType($cols) == "DLLStruct" Then
+        $bColsDllType = "struct*"
+    Else
+        $bColsDllType = "ptr"
+    EndIf
+
+    Local $bSrcLocationsDllType
+    If VarGetType($srcLocations) == "DLLStruct" Then
+        $bSrcLocationsDllType = "struct*"
+    Else
+        $bSrcLocationsDllType = "ptr"
+    EndIf
+
+    Local $bPts2dDllType
+    If VarGetType($pts2d) == "DLLStruct" Then
+        $bPts2dDllType = "struct*"
+    Else
+        $bPts2dDllType = "ptr"
+    EndIf
+
+    Local $bPts3dDllType
+    If VarGetType($pts3d) == "DLLStruct" Then
+        $bPts3dDllType = "struct*"
+    Else
+        $bPts3dDllType = "ptr"
+    EndIf
+
+    Local $bMaskDllType
+    If VarGetType($mask) == "DLLStruct" Then
+        $bMaskDllType = "struct*"
+    Else
+        $bMaskDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveConvertCorrespondencies", $bColsDllType, $cols, $bSrcLocationsDllType, $srcLocations, $bPts2dDllType, $pts2d, $bPts3dDllType, $pts3d, $bMaskDllType, $mask), "cveConvertCorrespondencies", @error)
 EndFunc   ;==>_cveConvertCorrespondencies
 
 Func _cveConvertCorrespondenciesMat($matCols, $matSrcLocations, $matPts2d, $matPts3d, $matMask)
@@ -674,7 +891,56 @@ EndFunc   ;==>_cveConvertCorrespondenciesMat
 
 Func _cveRapid($img, $num, $len, $pts3d, $tris, $K, $rvec, $tvec, $rmsd)
     ; CVAPI(float) cveRapid(cv::_InputArray* img, int num, int len, cv::_InputArray* pts3d, cv::_InputArray* tris, cv::_InputArray* K, cv::_InputOutputArray* rvec, cv::_InputOutputArray* tvec, double* rmsd);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveRapid", "ptr", $img, "int", $num, "int", $len, "ptr", $pts3d, "ptr", $tris, "ptr", $K, "ptr", $rvec, "ptr", $tvec, "struct*", $rmsd), "cveRapid", @error)
+
+    Local $bImgDllType
+    If VarGetType($img) == "DLLStruct" Then
+        $bImgDllType = "struct*"
+    Else
+        $bImgDllType = "ptr"
+    EndIf
+
+    Local $bPts3dDllType
+    If VarGetType($pts3d) == "DLLStruct" Then
+        $bPts3dDllType = "struct*"
+    Else
+        $bPts3dDllType = "ptr"
+    EndIf
+
+    Local $bTrisDllType
+    If VarGetType($tris) == "DLLStruct" Then
+        $bTrisDllType = "struct*"
+    Else
+        $bTrisDllType = "ptr"
+    EndIf
+
+    Local $bKDllType
+    If VarGetType($K) == "DLLStruct" Then
+        $bKDllType = "struct*"
+    Else
+        $bKDllType = "ptr"
+    EndIf
+
+    Local $bRvecDllType
+    If VarGetType($rvec) == "DLLStruct" Then
+        $bRvecDllType = "struct*"
+    Else
+        $bRvecDllType = "ptr"
+    EndIf
+
+    Local $bTvecDllType
+    If VarGetType($tvec) == "DLLStruct" Then
+        $bTvecDllType = "struct*"
+    Else
+        $bTvecDllType = "ptr"
+    EndIf
+
+    Local $bRmsdDllType
+    If VarGetType($rmsd) == "DLLStruct" Then
+        $bRmsdDllType = "struct*"
+    Else
+        $bRmsdDllType = "double*"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveRapid", $bImgDllType, $img, "int", $num, "int", $len, $bPts3dDllType, $pts3d, $bTrisDllType, $tris, $bKDllType, $K, $bRvecDllType, $rvec, $bTvecDllType, $tvec, $bRmsdDllType, $rmsd), "cveRapid", @error)
 EndFunc   ;==>_cveRapid
 
 Func _cveRapidMat($matImg, $num, $len, $matPts3d, $matTris, $matK, $matRvec, $matTvec, $rmsd)
@@ -819,7 +1085,49 @@ EndFunc   ;==>_cveRapidMat
 
 Func _cveTrackerCompute($tracker, $img, $num, $len, $K, $rvec, $tvec, $termcrit)
     ; CVAPI(float) cveTrackerCompute(cv::rapid::Tracker* tracker, cv::_InputArray* img, int num, int len, cv::_InputArray* K, cv::_InputOutputArray* rvec, cv::_InputOutputArray* tvec, CvTermCriteria* termcrit);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveTrackerCompute", "ptr", $tracker, "ptr", $img, "int", $num, "int", $len, "ptr", $K, "ptr", $rvec, "ptr", $tvec, "struct*", $termcrit), "cveTrackerCompute", @error)
+
+    Local $bTrackerDllType
+    If VarGetType($tracker) == "DLLStruct" Then
+        $bTrackerDllType = "struct*"
+    Else
+        $bTrackerDllType = "ptr"
+    EndIf
+
+    Local $bImgDllType
+    If VarGetType($img) == "DLLStruct" Then
+        $bImgDllType = "struct*"
+    Else
+        $bImgDllType = "ptr"
+    EndIf
+
+    Local $bKDllType
+    If VarGetType($K) == "DLLStruct" Then
+        $bKDllType = "struct*"
+    Else
+        $bKDllType = "ptr"
+    EndIf
+
+    Local $bRvecDllType
+    If VarGetType($rvec) == "DLLStruct" Then
+        $bRvecDllType = "struct*"
+    Else
+        $bRvecDllType = "ptr"
+    EndIf
+
+    Local $bTvecDllType
+    If VarGetType($tvec) == "DLLStruct" Then
+        $bTvecDllType = "struct*"
+    Else
+        $bTvecDllType = "ptr"
+    EndIf
+
+    Local $bTermcritDllType
+    If VarGetType($termcrit) == "DLLStruct" Then
+        $bTermcritDllType = "struct*"
+    Else
+        $bTermcritDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveTrackerCompute", $bTrackerDllType, $tracker, $bImgDllType, $img, "int", $num, "int", $len, $bKDllType, $K, $bRvecDllType, $rvec, $bTvecDllType, $tvec, $bTermcritDllType, $termcrit), "cveTrackerCompute", @error)
 EndFunc   ;==>_cveTrackerCompute
 
 Func _cveTrackerComputeMat($tracker, $matImg, $num, $len, $matK, $matRvec, $matTvec, $termcrit)
@@ -920,11 +1228,33 @@ EndFunc   ;==>_cveTrackerComputeMat
 
 Func _cveTrackerClearState($tracker)
     ; CVAPI(void) cveTrackerClearState(cv::rapid::Tracker* tracker);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTrackerClearState", "ptr", $tracker), "cveTrackerClearState", @error)
+
+    Local $bTrackerDllType
+    If VarGetType($tracker) == "DLLStruct" Then
+        $bTrackerDllType = "struct*"
+    Else
+        $bTrackerDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTrackerClearState", $bTrackerDllType, $tracker), "cveTrackerClearState", @error)
 EndFunc   ;==>_cveTrackerClearState
 
 Func _cveRapidCreate($pts3d, $tris, $tracker, $algorithm, $sharedPtr)
     ; CVAPI(cv::rapid::Rapid*) cveRapidCreate(cv::_InputArray* pts3d, cv::_InputArray* tris, cv::rapid::Tracker** tracker, cv::Algorithm** algorithm, cv::Ptr<cv::rapid::Rapid>** sharedPtr);
+
+    Local $bPts3dDllType
+    If VarGetType($pts3d) == "DLLStruct" Then
+        $bPts3dDllType = "struct*"
+    Else
+        $bPts3dDllType = "ptr"
+    EndIf
+
+    Local $bTrisDllType
+    If VarGetType($tris) == "DLLStruct" Then
+        $bTrisDllType = "struct*"
+    Else
+        $bTrisDllType = "ptr"
+    EndIf
 
     Local $bTrackerDllType
     If VarGetType($tracker) == "DLLStruct" Then
@@ -946,7 +1276,7 @@ Func _cveRapidCreate($pts3d, $tris, $tracker, $algorithm, $sharedPtr)
     Else
         $bSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveRapidCreate", "ptr", $pts3d, "ptr", $tris, $bTrackerDllType, $tracker, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveRapidCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveRapidCreate", $bPts3dDllType, $pts3d, $bTrisDllType, $tris, $bTrackerDllType, $tracker, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveRapidCreate", @error)
 EndFunc   ;==>_cveRapidCreate
 
 Func _cveRapidCreateMat($matPts3d, $matTris, $tracker, $algorithm, $sharedPtr)
@@ -1017,6 +1347,20 @@ EndFunc   ;==>_cveRapidRelease
 Func _cveOLSTrackerCreate($pts3d, $tris, $histBins, $sobelThesh, $tracker, $algorithm, $sharedPtr)
     ; CVAPI(cv::rapid::OLSTracker*) cveOLSTrackerCreate(cv::_InputArray* pts3d, cv::_InputArray* tris, int histBins, uchar sobelThesh, cv::rapid::Tracker** tracker, cv::Algorithm** algorithm, cv::Ptr<cv::rapid::OLSTracker>** sharedPtr);
 
+    Local $bPts3dDllType
+    If VarGetType($pts3d) == "DLLStruct" Then
+        $bPts3dDllType = "struct*"
+    Else
+        $bPts3dDllType = "ptr"
+    EndIf
+
+    Local $bTrisDllType
+    If VarGetType($tris) == "DLLStruct" Then
+        $bTrisDllType = "struct*"
+    Else
+        $bTrisDllType = "ptr"
+    EndIf
+
     Local $bTrackerDllType
     If VarGetType($tracker) == "DLLStruct" Then
         $bTrackerDllType = "struct*"
@@ -1037,7 +1381,7 @@ Func _cveOLSTrackerCreate($pts3d, $tris, $histBins, $sobelThesh, $tracker, $algo
     Else
         $bSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOLSTrackerCreate", "ptr", $pts3d, "ptr", $tris, "int", $histBins, "uchar", $sobelThesh, $bTrackerDllType, $tracker, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveOLSTrackerCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOLSTrackerCreate", $bPts3dDllType, $pts3d, $bTrisDllType, $tris, "int", $histBins, "uchar", $sobelThesh, $bTrackerDllType, $tracker, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveOLSTrackerCreate", @error)
 EndFunc   ;==>_cveOLSTrackerCreate
 
 Func _cveOLSTrackerCreateMat($matPts3d, $matTris, $histBins, $sobelThesh, $tracker, $algorithm, $sharedPtr)

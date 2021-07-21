@@ -8,23 +8,74 @@ EndFunc   ;==>_cveDnnSuperResImplCreate
 
 Func _cveDnnSuperResImplSetModel($dnnSuperRes, $algo, $scale)
     ; CVAPI(void) cveDnnSuperResImplSetModel(cv::dnn_superres::DnnSuperResImpl* dnnSuperRes, const cv::String* algo, int scale);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnSuperResImplSetModel", "ptr", $dnnSuperRes, "ptr", $algo, "int", $scale), "cveDnnSuperResImplSetModel", @error)
+
+    Local $bDnnSuperResDllType
+    If VarGetType($dnnSuperRes) == "DLLStruct" Then
+        $bDnnSuperResDllType = "struct*"
+    Else
+        $bDnnSuperResDllType = "ptr"
+    EndIf
+
+    Local $bAlgoDllType
+    If VarGetType($algo) == "DLLStruct" Then
+        $bAlgoDllType = "struct*"
+    Else
+        $bAlgoDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnSuperResImplSetModel", $bDnnSuperResDllType, $dnnSuperRes, $bAlgoDllType, $algo, "int", $scale), "cveDnnSuperResImplSetModel", @error)
 EndFunc   ;==>_cveDnnSuperResImplSetModel
 
 Func _cveDnnSuperResImplReadModel1($dnnSuperRes, $path)
     ; CVAPI(void) cveDnnSuperResImplReadModel1(cv::dnn_superres::DnnSuperResImpl* dnnSuperRes, const cv::String* path);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnSuperResImplReadModel1", "ptr", $dnnSuperRes, "ptr", $path), "cveDnnSuperResImplReadModel1", @error)
+
+    Local $bDnnSuperResDllType
+    If VarGetType($dnnSuperRes) == "DLLStruct" Then
+        $bDnnSuperResDllType = "struct*"
+    Else
+        $bDnnSuperResDllType = "ptr"
+    EndIf
+
+    Local $bPathDllType
+    If VarGetType($path) == "DLLStruct" Then
+        $bPathDllType = "struct*"
+    Else
+        $bPathDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnSuperResImplReadModel1", $bDnnSuperResDllType, $dnnSuperRes, $bPathDllType, $path), "cveDnnSuperResImplReadModel1", @error)
 EndFunc   ;==>_cveDnnSuperResImplReadModel1
 
 Func _cveDnnSuperResImplReadModel2($dnnSuperRes, $weights, $definition)
     ; CVAPI(void) cveDnnSuperResImplReadModel2(cv::dnn_superres::DnnSuperResImpl* dnnSuperRes, const cv::String* weights, cv::String* definition);
+
+    Local $bDnnSuperResDllType
+    If VarGetType($dnnSuperRes) == "DLLStruct" Then
+        $bDnnSuperResDllType = "struct*"
+    Else
+        $bDnnSuperResDllType = "ptr"
+    EndIf
+
+    Local $bWeightsDllType
+    If VarGetType($weights) == "DLLStruct" Then
+        $bWeightsDllType = "struct*"
+    Else
+        $bWeightsDllType = "ptr"
+    EndIf
 
     Local $bDefinitionIsString = VarGetType($definition) == "String"
     If $bDefinitionIsString Then
         $definition = _cveStringCreateFromStr($definition)
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnSuperResImplReadModel2", "ptr", $dnnSuperRes, "ptr", $weights, "ptr", $definition), "cveDnnSuperResImplReadModel2", @error)
+    Local $bDefinitionDllType
+    If VarGetType($definition) == "DLLStruct" Then
+        $bDefinitionDllType = "struct*"
+    Else
+        $bDefinitionDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnSuperResImplReadModel2", $bDnnSuperResDllType, $dnnSuperRes, $bWeightsDllType, $weights, $bDefinitionDllType, $definition), "cveDnnSuperResImplReadModel2", @error)
 
     If $bDefinitionIsString Then
         _cveStringRelease($definition)
@@ -33,7 +84,29 @@ EndFunc   ;==>_cveDnnSuperResImplReadModel2
 
 Func _cveDnnSuperResImplUpsample($dnnSuperRes, $img, $result)
     ; CVAPI(void) cveDnnSuperResImplUpsample(cv::dnn_superres::DnnSuperResImpl* dnnSuperRes, cv::_InputArray* img, cv::_OutputArray* result);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnSuperResImplUpsample", "ptr", $dnnSuperRes, "ptr", $img, "ptr", $result), "cveDnnSuperResImplUpsample", @error)
+
+    Local $bDnnSuperResDllType
+    If VarGetType($dnnSuperRes) == "DLLStruct" Then
+        $bDnnSuperResDllType = "struct*"
+    Else
+        $bDnnSuperResDllType = "ptr"
+    EndIf
+
+    Local $bImgDllType
+    If VarGetType($img) == "DLLStruct" Then
+        $bImgDllType = "struct*"
+    Else
+        $bImgDllType = "ptr"
+    EndIf
+
+    Local $bResultDllType
+    If VarGetType($result) == "DLLStruct" Then
+        $bResultDllType = "struct*"
+    Else
+        $bResultDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnSuperResImplUpsample", $bDnnSuperResDllType, $dnnSuperRes, $bImgDllType, $img, $bResultDllType, $result), "cveDnnSuperResImplUpsample", @error)
 EndFunc   ;==>_cveDnnSuperResImplUpsample
 
 Func _cveDnnSuperResImplUpsampleMat($dnnSuperRes, $matImg, $matResult)
@@ -88,18 +161,39 @@ EndFunc   ;==>_cveDnnSuperResImplUpsampleMat
 
 Func _cveDnnSuperResImplGetScale($dnnSuperRes)
     ; CVAPI(int) cveDnnSuperResImplGetScale(cv::dnn_superres::DnnSuperResImpl* dnnSuperRes);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveDnnSuperResImplGetScale", "ptr", $dnnSuperRes), "cveDnnSuperResImplGetScale", @error)
+
+    Local $bDnnSuperResDllType
+    If VarGetType($dnnSuperRes) == "DLLStruct" Then
+        $bDnnSuperResDllType = "struct*"
+    Else
+        $bDnnSuperResDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveDnnSuperResImplGetScale", $bDnnSuperResDllType, $dnnSuperRes), "cveDnnSuperResImplGetScale", @error)
 EndFunc   ;==>_cveDnnSuperResImplGetScale
 
 Func _cveDnnSuperResImplGetAlgorithm($dnnSuperRes, $algorithm)
     ; CVAPI(void) cveDnnSuperResImplGetAlgorithm(cv::dnn_superres::DnnSuperResImpl* dnnSuperRes, cv::String* algorithm);
+
+    Local $bDnnSuperResDllType
+    If VarGetType($dnnSuperRes) == "DLLStruct" Then
+        $bDnnSuperResDllType = "struct*"
+    Else
+        $bDnnSuperResDllType = "ptr"
+    EndIf
 
     Local $bAlgorithmIsString = VarGetType($algorithm) == "String"
     If $bAlgorithmIsString Then
         $algorithm = _cveStringCreateFromStr($algorithm)
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnSuperResImplGetAlgorithm", "ptr", $dnnSuperRes, "ptr", $algorithm), "cveDnnSuperResImplGetAlgorithm", @error)
+    Local $bAlgorithmDllType
+    If VarGetType($algorithm) == "DLLStruct" Then
+        $bAlgorithmDllType = "struct*"
+    Else
+        $bAlgorithmDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnSuperResImplGetAlgorithm", $bDnnSuperResDllType, $dnnSuperRes, $bAlgorithmDllType, $algorithm), "cveDnnSuperResImplGetAlgorithm", @error)
 
     If $bAlgorithmIsString Then
         _cveStringRelease($algorithm)

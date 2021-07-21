@@ -9,6 +9,13 @@ Func _cudaCascadeClassifierCreate($filename, $sharedPtr)
         $filename = _cveStringCreateFromStr($filename)
     EndIf
 
+    Local $bFilenameDllType
+    If VarGetType($filename) == "DLLStruct" Then
+        $bFilenameDllType = "struct*"
+    Else
+        $bFilenameDllType = "ptr"
+    EndIf
+
     Local $bSharedPtrDllType
     If VarGetType($sharedPtr) == "DLLStruct" Then
         $bSharedPtrDllType = "struct*"
@@ -16,7 +23,7 @@ Func _cudaCascadeClassifierCreate($filename, $sharedPtr)
         $bSharedPtrDllType = "ptr*"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCascadeClassifierCreate", "ptr", $filename, $bSharedPtrDllType, $sharedPtr), "cudaCascadeClassifierCreate", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCascadeClassifierCreate", $bFilenameDllType, $filename, $bSharedPtrDllType, $sharedPtr), "cudaCascadeClassifierCreate", @error)
 
     If $bFilenameIsString Then
         _cveStringRelease($filename)
@@ -28,13 +35,20 @@ EndFunc   ;==>_cudaCascadeClassifierCreate
 Func _cudaCascadeClassifierCreateFromFileStorage($filestorage, $sharedPtr)
     ; CVAPI(cv::cuda::CascadeClassifier*) cudaCascadeClassifierCreateFromFileStorage(cv::FileStorage* filestorage, cv::Ptr<cv::cuda::CascadeClassifier>** sharedPtr);
 
+    Local $bFilestorageDllType
+    If VarGetType($filestorage) == "DLLStruct" Then
+        $bFilestorageDllType = "struct*"
+    Else
+        $bFilestorageDllType = "ptr"
+    EndIf
+
     Local $bSharedPtrDllType
     If VarGetType($sharedPtr) == "DLLStruct" Then
         $bSharedPtrDllType = "struct*"
     Else
         $bSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCascadeClassifierCreateFromFileStorage", "ptr", $filestorage, $bSharedPtrDllType, $sharedPtr), "cudaCascadeClassifierCreateFromFileStorage", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCascadeClassifierCreateFromFileStorage", $bFilestorageDllType, $filestorage, $bSharedPtrDllType, $sharedPtr), "cudaCascadeClassifierCreateFromFileStorage", @error)
 EndFunc   ;==>_cudaCascadeClassifierCreateFromFileStorage
 
 Func _cudaCascadeClassifierRelease($classifier)
@@ -52,7 +66,36 @@ EndFunc   ;==>_cudaCascadeClassifierRelease
 
 Func _cudaCascadeClassifierDetectMultiScale($classifier, $image, $objects, $stream)
     ; CVAPI(void) cudaCascadeClassifierDetectMultiScale(cv::cuda::CascadeClassifier* classifier, cv::_InputArray* image, cv::_OutputArray* objects, cv::cuda::Stream* stream);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCascadeClassifierDetectMultiScale", "ptr", $classifier, "ptr", $image, "ptr", $objects, "ptr", $stream), "cudaCascadeClassifierDetectMultiScale", @error)
+
+    Local $bClassifierDllType
+    If VarGetType($classifier) == "DLLStruct" Then
+        $bClassifierDllType = "struct*"
+    Else
+        $bClassifierDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bObjectsDllType
+    If VarGetType($objects) == "DLLStruct" Then
+        $bObjectsDllType = "struct*"
+    Else
+        $bObjectsDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCascadeClassifierDetectMultiScale", $bClassifierDllType, $classifier, $bImageDllType, $image, $bObjectsDllType, $objects, $bStreamDllType, $stream), "cudaCascadeClassifierDetectMultiScale", @error)
 EndFunc   ;==>_cudaCascadeClassifierDetectMultiScale
 
 Func _cudaCascadeClassifierDetectMultiScaleMat($classifier, $matImage, $matObjects, $stream)
@@ -108,6 +151,20 @@ EndFunc   ;==>_cudaCascadeClassifierDetectMultiScaleMat
 Func _cudaCascadeClassifierConvert($classifier, $gpuObjects, $objects)
     ; CVAPI(void) cudaCascadeClassifierConvert(cv::cuda::CascadeClassifier* classifier, cv::_OutputArray* gpuObjects, std::vector<cv::Rect>* objects);
 
+    Local $bClassifierDllType
+    If VarGetType($classifier) == "DLLStruct" Then
+        $bClassifierDllType = "struct*"
+    Else
+        $bClassifierDllType = "ptr"
+    EndIf
+
+    Local $bGpuObjectsDllType
+    If VarGetType($gpuObjects) == "DLLStruct" Then
+        $bGpuObjectsDllType = "struct*"
+    Else
+        $bGpuObjectsDllType = "ptr"
+    EndIf
+
     Local $vecObjects, $iArrObjectsSize
     Local $bObjectsIsArray = VarGetType($objects) == "Array"
 
@@ -122,7 +179,14 @@ Func _cudaCascadeClassifierConvert($classifier, $gpuObjects, $objects)
         $vecObjects = $objects
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCascadeClassifierConvert", "ptr", $classifier, "ptr", $gpuObjects, "ptr", $vecObjects), "cudaCascadeClassifierConvert", @error)
+    Local $bObjectsDllType
+    If VarGetType($objects) == "DLLStruct" Then
+        $bObjectsDllType = "struct*"
+    Else
+        $bObjectsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCascadeClassifierConvert", $bClassifierDllType, $classifier, $bGpuObjectsDllType, $gpuObjects, $bObjectsDllType, $vecObjects), "cudaCascadeClassifierConvert", @error)
 
     If $bObjectsIsArray Then
         _VectorOfRectRelease($vecObjects)
@@ -159,21 +223,94 @@ EndFunc   ;==>_cudaCascadeClassifierConvertMat
 
 Func _cudaCascadeClassifierGetMinObjectSize($classifier, $minObjectSize)
     ; CVAPI(void) cudaCascadeClassifierGetMinObjectSize(cv::cuda::CascadeClassifier* classifier, CvSize* minObjectSize);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCascadeClassifierGetMinObjectSize", "ptr", $classifier, "struct*", $minObjectSize), "cudaCascadeClassifierGetMinObjectSize", @error)
+
+    Local $bClassifierDllType
+    If VarGetType($classifier) == "DLLStruct" Then
+        $bClassifierDllType = "struct*"
+    Else
+        $bClassifierDllType = "ptr"
+    EndIf
+
+    Local $bMinObjectSizeDllType
+    If VarGetType($minObjectSize) == "DLLStruct" Then
+        $bMinObjectSizeDllType = "struct*"
+    Else
+        $bMinObjectSizeDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCascadeClassifierGetMinObjectSize", $bClassifierDllType, $classifier, $bMinObjectSizeDllType, $minObjectSize), "cudaCascadeClassifierGetMinObjectSize", @error)
 EndFunc   ;==>_cudaCascadeClassifierGetMinObjectSize
 
 Func _cudaCascadeClassifierSetMinObjectSize($classifier, $minObjectSize)
     ; CVAPI(void) cudaCascadeClassifierSetMinObjectSize(cv::cuda::CascadeClassifier* classifier, CvSize* minObjectSize);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCascadeClassifierSetMinObjectSize", "ptr", $classifier, "struct*", $minObjectSize), "cudaCascadeClassifierSetMinObjectSize", @error)
+
+    Local $bClassifierDllType
+    If VarGetType($classifier) == "DLLStruct" Then
+        $bClassifierDllType = "struct*"
+    Else
+        $bClassifierDllType = "ptr"
+    EndIf
+
+    Local $bMinObjectSizeDllType
+    If VarGetType($minObjectSize) == "DLLStruct" Then
+        $bMinObjectSizeDllType = "struct*"
+    Else
+        $bMinObjectSizeDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCascadeClassifierSetMinObjectSize", $bClassifierDllType, $classifier, $bMinObjectSizeDllType, $minObjectSize), "cudaCascadeClassifierSetMinObjectSize", @error)
 EndFunc   ;==>_cudaCascadeClassifierSetMinObjectSize
 
 Func _cudaHOGGetDefaultPeopleDetector($descriptor, $detector)
     ; CVAPI(void) cudaHOGGetDefaultPeopleDetector(cv::cuda::HOG* descriptor, cv::Mat* detector);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHOGGetDefaultPeopleDetector", "ptr", $descriptor, "ptr", $detector), "cudaHOGGetDefaultPeopleDetector", @error)
+
+    Local $bDescriptorDllType
+    If VarGetType($descriptor) == "DLLStruct" Then
+        $bDescriptorDllType = "struct*"
+    Else
+        $bDescriptorDllType = "ptr"
+    EndIf
+
+    Local $bDetectorDllType
+    If VarGetType($detector) == "DLLStruct" Then
+        $bDetectorDllType = "struct*"
+    Else
+        $bDetectorDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHOGGetDefaultPeopleDetector", $bDescriptorDllType, $descriptor, $bDetectorDllType, $detector), "cudaHOGGetDefaultPeopleDetector", @error)
 EndFunc   ;==>_cudaHOGGetDefaultPeopleDetector
 
 Func _cudaHOGCreate($winSize, $blockSize, $blockStride, $cellSize, $nbins, $sharedPtr)
     ; CVAPI(cv::cuda::HOG*) cudaHOGCreate(CvSize* winSize, CvSize* blockSize, CvSize* blockStride, CvSize* cellSize, int nbins, cv::Ptr<cv::cuda::HOG>** sharedPtr);
+
+    Local $bWinSizeDllType
+    If VarGetType($winSize) == "DLLStruct" Then
+        $bWinSizeDllType = "struct*"
+    Else
+        $bWinSizeDllType = "ptr"
+    EndIf
+
+    Local $bBlockSizeDllType
+    If VarGetType($blockSize) == "DLLStruct" Then
+        $bBlockSizeDllType = "struct*"
+    Else
+        $bBlockSizeDllType = "ptr"
+    EndIf
+
+    Local $bBlockStrideDllType
+    If VarGetType($blockStride) == "DLLStruct" Then
+        $bBlockStrideDllType = "struct*"
+    Else
+        $bBlockStrideDllType = "ptr"
+    EndIf
+
+    Local $bCellSizeDllType
+    If VarGetType($cellSize) == "DLLStruct" Then
+        $bCellSizeDllType = "struct*"
+    Else
+        $bCellSizeDllType = "ptr"
+    EndIf
 
     Local $bSharedPtrDllType
     If VarGetType($sharedPtr) == "DLLStruct" Then
@@ -181,12 +318,27 @@ Func _cudaHOGCreate($winSize, $blockSize, $blockStride, $cellSize, $nbins, $shar
     Else
         $bSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaHOGCreate", "struct*", $winSize, "struct*", $blockSize, "struct*", $blockStride, "struct*", $cellSize, "int", $nbins, $bSharedPtrDllType, $sharedPtr), "cudaHOGCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaHOGCreate", $bWinSizeDllType, $winSize, $bBlockSizeDllType, $blockSize, $bBlockStrideDllType, $blockStride, $bCellSizeDllType, $cellSize, "int", $nbins, $bSharedPtrDllType, $sharedPtr), "cudaHOGCreate", @error)
 EndFunc   ;==>_cudaHOGCreate
 
 Func _cudaHOGSetSVMDetector($descriptor, $detector)
     ; CVAPI(void) cudaHOGSetSVMDetector(cv::cuda::HOG* descriptor, cv::_InputArray* detector);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHOGSetSVMDetector", "ptr", $descriptor, "ptr", $detector), "cudaHOGSetSVMDetector", @error)
+
+    Local $bDescriptorDllType
+    If VarGetType($descriptor) == "DLLStruct" Then
+        $bDescriptorDllType = "struct*"
+    Else
+        $bDescriptorDllType = "ptr"
+    EndIf
+
+    Local $bDetectorDllType
+    If VarGetType($detector) == "DLLStruct" Then
+        $bDetectorDllType = "struct*"
+    Else
+        $bDetectorDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHOGSetSVMDetector", $bDescriptorDllType, $descriptor, $bDetectorDllType, $detector), "cudaHOGSetSVMDetector", @error)
 EndFunc   ;==>_cudaHOGSetSVMDetector
 
 Func _cudaHOGSetSVMDetectorMat($descriptor, $matDetector)
@@ -233,6 +385,20 @@ EndFunc   ;==>_cudaHOGRelease
 Func _cudaHOGDetectMultiScale($descriptor, $img, $foundLocations, $confidents)
     ; CVAPI(void) cudaHOGDetectMultiScale(cv::cuda::HOG* descriptor, cv::_InputArray* img, std::vector<cv::Rect>* foundLocations, std::vector<double>* confidents);
 
+    Local $bDescriptorDllType
+    If VarGetType($descriptor) == "DLLStruct" Then
+        $bDescriptorDllType = "struct*"
+    Else
+        $bDescriptorDllType = "ptr"
+    EndIf
+
+    Local $bImgDllType
+    If VarGetType($img) == "DLLStruct" Then
+        $bImgDllType = "struct*"
+    Else
+        $bImgDllType = "ptr"
+    EndIf
+
     Local $vecFoundLocations, $iArrFoundLocationsSize
     Local $bFoundLocationsIsArray = VarGetType($foundLocations) == "Array"
 
@@ -245,6 +411,13 @@ Func _cudaHOGDetectMultiScale($descriptor, $img, $foundLocations, $confidents)
         Next
     Else
         $vecFoundLocations = $foundLocations
+    EndIf
+
+    Local $bFoundLocationsDllType
+    If VarGetType($foundLocations) == "DLLStruct" Then
+        $bFoundLocationsDllType = "struct*"
+    Else
+        $bFoundLocationsDllType = "ptr"
     EndIf
 
     Local $vecConfidents, $iArrConfidentsSize
@@ -261,7 +434,14 @@ Func _cudaHOGDetectMultiScale($descriptor, $img, $foundLocations, $confidents)
         $vecConfidents = $confidents
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHOGDetectMultiScale", "ptr", $descriptor, "ptr", $img, "ptr", $vecFoundLocations, "ptr", $vecConfidents), "cudaHOGDetectMultiScale", @error)
+    Local $bConfidentsDllType
+    If VarGetType($confidents) == "DLLStruct" Then
+        $bConfidentsDllType = "struct*"
+    Else
+        $bConfidentsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHOGDetectMultiScale", $bDescriptorDllType, $descriptor, $bImgDllType, $img, $bFoundLocationsDllType, $vecFoundLocations, $bConfidentsDllType, $vecConfidents), "cudaHOGDetectMultiScale", @error)
 
     If $bConfidentsIsArray Then
         _VectorOfDoubleRelease($vecConfidents)

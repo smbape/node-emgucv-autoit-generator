@@ -215,7 +215,28 @@ EndFunc   ;==>_cveObjectnessBINGRelease
 
 Func _cveSaliencyComputeSaliency($saliency, $image, $saliencyMap)
     ; CVAPI(bool) cveSaliencyComputeSaliency(cv::saliency::Saliency* saliency, cv::_InputArray* image, cv::_OutputArray* saliencyMap);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveSaliencyComputeSaliency", "ptr", $saliency, "ptr", $image, "ptr", $saliencyMap), "cveSaliencyComputeSaliency", @error)
+
+    Local $bSaliencyDllType
+    If VarGetType($saliency) == "DLLStruct" Then
+        $bSaliencyDllType = "struct*"
+    Else
+        $bSaliencyDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bSaliencyMapDllType
+    If VarGetType($saliencyMap) == "DLLStruct" Then
+        $bSaliencyMapDllType = "struct*"
+    Else
+        $bSaliencyMapDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveSaliencyComputeSaliency", $bSaliencyDllType, $saliency, $bImageDllType, $image, $bSaliencyMapDllType, $saliencyMap), "cveSaliencyComputeSaliency", @error)
 EndFunc   ;==>_cveSaliencyComputeSaliency
 
 Func _cveSaliencyComputeSaliencyMat($saliency, $matImage, $matSaliencyMap)
@@ -272,7 +293,28 @@ EndFunc   ;==>_cveSaliencyComputeSaliencyMat
 
 Func _cveStaticSaliencyComputeBinaryMap($saliency, $saliencyMap, $binaryMap)
     ; CVAPI(bool) cveStaticSaliencyComputeBinaryMap(cv::saliency::StaticSaliency* saliency, cv::_InputArray* saliencyMap, cv::_OutputArray* binaryMap);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveStaticSaliencyComputeBinaryMap", "ptr", $saliency, "ptr", $saliencyMap, "ptr", $binaryMap), "cveStaticSaliencyComputeBinaryMap", @error)
+
+    Local $bSaliencyDllType
+    If VarGetType($saliency) == "DLLStruct" Then
+        $bSaliencyDllType = "struct*"
+    Else
+        $bSaliencyDllType = "ptr"
+    EndIf
+
+    Local $bSaliencyMapDllType
+    If VarGetType($saliencyMap) == "DLLStruct" Then
+        $bSaliencyMapDllType = "struct*"
+    Else
+        $bSaliencyMapDllType = "ptr"
+    EndIf
+
+    Local $bBinaryMapDllType
+    If VarGetType($binaryMap) == "DLLStruct" Then
+        $bBinaryMapDllType = "struct*"
+    Else
+        $bBinaryMapDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveStaticSaliencyComputeBinaryMap", $bSaliencyDllType, $saliency, $bSaliencyMapDllType, $saliencyMap, $bBinaryMapDllType, $binaryMap), "cveStaticSaliencyComputeBinaryMap", @error)
 EndFunc   ;==>_cveStaticSaliencyComputeBinaryMap
 
 Func _cveStaticSaliencyComputeBinaryMapMat($saliency, $matSaliencyMap, $matBinaryMap)
@@ -329,23 +371,52 @@ EndFunc   ;==>_cveStaticSaliencyComputeBinaryMapMat
 
 Func _cveSaliencyMotionInit($saliency)
     ; CVAPI(bool) cveSaliencyMotionInit(cv::saliency::Saliency* saliency);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveSaliencyMotionInit", "ptr", $saliency), "cveSaliencyMotionInit", @error)
+
+    Local $bSaliencyDllType
+    If VarGetType($saliency) == "DLLStruct" Then
+        $bSaliencyDllType = "struct*"
+    Else
+        $bSaliencyDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveSaliencyMotionInit", $bSaliencyDllType, $saliency), "cveSaliencyMotionInit", @error)
 EndFunc   ;==>_cveSaliencyMotionInit
 
 Func _cveSaliencyMotionSetImageSize($saliency, $width, $height)
     ; CVAPI(void) cveSaliencyMotionSetImageSize(cv::saliency::Saliency* saliency, int width, int height);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSaliencyMotionSetImageSize", "ptr", $saliency, "int", $width, "int", $height), "cveSaliencyMotionSetImageSize", @error)
+
+    Local $bSaliencyDllType
+    If VarGetType($saliency) == "DLLStruct" Then
+        $bSaliencyDllType = "struct*"
+    Else
+        $bSaliencyDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSaliencyMotionSetImageSize", $bSaliencyDllType, $saliency, "int", $width, "int", $height), "cveSaliencyMotionSetImageSize", @error)
 EndFunc   ;==>_cveSaliencyMotionSetImageSize
 
 Func _cveObjectnessBINGSetTrainingPath($saliency, $trainingPath)
     ; CVAPI(void) cveObjectnessBINGSetTrainingPath(cv::saliency::ObjectnessBING* saliency, cv::String* trainingPath);
+
+    Local $bSaliencyDllType
+    If VarGetType($saliency) == "DLLStruct" Then
+        $bSaliencyDllType = "struct*"
+    Else
+        $bSaliencyDllType = "ptr"
+    EndIf
 
     Local $bTrainingPathIsString = VarGetType($trainingPath) == "String"
     If $bTrainingPathIsString Then
         $trainingPath = _cveStringCreateFromStr($trainingPath)
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveObjectnessBINGSetTrainingPath", "ptr", $saliency, "ptr", $trainingPath), "cveObjectnessBINGSetTrainingPath", @error)
+    Local $bTrainingPathDllType
+    If VarGetType($trainingPath) == "DLLStruct" Then
+        $bTrainingPathDllType = "struct*"
+    Else
+        $bTrainingPathDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveObjectnessBINGSetTrainingPath", $bSaliencyDllType, $saliency, $bTrainingPathDllType, $trainingPath), "cveObjectnessBINGSetTrainingPath", @error)
 
     If $bTrainingPathIsString Then
         _cveStringRelease($trainingPath)
@@ -354,6 +425,13 @@ EndFunc   ;==>_cveObjectnessBINGSetTrainingPath
 
 Func _cveObjectnessBINGGetObjectnessValues($saliency, $values)
     ; CVAPI(void) cveObjectnessBINGGetObjectnessValues(cv::saliency::ObjectnessBING* saliency, std::vector<float>* values);
+
+    Local $bSaliencyDllType
+    If VarGetType($saliency) == "DLLStruct" Then
+        $bSaliencyDllType = "struct*"
+    Else
+        $bSaliencyDllType = "ptr"
+    EndIf
 
     Local $vecValues, $iArrValuesSize
     Local $bValuesIsArray = VarGetType($values) == "Array"
@@ -369,7 +447,14 @@ Func _cveObjectnessBINGGetObjectnessValues($saliency, $values)
         $vecValues = $values
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveObjectnessBINGGetObjectnessValues", "ptr", $saliency, "ptr", $vecValues), "cveObjectnessBINGGetObjectnessValues", @error)
+    Local $bValuesDllType
+    If VarGetType($values) == "DLLStruct" Then
+        $bValuesDllType = "struct*"
+    Else
+        $bValuesDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveObjectnessBINGGetObjectnessValues", $bSaliencyDllType, $saliency, $bValuesDllType, $vecValues), "cveObjectnessBINGGetObjectnessValues", @error)
 
     If $bValuesIsArray Then
         _VectorOfFloatRelease($vecValues)

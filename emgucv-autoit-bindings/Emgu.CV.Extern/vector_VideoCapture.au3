@@ -28,7 +28,14 @@ Func _VectorOfVideoCaptureGetSize($v)
         $vecV = $v
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "VectorOfVideoCaptureGetSize", "ptr", $vecV), "VectorOfVideoCaptureGetSize", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "VectorOfVideoCaptureGetSize", $bVDllType, $vecV), "VectorOfVideoCaptureGetSize", @error)
 
     If $bVIsArray Then
         _VectorOfVideoCaptureRelease($vecV)
@@ -54,7 +61,21 @@ Func _VectorOfVideoCapturePush($v, $value)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVideoCapturePush", "ptr", $vecV, "ptr", $value), "VectorOfVideoCapturePush", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $bValueDllType
+    If VarGetType($value) == "DLLStruct" Then
+        $bValueDllType = "struct*"
+    Else
+        $bValueDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVideoCapturePush", $bVDllType, $vecV, $bValueDllType, $value), "VectorOfVideoCapturePush", @error)
 
     If $bVIsArray Then
         _VectorOfVideoCaptureRelease($vecV)
@@ -78,6 +99,13 @@ Func _VectorOfVideoCapturePushVector($v, $other)
         $vecV = $v
     EndIf
 
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
     Local $vecOther, $iArrOtherSize
     Local $bOtherIsArray = VarGetType($other) == "Array"
 
@@ -92,7 +120,14 @@ Func _VectorOfVideoCapturePushVector($v, $other)
         $vecOther = $other
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVideoCapturePushVector", "ptr", $vecV, "ptr", $vecOther), "VectorOfVideoCapturePushVector", @error)
+    Local $bOtherDllType
+    If VarGetType($other) == "DLLStruct" Then
+        $bOtherDllType = "struct*"
+    Else
+        $bOtherDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVideoCapturePushVector", $bVDllType, $vecV, $bOtherDllType, $vecOther), "VectorOfVideoCapturePushVector", @error)
 
     If $bOtherIsArray Then
         _VectorOfVideoCaptureRelease($vecOther)
@@ -120,7 +155,14 @@ Func _VectorOfVideoCaptureGetStartAddress($v)
         $vecV = $v
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfVideoCaptureGetStartAddress", "ptr", $vecV), "VectorOfVideoCaptureGetStartAddress", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfVideoCaptureGetStartAddress", $bVDllType, $vecV), "VectorOfVideoCaptureGetStartAddress", @error)
 
     If $bVIsArray Then
         _VectorOfVideoCaptureRelease($vecV)
@@ -146,7 +188,14 @@ Func _VectorOfVideoCaptureGetEndAddress($v)
         $vecV = $v
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfVideoCaptureGetEndAddress", "ptr", $vecV), "VectorOfVideoCaptureGetEndAddress", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfVideoCaptureGetEndAddress", $bVDllType, $vecV), "VectorOfVideoCaptureGetEndAddress", @error)
 
     If $bVIsArray Then
         _VectorOfVideoCaptureRelease($vecV)
@@ -172,7 +221,14 @@ Func _VectorOfVideoCaptureClear($v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVideoCaptureClear", "ptr", $vecV), "VectorOfVideoCaptureClear", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVideoCaptureClear", $bVDllType, $vecV), "VectorOfVideoCaptureClear", @error)
 
     If $bVIsArray Then
         _VectorOfVideoCaptureRelease($vecV)
@@ -227,7 +283,21 @@ Func _VectorOfVideoCaptureCopyData($v, $data)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVideoCaptureCopyData", "ptr", $vecV, "ptr", $data), "VectorOfVideoCaptureCopyData", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $bDataDllType
+    If VarGetType($data) == "DLLStruct" Then
+        $bDataDllType = "struct*"
+    Else
+        $bDataDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVideoCaptureCopyData", $bVDllType, $vecV, $bDataDllType, $data), "VectorOfVideoCaptureCopyData", @error)
 
     If $bVIsArray Then
         _VectorOfVideoCaptureRelease($vecV)
@@ -251,6 +321,13 @@ Func _VectorOfVideoCaptureGetItemPtr($vec, $index, $element)
         $vecVec = $vec
     EndIf
 
+    Local $bVecDllType
+    If VarGetType($vec) == "DLLStruct" Then
+        $bVecDllType = "struct*"
+    Else
+        $bVecDllType = "ptr"
+    EndIf
+
     Local $bElementDllType
     If VarGetType($element) == "DLLStruct" Then
         $bElementDllType = "struct*"
@@ -258,7 +335,7 @@ Func _VectorOfVideoCaptureGetItemPtr($vec, $index, $element)
         $bElementDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVideoCaptureGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $element), "VectorOfVideoCaptureGetItemPtr", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfVideoCaptureGetItemPtr", $bVecDllType, $vecVec, "int", $index, $bElementDllType, $element), "VectorOfVideoCaptureGetItemPtr", @error)
 
     If $bVecIsArray Then
         _VectorOfVideoCaptureRelease($vecVec)
@@ -282,7 +359,14 @@ Func _cveInputArrayFromVectorOfVideoCapture($vec)
         $vecVec = $vec
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputArrayFromVectorOfVideoCapture", "ptr", $vecVec), "cveInputArrayFromVectorOfVideoCapture", @error)
+    Local $bVecDllType
+    If VarGetType($vec) == "DLLStruct" Then
+        $bVecDllType = "struct*"
+    Else
+        $bVecDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputArrayFromVectorOfVideoCapture", $bVecDllType, $vecVec), "cveInputArrayFromVectorOfVideoCapture", @error)
 
     If $bVecIsArray Then
         _VectorOfVideoCaptureRelease($vecVec)
@@ -308,7 +392,14 @@ Func _cveOutputArrayFromVectorOfVideoCapture($vec)
         $vecVec = $vec
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOutputArrayFromVectorOfVideoCapture", "ptr", $vecVec), "cveOutputArrayFromVectorOfVideoCapture", @error)
+    Local $bVecDllType
+    If VarGetType($vec) == "DLLStruct" Then
+        $bVecDllType = "struct*"
+    Else
+        $bVecDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOutputArrayFromVectorOfVideoCapture", $bVecDllType, $vecVec), "cveOutputArrayFromVectorOfVideoCapture", @error)
 
     If $bVecIsArray Then
         _VectorOfVideoCaptureRelease($vecVec)
@@ -334,7 +425,14 @@ Func _cveInputOutputArrayFromVectorOfVideoCapture($vec)
         $vecVec = $vec
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputOutputArrayFromVectorOfVideoCapture", "ptr", $vecVec), "cveInputOutputArrayFromVectorOfVideoCapture", @error)
+    Local $bVecDllType
+    If VarGetType($vec) == "DLLStruct" Then
+        $bVecDllType = "struct*"
+    Else
+        $bVecDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputOutputArrayFromVectorOfVideoCapture", $bVecDllType, $vecVec), "cveInputOutputArrayFromVectorOfVideoCapture", @error)
 
     If $bVecIsArray Then
         _VectorOfVideoCaptureRelease($vecVec)

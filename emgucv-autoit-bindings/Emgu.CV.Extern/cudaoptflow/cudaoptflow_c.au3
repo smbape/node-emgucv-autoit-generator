@@ -3,7 +3,43 @@
 
 Func _cudaDenseOpticalFlowCalc($opticalFlow, $I0, $I1, $flow, $stream)
     ; CVAPI(void) cudaDenseOpticalFlowCalc(cv::cuda::DenseOpticalFlow* opticalFlow, cv::_InputArray* I0, cv::_InputArray* I1, cv::_InputOutputArray* flow, cv::cuda::Stream* stream);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDenseOpticalFlowCalc", "ptr", $opticalFlow, "ptr", $I0, "ptr", $I1, "ptr", $flow, "ptr", $stream), "cudaDenseOpticalFlowCalc", @error)
+
+    Local $bOpticalFlowDllType
+    If VarGetType($opticalFlow) == "DLLStruct" Then
+        $bOpticalFlowDllType = "struct*"
+    Else
+        $bOpticalFlowDllType = "ptr"
+    EndIf
+
+    Local $bI0DllType
+    If VarGetType($I0) == "DLLStruct" Then
+        $bI0DllType = "struct*"
+    Else
+        $bI0DllType = "ptr"
+    EndIf
+
+    Local $bI1DllType
+    If VarGetType($I1) == "DLLStruct" Then
+        $bI1DllType = "struct*"
+    Else
+        $bI1DllType = "ptr"
+    EndIf
+
+    Local $bFlowDllType
+    If VarGetType($flow) == "DLLStruct" Then
+        $bFlowDllType = "struct*"
+    Else
+        $bFlowDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDenseOpticalFlowCalc", $bOpticalFlowDllType, $opticalFlow, $bI0DllType, $I0, $bI1DllType, $I1, $bFlowDllType, $flow, $bStreamDllType, $stream), "cudaDenseOpticalFlowCalc", @error)
 EndFunc   ;==>_cudaDenseOpticalFlowCalc
 
 Func _cudaDenseOpticalFlowCalcMat($opticalFlow, $matI0, $matI1, $matFlow, $stream)
@@ -80,7 +116,64 @@ EndFunc   ;==>_cudaDenseOpticalFlowCalcMat
 
 Func _cudaSparseOpticalFlowCalc($opticalFlow, $prevImg, $nextImg, $prevPts, $nextPts, $status, $err, $stream)
     ; CVAPI(void) cudaSparseOpticalFlowCalc(cv::cuda::SparseOpticalFlow* opticalFlow, cv::_InputArray* prevImg, cv::_InputArray* nextImg, cv::_InputArray* prevPts, cv::_InputOutputArray* nextPts, cv::_OutputArray* status, cv::_OutputArray* err, cv::cuda::Stream* stream);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaSparseOpticalFlowCalc", "ptr", $opticalFlow, "ptr", $prevImg, "ptr", $nextImg, "ptr", $prevPts, "ptr", $nextPts, "ptr", $status, "ptr", $err, "ptr", $stream), "cudaSparseOpticalFlowCalc", @error)
+
+    Local $bOpticalFlowDllType
+    If VarGetType($opticalFlow) == "DLLStruct" Then
+        $bOpticalFlowDllType = "struct*"
+    Else
+        $bOpticalFlowDllType = "ptr"
+    EndIf
+
+    Local $bPrevImgDllType
+    If VarGetType($prevImg) == "DLLStruct" Then
+        $bPrevImgDllType = "struct*"
+    Else
+        $bPrevImgDllType = "ptr"
+    EndIf
+
+    Local $bNextImgDllType
+    If VarGetType($nextImg) == "DLLStruct" Then
+        $bNextImgDllType = "struct*"
+    Else
+        $bNextImgDllType = "ptr"
+    EndIf
+
+    Local $bPrevPtsDllType
+    If VarGetType($prevPts) == "DLLStruct" Then
+        $bPrevPtsDllType = "struct*"
+    Else
+        $bPrevPtsDllType = "ptr"
+    EndIf
+
+    Local $bNextPtsDllType
+    If VarGetType($nextPts) == "DLLStruct" Then
+        $bNextPtsDllType = "struct*"
+    Else
+        $bNextPtsDllType = "ptr"
+    EndIf
+
+    Local $bStatusDllType
+    If VarGetType($status) == "DLLStruct" Then
+        $bStatusDllType = "struct*"
+    Else
+        $bStatusDllType = "ptr"
+    EndIf
+
+    Local $bErrDllType
+    If VarGetType($err) == "DLLStruct" Then
+        $bErrDllType = "struct*"
+    Else
+        $bErrDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaSparseOpticalFlowCalc", $bOpticalFlowDllType, $opticalFlow, $bPrevImgDllType, $prevImg, $bNextImgDllType, $nextImg, $bPrevPtsDllType, $prevPts, $bNextPtsDllType, $nextPts, $bStatusDllType, $status, $bErrDllType, $err, $bStreamDllType, $stream), "cudaSparseOpticalFlowCalc", @error)
 EndFunc   ;==>_cudaSparseOpticalFlowCalc
 
 Func _cudaSparseOpticalFlowCalcMat($opticalFlow, $matPrevImg, $matNextImg, $matPrevPts, $matNextPts, $matStatus, $matErr, $stream)
@@ -263,6 +356,13 @@ EndFunc   ;==>_cudaBroxOpticalFlowRelease
 Func _cudaDensePyrLKOpticalFlowCreate($winSize, $maxLevel, $iters, $useInitialFlow, $denseFlow, $algorithm, $sharedPtr)
     ; CVAPI(cv::cuda::DensePyrLKOpticalFlow *) cudaDensePyrLKOpticalFlowCreate(CvSize* winSize, int maxLevel, int iters, bool useInitialFlow, cv::cuda::DenseOpticalFlow** denseFlow, cv::Algorithm** algorithm, cv::Ptr<cv::cuda::DensePyrLKOpticalFlow>** sharedPtr);
 
+    Local $bWinSizeDllType
+    If VarGetType($winSize) == "DLLStruct" Then
+        $bWinSizeDllType = "struct*"
+    Else
+        $bWinSizeDllType = "ptr"
+    EndIf
+
     Local $bDenseFlowDllType
     If VarGetType($denseFlow) == "DLLStruct" Then
         $bDenseFlowDllType = "struct*"
@@ -283,7 +383,7 @@ Func _cudaDensePyrLKOpticalFlowCreate($winSize, $maxLevel, $iters, $useInitialFl
     Else
         $bSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaDensePyrLKOpticalFlowCreate", "struct*", $winSize, "int", $maxLevel, "int", $iters, "boolean", $useInitialFlow, $bDenseFlowDllType, $denseFlow, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cudaDensePyrLKOpticalFlowCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaDensePyrLKOpticalFlowCreate", $bWinSizeDllType, $winSize, "int", $maxLevel, "int", $iters, "boolean", $useInitialFlow, $bDenseFlowDllType, $denseFlow, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cudaDensePyrLKOpticalFlowCreate", @error)
 EndFunc   ;==>_cudaDensePyrLKOpticalFlowCreate
 
 Func _cudaDensePyrLKOpticalFlowRelease($flow)
@@ -301,6 +401,13 @@ EndFunc   ;==>_cudaDensePyrLKOpticalFlowRelease
 
 Func _cudaSparsePyrLKOpticalFlowCreate($winSize, $maxLevel, $iters, $useInitialFlow, $sparseFlow, $algorithm, $sharedPtr)
     ; CVAPI(cv::cuda::SparsePyrLKOpticalFlow *) cudaSparsePyrLKOpticalFlowCreate(CvSize* winSize, int maxLevel, int iters, bool useInitialFlow, cv::cuda::SparseOpticalFlow** sparseFlow, cv::Algorithm** algorithm, cv::Ptr<cv::cuda::SparsePyrLKOpticalFlow>** sharedPtr);
+
+    Local $bWinSizeDllType
+    If VarGetType($winSize) == "DLLStruct" Then
+        $bWinSizeDllType = "struct*"
+    Else
+        $bWinSizeDllType = "ptr"
+    EndIf
 
     Local $bSparseFlowDllType
     If VarGetType($sparseFlow) == "DLLStruct" Then
@@ -322,7 +429,7 @@ Func _cudaSparsePyrLKOpticalFlowCreate($winSize, $maxLevel, $iters, $useInitialF
     Else
         $bSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaSparsePyrLKOpticalFlowCreate", "struct*", $winSize, "int", $maxLevel, "int", $iters, "boolean", $useInitialFlow, $bSparseFlowDllType, $sparseFlow, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cudaSparsePyrLKOpticalFlowCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaSparsePyrLKOpticalFlowCreate", $bWinSizeDllType, $winSize, "int", $maxLevel, "int", $iters, "boolean", $useInitialFlow, $bSparseFlowDllType, $sparseFlow, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cudaSparsePyrLKOpticalFlowCreate", @error)
 EndFunc   ;==>_cudaSparsePyrLKOpticalFlowCreate
 
 Func _cudaSparsePyrLKOpticalFlowRelease($flow)
@@ -419,6 +526,27 @@ EndFunc   ;==>_cudaOpticalFlowDualTvl1Release
 Func _cudaNvidiaOpticalFlow_1_0_Create($imageSize, $perfPreset, $enableTemporalHints, $enableExternalHints, $enableCostBuffer, $gpuId, $inputStream, $outputStream, $nHWOpticalFlow, $algorithm, $sharedPtr)
     ; CVAPI(cv::cuda::NvidiaOpticalFlow_1_0*) cudaNvidiaOpticalFlow_1_0_Create(CvSize* imageSize, int perfPreset, bool enableTemporalHints, bool enableExternalHints, bool enableCostBuffer, int gpuId, cv::cuda::Stream* inputStream, cv::cuda::Stream* outputStream, cv::cuda::NvidiaHWOpticalFlow** nHWOpticalFlow, cv::Algorithm** algorithm, cv::Ptr<cv::cuda::NvidiaOpticalFlow_1_0>** sharedPtr);
 
+    Local $bImageSizeDllType
+    If VarGetType($imageSize) == "DLLStruct" Then
+        $bImageSizeDllType = "struct*"
+    Else
+        $bImageSizeDllType = "ptr"
+    EndIf
+
+    Local $bInputStreamDllType
+    If VarGetType($inputStream) == "DLLStruct" Then
+        $bInputStreamDllType = "struct*"
+    Else
+        $bInputStreamDllType = "ptr"
+    EndIf
+
+    Local $bOutputStreamDllType
+    If VarGetType($outputStream) == "DLLStruct" Then
+        $bOutputStreamDllType = "struct*"
+    Else
+        $bOutputStreamDllType = "ptr"
+    EndIf
+
     Local $bNHWOpticalFlowDllType
     If VarGetType($nHWOpticalFlow) == "DLLStruct" Then
         $bNHWOpticalFlowDllType = "struct*"
@@ -439,12 +567,41 @@ Func _cudaNvidiaOpticalFlow_1_0_Create($imageSize, $perfPreset, $enableTemporalH
     Else
         $bSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaNvidiaOpticalFlow_1_0_Create", "struct*", $imageSize, "int", $perfPreset, "boolean", $enableTemporalHints, "boolean", $enableExternalHints, "boolean", $enableCostBuffer, "int", $gpuId, "ptr", $inputStream, "ptr", $outputStream, $bNHWOpticalFlowDllType, $nHWOpticalFlow, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cudaNvidiaOpticalFlow_1_0_Create", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaNvidiaOpticalFlow_1_0_Create", $bImageSizeDllType, $imageSize, "int", $perfPreset, "boolean", $enableTemporalHints, "boolean", $enableExternalHints, "boolean", $enableCostBuffer, "int", $gpuId, $bInputStreamDllType, $inputStream, $bOutputStreamDllType, $outputStream, $bNHWOpticalFlowDllType, $nHWOpticalFlow, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cudaNvidiaOpticalFlow_1_0_Create", @error)
 EndFunc   ;==>_cudaNvidiaOpticalFlow_1_0_Create
 
 Func _cudaNvidiaOpticalFlow_1_0_UpSampler($nFlow, $flow, $imageSize, $gridSize, $upsampledFlow)
     ; CVAPI(void) cudaNvidiaOpticalFlow_1_0_UpSampler(cv::cuda::NvidiaOpticalFlow_1_0* nFlow, cv::_InputArray* flow, CvSize* imageSize, int gridSize, cv::_InputOutputArray* upsampledFlow);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaNvidiaOpticalFlow_1_0_UpSampler", "ptr", $nFlow, "ptr", $flow, "struct*", $imageSize, "int", $gridSize, "ptr", $upsampledFlow), "cudaNvidiaOpticalFlow_1_0_UpSampler", @error)
+
+    Local $bNFlowDllType
+    If VarGetType($nFlow) == "DLLStruct" Then
+        $bNFlowDllType = "struct*"
+    Else
+        $bNFlowDllType = "ptr"
+    EndIf
+
+    Local $bFlowDllType
+    If VarGetType($flow) == "DLLStruct" Then
+        $bFlowDllType = "struct*"
+    Else
+        $bFlowDllType = "ptr"
+    EndIf
+
+    Local $bImageSizeDllType
+    If VarGetType($imageSize) == "DLLStruct" Then
+        $bImageSizeDllType = "struct*"
+    Else
+        $bImageSizeDllType = "ptr"
+    EndIf
+
+    Local $bUpsampledFlowDllType
+    If VarGetType($upsampledFlow) == "DLLStruct" Then
+        $bUpsampledFlowDllType = "struct*"
+    Else
+        $bUpsampledFlowDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaNvidiaOpticalFlow_1_0_UpSampler", $bNFlowDllType, $nFlow, $bFlowDllType, $flow, $bImageSizeDllType, $imageSize, "int", $gridSize, $bUpsampledFlowDllType, $upsampledFlow), "cudaNvidiaOpticalFlow_1_0_UpSampler", @error)
 EndFunc   ;==>_cudaNvidiaOpticalFlow_1_0_UpSampler
 
 Func _cudaNvidiaOpticalFlow_1_0_UpSamplerMat($nFlow, $matFlow, $imageSize, $gridSize, $matUpsampledFlow)
@@ -512,7 +669,57 @@ EndFunc   ;==>_cudaNvidiaOpticalFlow_1_0_Release
 
 Func _cudaNvidiaOpticalFlowCalc($nHWOpticalFlow, $inputImage, $referenceImage, $flow, $stream, $hint, $cost)
     ; CVAPI(void) cudaNvidiaOpticalFlowCalc(cv::cuda::NvidiaHWOpticalFlow* nHWOpticalFlow, cv::_InputArray* inputImage, cv::_InputArray* referenceImage, cv::_InputOutputArray* flow, cv::cuda::Stream* stream, cv::_InputArray* hint, cv::_OutputArray* cost);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaNvidiaOpticalFlowCalc", "ptr", $nHWOpticalFlow, "ptr", $inputImage, "ptr", $referenceImage, "ptr", $flow, "ptr", $stream, "ptr", $hint, "ptr", $cost), "cudaNvidiaOpticalFlowCalc", @error)
+
+    Local $bNHWOpticalFlowDllType
+    If VarGetType($nHWOpticalFlow) == "DLLStruct" Then
+        $bNHWOpticalFlowDllType = "struct*"
+    Else
+        $bNHWOpticalFlowDllType = "ptr"
+    EndIf
+
+    Local $bInputImageDllType
+    If VarGetType($inputImage) == "DLLStruct" Then
+        $bInputImageDllType = "struct*"
+    Else
+        $bInputImageDllType = "ptr"
+    EndIf
+
+    Local $bReferenceImageDllType
+    If VarGetType($referenceImage) == "DLLStruct" Then
+        $bReferenceImageDllType = "struct*"
+    Else
+        $bReferenceImageDllType = "ptr"
+    EndIf
+
+    Local $bFlowDllType
+    If VarGetType($flow) == "DLLStruct" Then
+        $bFlowDllType = "struct*"
+    Else
+        $bFlowDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    Local $bHintDllType
+    If VarGetType($hint) == "DLLStruct" Then
+        $bHintDllType = "struct*"
+    Else
+        $bHintDllType = "ptr"
+    EndIf
+
+    Local $bCostDllType
+    If VarGetType($cost) == "DLLStruct" Then
+        $bCostDllType = "struct*"
+    Else
+        $bCostDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaNvidiaOpticalFlowCalc", $bNHWOpticalFlowDllType, $nHWOpticalFlow, $bInputImageDllType, $inputImage, $bReferenceImageDllType, $referenceImage, $bFlowDllType, $flow, $bStreamDllType, $stream, $bHintDllType, $hint, $bCostDllType, $cost), "cudaNvidiaOpticalFlowCalc", @error)
 EndFunc   ;==>_cudaNvidiaOpticalFlowCalc
 
 Func _cudaNvidiaOpticalFlowCalcMat($nHWOpticalFlow, $matInputImage, $matReferenceImage, $matFlow, $stream, $matHint, $matCost)
@@ -633,16 +840,52 @@ EndFunc   ;==>_cudaNvidiaOpticalFlowCalcMat
 
 Func _cudaNvidiaOpticalFlowCollectGarbage($nHWOpticalFlow)
     ; CVAPI(void) cudaNvidiaOpticalFlowCollectGarbage(cv::cuda::NvidiaHWOpticalFlow* nHWOpticalFlow);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaNvidiaOpticalFlowCollectGarbage", "ptr", $nHWOpticalFlow), "cudaNvidiaOpticalFlowCollectGarbage", @error)
+
+    Local $bNHWOpticalFlowDllType
+    If VarGetType($nHWOpticalFlow) == "DLLStruct" Then
+        $bNHWOpticalFlowDllType = "struct*"
+    Else
+        $bNHWOpticalFlowDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaNvidiaOpticalFlowCollectGarbage", $bNHWOpticalFlowDllType, $nHWOpticalFlow), "cudaNvidiaOpticalFlowCollectGarbage", @error)
 EndFunc   ;==>_cudaNvidiaOpticalFlowCollectGarbage
 
 Func _cudaNvidiaOpticalFlowGetGridSize($nHWOpticalFlow)
     ; CVAPI(int) cudaNvidiaOpticalFlowGetGridSize(cv::cuda::NvidiaHWOpticalFlow* nHWOpticalFlow);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cudaNvidiaOpticalFlowGetGridSize", "ptr", $nHWOpticalFlow), "cudaNvidiaOpticalFlowGetGridSize", @error)
+
+    Local $bNHWOpticalFlowDllType
+    If VarGetType($nHWOpticalFlow) == "DLLStruct" Then
+        $bNHWOpticalFlowDllType = "struct*"
+    Else
+        $bNHWOpticalFlowDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cudaNvidiaOpticalFlowGetGridSize", $bNHWOpticalFlowDllType, $nHWOpticalFlow), "cudaNvidiaOpticalFlowGetGridSize", @error)
 EndFunc   ;==>_cudaNvidiaOpticalFlowGetGridSize
 
 Func _cudaNvidiaOpticalFlow_2_0_Create($imageSize, $perfPreset, $outputGridSize, $hintGridSize, $enableTemporalHints, $enableExternalHints, $enableCostBuffer, $gpuId, $inputStream, $outputStream, $nHWOpticalFlow, $algorithm, $sharedPtr)
     ; CVAPI(cv::cuda::NvidiaOpticalFlow_2_0*) cudaNvidiaOpticalFlow_2_0_Create(CvSize* imageSize, int perfPreset, int outputGridSize, int hintGridSize, bool enableTemporalHints, bool enableExternalHints, bool enableCostBuffer, int gpuId, cv::cuda::Stream* inputStream, cv::cuda::Stream* outputStream, cv::cuda::NvidiaHWOpticalFlow** nHWOpticalFlow, cv::Algorithm** algorithm, cv::Ptr<cv::cuda::NvidiaOpticalFlow_2_0>** sharedPtr);
+
+    Local $bImageSizeDllType
+    If VarGetType($imageSize) == "DLLStruct" Then
+        $bImageSizeDllType = "struct*"
+    Else
+        $bImageSizeDllType = "ptr"
+    EndIf
+
+    Local $bInputStreamDllType
+    If VarGetType($inputStream) == "DLLStruct" Then
+        $bInputStreamDllType = "struct*"
+    Else
+        $bInputStreamDllType = "ptr"
+    EndIf
+
+    Local $bOutputStreamDllType
+    If VarGetType($outputStream) == "DLLStruct" Then
+        $bOutputStreamDllType = "struct*"
+    Else
+        $bOutputStreamDllType = "ptr"
+    EndIf
 
     Local $bNHWOpticalFlowDllType
     If VarGetType($nHWOpticalFlow) == "DLLStruct" Then
@@ -664,12 +907,34 @@ Func _cudaNvidiaOpticalFlow_2_0_Create($imageSize, $perfPreset, $outputGridSize,
     Else
         $bSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaNvidiaOpticalFlow_2_0_Create", "struct*", $imageSize, "int", $perfPreset, "int", $outputGridSize, "int", $hintGridSize, "boolean", $enableTemporalHints, "boolean", $enableExternalHints, "boolean", $enableCostBuffer, "int", $gpuId, "ptr", $inputStream, "ptr", $outputStream, $bNHWOpticalFlowDllType, $nHWOpticalFlow, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cudaNvidiaOpticalFlow_2_0_Create", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaNvidiaOpticalFlow_2_0_Create", $bImageSizeDllType, $imageSize, "int", $perfPreset, "int", $outputGridSize, "int", $hintGridSize, "boolean", $enableTemporalHints, "boolean", $enableExternalHints, "boolean", $enableCostBuffer, "int", $gpuId, $bInputStreamDllType, $inputStream, $bOutputStreamDllType, $outputStream, $bNHWOpticalFlowDllType, $nHWOpticalFlow, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cudaNvidiaOpticalFlow_2_0_Create", @error)
 EndFunc   ;==>_cudaNvidiaOpticalFlow_2_0_Create
 
 Func _cudaNvidiaOpticalFlow_2_0_ConvertToFloat($nvof, $flow, $floatFlow)
     ; CVAPI(void) cudaNvidiaOpticalFlow_2_0_ConvertToFloat(cv::cuda::NvidiaOpticalFlow_2_0* nvof, cv::_InputArray* flow, cv::_InputOutputArray* floatFlow);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaNvidiaOpticalFlow_2_0_ConvertToFloat", "ptr", $nvof, "ptr", $flow, "ptr", $floatFlow), "cudaNvidiaOpticalFlow_2_0_ConvertToFloat", @error)
+
+    Local $bNvofDllType
+    If VarGetType($nvof) == "DLLStruct" Then
+        $bNvofDllType = "struct*"
+    Else
+        $bNvofDllType = "ptr"
+    EndIf
+
+    Local $bFlowDllType
+    If VarGetType($flow) == "DLLStruct" Then
+        $bFlowDllType = "struct*"
+    Else
+        $bFlowDllType = "ptr"
+    EndIf
+
+    Local $bFloatFlowDllType
+    If VarGetType($floatFlow) == "DLLStruct" Then
+        $bFloatFlowDllType = "struct*"
+    Else
+        $bFloatFlowDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaNvidiaOpticalFlow_2_0_ConvertToFloat", $bNvofDllType, $nvof, $bFlowDllType, $flow, $bFloatFlowDllType, $floatFlow), "cudaNvidiaOpticalFlow_2_0_ConvertToFloat", @error)
 EndFunc   ;==>_cudaNvidiaOpticalFlow_2_0_ConvertToFloat
 
 Func _cudaNvidiaOpticalFlow_2_0_ConvertToFloatMat($nvof, $matFlow, $matFloatFlow)

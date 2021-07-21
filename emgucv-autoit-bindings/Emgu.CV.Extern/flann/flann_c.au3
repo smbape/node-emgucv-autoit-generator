@@ -203,7 +203,21 @@ EndFunc   ;==>_cveSearchParamsRelease
 
 Func _cveFlannIndexCreate($features, $p, $distType)
     ; CVAPI(cv::flann::Index*) cveFlannIndexCreate(cv::_InputArray* features, cv::flann::IndexParams* p, int distType);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFlannIndexCreate", "ptr", $features, "ptr", $p, "int", $distType), "cveFlannIndexCreate", @error)
+
+    Local $bFeaturesDllType
+    If VarGetType($features) == "DLLStruct" Then
+        $bFeaturesDllType = "struct*"
+    Else
+        $bFeaturesDllType = "ptr"
+    EndIf
+
+    Local $bPDllType
+    If VarGetType($p) == "DLLStruct" Then
+        $bPDllType = "struct*"
+    Else
+        $bPDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFlannIndexCreate", $bFeaturesDllType, $features, $bPDllType, $p, "int", $distType), "cveFlannIndexCreate", @error)
 EndFunc   ;==>_cveFlannIndexCreate
 
 Func _cveFlannIndexCreateMat($matFeatures, $p, $distType)
@@ -238,7 +252,36 @@ EndFunc   ;==>_cveFlannIndexCreateMat
 
 Func _cveFlannIndexKnnSearch($index, $queries, $indices, $dists, $knn, $checks, $eps, $sorted)
     ; CVAPI(void) cveFlannIndexKnnSearch(cv::flann::Index* index, cv::_InputArray* queries, cv::_OutputArray* indices, cv::_OutputArray* dists, int knn, int checks, float eps, bool sorted);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFlannIndexKnnSearch", "ptr", $index, "ptr", $queries, "ptr", $indices, "ptr", $dists, "int", $knn, "int", $checks, "float", $eps, "boolean", $sorted), "cveFlannIndexKnnSearch", @error)
+
+    Local $bIndexDllType
+    If VarGetType($index) == "DLLStruct" Then
+        $bIndexDllType = "struct*"
+    Else
+        $bIndexDllType = "ptr"
+    EndIf
+
+    Local $bQueriesDllType
+    If VarGetType($queries) == "DLLStruct" Then
+        $bQueriesDllType = "struct*"
+    Else
+        $bQueriesDllType = "ptr"
+    EndIf
+
+    Local $bIndicesDllType
+    If VarGetType($indices) == "DLLStruct" Then
+        $bIndicesDllType = "struct*"
+    Else
+        $bIndicesDllType = "ptr"
+    EndIf
+
+    Local $bDistsDllType
+    If VarGetType($dists) == "DLLStruct" Then
+        $bDistsDllType = "struct*"
+    Else
+        $bDistsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFlannIndexKnnSearch", $bIndexDllType, $index, $bQueriesDllType, $queries, $bIndicesDllType, $indices, $bDistsDllType, $dists, "int", $knn, "int", $checks, "float", $eps, "boolean", $sorted), "cveFlannIndexKnnSearch", @error)
 EndFunc   ;==>_cveFlannIndexKnnSearch
 
 Func _cveFlannIndexKnnSearchMat($index, $matQueries, $matIndices, $matDists, $knn, $checks, $eps, $sorted)
@@ -315,7 +358,35 @@ EndFunc   ;==>_cveFlannIndexKnnSearchMat
 
 Func _cveFlannIndexRadiusSearch($index, $queries, $indices, $dists, $radius, $maxResults, $checks, $eps, $sorted)
     ; CVAPI(int) cveFlannIndexRadiusSearch(cv::flann::Index* index, cv::_InputArray* queries, cv::_OutputArray* indices, cv::_OutputArray* dists, double radius, int maxResults, int checks, float eps, bool sorted);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveFlannIndexRadiusSearch", "ptr", $index, "ptr", $queries, "ptr", $indices, "ptr", $dists, "double", $radius, "int", $maxResults, "int", $checks, "float", $eps, "boolean", $sorted), "cveFlannIndexRadiusSearch", @error)
+
+    Local $bIndexDllType
+    If VarGetType($index) == "DLLStruct" Then
+        $bIndexDllType = "struct*"
+    Else
+        $bIndexDllType = "ptr"
+    EndIf
+
+    Local $bQueriesDllType
+    If VarGetType($queries) == "DLLStruct" Then
+        $bQueriesDllType = "struct*"
+    Else
+        $bQueriesDllType = "ptr"
+    EndIf
+
+    Local $bIndicesDllType
+    If VarGetType($indices) == "DLLStruct" Then
+        $bIndicesDllType = "struct*"
+    Else
+        $bIndicesDllType = "ptr"
+    EndIf
+
+    Local $bDistsDllType
+    If VarGetType($dists) == "DLLStruct" Then
+        $bDistsDllType = "struct*"
+    Else
+        $bDistsDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveFlannIndexRadiusSearch", $bIndexDllType, $index, $bQueriesDllType, $queries, $bIndicesDllType, $indices, $bDistsDllType, $dists, "double", $radius, "int", $maxResults, "int", $checks, "float", $eps, "boolean", $sorted), "cveFlannIndexRadiusSearch", @error)
 EndFunc   ;==>_cveFlannIndexRadiusSearch
 
 Func _cveFlannIndexRadiusSearchMat($index, $matQueries, $matIndices, $matDists, $radius, $maxResults, $checks, $eps, $sorted)

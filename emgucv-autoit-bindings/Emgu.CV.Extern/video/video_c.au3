@@ -49,7 +49,29 @@ EndFunc   ;==>_cveBackgroundSubtractorMOG2Release
 
 Func _cveBackgroundSubtractorUpdate($bgSubtractor, $image, $fgmask, $learningRate)
     ; CVAPI(void) cveBackgroundSubtractorUpdate(cv::BackgroundSubtractor* bgSubtractor, cv::_InputArray* image, cv::_OutputArray* fgmask, double learningRate);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBackgroundSubtractorUpdate", "ptr", $bgSubtractor, "ptr", $image, "ptr", $fgmask, "double", $learningRate), "cveBackgroundSubtractorUpdate", @error)
+
+    Local $bBgSubtractorDllType
+    If VarGetType($bgSubtractor) == "DLLStruct" Then
+        $bBgSubtractorDllType = "struct*"
+    Else
+        $bBgSubtractorDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bFgmaskDllType
+    If VarGetType($fgmask) == "DLLStruct" Then
+        $bFgmaskDllType = "struct*"
+    Else
+        $bFgmaskDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBackgroundSubtractorUpdate", $bBgSubtractorDllType, $bgSubtractor, $bImageDllType, $image, $bFgmaskDllType, $fgmask, "double", $learningRate), "cveBackgroundSubtractorUpdate", @error)
 EndFunc   ;==>_cveBackgroundSubtractorUpdate
 
 Func _cveBackgroundSubtractorUpdateMat($bgSubtractor, $matImage, $matFgmask, $learningRate)
@@ -104,7 +126,22 @@ EndFunc   ;==>_cveBackgroundSubtractorUpdateMat
 
 Func _cveBackgroundSubtractorGetBackgroundImage($bgSubtractor, $backgroundImage)
     ; CVAPI(void) cveBackgroundSubtractorGetBackgroundImage(cv::BackgroundSubtractor* bgSubtractor, cv::_OutputArray* backgroundImage);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBackgroundSubtractorGetBackgroundImage", "ptr", $bgSubtractor, "ptr", $backgroundImage), "cveBackgroundSubtractorGetBackgroundImage", @error)
+
+    Local $bBgSubtractorDllType
+    If VarGetType($bgSubtractor) == "DLLStruct" Then
+        $bBgSubtractorDllType = "struct*"
+    Else
+        $bBgSubtractorDllType = "ptr"
+    EndIf
+
+    Local $bBackgroundImageDllType
+    If VarGetType($backgroundImage) == "DLLStruct" Then
+        $bBackgroundImageDllType = "struct*"
+    Else
+        $bBackgroundImageDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBackgroundSubtractorGetBackgroundImage", $bBgSubtractorDllType, $bgSubtractor, $bBackgroundImageDllType, $backgroundImage), "cveBackgroundSubtractorGetBackgroundImage", @error)
 EndFunc   ;==>_cveBackgroundSubtractorGetBackgroundImage
 
 Func _cveBackgroundSubtractorGetBackgroundImageMat($bgSubtractor, $matBackgroundImage)
@@ -229,7 +266,36 @@ EndFunc   ;==>_cveFarnebackOpticalFlowRelease
 
 Func _cveDenseOpticalFlowCalc($dof, $i0, $i1, $flow)
     ; CVAPI(void) cveDenseOpticalFlowCalc(cv::DenseOpticalFlow* dof, cv::_InputArray* i0, cv::_InputArray* i1, cv::_InputOutputArray* flow);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDenseOpticalFlowCalc", "ptr", $dof, "ptr", $i0, "ptr", $i1, "ptr", $flow), "cveDenseOpticalFlowCalc", @error)
+
+    Local $bDofDllType
+    If VarGetType($dof) == "DLLStruct" Then
+        $bDofDllType = "struct*"
+    Else
+        $bDofDllType = "ptr"
+    EndIf
+
+    Local $bI0DllType
+    If VarGetType($i0) == "DLLStruct" Then
+        $bI0DllType = "struct*"
+    Else
+        $bI0DllType = "ptr"
+    EndIf
+
+    Local $bI1DllType
+    If VarGetType($i1) == "DLLStruct" Then
+        $bI1DllType = "struct*"
+    Else
+        $bI1DllType = "ptr"
+    EndIf
+
+    Local $bFlowDllType
+    If VarGetType($flow) == "DLLStruct" Then
+        $bFlowDllType = "struct*"
+    Else
+        $bFlowDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDenseOpticalFlowCalc", $bDofDllType, $dof, $bI0DllType, $i0, $bI1DllType, $i1, $bFlowDllType, $flow), "cveDenseOpticalFlowCalc", @error)
 EndFunc   ;==>_cveDenseOpticalFlowCalc
 
 Func _cveDenseOpticalFlowCalcMat($dof, $matI0, $matI1, $matFlow)
@@ -319,7 +385,57 @@ EndFunc   ;==>_cveDenseOpticalFlowRelease
 
 Func _cveSparseOpticalFlowCalc($sof, $prevImg, $nextImg, $prevPts, $nextPts, $status, $err)
     ; CVAPI(void) cveSparseOpticalFlowCalc(cv::SparseOpticalFlow* sof, cv::_InputArray* prevImg, cv::_InputArray* nextImg, cv::_InputArray* prevPts, cv::_InputOutputArray* nextPts, cv::_OutputArray* status, cv::_OutputArray* err);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSparseOpticalFlowCalc", "ptr", $sof, "ptr", $prevImg, "ptr", $nextImg, "ptr", $prevPts, "ptr", $nextPts, "ptr", $status, "ptr", $err), "cveSparseOpticalFlowCalc", @error)
+
+    Local $bSofDllType
+    If VarGetType($sof) == "DLLStruct" Then
+        $bSofDllType = "struct*"
+    Else
+        $bSofDllType = "ptr"
+    EndIf
+
+    Local $bPrevImgDllType
+    If VarGetType($prevImg) == "DLLStruct" Then
+        $bPrevImgDllType = "struct*"
+    Else
+        $bPrevImgDllType = "ptr"
+    EndIf
+
+    Local $bNextImgDllType
+    If VarGetType($nextImg) == "DLLStruct" Then
+        $bNextImgDllType = "struct*"
+    Else
+        $bNextImgDllType = "ptr"
+    EndIf
+
+    Local $bPrevPtsDllType
+    If VarGetType($prevPts) == "DLLStruct" Then
+        $bPrevPtsDllType = "struct*"
+    Else
+        $bPrevPtsDllType = "ptr"
+    EndIf
+
+    Local $bNextPtsDllType
+    If VarGetType($nextPts) == "DLLStruct" Then
+        $bNextPtsDllType = "struct*"
+    Else
+        $bNextPtsDllType = "ptr"
+    EndIf
+
+    Local $bStatusDllType
+    If VarGetType($status) == "DLLStruct" Then
+        $bStatusDllType = "struct*"
+    Else
+        $bStatusDllType = "ptr"
+    EndIf
+
+    Local $bErrDllType
+    If VarGetType($err) == "DLLStruct" Then
+        $bErrDllType = "struct*"
+    Else
+        $bErrDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSparseOpticalFlowCalc", $bSofDllType, $sof, $bPrevImgDllType, $prevImg, $bNextImgDllType, $nextImg, $bPrevPtsDllType, $prevPts, $bNextPtsDllType, $nextPts, $bStatusDllType, $status, $bErrDllType, $err), "cveSparseOpticalFlowCalc", @error)
 EndFunc   ;==>_cveSparseOpticalFlowCalc
 
 Func _cveSparseOpticalFlowCalcMat($sof, $matPrevImg, $matNextImg, $matPrevPts, $matNextPts, $matStatus, $matErr)
@@ -463,6 +579,20 @@ EndFunc   ;==>_cveSparseOpticalFlowCalcMat
 Func _cveSparsePyrLKOpticalFlowCreate($winSize, $maxLevel, $crit, $flags, $minEigThreshold, $sparseOpticalFlow, $algorithm, $sharedPtr)
     ; CVAPI(cv::SparsePyrLKOpticalFlow*) cveSparsePyrLKOpticalFlowCreate(CvSize* winSize, int maxLevel, CvTermCriteria* crit, int flags, double minEigThreshold, cv::SparseOpticalFlow** sparseOpticalFlow, cv::Algorithm** algorithm, cv::Ptr<cv::SparsePyrLKOpticalFlow>** sharedPtr);
 
+    Local $bWinSizeDllType
+    If VarGetType($winSize) == "DLLStruct" Then
+        $bWinSizeDllType = "struct*"
+    Else
+        $bWinSizeDllType = "ptr"
+    EndIf
+
+    Local $bCritDllType
+    If VarGetType($crit) == "DLLStruct" Then
+        $bCritDllType = "struct*"
+    Else
+        $bCritDllType = "ptr"
+    EndIf
+
     Local $bSparseOpticalFlowDllType
     If VarGetType($sparseOpticalFlow) == "DLLStruct" Then
         $bSparseOpticalFlowDllType = "struct*"
@@ -483,7 +613,7 @@ Func _cveSparsePyrLKOpticalFlowCreate($winSize, $maxLevel, $crit, $flags, $minEi
     Else
         $bSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSparsePyrLKOpticalFlowCreate", "struct*", $winSize, "int", $maxLevel, "struct*", $crit, "int", $flags, "double", $minEigThreshold, $bSparseOpticalFlowDllType, $sparseOpticalFlow, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveSparsePyrLKOpticalFlowCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSparsePyrLKOpticalFlowCreate", $bWinSizeDllType, $winSize, "int", $maxLevel, $bCritDllType, $crit, "int", $flags, "double", $minEigThreshold, $bSparseOpticalFlowDllType, $sparseOpticalFlow, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveSparsePyrLKOpticalFlowCreate", @error)
 EndFunc   ;==>_cveSparsePyrLKOpticalFlowCreate
 
 Func _cveSparsePyrLKOpticalFlowRelease($flow, $sharedPtr)
@@ -508,7 +638,29 @@ EndFunc   ;==>_cveSparsePyrLKOpticalFlowRelease
 
 Func _cveCalcOpticalFlowFarneback($prev, $next, $flow, $pyrScale, $levels, $winSize, $iterations, $polyN, $polySigma, $flags)
     ; CVAPI(void) cveCalcOpticalFlowFarneback(cv::_InputArray* prev, cv::_InputArray* next, cv::_InputOutputArray* flow, double pyrScale, int levels, int winSize, int iterations, int polyN, double polySigma, int flags);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCalcOpticalFlowFarneback", "ptr", $prev, "ptr", $next, "ptr", $flow, "double", $pyrScale, "int", $levels, "int", $winSize, "int", $iterations, "int", $polyN, "double", $polySigma, "int", $flags), "cveCalcOpticalFlowFarneback", @error)
+
+    Local $bPrevDllType
+    If VarGetType($prev) == "DLLStruct" Then
+        $bPrevDllType = "struct*"
+    Else
+        $bPrevDllType = "ptr"
+    EndIf
+
+    Local $bNextDllType
+    If VarGetType($next) == "DLLStruct" Then
+        $bNextDllType = "struct*"
+    Else
+        $bNextDllType = "ptr"
+    EndIf
+
+    Local $bFlowDllType
+    If VarGetType($flow) == "DLLStruct" Then
+        $bFlowDllType = "struct*"
+    Else
+        $bFlowDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCalcOpticalFlowFarneback", $bPrevDllType, $prev, $bNextDllType, $next, $bFlowDllType, $flow, "double", $pyrScale, "int", $levels, "int", $winSize, "int", $iterations, "int", $polyN, "double", $polySigma, "int", $flags), "cveCalcOpticalFlowFarneback", @error)
 EndFunc   ;==>_cveCalcOpticalFlowFarneback
 
 Func _cveCalcOpticalFlowFarnebackMat($matPrev, $matNext, $matFlow, $pyrScale, $levels, $winSize, $iterations, $polyN, $polySigma, $flags)
@@ -585,7 +737,64 @@ EndFunc   ;==>_cveCalcOpticalFlowFarnebackMat
 
 Func _cveCalcOpticalFlowPyrLK($prevImg, $nextImg, $prevPts, $nextPts, $status, $err, $winSize, $maxLevel, $criteria, $flags, $minEigenThreshold)
     ; CVAPI(void) cveCalcOpticalFlowPyrLK(cv::_InputArray* prevImg, cv::_InputArray* nextImg, cv::_InputArray* prevPts, cv::_InputOutputArray* nextPts, cv::_OutputArray* status, cv::_OutputArray* err, CvSize* winSize, int maxLevel, CvTermCriteria* criteria, int flags, double minEigenThreshold);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCalcOpticalFlowPyrLK", "ptr", $prevImg, "ptr", $nextImg, "ptr", $prevPts, "ptr", $nextPts, "ptr", $status, "ptr", $err, "struct*", $winSize, "int", $maxLevel, "struct*", $criteria, "int", $flags, "double", $minEigenThreshold), "cveCalcOpticalFlowPyrLK", @error)
+
+    Local $bPrevImgDllType
+    If VarGetType($prevImg) == "DLLStruct" Then
+        $bPrevImgDllType = "struct*"
+    Else
+        $bPrevImgDllType = "ptr"
+    EndIf
+
+    Local $bNextImgDllType
+    If VarGetType($nextImg) == "DLLStruct" Then
+        $bNextImgDllType = "struct*"
+    Else
+        $bNextImgDllType = "ptr"
+    EndIf
+
+    Local $bPrevPtsDllType
+    If VarGetType($prevPts) == "DLLStruct" Then
+        $bPrevPtsDllType = "struct*"
+    Else
+        $bPrevPtsDllType = "ptr"
+    EndIf
+
+    Local $bNextPtsDllType
+    If VarGetType($nextPts) == "DLLStruct" Then
+        $bNextPtsDllType = "struct*"
+    Else
+        $bNextPtsDllType = "ptr"
+    EndIf
+
+    Local $bStatusDllType
+    If VarGetType($status) == "DLLStruct" Then
+        $bStatusDllType = "struct*"
+    Else
+        $bStatusDllType = "ptr"
+    EndIf
+
+    Local $bErrDllType
+    If VarGetType($err) == "DLLStruct" Then
+        $bErrDllType = "struct*"
+    Else
+        $bErrDllType = "ptr"
+    EndIf
+
+    Local $bWinSizeDllType
+    If VarGetType($winSize) == "DLLStruct" Then
+        $bWinSizeDllType = "struct*"
+    Else
+        $bWinSizeDllType = "ptr"
+    EndIf
+
+    Local $bCriteriaDllType
+    If VarGetType($criteria) == "DLLStruct" Then
+        $bCriteriaDllType = "struct*"
+    Else
+        $bCriteriaDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCalcOpticalFlowPyrLK", $bPrevImgDllType, $prevImg, $bNextImgDllType, $nextImg, $bPrevPtsDllType, $prevPts, $bNextPtsDllType, $nextPts, $bStatusDllType, $status, $bErrDllType, $err, $bWinSizeDllType, $winSize, "int", $maxLevel, $bCriteriaDllType, $criteria, "int", $flags, "double", $minEigenThreshold), "cveCalcOpticalFlowPyrLK", @error)
 EndFunc   ;==>_cveCalcOpticalFlowPyrLK
 
 Func _cveCalcOpticalFlowPyrLKMat($matPrevImg, $matNextImg, $matPrevPts, $matNextPts, $matStatus, $matErr, $winSize, $maxLevel, $criteria, $flags, $minEigenThreshold)
@@ -728,7 +937,36 @@ EndFunc   ;==>_cveCalcOpticalFlowPyrLKMat
 
 Func _cveCamShift($probImage, $window, $criteria, $result)
     ; CVAPI(void) cveCamShift(cv::_InputArray* probImage, CvRect* window, CvTermCriteria* criteria, CvBox2D* result);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCamShift", "ptr", $probImage, "struct*", $window, "struct*", $criteria, "struct*", $result), "cveCamShift", @error)
+
+    Local $bProbImageDllType
+    If VarGetType($probImage) == "DLLStruct" Then
+        $bProbImageDllType = "struct*"
+    Else
+        $bProbImageDllType = "ptr"
+    EndIf
+
+    Local $bWindowDllType
+    If VarGetType($window) == "DLLStruct" Then
+        $bWindowDllType = "struct*"
+    Else
+        $bWindowDllType = "ptr"
+    EndIf
+
+    Local $bCriteriaDllType
+    If VarGetType($criteria) == "DLLStruct" Then
+        $bCriteriaDllType = "struct*"
+    Else
+        $bCriteriaDllType = "ptr"
+    EndIf
+
+    Local $bResultDllType
+    If VarGetType($result) == "DLLStruct" Then
+        $bResultDllType = "struct*"
+    Else
+        $bResultDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCamShift", $bProbImageDllType, $probImage, $bWindowDllType, $window, $bCriteriaDllType, $criteria, $bResultDllType, $result), "cveCamShift", @error)
 EndFunc   ;==>_cveCamShift
 
 Func _cveCamShiftMat($matProbImage, $window, $criteria, $result)
@@ -761,7 +999,28 @@ EndFunc   ;==>_cveCamShiftMat
 
 Func _cveMeanShift($probImage, $window, $criteria)
     ; CVAPI(int) cveMeanShift(cv::_InputArray* probImage, CvRect* window, CvTermCriteria* criteria);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveMeanShift", "ptr", $probImage, "struct*", $window, "struct*", $criteria), "cveMeanShift", @error)
+
+    Local $bProbImageDllType
+    If VarGetType($probImage) == "DLLStruct" Then
+        $bProbImageDllType = "struct*"
+    Else
+        $bProbImageDllType = "ptr"
+    EndIf
+
+    Local $bWindowDllType
+    If VarGetType($window) == "DLLStruct" Then
+        $bWindowDllType = "struct*"
+    Else
+        $bWindowDllType = "ptr"
+    EndIf
+
+    Local $bCriteriaDllType
+    If VarGetType($criteria) == "DLLStruct" Then
+        $bCriteriaDllType = "struct*"
+    Else
+        $bCriteriaDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveMeanShift", $bProbImageDllType, $probImage, $bWindowDllType, $window, $bCriteriaDllType, $criteria), "cveMeanShift", @error)
 EndFunc   ;==>_cveMeanShift
 
 Func _cveMeanShiftMat($matProbImage, $window, $criteria)
@@ -796,7 +1055,28 @@ EndFunc   ;==>_cveMeanShiftMat
 
 Func _cveBuildOpticalFlowPyramid($img, $pyramid, $winSize, $maxLevel, $withDerivatives = true, $pyrBorder = $CV_BORDER_REFLECT_101, $derivBorder = $CV_BORDER_CONSTANT, $tryReuseInputImage = true)
     ; CVAPI(int) cveBuildOpticalFlowPyramid(cv::_InputArray* img, cv::_OutputArray* pyramid, CvSize* winSize, int maxLevel, bool withDerivatives, int pyrBorder, int derivBorder, bool tryReuseInputImage);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveBuildOpticalFlowPyramid", "ptr", $img, "ptr", $pyramid, "struct*", $winSize, "int", $maxLevel, "boolean", $withDerivatives, "int", $pyrBorder, "int", $derivBorder, "boolean", $tryReuseInputImage), "cveBuildOpticalFlowPyramid", @error)
+
+    Local $bImgDllType
+    If VarGetType($img) == "DLLStruct" Then
+        $bImgDllType = "struct*"
+    Else
+        $bImgDllType = "ptr"
+    EndIf
+
+    Local $bPyramidDllType
+    If VarGetType($pyramid) == "DLLStruct" Then
+        $bPyramidDllType = "struct*"
+    Else
+        $bPyramidDllType = "ptr"
+    EndIf
+
+    Local $bWinSizeDllType
+    If VarGetType($winSize) == "DLLStruct" Then
+        $bWinSizeDllType = "struct*"
+    Else
+        $bWinSizeDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveBuildOpticalFlowPyramid", $bImgDllType, $img, $bPyramidDllType, $pyramid, $bWinSizeDllType, $winSize, "int", $maxLevel, "boolean", $withDerivatives, "int", $pyrBorder, "int", $derivBorder, "boolean", $tryReuseInputImage), "cveBuildOpticalFlowPyramid", @error)
 EndFunc   ;==>_cveBuildOpticalFlowPyramid
 
 Func _cveBuildOpticalFlowPyramidMat($matImg, $matPyramid, $winSize, $maxLevel, $withDerivatives = true, $pyrBorder = $CV_BORDER_REFLECT_101, $derivBorder = $CV_BORDER_CONSTANT, $tryReuseInputImage = true)
@@ -853,7 +1133,42 @@ EndFunc   ;==>_cveBuildOpticalFlowPyramidMat
 
 Func _cveFindTransformECC($templateImage, $inputImage, $warpMatrix, $motionType, $criteria, $inputMask)
     ; CVAPI(double) cveFindTransformECC(cv::_InputArray* templateImage, cv::_InputArray* inputImage, cv::_InputOutputArray* warpMatrix, int motionType, CvTermCriteria* criteria, cv::_InputArray* inputMask);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveFindTransformECC", "ptr", $templateImage, "ptr", $inputImage, "ptr", $warpMatrix, "int", $motionType, "struct*", $criteria, "ptr", $inputMask), "cveFindTransformECC", @error)
+
+    Local $bTemplateImageDllType
+    If VarGetType($templateImage) == "DLLStruct" Then
+        $bTemplateImageDllType = "struct*"
+    Else
+        $bTemplateImageDllType = "ptr"
+    EndIf
+
+    Local $bInputImageDllType
+    If VarGetType($inputImage) == "DLLStruct" Then
+        $bInputImageDllType = "struct*"
+    Else
+        $bInputImageDllType = "ptr"
+    EndIf
+
+    Local $bWarpMatrixDllType
+    If VarGetType($warpMatrix) == "DLLStruct" Then
+        $bWarpMatrixDllType = "struct*"
+    Else
+        $bWarpMatrixDllType = "ptr"
+    EndIf
+
+    Local $bCriteriaDllType
+    If VarGetType($criteria) == "DLLStruct" Then
+        $bCriteriaDllType = "struct*"
+    Else
+        $bCriteriaDllType = "ptr"
+    EndIf
+
+    Local $bInputMaskDllType
+    If VarGetType($inputMask) == "DLLStruct" Then
+        $bInputMaskDllType = "struct*"
+    Else
+        $bInputMaskDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveFindTransformECC", $bTemplateImageDllType, $templateImage, $bInputImageDllType, $inputImage, $bWarpMatrixDllType, $warpMatrix, "int", $motionType, $bCriteriaDllType, $criteria, $bInputMaskDllType, $inputMask), "cveFindTransformECC", @error)
 EndFunc   ;==>_cveFindTransformECC
 
 Func _cveFindTransformECCMat($matTemplateImage, $matInputImage, $matWarpMatrix, $motionType, $criteria, $matInputMask)
@@ -972,12 +1287,40 @@ EndFunc   ;==>_cveKalmanFilterRelease
 
 Func _cveKalmanFilterPredict($kalman, $control)
     ; CVAPI(const cv::Mat*) cveKalmanFilterPredict(cv::KalmanFilter* kalman, cv::Mat* control);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveKalmanFilterPredict", "ptr", $kalman, "ptr", $control), "cveKalmanFilterPredict", @error)
+
+    Local $bKalmanDllType
+    If VarGetType($kalman) == "DLLStruct" Then
+        $bKalmanDllType = "struct*"
+    Else
+        $bKalmanDllType = "ptr"
+    EndIf
+
+    Local $bControlDllType
+    If VarGetType($control) == "DLLStruct" Then
+        $bControlDllType = "struct*"
+    Else
+        $bControlDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveKalmanFilterPredict", $bKalmanDllType, $kalman, $bControlDllType, $control), "cveKalmanFilterPredict", @error)
 EndFunc   ;==>_cveKalmanFilterPredict
 
 Func _cveKalmanFilterCorrect($kalman, $measurement)
     ; CVAPI(const cv::Mat*) cveKalmanFilterCorrect(cv::KalmanFilter* kalman, cv::Mat* measurement);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveKalmanFilterCorrect", "ptr", $kalman, "ptr", $measurement), "cveKalmanFilterCorrect", @error)
+
+    Local $bKalmanDllType
+    If VarGetType($kalman) == "DLLStruct" Then
+        $bKalmanDllType = "struct*"
+    Else
+        $bKalmanDllType = "ptr"
+    EndIf
+
+    Local $bMeasurementDllType
+    If VarGetType($measurement) == "DLLStruct" Then
+        $bMeasurementDllType = "struct*"
+    Else
+        $bMeasurementDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveKalmanFilterCorrect", $bKalmanDllType, $kalman, $bMeasurementDllType, $measurement), "cveKalmanFilterCorrect", @error)
 EndFunc   ;==>_cveKalmanFilterCorrect
 
 Func _cveDISOpticalFlowCreate($preset, $denseFlow, $algorithm, $sharedPtr)
@@ -1074,12 +1417,55 @@ EndFunc   ;==>_cveVariationalRefinementRelease
 
 Func _cveTrackerInit($tracker, $image, $boundingBox)
     ; CVAPI(void) cveTrackerInit(cv::Tracker* tracker, cv::Mat* image, CvRect* boundingBox);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTrackerInit", "ptr", $tracker, "ptr", $image, "struct*", $boundingBox), "cveTrackerInit", @error)
+
+    Local $bTrackerDllType
+    If VarGetType($tracker) == "DLLStruct" Then
+        $bTrackerDllType = "struct*"
+    Else
+        $bTrackerDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bBoundingBoxDllType
+    If VarGetType($boundingBox) == "DLLStruct" Then
+        $bBoundingBoxDllType = "struct*"
+    Else
+        $bBoundingBoxDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTrackerInit", $bTrackerDllType, $tracker, $bImageDllType, $image, $bBoundingBoxDllType, $boundingBox), "cveTrackerInit", @error)
 EndFunc   ;==>_cveTrackerInit
 
 Func _cveTrackerUpdate($tracker, $image, $boundingBox)
     ; CVAPI(bool) cveTrackerUpdate(cv::Tracker* tracker, cv::Mat* image, CvRect* boundingBox);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveTrackerUpdate", "ptr", $tracker, "ptr", $image, "struct*", $boundingBox), "cveTrackerUpdate", @error)
+
+    Local $bTrackerDllType
+    If VarGetType($tracker) == "DLLStruct" Then
+        $bTrackerDllType = "struct*"
+    Else
+        $bTrackerDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bBoundingBoxDllType
+    If VarGetType($boundingBox) == "DLLStruct" Then
+        $bBoundingBoxDllType = "struct*"
+    Else
+        $bBoundingBoxDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveTrackerUpdate", $bTrackerDllType, $tracker, $bImageDllType, $image, $bBoundingBoxDllType, $boundingBox), "cveTrackerUpdate", @error)
 EndFunc   ;==>_cveTrackerUpdate
 
 Func _cveTrackerMILCreate($samplerInitInRadius, $samplerInitMaxNegNum, $samplerSearchWinSize, $samplerTrackInRadius, $samplerTrackMaxPosNum, $samplerTrackMaxNegNum, $featureSetNumFeatures, $tracker, $sharedPtr)

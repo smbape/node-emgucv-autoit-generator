@@ -3,7 +3,29 @@
 
 Func _cveInpaint($src, $inpaintMask, $dst, $inpaintRadius, $flags)
     ; CVAPI(void) cveInpaint(cv::_InputArray* src, cv::_InputArray* inpaintMask, cv::_OutputArray* dst, double inpaintRadius, int flags);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveInpaint", "ptr", $src, "ptr", $inpaintMask, "ptr", $dst, "double", $inpaintRadius, "int", $flags), "cveInpaint", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bInpaintMaskDllType
+    If VarGetType($inpaintMask) == "DLLStruct" Then
+        $bInpaintMaskDllType = "struct*"
+    Else
+        $bInpaintMaskDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveInpaint", $bSrcDllType, $src, $bInpaintMaskDllType, $inpaintMask, $bDstDllType, $dst, "double", $inpaintRadius, "int", $flags), "cveInpaint", @error)
 EndFunc   ;==>_cveInpaint
 
 Func _cveInpaintMat($matSrc, $matInpaintMask, $matDst, $inpaintRadius, $flags)
@@ -80,7 +102,22 @@ EndFunc   ;==>_cveInpaintMat
 
 Func _cveFastNlMeansDenoising($src, $dst, $h = 3, $templateWindowSize = 7, $searchWindowSize = 21)
     ; CVAPI(void) cveFastNlMeansDenoising(cv::_InputArray* src, cv::_OutputArray* dst, float h, int templateWindowSize, int searchWindowSize);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFastNlMeansDenoising", "ptr", $src, "ptr", $dst, "float", $h, "int", $templateWindowSize, "int", $searchWindowSize), "cveFastNlMeansDenoising", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFastNlMeansDenoising", $bSrcDllType, $src, $bDstDllType, $dst, "float", $h, "int", $templateWindowSize, "int", $searchWindowSize), "cveFastNlMeansDenoising", @error)
 EndFunc   ;==>_cveFastNlMeansDenoising
 
 Func _cveFastNlMeansDenoisingMat($matSrc, $matDst, $h = 3, $templateWindowSize = 7, $searchWindowSize = 21)
@@ -135,7 +172,22 @@ EndFunc   ;==>_cveFastNlMeansDenoisingMat
 
 Func _cveFastNlMeansDenoisingColored($src, $dst, $h = 3, $hColor = 3, $templateWindowSize = 7, $searchWindowSize = 21)
     ; CVAPI(void) cveFastNlMeansDenoisingColored(cv::_InputArray* src, cv::_OutputArray* dst, float h, float hColor, int templateWindowSize, int searchWindowSize);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFastNlMeansDenoisingColored", "ptr", $src, "ptr", $dst, "float", $h, "float", $hColor, "int", $templateWindowSize, "int", $searchWindowSize), "cveFastNlMeansDenoisingColored", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFastNlMeansDenoisingColored", $bSrcDllType, $src, $bDstDllType, $dst, "float", $h, "float", $hColor, "int", $templateWindowSize, "int", $searchWindowSize), "cveFastNlMeansDenoisingColored", @error)
 EndFunc   ;==>_cveFastNlMeansDenoisingColored
 
 Func _cveFastNlMeansDenoisingColoredMat($matSrc, $matDst, $h = 3, $hColor = 3, $templateWindowSize = 7, $searchWindowSize = 21)
@@ -190,12 +242,49 @@ EndFunc   ;==>_cveFastNlMeansDenoisingColoredMat
 
 Func _cudaNonLocalMeans($src, $dst, $h, $searchWindow, $blockSize, $borderMode, $stream)
     ; CVAPI(void) cudaNonLocalMeans(const cv::cuda::GpuMat* src, cv::cuda::GpuMat* dst, float h, int searchWindow, int blockSize, int borderMode, cv::cuda::Stream* stream);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaNonLocalMeans", "ptr", $src, "ptr", $dst, "float", $h, "int", $searchWindow, "int", $blockSize, "int", $borderMode, "ptr", $stream), "cudaNonLocalMeans", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaNonLocalMeans", $bSrcDllType, $src, $bDstDllType, $dst, "float", $h, "int", $searchWindow, "int", $blockSize, "int", $borderMode, $bStreamDllType, $stream), "cudaNonLocalMeans", @error)
 EndFunc   ;==>_cudaNonLocalMeans
 
 Func _cveEdgePreservingFilter($src, $dst, $flags, $sigmaS, $sigmaR)
     ; CVAPI(void) cveEdgePreservingFilter(cv::_InputArray* src, cv::_OutputArray* dst, int flags, float sigmaS, float sigmaR);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEdgePreservingFilter", "ptr", $src, "ptr", $dst, "int", $flags, "float", $sigmaS, "float", $sigmaR), "cveEdgePreservingFilter", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEdgePreservingFilter", $bSrcDllType, $src, $bDstDllType, $dst, "int", $flags, "float", $sigmaS, "float", $sigmaR), "cveEdgePreservingFilter", @error)
 EndFunc   ;==>_cveEdgePreservingFilter
 
 Func _cveEdgePreservingFilterMat($matSrc, $matDst, $flags, $sigmaS, $sigmaR)
@@ -250,7 +339,22 @@ EndFunc   ;==>_cveEdgePreservingFilterMat
 
 Func _cveDetailEnhance($src, $dst, $sigmaS, $sigmaR)
     ; CVAPI(void) cveDetailEnhance(cv::_InputArray* src, cv::_OutputArray* dst, float sigmaS, float sigmaR);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailEnhance", "ptr", $src, "ptr", $dst, "float", $sigmaS, "float", $sigmaR), "cveDetailEnhance", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetailEnhance", $bSrcDllType, $src, $bDstDllType, $dst, "float", $sigmaS, "float", $sigmaR), "cveDetailEnhance", @error)
 EndFunc   ;==>_cveDetailEnhance
 
 Func _cveDetailEnhanceMat($matSrc, $matDst, $sigmaS, $sigmaR)
@@ -305,7 +409,29 @@ EndFunc   ;==>_cveDetailEnhanceMat
 
 Func _cvePencilSketch($src, $dst1, $dst2, $sigmaS, $sigmaR, $shadeFactor)
     ; CVAPI(void) cvePencilSketch(cv::_InputArray* src, cv::_OutputArray* dst1, cv::_OutputArray* dst2, float sigmaS, float sigmaR, float shadeFactor);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePencilSketch", "ptr", $src, "ptr", $dst1, "ptr", $dst2, "float", $sigmaS, "float", $sigmaR, "float", $shadeFactor), "cvePencilSketch", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDst1DllType
+    If VarGetType($dst1) == "DLLStruct" Then
+        $bDst1DllType = "struct*"
+    Else
+        $bDst1DllType = "ptr"
+    EndIf
+
+    Local $bDst2DllType
+    If VarGetType($dst2) == "DLLStruct" Then
+        $bDst2DllType = "struct*"
+    Else
+        $bDst2DllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePencilSketch", $bSrcDllType, $src, $bDst1DllType, $dst1, $bDst2DllType, $dst2, "float", $sigmaS, "float", $sigmaR, "float", $shadeFactor), "cvePencilSketch", @error)
 EndFunc   ;==>_cvePencilSketch
 
 Func _cvePencilSketchMat($matSrc, $matDst1, $matDst2, $sigmaS, $sigmaR, $shadeFactor)
@@ -382,7 +508,22 @@ EndFunc   ;==>_cvePencilSketchMat
 
 Func _cveStylization($src, $dst, $sigmaS, $sigmaR)
     ; CVAPI(void) cveStylization(cv::_InputArray* src, cv::_OutputArray* dst, float sigmaS, float sigmaR);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStylization", "ptr", $src, "ptr", $dst, "float", $sigmaS, "float", $sigmaR), "cveStylization", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStylization", $bSrcDllType, $src, $bDstDllType, $dst, "float", $sigmaS, "float", $sigmaR), "cveStylization", @error)
 EndFunc   ;==>_cveStylization
 
 Func _cveStylizationMat($matSrc, $matDst, $sigmaS, $sigmaR)
@@ -437,7 +578,29 @@ EndFunc   ;==>_cveStylizationMat
 
 Func _cveColorChange($src, $mask, $dst, $redMul, $greenMul, $blueMul)
     ; CVAPI(void) cveColorChange(cv::_InputArray* src, cv::_InputArray* mask, cv::_OutputArray* dst, float redMul, float greenMul, float blueMul);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveColorChange", "ptr", $src, "ptr", $mask, "ptr", $dst, "float", $redMul, "float", $greenMul, "float", $blueMul), "cveColorChange", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bMaskDllType
+    If VarGetType($mask) == "DLLStruct" Then
+        $bMaskDllType = "struct*"
+    Else
+        $bMaskDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveColorChange", $bSrcDllType, $src, $bMaskDllType, $mask, $bDstDllType, $dst, "float", $redMul, "float", $greenMul, "float", $blueMul), "cveColorChange", @error)
 EndFunc   ;==>_cveColorChange
 
 Func _cveColorChangeMat($matSrc, $matMask, $matDst, $redMul, $greenMul, $blueMul)
@@ -514,7 +677,29 @@ EndFunc   ;==>_cveColorChangeMat
 
 Func _cveIlluminationChange($src, $mask, $dst, $alpha = 0.2, $beta = 0.4)
     ; CVAPI(void) cveIlluminationChange(cv::_InputArray* src, cv::_InputArray* mask, cv::_OutputArray* dst, float alpha, float beta);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveIlluminationChange", "ptr", $src, "ptr", $mask, "ptr", $dst, "float", $alpha, "float", $beta), "cveIlluminationChange", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bMaskDllType
+    If VarGetType($mask) == "DLLStruct" Then
+        $bMaskDllType = "struct*"
+    Else
+        $bMaskDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveIlluminationChange", $bSrcDllType, $src, $bMaskDllType, $mask, $bDstDllType, $dst, "float", $alpha, "float", $beta), "cveIlluminationChange", @error)
 EndFunc   ;==>_cveIlluminationChange
 
 Func _cveIlluminationChangeMat($matSrc, $matMask, $matDst, $alpha = 0.2, $beta = 0.4)
@@ -591,7 +776,29 @@ EndFunc   ;==>_cveIlluminationChangeMat
 
 Func _cveTextureFlattening($src, $mask, $dst, $lowThreshold, $highThreshold, $kernelSize)
     ; CVAPI(void) cveTextureFlattening(cv::_InputArray* src, cv::_InputArray* mask, cv::_OutputArray* dst, float lowThreshold, float highThreshold, int kernelSize);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTextureFlattening", "ptr", $src, "ptr", $mask, "ptr", $dst, "float", $lowThreshold, "float", $highThreshold, "int", $kernelSize), "cveTextureFlattening", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bMaskDllType
+    If VarGetType($mask) == "DLLStruct" Then
+        $bMaskDllType = "struct*"
+    Else
+        $bMaskDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTextureFlattening", $bSrcDllType, $src, $bMaskDllType, $mask, $bDstDllType, $dst, "float", $lowThreshold, "float", $highThreshold, "int", $kernelSize), "cveTextureFlattening", @error)
 EndFunc   ;==>_cveTextureFlattening
 
 Func _cveTextureFlatteningMat($matSrc, $matMask, $matDst, $lowThreshold, $highThreshold, $kernelSize)
@@ -668,7 +875,29 @@ EndFunc   ;==>_cveTextureFlatteningMat
 
 Func _cveDecolor($src, $grayscale, $colorBoost)
     ; CVAPI(void) cveDecolor(cv::_InputArray* src, cv::_OutputArray* grayscale, cv::_OutputArray* colorBoost);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDecolor", "ptr", $src, "ptr", $grayscale, "ptr", $colorBoost), "cveDecolor", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bGrayscaleDllType
+    If VarGetType($grayscale) == "DLLStruct" Then
+        $bGrayscaleDllType = "struct*"
+    Else
+        $bGrayscaleDllType = "ptr"
+    EndIf
+
+    Local $bColorBoostDllType
+    If VarGetType($colorBoost) == "DLLStruct" Then
+        $bColorBoostDllType = "struct*"
+    Else
+        $bColorBoostDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDecolor", $bSrcDllType, $src, $bGrayscaleDllType, $grayscale, $bColorBoostDllType, $colorBoost), "cveDecolor", @error)
 EndFunc   ;==>_cveDecolor
 
 Func _cveDecolorMat($matSrc, $matGrayscale, $matColorBoost)
@@ -745,7 +974,43 @@ EndFunc   ;==>_cveDecolorMat
 
 Func _cveSeamlessClone($src, $dst, $mask, $p, $blend, $flags)
     ; CVAPI(void) cveSeamlessClone(cv::_InputArray* src, cv::_InputArray* dst, cv::_InputArray* mask, CvPoint* p, cv::_OutputArray* blend, int flags);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSeamlessClone", "ptr", $src, "ptr", $dst, "ptr", $mask, "struct*", $p, "ptr", $blend, "int", $flags), "cveSeamlessClone", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    Local $bMaskDllType
+    If VarGetType($mask) == "DLLStruct" Then
+        $bMaskDllType = "struct*"
+    Else
+        $bMaskDllType = "ptr"
+    EndIf
+
+    Local $bPDllType
+    If VarGetType($p) == "DLLStruct" Then
+        $bPDllType = "struct*"
+    Else
+        $bPDllType = "ptr"
+    EndIf
+
+    Local $bBlendDllType
+    If VarGetType($blend) == "DLLStruct" Then
+        $bBlendDllType = "struct*"
+    Else
+        $bBlendDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSeamlessClone", $bSrcDllType, $src, $bDstDllType, $dst, $bMaskDllType, $mask, $bPDllType, $p, $bBlendDllType, $blend, "int", $flags), "cveSeamlessClone", @error)
 EndFunc   ;==>_cveSeamlessClone
 
 Func _cveSeamlessCloneMat($matSrc, $matDst, $matMask, $p, $matBlend, $flags)
@@ -859,7 +1124,21 @@ Func _cveDenoiseTVL1($observations, $result, $lambda, $niters)
         $vecObservations = $observations
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDenoiseTVL1", "ptr", $vecObservations, "ptr", $result, "double", $lambda, "int", $niters), "cveDenoiseTVL1", @error)
+    Local $bObservationsDllType
+    If VarGetType($observations) == "DLLStruct" Then
+        $bObservationsDllType = "struct*"
+    Else
+        $bObservationsDllType = "ptr"
+    EndIf
+
+    Local $bResultDllType
+    If VarGetType($result) == "DLLStruct" Then
+        $bResultDllType = "struct*"
+    Else
+        $bResultDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDenoiseTVL1", $bObservationsDllType, $vecObservations, $bResultDllType, $result, "double", $lambda, "int", $niters), "cveDenoiseTVL1", @error)
 
     If $bObservationsIsArray Then
         _VectorOfMatRelease($vecObservations)
@@ -868,7 +1147,36 @@ EndFunc   ;==>_cveDenoiseTVL1
 
 Func _cveCalibrateCRFProcess($calibrateCRF, $src, $dst, $times)
     ; CVAPI(void) cveCalibrateCRFProcess(cv::CalibrateCRF* calibrateCRF, cv::_InputArray* src, cv::_OutputArray* dst, cv::_InputArray* times);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCalibrateCRFProcess", "ptr", $calibrateCRF, "ptr", $src, "ptr", $dst, "ptr", $times), "cveCalibrateCRFProcess", @error)
+
+    Local $bCalibrateCRFDllType
+    If VarGetType($calibrateCRF) == "DLLStruct" Then
+        $bCalibrateCRFDllType = "struct*"
+    Else
+        $bCalibrateCRFDllType = "ptr"
+    EndIf
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    Local $bTimesDllType
+    If VarGetType($times) == "DLLStruct" Then
+        $bTimesDllType = "struct*"
+    Else
+        $bTimesDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCalibrateCRFProcess", $bCalibrateCRFDllType, $calibrateCRF, $bSrcDllType, $src, $bDstDllType, $dst, $bTimesDllType, $times), "cveCalibrateCRFProcess", @error)
 EndFunc   ;==>_cveCalibrateCRFProcess
 
 Func _cveCalibrateCRFProcessMat($calibrateCRF, $matSrc, $matDst, $matTimes)
@@ -1023,7 +1331,43 @@ EndFunc   ;==>_cveCalibrateRobertsonRelease
 
 Func _cveMergeExposuresProcess($mergeExposures, $src, $dst, $times, $response)
     ; CVAPI(void) cveMergeExposuresProcess(cv::MergeExposures* mergeExposures, cv::_InputArray* src, cv::_OutputArray* dst, cv::_InputArray* times, cv::_InputArray* response);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMergeExposuresProcess", "ptr", $mergeExposures, "ptr", $src, "ptr", $dst, "ptr", $times, "ptr", $response), "cveMergeExposuresProcess", @error)
+
+    Local $bMergeExposuresDllType
+    If VarGetType($mergeExposures) == "DLLStruct" Then
+        $bMergeExposuresDllType = "struct*"
+    Else
+        $bMergeExposuresDllType = "ptr"
+    EndIf
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    Local $bTimesDllType
+    If VarGetType($times) == "DLLStruct" Then
+        $bTimesDllType = "struct*"
+    Else
+        $bTimesDllType = "ptr"
+    EndIf
+
+    Local $bResponseDllType
+    If VarGetType($response) == "DLLStruct" Then
+        $bResponseDllType = "struct*"
+    Else
+        $bResponseDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMergeExposuresProcess", $bMergeExposuresDllType, $mergeExposures, $bSrcDllType, $src, $bDstDllType, $dst, $bTimesDllType, $times, $bResponseDllType, $response), "cveMergeExposuresProcess", @error)
 EndFunc   ;==>_cveMergeExposuresProcess
 
 Func _cveMergeExposuresProcessMat($mergeExposures, $matSrc, $matDst, $matTimes, $matResponse)
@@ -1239,7 +1583,29 @@ EndFunc   ;==>_cveMergeRobertsonRelease
 
 Func _cveTonemapProcess($tonemap, $src, $dst)
     ; CVAPI(void) cveTonemapProcess(cv::Tonemap* tonemap, cv::_InputArray* src, cv::_OutputArray* dst);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTonemapProcess", "ptr", $tonemap, "ptr", $src, "ptr", $dst), "cveTonemapProcess", @error)
+
+    Local $bTonemapDllType
+    If VarGetType($tonemap) == "DLLStruct" Then
+        $bTonemapDllType = "struct*"
+    Else
+        $bTonemapDllType = "ptr"
+    EndIf
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTonemapProcess", $bTonemapDllType, $tonemap, $bSrcDllType, $src, $bDstDllType, $dst), "cveTonemapProcess", @error)
 EndFunc   ;==>_cveTonemapProcess
 
 Func _cveTonemapProcessMat($tonemap, $matSrc, $matDst)
@@ -1472,6 +1838,20 @@ EndFunc   ;==>_cveTonemapMantiukRelease
 Func _cveAlignExposuresProcess($alignExposures, $src, $dst, $times, $response)
     ; CVAPI(void) cveAlignExposuresProcess(cv::AlignExposures* alignExposures, cv::_InputArray* src, std::vector<cv::Mat>* dst, cv::_InputArray* times, cv::_InputArray* response);
 
+    Local $bAlignExposuresDllType
+    If VarGetType($alignExposures) == "DLLStruct" Then
+        $bAlignExposuresDllType = "struct*"
+    Else
+        $bAlignExposuresDllType = "ptr"
+    EndIf
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
     Local $vecDst, $iArrDstSize
     Local $bDstIsArray = VarGetType($dst) == "Array"
 
@@ -1486,7 +1866,28 @@ Func _cveAlignExposuresProcess($alignExposures, $src, $dst, $times, $response)
         $vecDst = $dst
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAlignExposuresProcess", "ptr", $alignExposures, "ptr", $src, "ptr", $vecDst, "ptr", $times, "ptr", $response), "cveAlignExposuresProcess", @error)
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    Local $bTimesDllType
+    If VarGetType($times) == "DLLStruct" Then
+        $bTimesDllType = "struct*"
+    Else
+        $bTimesDllType = "ptr"
+    EndIf
+
+    Local $bResponseDllType
+    If VarGetType($response) == "DLLStruct" Then
+        $bResponseDllType = "struct*"
+    Else
+        $bResponseDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAlignExposuresProcess", $bAlignExposuresDllType, $alignExposures, $bSrcDllType, $src, $bDstDllType, $vecDst, $bTimesDllType, $times, $bResponseDllType, $response), "cveAlignExposuresProcess", @error)
 
     If $bDstIsArray Then
         _VectorOfMatRelease($vecDst)

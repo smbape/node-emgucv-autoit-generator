@@ -3,7 +3,29 @@
 
 Func _cveAlphamatInfoFlow($image, $tmap, $result)
     ; CVAPI(void) cveAlphamatInfoFlow(cv::_InputArray* image, cv::_InputArray* tmap, cv::_OutputArray* result);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAlphamatInfoFlow", "ptr", $image, "ptr", $tmap, "ptr", $result), "cveAlphamatInfoFlow", @error)
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bTmapDllType
+    If VarGetType($tmap) == "DLLStruct" Then
+        $bTmapDllType = "struct*"
+    Else
+        $bTmapDllType = "ptr"
+    EndIf
+
+    Local $bResultDllType
+    If VarGetType($result) == "DLLStruct" Then
+        $bResultDllType = "struct*"
+    Else
+        $bResultDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAlphamatInfoFlow", $bImageDllType, $image, $bTmapDllType, $tmap, $bResultDllType, $result), "cveAlphamatInfoFlow", @error)
 EndFunc   ;==>_cveAlphamatInfoFlow
 
 Func _cveAlphamatInfoFlowMat($matImage, $matTmap, $matResult)

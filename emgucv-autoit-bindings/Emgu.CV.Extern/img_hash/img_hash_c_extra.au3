@@ -3,7 +3,29 @@
 
 Func _cveImgHashBaseCompute($imgHash, $inputArr, $outputArr)
     ; CVAPI(void) cveImgHashBaseCompute(cv::img_hash::ImgHashBase* imgHash, cv::_InputArray* inputArr, cv::_OutputArray* outputArr);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveImgHashBaseCompute", "ptr", $imgHash, "ptr", $inputArr, "ptr", $outputArr), "cveImgHashBaseCompute", @error)
+
+    Local $bImgHashDllType
+    If VarGetType($imgHash) == "DLLStruct" Then
+        $bImgHashDllType = "struct*"
+    Else
+        $bImgHashDllType = "ptr"
+    EndIf
+
+    Local $bInputArrDllType
+    If VarGetType($inputArr) == "DLLStruct" Then
+        $bInputArrDllType = "struct*"
+    Else
+        $bInputArrDllType = "ptr"
+    EndIf
+
+    Local $bOutputArrDllType
+    If VarGetType($outputArr) == "DLLStruct" Then
+        $bOutputArrDllType = "struct*"
+    Else
+        $bOutputArrDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveImgHashBaseCompute", $bImgHashDllType, $imgHash, $bInputArrDllType, $inputArr, $bOutputArrDllType, $outputArr), "cveImgHashBaseCompute", @error)
 EndFunc   ;==>_cveImgHashBaseCompute
 
 Func _cveImgHashBaseComputeMat($imgHash, $matInputArr, $matOutputArr)
@@ -58,7 +80,28 @@ EndFunc   ;==>_cveImgHashBaseComputeMat
 
 Func _cveImgHashBaseCompare($imgHash, $hashOne, $hashTwo)
     ; CVAPI(double) cveImgHashBaseCompare(cv::img_hash::ImgHashBase* imgHash, cv::_InputArray* hashOne, cv::_InputArray* hashTwo);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveImgHashBaseCompare", "ptr", $imgHash, "ptr", $hashOne, "ptr", $hashTwo), "cveImgHashBaseCompare", @error)
+
+    Local $bImgHashDllType
+    If VarGetType($imgHash) == "DLLStruct" Then
+        $bImgHashDllType = "struct*"
+    Else
+        $bImgHashDllType = "ptr"
+    EndIf
+
+    Local $bHashOneDllType
+    If VarGetType($hashOne) == "DLLStruct" Then
+        $bHashOneDllType = "struct*"
+    Else
+        $bHashOneDllType = "ptr"
+    EndIf
+
+    Local $bHashTwoDllType
+    If VarGetType($hashTwo) == "DLLStruct" Then
+        $bHashTwoDllType = "struct*"
+    Else
+        $bHashTwoDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveImgHashBaseCompare", $bImgHashDllType, $imgHash, $bHashOneDllType, $hashOne, $bHashTwoDllType, $hashTwo), "cveImgHashBaseCompare", @error)
 EndFunc   ;==>_cveImgHashBaseCompare
 
 Func _cveImgHashBaseCompareMat($imgHash, $matHashOne, $matHashTwo)

@@ -3,7 +3,29 @@
 
 Func _cveFtCreateKernel($A, $B, $kernel, $chn)
     ; CVAPI(void) cveFtCreateKernel(cv::_InputArray* A, cv::_InputArray* B, cv::_OutputArray* kernel, int chn);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtCreateKernel", "ptr", $A, "ptr", $B, "ptr", $kernel, "int", $chn), "cveFtCreateKernel", @error)
+
+    Local $bADllType
+    If VarGetType($A) == "DLLStruct" Then
+        $bADllType = "struct*"
+    Else
+        $bADllType = "ptr"
+    EndIf
+
+    Local $bBDllType
+    If VarGetType($B) == "DLLStruct" Then
+        $bBDllType = "struct*"
+    Else
+        $bBDllType = "ptr"
+    EndIf
+
+    Local $bKernelDllType
+    If VarGetType($kernel) == "DLLStruct" Then
+        $bKernelDllType = "struct*"
+    Else
+        $bKernelDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtCreateKernel", $bADllType, $A, $bBDllType, $B, $bKernelDllType, $kernel, "int", $chn), "cveFtCreateKernel", @error)
 EndFunc   ;==>_cveFtCreateKernel
 
 Func _cveFtCreateKernelMat($matA, $matB, $matKernel, $chn)
@@ -80,7 +102,15 @@ EndFunc   ;==>_cveFtCreateKernelMat
 
 Func _cveFtcreateKernelFromFunction($function, $radius, $kernel, $chn)
     ; CVAPI(void) cveFtcreateKernelFromFunction(int function, int radius, cv::_OutputArray* kernel, int chn);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtcreateKernelFromFunction", "int", $function, "int", $radius, "ptr", $kernel, "int", $chn), "cveFtcreateKernelFromFunction", @error)
+
+    Local $bKernelDllType
+    If VarGetType($kernel) == "DLLStruct" Then
+        $bKernelDllType = "struct*"
+    Else
+        $bKernelDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtcreateKernelFromFunction", "int", $function, "int", $radius, $bKernelDllType, $kernel, "int", $chn), "cveFtcreateKernelFromFunction", @error)
 EndFunc   ;==>_cveFtcreateKernelFromFunction
 
 Func _cveFtcreateKernelFromFunctionMat($function, $radius, $matKernel, $chn)
@@ -113,10 +143,54 @@ EndFunc   ;==>_cveFtcreateKernelFromFunctionMat
 
 Func _cveFtInpaint($image, $mask, $output, $radius, $function, $algorithm)
     ; CVAPI(void) cveFtInpaint(cv::Mat* image, cv::Mat* mask, cv::Mat* output, int radius, int function, int algorithm);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtInpaint", "ptr", $image, "ptr", $mask, "ptr", $output, "int", $radius, "int", $function, "int", $algorithm), "cveFtInpaint", @error)
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bMaskDllType
+    If VarGetType($mask) == "DLLStruct" Then
+        $bMaskDllType = "struct*"
+    Else
+        $bMaskDllType = "ptr"
+    EndIf
+
+    Local $bOutputDllType
+    If VarGetType($output) == "DLLStruct" Then
+        $bOutputDllType = "struct*"
+    Else
+        $bOutputDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtInpaint", $bImageDllType, $image, $bMaskDllType, $mask, $bOutputDllType, $output, "int", $radius, "int", $function, "int", $algorithm), "cveFtInpaint", @error)
 EndFunc   ;==>_cveFtInpaint
 
 Func _cveFtFilter($image, $kernel, $output)
     ; CVAPI(void) cveFtFilter(cv::Mat* image, cv::Mat* kernel, cv::Mat* output);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtFilter", "ptr", $image, "ptr", $kernel, "ptr", $output), "cveFtFilter", @error)
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bKernelDllType
+    If VarGetType($kernel) == "DLLStruct" Then
+        $bKernelDllType = "struct*"
+    Else
+        $bKernelDllType = "ptr"
+    EndIf
+
+    Local $bOutputDllType
+    If VarGetType($output) == "DLLStruct" Then
+        $bOutputDllType = "struct*"
+    Else
+        $bOutputDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtFilter", $bImageDllType, $image, $bKernelDllType, $kernel, $bOutputDllType, $output), "cveFtFilter", @error)
 EndFunc   ;==>_cveFtFilter

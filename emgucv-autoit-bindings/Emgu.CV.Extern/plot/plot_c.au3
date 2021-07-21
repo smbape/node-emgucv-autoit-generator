@@ -4,13 +4,20 @@
 Func _cvePlot2dCreateFrom($data, $sharedPtr)
     ; CVAPI(cv::plot::Plot2d*) cvePlot2dCreateFrom(cv::_InputArray* data, cv::Ptr<cv::plot::Plot2d>** sharedPtr);
 
+    Local $bDataDllType
+    If VarGetType($data) == "DLLStruct" Then
+        $bDataDllType = "struct*"
+    Else
+        $bDataDllType = "ptr"
+    EndIf
+
     Local $bSharedPtrDllType
     If VarGetType($sharedPtr) == "DLLStruct" Then
         $bSharedPtrDllType = "struct*"
     Else
         $bSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePlot2dCreateFrom", "ptr", $data, $bSharedPtrDllType, $sharedPtr), "cvePlot2dCreateFrom", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePlot2dCreateFrom", $bDataDllType, $data, $bSharedPtrDllType, $sharedPtr), "cvePlot2dCreateFrom", @error)
 EndFunc   ;==>_cvePlot2dCreateFrom
 
 Func _cvePlot2dCreateFromMat($matData, $sharedPtr)
@@ -46,13 +53,27 @@ EndFunc   ;==>_cvePlot2dCreateFromMat
 Func _cvePlot2dCreateFromXY($dataX, $dataY, $sharedPtr)
     ; CVAPI(cv::plot::Plot2d*) cvePlot2dCreateFromXY(cv::_InputArray* dataX, cv::_InputArray* dataY, cv::Ptr<cv::plot::Plot2d>** sharedPtr);
 
+    Local $bDataXDllType
+    If VarGetType($dataX) == "DLLStruct" Then
+        $bDataXDllType = "struct*"
+    Else
+        $bDataXDllType = "ptr"
+    EndIf
+
+    Local $bDataYDllType
+    If VarGetType($dataY) == "DLLStruct" Then
+        $bDataYDllType = "struct*"
+    Else
+        $bDataYDllType = "ptr"
+    EndIf
+
     Local $bSharedPtrDllType
     If VarGetType($sharedPtr) == "DLLStruct" Then
         $bSharedPtrDllType = "struct*"
     Else
         $bSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePlot2dCreateFromXY", "ptr", $dataX, "ptr", $dataY, $bSharedPtrDllType, $sharedPtr), "cvePlot2dCreateFromXY", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePlot2dCreateFromXY", $bDataXDllType, $dataX, $bDataYDllType, $dataY, $bSharedPtrDllType, $sharedPtr), "cvePlot2dCreateFromXY", @error)
 EndFunc   ;==>_cvePlot2dCreateFromXY
 
 Func _cvePlot2dCreateFromXYMat($matDataX, $matDataY, $sharedPtr)
@@ -109,7 +130,22 @@ EndFunc   ;==>_cvePlot2dCreateFromXYMat
 
 Func _cvePlot2dRender($plot, $result)
     ; CVAPI(void) cvePlot2dRender(cv::plot::Plot2d* plot, cv::_OutputArray* result);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlot2dRender", "ptr", $plot, "ptr", $result), "cvePlot2dRender", @error)
+
+    Local $bPlotDllType
+    If VarGetType($plot) == "DLLStruct" Then
+        $bPlotDllType = "struct*"
+    Else
+        $bPlotDllType = "ptr"
+    EndIf
+
+    Local $bResultDllType
+    If VarGetType($result) == "DLLStruct" Then
+        $bResultDllType = "struct*"
+    Else
+        $bResultDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlot2dRender", $bPlotDllType, $plot, $bResultDllType, $result), "cvePlot2dRender", @error)
 EndFunc   ;==>_cvePlot2dRender
 
 Func _cvePlot2dRenderMat($plot, $matResult)
@@ -162,30 +198,113 @@ EndFunc   ;==>_cvePlot2dRelease
 
 Func _cvePlot2dSetPlotLineColor($plot, $plotLineColor)
     ; CVAPI(void) cvePlot2dSetPlotLineColor(cv::plot::Plot2d* plot, CvScalar* plotLineColor);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlot2dSetPlotLineColor", "ptr", $plot, "struct*", $plotLineColor), "cvePlot2dSetPlotLineColor", @error)
+
+    Local $bPlotDllType
+    If VarGetType($plot) == "DLLStruct" Then
+        $bPlotDllType = "struct*"
+    Else
+        $bPlotDllType = "ptr"
+    EndIf
+
+    Local $bPlotLineColorDllType
+    If VarGetType($plotLineColor) == "DLLStruct" Then
+        $bPlotLineColorDllType = "struct*"
+    Else
+        $bPlotLineColorDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlot2dSetPlotLineColor", $bPlotDllType, $plot, $bPlotLineColorDllType, $plotLineColor), "cvePlot2dSetPlotLineColor", @error)
 EndFunc   ;==>_cvePlot2dSetPlotLineColor
 
 Func _cvePlot2dSetPlotBackgroundColor($plot, $plotBackgroundColor)
     ; CVAPI(void) cvePlot2dSetPlotBackgroundColor(cv::plot::Plot2d* plot, CvScalar* plotBackgroundColor);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlot2dSetPlotBackgroundColor", "ptr", $plot, "struct*", $plotBackgroundColor), "cvePlot2dSetPlotBackgroundColor", @error)
+
+    Local $bPlotDllType
+    If VarGetType($plot) == "DLLStruct" Then
+        $bPlotDllType = "struct*"
+    Else
+        $bPlotDllType = "ptr"
+    EndIf
+
+    Local $bPlotBackgroundColorDllType
+    If VarGetType($plotBackgroundColor) == "DLLStruct" Then
+        $bPlotBackgroundColorDllType = "struct*"
+    Else
+        $bPlotBackgroundColorDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlot2dSetPlotBackgroundColor", $bPlotDllType, $plot, $bPlotBackgroundColorDllType, $plotBackgroundColor), "cvePlot2dSetPlotBackgroundColor", @error)
 EndFunc   ;==>_cvePlot2dSetPlotBackgroundColor
 
 Func _cvePlot2dSetPlotAxisColor($plot, $plotAxisColor)
     ; CVAPI(void) cvePlot2dSetPlotAxisColor(cv::plot::Plot2d* plot, CvScalar* plotAxisColor);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlot2dSetPlotAxisColor", "ptr", $plot, "struct*", $plotAxisColor), "cvePlot2dSetPlotAxisColor", @error)
+
+    Local $bPlotDllType
+    If VarGetType($plot) == "DLLStruct" Then
+        $bPlotDllType = "struct*"
+    Else
+        $bPlotDllType = "ptr"
+    EndIf
+
+    Local $bPlotAxisColorDllType
+    If VarGetType($plotAxisColor) == "DLLStruct" Then
+        $bPlotAxisColorDllType = "struct*"
+    Else
+        $bPlotAxisColorDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlot2dSetPlotAxisColor", $bPlotDllType, $plot, $bPlotAxisColorDllType, $plotAxisColor), "cvePlot2dSetPlotAxisColor", @error)
 EndFunc   ;==>_cvePlot2dSetPlotAxisColor
 
 Func _cvePlot2dSetPlotGridColor($plot, $plotGridColor)
     ; CVAPI(void) cvePlot2dSetPlotGridColor(cv::plot::Plot2d* plot, CvScalar* plotGridColor);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlot2dSetPlotGridColor", "ptr", $plot, "struct*", $plotGridColor), "cvePlot2dSetPlotGridColor", @error)
+
+    Local $bPlotDllType
+    If VarGetType($plot) == "DLLStruct" Then
+        $bPlotDllType = "struct*"
+    Else
+        $bPlotDllType = "ptr"
+    EndIf
+
+    Local $bPlotGridColorDllType
+    If VarGetType($plotGridColor) == "DLLStruct" Then
+        $bPlotGridColorDllType = "struct*"
+    Else
+        $bPlotGridColorDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlot2dSetPlotGridColor", $bPlotDllType, $plot, $bPlotGridColorDllType, $plotGridColor), "cvePlot2dSetPlotGridColor", @error)
 EndFunc   ;==>_cvePlot2dSetPlotGridColor
 
 Func _cvePlot2dSetPlotTextColor($plot, $plotTextColor)
     ; CVAPI(void) cvePlot2dSetPlotTextColor(cv::plot::Plot2d* plot, CvScalar* plotTextColor);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlot2dSetPlotTextColor", "ptr", $plot, "struct*", $plotTextColor), "cvePlot2dSetPlotTextColor", @error)
+
+    Local $bPlotDllType
+    If VarGetType($plot) == "DLLStruct" Then
+        $bPlotDllType = "struct*"
+    Else
+        $bPlotDllType = "ptr"
+    EndIf
+
+    Local $bPlotTextColorDllType
+    If VarGetType($plotTextColor) == "DLLStruct" Then
+        $bPlotTextColorDllType = "struct*"
+    Else
+        $bPlotTextColorDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlot2dSetPlotTextColor", $bPlotDllType, $plot, $bPlotTextColorDllType, $plotTextColor), "cvePlot2dSetPlotTextColor", @error)
 EndFunc   ;==>_cvePlot2dSetPlotTextColor
 
 Func _cvePlot2dSetPlotSize($plot, $plotSizeWidth, $plotSizeHeight)
     ; CVAPI(void) cvePlot2dSetPlotSize(cv::plot::Plot2d* plot, int plotSizeWidth, int plotSizeHeight);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlot2dSetPlotSize", "ptr", $plot, "int", $plotSizeWidth, "int", $plotSizeHeight), "cvePlot2dSetPlotSize", @error)
+
+    Local $bPlotDllType
+    If VarGetType($plot) == "DLLStruct" Then
+        $bPlotDllType = "struct*"
+    Else
+        $bPlotDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlot2dSetPlotSize", $bPlotDllType, $plot, "int", $plotSizeWidth, "int", $plotSizeHeight), "cvePlot2dSetPlotSize", @error)
 EndFunc   ;==>_cvePlot2dSetPlotSize

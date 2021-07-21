@@ -28,7 +28,14 @@ Func _VectorOfTesseractResultGetSize($v)
         $vecV = $v
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "VectorOfTesseractResultGetSize", "ptr", $vecV), "VectorOfTesseractResultGetSize", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "VectorOfTesseractResultGetSize", $bVDllType, $vecV), "VectorOfTesseractResultGetSize", @error)
 
     If $bVIsArray Then
         _VectorOfTesseractResultRelease($vecV)
@@ -54,7 +61,21 @@ Func _VectorOfTesseractResultPush($v, $value)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTesseractResultPush", "ptr", $vecV, "struct*", $value), "VectorOfTesseractResultPush", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $bValueDllType
+    If VarGetType($value) == "DLLStruct" Then
+        $bValueDllType = "struct*"
+    Else
+        $bValueDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTesseractResultPush", $bVDllType, $vecV, $bValueDllType, $value), "VectorOfTesseractResultPush", @error)
 
     If $bVIsArray Then
         _VectorOfTesseractResultRelease($vecV)
@@ -78,7 +99,21 @@ Func _VectorOfTesseractResultPushMulti($v, $values, $count)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTesseractResultPushMulti", "ptr", $vecV, "struct*", $values, "int", $count), "VectorOfTesseractResultPushMulti", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $bValuesDllType
+    If VarGetType($values) == "DLLStruct" Then
+        $bValuesDllType = "struct*"
+    Else
+        $bValuesDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTesseractResultPushMulti", $bVDllType, $vecV, $bValuesDllType, $values, "int", $count), "VectorOfTesseractResultPushMulti", @error)
 
     If $bVIsArray Then
         _VectorOfTesseractResultRelease($vecV)
@@ -102,6 +137,13 @@ Func _VectorOfTesseractResultPushVector($v, $other)
         $vecV = $v
     EndIf
 
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
     Local $vecOther, $iArrOtherSize
     Local $bOtherIsArray = VarGetType($other) == "Array"
 
@@ -116,7 +158,14 @@ Func _VectorOfTesseractResultPushVector($v, $other)
         $vecOther = $other
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTesseractResultPushVector", "ptr", $vecV, "ptr", $vecOther), "VectorOfTesseractResultPushVector", @error)
+    Local $bOtherDllType
+    If VarGetType($other) == "DLLStruct" Then
+        $bOtherDllType = "struct*"
+    Else
+        $bOtherDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTesseractResultPushVector", $bVDllType, $vecV, $bOtherDllType, $vecOther), "VectorOfTesseractResultPushVector", @error)
 
     If $bOtherIsArray Then
         _VectorOfTesseractResultRelease($vecOther)
@@ -144,7 +193,14 @@ Func _VectorOfTesseractResultClear($v)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTesseractResultClear", "ptr", $vecV), "VectorOfTesseractResultClear", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTesseractResultClear", $bVDllType, $vecV), "VectorOfTesseractResultClear", @error)
 
     If $bVIsArray Then
         _VectorOfTesseractResultRelease($vecV)
@@ -199,7 +255,21 @@ Func _VectorOfTesseractResultCopyData($v, $data)
         $vecV = $v
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTesseractResultCopyData", "ptr", $vecV, "struct*", $data), "VectorOfTesseractResultCopyData", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $bDataDllType
+    If VarGetType($data) == "DLLStruct" Then
+        $bDataDllType = "struct*"
+    Else
+        $bDataDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTesseractResultCopyData", $bVDllType, $vecV, $bDataDllType, $data), "VectorOfTesseractResultCopyData", @error)
 
     If $bVIsArray Then
         _VectorOfTesseractResultRelease($vecV)
@@ -223,7 +293,14 @@ Func _VectorOfTesseractResultGetStartAddress($v)
         $vecV = $v
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfTesseractResultGetStartAddress", "ptr", $vecV), "VectorOfTesseractResultGetStartAddress", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfTesseractResultGetStartAddress", $bVDllType, $vecV), "VectorOfTesseractResultGetStartAddress", @error)
 
     If $bVIsArray Then
         _VectorOfTesseractResultRelease($vecV)
@@ -249,7 +326,14 @@ Func _VectorOfTesseractResultGetEndAddress($v)
         $vecV = $v
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfTesseractResultGetEndAddress", "ptr", $vecV), "VectorOfTesseractResultGetEndAddress", @error)
+    Local $bVDllType
+    If VarGetType($v) == "DLLStruct" Then
+        $bVDllType = "struct*"
+    Else
+        $bVDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfTesseractResultGetEndAddress", $bVDllType, $vecV), "VectorOfTesseractResultGetEndAddress", @error)
 
     If $bVIsArray Then
         _VectorOfTesseractResultRelease($vecV)
@@ -275,7 +359,21 @@ Func _VectorOfTesseractResultGetItem($vec, $index, $element)
         $vecVec = $vec
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTesseractResultGetItem", "ptr", $vecVec, "int", $index, "struct*", $element), "VectorOfTesseractResultGetItem", @error)
+    Local $bVecDllType
+    If VarGetType($vec) == "DLLStruct" Then
+        $bVecDllType = "struct*"
+    Else
+        $bVecDllType = "ptr"
+    EndIf
+
+    Local $bElementDllType
+    If VarGetType($element) == "DLLStruct" Then
+        $bElementDllType = "struct*"
+    Else
+        $bElementDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTesseractResultGetItem", $bVecDllType, $vecVec, "int", $index, $bElementDllType, $element), "VectorOfTesseractResultGetItem", @error)
 
     If $bVecIsArray Then
         _VectorOfTesseractResultRelease($vecVec)
@@ -299,6 +397,13 @@ Func _VectorOfTesseractResultGetItemPtr($vec, $index, $element)
         $vecVec = $vec
     EndIf
 
+    Local $bVecDllType
+    If VarGetType($vec) == "DLLStruct" Then
+        $bVecDllType = "struct*"
+    Else
+        $bVecDllType = "ptr"
+    EndIf
+
     Local $bElementDllType
     If VarGetType($element) == "DLLStruct" Then
         $bElementDllType = "struct*"
@@ -306,7 +411,7 @@ Func _VectorOfTesseractResultGetItemPtr($vec, $index, $element)
         $bElementDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTesseractResultGetItemPtr", "ptr", $vecVec, "int", $index, $bElementDllType, $element), "VectorOfTesseractResultGetItemPtr", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfTesseractResultGetItemPtr", $bVecDllType, $vecVec, "int", $index, $bElementDllType, $element), "VectorOfTesseractResultGetItemPtr", @error)
 
     If $bVecIsArray Then
         _VectorOfTesseractResultRelease($vecVec)
@@ -330,7 +435,14 @@ Func _cveInputArrayFromVectorOfTesseractResult($vec)
         $vecVec = $vec
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputArrayFromVectorOfTesseractResult", "ptr", $vecVec), "cveInputArrayFromVectorOfTesseractResult", @error)
+    Local $bVecDllType
+    If VarGetType($vec) == "DLLStruct" Then
+        $bVecDllType = "struct*"
+    Else
+        $bVecDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputArrayFromVectorOfTesseractResult", $bVecDllType, $vecVec), "cveInputArrayFromVectorOfTesseractResult", @error)
 
     If $bVecIsArray Then
         _VectorOfTesseractResultRelease($vecVec)
@@ -356,7 +468,14 @@ Func _cveOutputArrayFromVectorOfTesseractResult($vec)
         $vecVec = $vec
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOutputArrayFromVectorOfTesseractResult", "ptr", $vecVec), "cveOutputArrayFromVectorOfTesseractResult", @error)
+    Local $bVecDllType
+    If VarGetType($vec) == "DLLStruct" Then
+        $bVecDllType = "struct*"
+    Else
+        $bVecDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOutputArrayFromVectorOfTesseractResult", $bVecDllType, $vecVec), "cveOutputArrayFromVectorOfTesseractResult", @error)
 
     If $bVecIsArray Then
         _VectorOfTesseractResultRelease($vecVec)
@@ -382,7 +501,14 @@ Func _cveInputOutputArrayFromVectorOfTesseractResult($vec)
         $vecVec = $vec
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputOutputArrayFromVectorOfTesseractResult", "ptr", $vecVec), "cveInputOutputArrayFromVectorOfTesseractResult", @error)
+    Local $bVecDllType
+    If VarGetType($vec) == "DLLStruct" Then
+        $bVecDllType = "struct*"
+    Else
+        $bVecDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputOutputArrayFromVectorOfTesseractResult", $bVecDllType, $vecVec), "cveInputOutputArrayFromVectorOfTesseractResult", @error)
 
     If $bVecIsArray Then
         _VectorOfTesseractResultRelease($vecVec)

@@ -3,7 +3,28 @@
 
 Func _StatModelTrain($model, $samples, $layout, $responses)
     ; CVAPI(bool) StatModelTrain(cv::ml::StatModel* model, cv::_InputArray* samples, int layout, cv::_InputArray* responses);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "StatModelTrain", "ptr", $model, "ptr", $samples, "int", $layout, "ptr", $responses), "StatModelTrain", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr"
+    EndIf
+
+    Local $bSamplesDllType
+    If VarGetType($samples) == "DLLStruct" Then
+        $bSamplesDllType = "struct*"
+    Else
+        $bSamplesDllType = "ptr"
+    EndIf
+
+    Local $bResponsesDllType
+    If VarGetType($responses) == "DLLStruct" Then
+        $bResponsesDllType = "struct*"
+    Else
+        $bResponsesDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "StatModelTrain", $bModelDllType, $model, $bSamplesDllType, $samples, "int", $layout, $bResponsesDllType, $responses), "StatModelTrain", @error)
 EndFunc   ;==>_StatModelTrain
 
 Func _StatModelTrainMat($model, $matSamples, $layout, $matResponses)
@@ -60,12 +81,47 @@ EndFunc   ;==>_StatModelTrainMat
 
 Func _StatModelTrainWithData($model, $data, $flags)
     ; CVAPI(bool) StatModelTrainWithData(cv::ml::StatModel* model, cv::ml::TrainData* data, int flags);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "StatModelTrainWithData", "ptr", $model, "ptr", $data, "int", $flags), "StatModelTrainWithData", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr"
+    EndIf
+
+    Local $bDataDllType
+    If VarGetType($data) == "DLLStruct" Then
+        $bDataDllType = "struct*"
+    Else
+        $bDataDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "StatModelTrainWithData", $bModelDllType, $model, $bDataDllType, $data, "int", $flags), "StatModelTrainWithData", @error)
 EndFunc   ;==>_StatModelTrainWithData
 
 Func _StatModelPredict($model, $samples, $results, $flags)
     ; CVAPI(float) StatModelPredict(cv::ml::StatModel* model, cv::_InputArray* samples, cv::_OutputArray* results, int flags);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "StatModelPredict", "ptr", $model, "ptr", $samples, "ptr", $results, "int", $flags), "StatModelPredict", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr"
+    EndIf
+
+    Local $bSamplesDllType
+    If VarGetType($samples) == "DLLStruct" Then
+        $bSamplesDllType = "struct*"
+    Else
+        $bSamplesDllType = "ptr"
+    EndIf
+
+    Local $bResultsDllType
+    If VarGetType($results) == "DLLStruct" Then
+        $bResultsDllType = "struct*"
+    Else
+        $bResultsDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "StatModelPredict", $bModelDllType, $model, $bSamplesDllType, $samples, $bResultsDllType, $results, "int", $flags), "StatModelPredict", @error)
 EndFunc   ;==>_StatModelPredict
 
 Func _StatModelPredictMat($model, $matSamples, $matResults, $flags)
@@ -123,13 +179,55 @@ EndFunc   ;==>_StatModelPredictMat
 Func _cveTrainDataCreate($samples, $layout, $responses, $varIdx, $sampleIdx, $sampleWeights, $varType, $sharedPtr)
     ; CVAPI(cv::ml::TrainData*) cveTrainDataCreate(cv::_InputArray* samples, int layout, cv::_InputArray* responses, cv::_InputArray* varIdx, cv::_InputArray* sampleIdx, cv::_InputArray* sampleWeights, cv::_InputArray* varType, cv::Ptr<cv::ml::TrainData>** sharedPtr);
 
+    Local $bSamplesDllType
+    If VarGetType($samples) == "DLLStruct" Then
+        $bSamplesDllType = "struct*"
+    Else
+        $bSamplesDllType = "ptr"
+    EndIf
+
+    Local $bResponsesDllType
+    If VarGetType($responses) == "DLLStruct" Then
+        $bResponsesDllType = "struct*"
+    Else
+        $bResponsesDllType = "ptr"
+    EndIf
+
+    Local $bVarIdxDllType
+    If VarGetType($varIdx) == "DLLStruct" Then
+        $bVarIdxDllType = "struct*"
+    Else
+        $bVarIdxDllType = "ptr"
+    EndIf
+
+    Local $bSampleIdxDllType
+    If VarGetType($sampleIdx) == "DLLStruct" Then
+        $bSampleIdxDllType = "struct*"
+    Else
+        $bSampleIdxDllType = "ptr"
+    EndIf
+
+    Local $bSampleWeightsDllType
+    If VarGetType($sampleWeights) == "DLLStruct" Then
+        $bSampleWeightsDllType = "struct*"
+    Else
+        $bSampleWeightsDllType = "ptr"
+    EndIf
+
+    Local $bVarTypeDllType
+    If VarGetType($varType) == "DLLStruct" Then
+        $bVarTypeDllType = "struct*"
+    Else
+        $bVarTypeDllType = "ptr"
+    EndIf
+
     Local $bSharedPtrDllType
     If VarGetType($sharedPtr) == "DLLStruct" Then
         $bSharedPtrDllType = "struct*"
     Else
         $bSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTrainDataCreate", "ptr", $samples, "int", $layout, "ptr", $responses, "ptr", $varIdx, "ptr", $sampleIdx, "ptr", $sampleWeights, "ptr", $varType, $bSharedPtrDllType, $sharedPtr), "cveTrainDataCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTrainDataCreate", $bSamplesDllType, $samples, "int", $layout, $bResponsesDllType, $responses, $bVarIdxDllType, $varIdx, $bSampleIdxDllType, $sampleIdx, $bSampleWeightsDllType, $sampleWeights, $bVarTypeDllType, $varType, $bSharedPtrDllType, $sharedPtr), "cveTrainDataCreate", @error)
 EndFunc   ;==>_cveTrainDataCreate
 
 Func _cveTrainDataCreateMat($matSamples, $layout, $matResponses, $matVarIdx, $matSampleIdx, $matSampleWeights, $matVarType, $sharedPtr)
@@ -372,7 +470,42 @@ EndFunc   ;==>_cveKNearestRelease
 
 Func _cveKNearestFindNearest($classifier, $samples, $k, $results, $neighborResponses, $dist)
     ; CVAPI(float) cveKNearestFindNearest(cv::ml::KNearest* classifier, cv::_InputArray* samples, int k, cv::_OutputArray* results, cv::_OutputArray* neighborResponses, cv::_OutputArray* dist);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveKNearestFindNearest", "ptr", $classifier, "ptr", $samples, "int", $k, "ptr", $results, "ptr", $neighborResponses, "ptr", $dist), "cveKNearestFindNearest", @error)
+
+    Local $bClassifierDllType
+    If VarGetType($classifier) == "DLLStruct" Then
+        $bClassifierDllType = "struct*"
+    Else
+        $bClassifierDllType = "ptr"
+    EndIf
+
+    Local $bSamplesDllType
+    If VarGetType($samples) == "DLLStruct" Then
+        $bSamplesDllType = "struct*"
+    Else
+        $bSamplesDllType = "ptr"
+    EndIf
+
+    Local $bResultsDllType
+    If VarGetType($results) == "DLLStruct" Then
+        $bResultsDllType = "struct*"
+    Else
+        $bResultsDllType = "ptr"
+    EndIf
+
+    Local $bNeighborResponsesDllType
+    If VarGetType($neighborResponses) == "DLLStruct" Then
+        $bNeighborResponsesDllType = "struct*"
+    Else
+        $bNeighborResponsesDllType = "ptr"
+    EndIf
+
+    Local $bDistDllType
+    If VarGetType($dist) == "DLLStruct" Then
+        $bDistDllType = "struct*"
+    Else
+        $bDistDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveKNearestFindNearest", $bClassifierDllType, $classifier, $bSamplesDllType, $samples, "int", $k, $bResultsDllType, $results, $bNeighborResponsesDllType, $neighborResponses, $bDistDllType, $dist), "cveKNearestFindNearest", @error)
 EndFunc   ;==>_cveKNearestFindNearest
 
 Func _cveKNearestFindNearestMat($classifier, $matSamples, $k, $matResults, $matNeighborResponses, $matDist)
@@ -500,6 +633,62 @@ EndFunc   ;==>_cveEMDefaultCreate
 Func _cveEMTrainE($model, $samples, $means0, $covs0, $weights0, $logLikelihoods, $labels, $probs, $statModel, $algorithm)
     ; CVAPI(void) cveEMTrainE(cv::ml::EM* model, cv::_InputArray* samples, cv::_InputArray* means0, cv::_InputArray* covs0, cv::_InputArray* weights0, cv::_OutputArray* logLikelihoods, cv::_OutputArray* labels, cv::_OutputArray* probs, cv::ml::StatModel** statModel, cv::Algorithm** algorithm);
 
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr"
+    EndIf
+
+    Local $bSamplesDllType
+    If VarGetType($samples) == "DLLStruct" Then
+        $bSamplesDllType = "struct*"
+    Else
+        $bSamplesDllType = "ptr"
+    EndIf
+
+    Local $bMeans0DllType
+    If VarGetType($means0) == "DLLStruct" Then
+        $bMeans0DllType = "struct*"
+    Else
+        $bMeans0DllType = "ptr"
+    EndIf
+
+    Local $bCovs0DllType
+    If VarGetType($covs0) == "DLLStruct" Then
+        $bCovs0DllType = "struct*"
+    Else
+        $bCovs0DllType = "ptr"
+    EndIf
+
+    Local $bWeights0DllType
+    If VarGetType($weights0) == "DLLStruct" Then
+        $bWeights0DllType = "struct*"
+    Else
+        $bWeights0DllType = "ptr"
+    EndIf
+
+    Local $bLogLikelihoodsDllType
+    If VarGetType($logLikelihoods) == "DLLStruct" Then
+        $bLogLikelihoodsDllType = "struct*"
+    Else
+        $bLogLikelihoodsDllType = "ptr"
+    EndIf
+
+    Local $bLabelsDllType
+    If VarGetType($labels) == "DLLStruct" Then
+        $bLabelsDllType = "struct*"
+    Else
+        $bLabelsDllType = "ptr"
+    EndIf
+
+    Local $bProbsDllType
+    If VarGetType($probs) == "DLLStruct" Then
+        $bProbsDllType = "struct*"
+    Else
+        $bProbsDllType = "ptr"
+    EndIf
+
     Local $bStatModelDllType
     If VarGetType($statModel) == "DLLStruct" Then
         $bStatModelDllType = "struct*"
@@ -514,7 +703,7 @@ Func _cveEMTrainE($model, $samples, $means0, $covs0, $weights0, $logLikelihoods,
         $bAlgorithmDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMTrainE", "ptr", $model, "ptr", $samples, "ptr", $means0, "ptr", $covs0, "ptr", $weights0, "ptr", $logLikelihoods, "ptr", $labels, "ptr", $probs, $bStatModelDllType, $statModel, $bAlgorithmDllType, $algorithm), "cveEMTrainE", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMTrainE", $bModelDllType, $model, $bSamplesDllType, $samples, $bMeans0DllType, $means0, $bCovs0DllType, $covs0, $bWeights0DllType, $weights0, $bLogLikelihoodsDllType, $logLikelihoods, $bLabelsDllType, $labels, $bProbsDllType, $probs, $bStatModelDllType, $statModel, $bAlgorithmDllType, $algorithm), "cveEMTrainE", @error)
 EndFunc   ;==>_cveEMTrainE
 
 Func _cveEMTrainEMat($model, $matSamples, $matMeans0, $matCovs0, $matWeights0, $matLogLikelihoods, $matLabels, $matProbs, $statModel, $algorithm)
@@ -680,6 +869,48 @@ EndFunc   ;==>_cveEMTrainEMat
 Func _cveEMTrainM($model, $samples, $probs0, $logLikelihoods, $labels, $probs, $statModel, $algorithm)
     ; CVAPI(void) cveEMTrainM(cv::ml::EM* model, cv::_InputArray* samples, cv::_InputArray* probs0, cv::_OutputArray* logLikelihoods, cv::_OutputArray* labels, cv::_OutputArray* probs, cv::ml::StatModel** statModel, cv::Algorithm** algorithm);
 
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr"
+    EndIf
+
+    Local $bSamplesDllType
+    If VarGetType($samples) == "DLLStruct" Then
+        $bSamplesDllType = "struct*"
+    Else
+        $bSamplesDllType = "ptr"
+    EndIf
+
+    Local $bProbs0DllType
+    If VarGetType($probs0) == "DLLStruct" Then
+        $bProbs0DllType = "struct*"
+    Else
+        $bProbs0DllType = "ptr"
+    EndIf
+
+    Local $bLogLikelihoodsDllType
+    If VarGetType($logLikelihoods) == "DLLStruct" Then
+        $bLogLikelihoodsDllType = "struct*"
+    Else
+        $bLogLikelihoodsDllType = "ptr"
+    EndIf
+
+    Local $bLabelsDllType
+    If VarGetType($labels) == "DLLStruct" Then
+        $bLabelsDllType = "struct*"
+    Else
+        $bLabelsDllType = "ptr"
+    EndIf
+
+    Local $bProbsDllType
+    If VarGetType($probs) == "DLLStruct" Then
+        $bProbsDllType = "struct*"
+    Else
+        $bProbsDllType = "ptr"
+    EndIf
+
     Local $bStatModelDllType
     If VarGetType($statModel) == "DLLStruct" Then
         $bStatModelDllType = "struct*"
@@ -694,7 +925,7 @@ Func _cveEMTrainM($model, $samples, $probs0, $logLikelihoods, $labels, $probs, $
         $bAlgorithmDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMTrainM", "ptr", $model, "ptr", $samples, "ptr", $probs0, "ptr", $logLikelihoods, "ptr", $labels, "ptr", $probs, $bStatModelDllType, $statModel, $bAlgorithmDllType, $algorithm), "cveEMTrainM", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMTrainM", $bModelDllType, $model, $bSamplesDllType, $samples, $bProbs0DllType, $probs0, $bLogLikelihoodsDllType, $logLikelihoods, $bLabelsDllType, $labels, $bProbsDllType, $probs, $bStatModelDllType, $statModel, $bAlgorithmDllType, $algorithm), "cveEMTrainM", @error)
 EndFunc   ;==>_cveEMTrainM
 
 Func _cveEMTrainMMat($model, $matSamples, $matProbs0, $matLogLikelihoods, $matLabels, $matProbs, $statModel, $algorithm)
@@ -815,7 +1046,36 @@ EndFunc   ;==>_cveEMTrainMMat
 
 Func _cveEMPredict($model, $sample, $result, $probs)
     ; CVAPI(void) cveEMPredict(cv::ml::EM* model, cv::_InputArray* sample, CvPoint2D64f* result, cv::_OutputArray* probs);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMPredict", "ptr", $model, "ptr", $sample, "struct*", $result, "ptr", $probs), "cveEMPredict", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr"
+    EndIf
+
+    Local $bSampleDllType
+    If VarGetType($sample) == "DLLStruct" Then
+        $bSampleDllType = "struct*"
+    Else
+        $bSampleDllType = "ptr"
+    EndIf
+
+    Local $bResultDllType
+    If VarGetType($result) == "DLLStruct" Then
+        $bResultDllType = "struct*"
+    Else
+        $bResultDllType = "ptr"
+    EndIf
+
+    Local $bProbsDllType
+    If VarGetType($probs) == "DLLStruct" Then
+        $bProbsDllType = "struct*"
+    Else
+        $bProbsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMPredict", $bModelDllType, $model, $bSampleDllType, $sample, $bResultDllType, $result, $bProbsDllType, $probs), "cveEMPredict", @error)
 EndFunc   ;==>_cveEMPredict
 
 Func _cveEMPredictMat($model, $matSample, $result, $matProbs)
@@ -916,12 +1176,76 @@ EndFunc   ;==>_cveSVMDefaultCreate
 
 Func _cveSVMTrainAuto($model, $trainData, $kFold, $CGrid, $gammaGrid, $pGrid, $nuGrid, $coefGrid, $degreeGrid, $balanced)
     ; CVAPI(bool) cveSVMTrainAuto(cv::ml::SVM* model, cv::ml::TrainData* trainData, int kFold, cv::ml::ParamGrid* CGrid, cv::ml::ParamGrid* gammaGrid, cv::ml::ParamGrid* pGrid, cv::ml::ParamGrid* nuGrid, cv::ml::ParamGrid* coefGrid, cv::ml::ParamGrid* degreeGrid, bool balanced);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveSVMTrainAuto", "ptr", $model, "ptr", $trainData, "int", $kFold, "ptr", $CGrid, "ptr", $gammaGrid, "ptr", $pGrid, "ptr", $nuGrid, "ptr", $coefGrid, "ptr", $degreeGrid, "boolean", $balanced), "cveSVMTrainAuto", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr"
+    EndIf
+
+    Local $bTrainDataDllType
+    If VarGetType($trainData) == "DLLStruct" Then
+        $bTrainDataDllType = "struct*"
+    Else
+        $bTrainDataDllType = "ptr"
+    EndIf
+
+    Local $bCGridDllType
+    If VarGetType($CGrid) == "DLLStruct" Then
+        $bCGridDllType = "struct*"
+    Else
+        $bCGridDllType = "ptr"
+    EndIf
+
+    Local $bGammaGridDllType
+    If VarGetType($gammaGrid) == "DLLStruct" Then
+        $bGammaGridDllType = "struct*"
+    Else
+        $bGammaGridDllType = "ptr"
+    EndIf
+
+    Local $bPGridDllType
+    If VarGetType($pGrid) == "DLLStruct" Then
+        $bPGridDllType = "struct*"
+    Else
+        $bPGridDllType = "ptr"
+    EndIf
+
+    Local $bNuGridDllType
+    If VarGetType($nuGrid) == "DLLStruct" Then
+        $bNuGridDllType = "struct*"
+    Else
+        $bNuGridDllType = "ptr"
+    EndIf
+
+    Local $bCoefGridDllType
+    If VarGetType($coefGrid) == "DLLStruct" Then
+        $bCoefGridDllType = "struct*"
+    Else
+        $bCoefGridDllType = "ptr"
+    EndIf
+
+    Local $bDegreeGridDllType
+    If VarGetType($degreeGrid) == "DLLStruct" Then
+        $bDegreeGridDllType = "struct*"
+    Else
+        $bDegreeGridDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveSVMTrainAuto", $bModelDllType, $model, $bTrainDataDllType, $trainData, "int", $kFold, $bCGridDllType, $CGrid, $bGammaGridDllType, $gammaGrid, $bPGridDllType, $pGrid, $bNuGridDllType, $nuGrid, $bCoefGridDllType, $coefGrid, $bDegreeGridDllType, $degreeGrid, "boolean", $balanced), "cveSVMTrainAuto", @error)
 EndFunc   ;==>_cveSVMTrainAuto
 
 Func _cveSVMGetDefaultGrid($gridType, $grid)
     ; CVAPI(void) cveSVMGetDefaultGrid(int gridType, cv::ml::ParamGrid* grid);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSVMGetDefaultGrid", "int", $gridType, "ptr", $grid), "cveSVMGetDefaultGrid", @error)
+
+    Local $bGridDllType
+    If VarGetType($grid) == "DLLStruct" Then
+        $bGridDllType = "struct*"
+    Else
+        $bGridDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSVMGetDefaultGrid", "int", $gridType, $bGridDllType, $grid), "cveSVMGetDefaultGrid", @error)
 EndFunc   ;==>_cveSVMGetDefaultGrid
 
 Func _cveSVMRelease($model, $sharedPtr)
@@ -946,7 +1270,22 @@ EndFunc   ;==>_cveSVMRelease
 
 Func _cveSVMGetSupportVectors($model, $supportVectors)
     ; CVAPI(void) cveSVMGetSupportVectors(cv::ml::SVM* model, cv::Mat* supportVectors);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSVMGetSupportVectors", "ptr", $model, "ptr", $supportVectors), "cveSVMGetSupportVectors", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr"
+    EndIf
+
+    Local $bSupportVectorsDllType
+    If VarGetType($supportVectors) == "DLLStruct" Then
+        $bSupportVectorsDllType = "struct*"
+    Else
+        $bSupportVectorsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSVMGetSupportVectors", $bModelDllType, $model, $bSupportVectorsDllType, $supportVectors), "cveSVMGetSupportVectors", @error)
 EndFunc   ;==>_cveSVMGetSupportVectors
 
 Func _cveANN_MLPCreate($model, $algorithm, $sharedPtr)
@@ -977,7 +1316,22 @@ EndFunc   ;==>_cveANN_MLPCreate
 
 Func _cveANN_MLPSetLayerSizes($model, $layerSizes)
     ; CVAPI(void) cveANN_MLPSetLayerSizes(cv::ml::ANN_MLP* model, cv::_InputArray* layerSizes);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveANN_MLPSetLayerSizes", "ptr", $model, "ptr", $layerSizes), "cveANN_MLPSetLayerSizes", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr"
+    EndIf
+
+    Local $bLayerSizesDllType
+    If VarGetType($layerSizes) == "DLLStruct" Then
+        $bLayerSizesDllType = "struct*"
+    Else
+        $bLayerSizesDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveANN_MLPSetLayerSizes", $bModelDllType, $model, $bLayerSizesDllType, $layerSizes), "cveANN_MLPSetLayerSizes", @error)
 EndFunc   ;==>_cveANN_MLPSetLayerSizes
 
 Func _cveANN_MLPSetLayerSizesMat($model, $matLayerSizes)
@@ -1010,12 +1364,28 @@ EndFunc   ;==>_cveANN_MLPSetLayerSizesMat
 
 Func _cveANN_MLPSetActivationFunction($model, $type, $param1, $param2)
     ; CVAPI(void) cveANN_MLPSetActivationFunction(cv::ml::ANN_MLP* model, int type, double param1, double param2);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveANN_MLPSetActivationFunction", "ptr", $model, "int", $type, "double", $param1, "double", $param2), "cveANN_MLPSetActivationFunction", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveANN_MLPSetActivationFunction", $bModelDllType, $model, "int", $type, "double", $param1, "double", $param2), "cveANN_MLPSetActivationFunction", @error)
 EndFunc   ;==>_cveANN_MLPSetActivationFunction
 
 Func _cveANN_MLPSetTrainMethod($model, $method, $param1, $param2)
     ; CVAPI(void) cveANN_MLPSetTrainMethod(cv::ml::ANN_MLP* model, int method, double param1, double param2);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveANN_MLPSetTrainMethod", "ptr", $model, "int", $method, "double", $param1, "double", $param2), "cveANN_MLPSetTrainMethod", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveANN_MLPSetTrainMethod", $bModelDllType, $model, "int", $method, "double", $param1, "double", $param2), "cveANN_MLPSetTrainMethod", @error)
 EndFunc   ;==>_cveANN_MLPSetTrainMethod
 
 Func _cveANN_MLPRelease($model, $sharedPtr)
@@ -1112,7 +1482,29 @@ EndFunc   ;==>_cveRTreesCreate
 
 Func _cveRTreesGetVotes($model, $samples, $results, $flags)
     ; CVAPI(void) cveRTreesGetVotes(cv::ml::RTrees* model, cv::_InputArray* samples, cv::_OutputArray* results, int flags);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRTreesGetVotes", "ptr", $model, "ptr", $samples, "ptr", $results, "int", $flags), "cveRTreesGetVotes", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr"
+    EndIf
+
+    Local $bSamplesDllType
+    If VarGetType($samples) == "DLLStruct" Then
+        $bSamplesDllType = "struct*"
+    Else
+        $bSamplesDllType = "ptr"
+    EndIf
+
+    Local $bResultsDllType
+    If VarGetType($results) == "DLLStruct" Then
+        $bResultsDllType = "struct*"
+    Else
+        $bResultsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRTreesGetVotes", $bModelDllType, $model, $bSamplesDllType, $samples, $bResultsDllType, $results, "int", $flags), "cveRTreesGetVotes", @error)
 EndFunc   ;==>_cveRTreesGetVotes
 
 Func _cveRTreesGetVotesMat($model, $matSamples, $matResults, $flags)
@@ -1325,5 +1717,13 @@ EndFunc   ;==>_cveSVMSGDRelease
 
 Func _cveSVMSGDSetOptimalParameters($model, $svmsgdType, $marginType)
     ; CVAPI(void) cveSVMSGDSetOptimalParameters(cv::ml::SVMSGD* model, int svmsgdType, int marginType);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSVMSGDSetOptimalParameters", "ptr", $model, "int", $svmsgdType, "int", $marginType), "cveSVMSGDSetOptimalParameters", @error)
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSVMSGDSetOptimalParameters", $bModelDllType, $model, "int", $svmsgdType, "int", $marginType), "cveSVMSGDSetOptimalParameters", @error)
 EndFunc   ;==>_cveSVMSGDSetOptimalParameters

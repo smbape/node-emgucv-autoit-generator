@@ -4,6 +4,13 @@
 Func _OpenniGetColorPoints($capture, $points, $mask)
     ; CVAPI(void) OpenniGetColorPoints(CvCapture* capture, std::vector<ColorPoint>* points, IplImage* mask);
 
+    Local $bCaptureDllType
+    If VarGetType($capture) == "DLLStruct" Then
+        $bCaptureDllType = "struct*"
+    Else
+        $bCaptureDllType = "ptr"
+    EndIf
+
     Local $vecPoints, $iArrPointsSize
     Local $bPointsIsArray = VarGetType($points) == "Array"
 
@@ -18,7 +25,21 @@ Func _OpenniGetColorPoints($capture, $points, $mask)
         $vecPoints = $points
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "OpenniGetColorPoints", "struct*", $capture, "ptr", $vecPoints, "struct*", $mask), "OpenniGetColorPoints", @error)
+    Local $bPointsDllType
+    If VarGetType($points) == "DLLStruct" Then
+        $bPointsDllType = "struct*"
+    Else
+        $bPointsDllType = "ptr"
+    EndIf
+
+    Local $bMaskDllType
+    If VarGetType($mask) == "DLLStruct" Then
+        $bMaskDllType = "struct*"
+    Else
+        $bMaskDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "OpenniGetColorPoints", $bCaptureDllType, $capture, $bPointsDllType, $vecPoints, $bMaskDllType, $mask), "OpenniGetColorPoints", @error)
 
     If $bPointsIsArray Then
         _VectorOfColorPointRelease($vecPoints)
@@ -42,7 +63,14 @@ Func _cveVideoCaptureCreateFromDevice($device, $apiPreference, $params)
         $vecParams = $params
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveVideoCaptureCreateFromDevice", "int", $device, "int", $apiPreference, "ptr", $vecParams), "cveVideoCaptureCreateFromDevice", @error)
+    Local $bParamsDllType
+    If VarGetType($params) == "DLLStruct" Then
+        $bParamsDllType = "struct*"
+    Else
+        $bParamsDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveVideoCaptureCreateFromDevice", "int", $device, "int", $apiPreference, $bParamsDllType, $vecParams), "cveVideoCaptureCreateFromDevice", @error)
 
     If $bParamsIsArray Then
         _VectorOfIntRelease($vecParams)
@@ -59,6 +87,13 @@ Func _cveVideoCaptureCreateFromFile($fileName, $apiPreference, $params)
         $fileName = _cveStringCreateFromStr($fileName)
     EndIf
 
+    Local $bFileNameDllType
+    If VarGetType($fileName) == "DLLStruct" Then
+        $bFileNameDllType = "struct*"
+    Else
+        $bFileNameDllType = "ptr"
+    EndIf
+
     Local $vecParams, $iArrParamsSize
     Local $bParamsIsArray = VarGetType($params) == "Array"
 
@@ -73,7 +108,14 @@ Func _cveVideoCaptureCreateFromFile($fileName, $apiPreference, $params)
         $vecParams = $params
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveVideoCaptureCreateFromFile", "ptr", $fileName, "int", $apiPreference, "ptr", $vecParams), "cveVideoCaptureCreateFromFile", @error)
+    Local $bParamsDllType
+    If VarGetType($params) == "DLLStruct" Then
+        $bParamsDllType = "struct*"
+    Else
+        $bParamsDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveVideoCaptureCreateFromFile", $bFileNameDllType, $fileName, "int", $apiPreference, $bParamsDllType, $vecParams), "cveVideoCaptureCreateFromFile", @error)
 
     If $bParamsIsArray Then
         _VectorOfIntRelease($vecParams)
@@ -101,22 +143,57 @@ EndFunc   ;==>_cveVideoCaptureRelease
 
 Func _cveVideoCaptureSet($capture, $propId, $value)
     ; CVAPI(bool) cveVideoCaptureSet(cv::VideoCapture* capture, int propId, double value);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureSet", "ptr", $capture, "int", $propId, "double", $value), "cveVideoCaptureSet", @error)
+
+    Local $bCaptureDllType
+    If VarGetType($capture) == "DLLStruct" Then
+        $bCaptureDllType = "struct*"
+    Else
+        $bCaptureDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureSet", $bCaptureDllType, $capture, "int", $propId, "double", $value), "cveVideoCaptureSet", @error)
 EndFunc   ;==>_cveVideoCaptureSet
 
 Func _cveVideoCaptureGet($capture, $propId)
     ; CVAPI(double) cveVideoCaptureGet(cv::VideoCapture* capture, int propId);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveVideoCaptureGet", "ptr", $capture, "int", $propId), "cveVideoCaptureGet", @error)
+
+    Local $bCaptureDllType
+    If VarGetType($capture) == "DLLStruct" Then
+        $bCaptureDllType = "struct*"
+    Else
+        $bCaptureDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveVideoCaptureGet", $bCaptureDllType, $capture, "int", $propId), "cveVideoCaptureGet", @error)
 EndFunc   ;==>_cveVideoCaptureGet
 
 Func _cveVideoCaptureGrab($capture)
     ; CVAPI(bool) cveVideoCaptureGrab(cv::VideoCapture* capture);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureGrab", "ptr", $capture), "cveVideoCaptureGrab", @error)
+
+    Local $bCaptureDllType
+    If VarGetType($capture) == "DLLStruct" Then
+        $bCaptureDllType = "struct*"
+    Else
+        $bCaptureDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureGrab", $bCaptureDllType, $capture), "cveVideoCaptureGrab", @error)
 EndFunc   ;==>_cveVideoCaptureGrab
 
 Func _cveVideoCaptureRetrieve($capture, $image, $flag)
     ; CVAPI(bool) cveVideoCaptureRetrieve(cv::VideoCapture* capture, cv::_OutputArray* image, int flag);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureRetrieve", "ptr", $capture, "ptr", $image, "int", $flag), "cveVideoCaptureRetrieve", @error)
+
+    Local $bCaptureDllType
+    If VarGetType($capture) == "DLLStruct" Then
+        $bCaptureDllType = "struct*"
+    Else
+        $bCaptureDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureRetrieve", $bCaptureDllType, $capture, $bImageDllType, $image, "int", $flag), "cveVideoCaptureRetrieve", @error)
 EndFunc   ;==>_cveVideoCaptureRetrieve
 
 Func _cveVideoCaptureRetrieveMat($capture, $matImage, $flag)
@@ -151,7 +228,21 @@ EndFunc   ;==>_cveVideoCaptureRetrieveMat
 
 Func _cveVideoCaptureRead($capture, $image)
     ; CVAPI(bool) cveVideoCaptureRead(cv::VideoCapture* capture, cv::_OutputArray* image);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureRead", "ptr", $capture, "ptr", $image), "cveVideoCaptureRead", @error)
+
+    Local $bCaptureDllType
+    If VarGetType($capture) == "DLLStruct" Then
+        $bCaptureDllType = "struct*"
+    Else
+        $bCaptureDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureRead", $bCaptureDllType, $capture, $bImageDllType, $image), "cveVideoCaptureRead", @error)
 EndFunc   ;==>_cveVideoCaptureRead
 
 Func _cveVideoCaptureReadMat($capture, $matImage)
@@ -186,23 +277,67 @@ EndFunc   ;==>_cveVideoCaptureReadMat
 
 Func _cveVideoCaptureReadToMat($capture, $mat)
     ; CVAPI(void) cveVideoCaptureReadToMat(cv::VideoCapture* capture, cv::Mat* mat);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideoCaptureReadToMat", "ptr", $capture, "ptr", $mat), "cveVideoCaptureReadToMat", @error)
+
+    Local $bCaptureDllType
+    If VarGetType($capture) == "DLLStruct" Then
+        $bCaptureDllType = "struct*"
+    Else
+        $bCaptureDllType = "ptr"
+    EndIf
+
+    Local $bMatDllType
+    If VarGetType($mat) == "DLLStruct" Then
+        $bMatDllType = "struct*"
+    Else
+        $bMatDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideoCaptureReadToMat", $bCaptureDllType, $capture, $bMatDllType, $mat), "cveVideoCaptureReadToMat", @error)
 EndFunc   ;==>_cveVideoCaptureReadToMat
 
 Func _cveVideoCaptureReadToUMat($capture, $umat)
     ; CVAPI(void) cveVideoCaptureReadToUMat(cv::VideoCapture* capture, cv::UMat* umat);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideoCaptureReadToUMat", "ptr", $capture, "ptr", $umat), "cveVideoCaptureReadToUMat", @error)
+
+    Local $bCaptureDllType
+    If VarGetType($capture) == "DLLStruct" Then
+        $bCaptureDllType = "struct*"
+    Else
+        $bCaptureDllType = "ptr"
+    EndIf
+
+    Local $bUmatDllType
+    If VarGetType($umat) == "DLLStruct" Then
+        $bUmatDllType = "struct*"
+    Else
+        $bUmatDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideoCaptureReadToUMat", $bCaptureDllType, $capture, $bUmatDllType, $umat), "cveVideoCaptureReadToUMat", @error)
 EndFunc   ;==>_cveVideoCaptureReadToUMat
 
 Func _cveVideoCaptureGetBackendName($capture, $name)
     ; CVAPI(void) cveVideoCaptureGetBackendName(cv::VideoCapture* capture, cv::String* name);
+
+    Local $bCaptureDllType
+    If VarGetType($capture) == "DLLStruct" Then
+        $bCaptureDllType = "struct*"
+    Else
+        $bCaptureDllType = "ptr"
+    EndIf
 
     Local $bNameIsString = VarGetType($name) == "String"
     If $bNameIsString Then
         $name = _cveStringCreateFromStr($name)
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideoCaptureGetBackendName", "ptr", $capture, "ptr", $name), "cveVideoCaptureGetBackendName", @error)
+    Local $bNameDllType
+    If VarGetType($name) == "DLLStruct" Then
+        $bNameDllType = "struct*"
+    Else
+        $bNameDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideoCaptureGetBackendName", $bCaptureDllType, $capture, $bNameDllType, $name), "cveVideoCaptureGetBackendName", @error)
 
     If $bNameIsString Then
         _cveStringRelease($name)
@@ -226,6 +361,13 @@ Func _cveVideoCaptureWaitAny($streams, $readyIndex, $timeoutNs)
         $vecStreams = $streams
     EndIf
 
+    Local $bStreamsDllType
+    If VarGetType($streams) == "DLLStruct" Then
+        $bStreamsDllType = "struct*"
+    Else
+        $bStreamsDllType = "ptr"
+    EndIf
+
     Local $vecReadyIndex, $iArrReadyIndexSize
     Local $bReadyIndexIsArray = VarGetType($readyIndex) == "Array"
 
@@ -240,7 +382,14 @@ Func _cveVideoCaptureWaitAny($streams, $readyIndex, $timeoutNs)
         $vecReadyIndex = $readyIndex
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureWaitAny", "ptr", $vecStreams, "ptr", $vecReadyIndex, "int", $timeoutNs), "cveVideoCaptureWaitAny", @error)
+    Local $bReadyIndexDllType
+    If VarGetType($readyIndex) == "DLLStruct" Then
+        $bReadyIndexDllType = "struct*"
+    Else
+        $bReadyIndexDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureWaitAny", $bStreamsDllType, $vecStreams, $bReadyIndexDllType, $vecReadyIndex, "int", $timeoutNs), "cveVideoCaptureWaitAny", @error)
 
     If $bReadyIndexIsArray Then
         _VectorOfIntRelease($vecReadyIndex)
@@ -261,7 +410,21 @@ Func _cveVideoWriterCreate($filename, $fourcc, $fps, $frameSize, $isColor)
         $filename = _cveStringCreateFromStr($filename)
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveVideoWriterCreate", "ptr", $filename, "int", $fourcc, "double", $fps, "struct*", $frameSize, "boolean", $isColor), "cveVideoWriterCreate", @error)
+    Local $bFilenameDllType
+    If VarGetType($filename) == "DLLStruct" Then
+        $bFilenameDllType = "struct*"
+    Else
+        $bFilenameDllType = "ptr"
+    EndIf
+
+    Local $bFrameSizeDllType
+    If VarGetType($frameSize) == "DLLStruct" Then
+        $bFrameSizeDllType = "struct*"
+    Else
+        $bFrameSizeDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveVideoWriterCreate", $bFilenameDllType, $filename, "int", $fourcc, "double", $fps, $bFrameSizeDllType, $frameSize, "boolean", $isColor), "cveVideoWriterCreate", @error)
 
     If $bFilenameIsString Then
         _cveStringRelease($filename)
@@ -278,7 +441,21 @@ Func _cveVideoWriterCreate2($filename, $apiPreference, $fourcc, $fps, $frameSize
         $filename = _cveStringCreateFromStr($filename)
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveVideoWriterCreate2", "ptr", $filename, "int", $apiPreference, "int", $fourcc, "double", $fps, "struct*", $frameSize, "boolean", $isColor), "cveVideoWriterCreate2", @error)
+    Local $bFilenameDllType
+    If VarGetType($filename) == "DLLStruct" Then
+        $bFilenameDllType = "struct*"
+    Else
+        $bFilenameDllType = "ptr"
+    EndIf
+
+    Local $bFrameSizeDllType
+    If VarGetType($frameSize) == "DLLStruct" Then
+        $bFrameSizeDllType = "struct*"
+    Else
+        $bFrameSizeDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveVideoWriterCreate2", $bFilenameDllType, $filename, "int", $apiPreference, "int", $fourcc, "double", $fps, $bFrameSizeDllType, $frameSize, "boolean", $isColor), "cveVideoWriterCreate2", @error)
 
     If $bFilenameIsString Then
         _cveStringRelease($filename)
@@ -295,6 +472,20 @@ Func _cveVideoWriterCreate3($filename, $apiPreference, $fourcc, $fps, $frameSize
         $filename = _cveStringCreateFromStr($filename)
     EndIf
 
+    Local $bFilenameDllType
+    If VarGetType($filename) == "DLLStruct" Then
+        $bFilenameDllType = "struct*"
+    Else
+        $bFilenameDllType = "ptr"
+    EndIf
+
+    Local $bFrameSizeDllType
+    If VarGetType($frameSize) == "DLLStruct" Then
+        $bFrameSizeDllType = "struct*"
+    Else
+        $bFrameSizeDllType = "ptr"
+    EndIf
+
     Local $vecParams, $iArrParamsSize
     Local $bParamsIsArray = VarGetType($params) == "Array"
 
@@ -309,7 +500,14 @@ Func _cveVideoWriterCreate3($filename, $apiPreference, $fourcc, $fps, $frameSize
         $vecParams = $params
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveVideoWriterCreate3", "ptr", $filename, "int", $apiPreference, "int", $fourcc, "double", $fps, "struct*", $frameSize, "ptr", $vecParams), "cveVideoWriterCreate3", @error)
+    Local $bParamsDllType
+    If VarGetType($params) == "DLLStruct" Then
+        $bParamsDllType = "struct*"
+    Else
+        $bParamsDllType = "ptr"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveVideoWriterCreate3", $bFilenameDllType, $filename, "int", $apiPreference, "int", $fourcc, "double", $fps, $bFrameSizeDllType, $frameSize, $bParamsDllType, $vecParams), "cveVideoWriterCreate3", @error)
 
     If $bParamsIsArray Then
         _VectorOfIntRelease($vecParams)
@@ -324,17 +522,38 @@ EndFunc   ;==>_cveVideoWriterCreate3
 
 Func _cveVideoWriterIsOpened($writer)
     ; CVAPI(bool) cveVideoWriterIsOpened(cv::VideoWriter* writer);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoWriterIsOpened", "ptr", $writer), "cveVideoWriterIsOpened", @error)
+
+    Local $bWriterDllType
+    If VarGetType($writer) == "DLLStruct" Then
+        $bWriterDllType = "struct*"
+    Else
+        $bWriterDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoWriterIsOpened", $bWriterDllType, $writer), "cveVideoWriterIsOpened", @error)
 EndFunc   ;==>_cveVideoWriterIsOpened
 
 Func _cveVideoWriterSet($writer, $propId, $value)
     ; CVAPI(bool) cveVideoWriterSet(cv::VideoWriter* writer, int propId, double value);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoWriterSet", "ptr", $writer, "int", $propId, "double", $value), "cveVideoWriterSet", @error)
+
+    Local $bWriterDllType
+    If VarGetType($writer) == "DLLStruct" Then
+        $bWriterDllType = "struct*"
+    Else
+        $bWriterDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoWriterSet", $bWriterDllType, $writer, "int", $propId, "double", $value), "cveVideoWriterSet", @error)
 EndFunc   ;==>_cveVideoWriterSet
 
 Func _cveVideoWriterGet($writer, $propId)
     ; CVAPI(double) cveVideoWriterGet(cv::VideoWriter* writer, int propId);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveVideoWriterGet", "ptr", $writer, "int", $propId), "cveVideoWriterGet", @error)
+
+    Local $bWriterDllType
+    If VarGetType($writer) == "DLLStruct" Then
+        $bWriterDllType = "struct*"
+    Else
+        $bWriterDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveVideoWriterGet", $bWriterDllType, $writer, "int", $propId), "cveVideoWriterGet", @error)
 EndFunc   ;==>_cveVideoWriterGet
 
 Func _cveVideoWriterRelease($writer)
@@ -352,7 +571,22 @@ EndFunc   ;==>_cveVideoWriterRelease
 
 Func _cveVideoWriterWrite($writer, $image)
     ; CVAPI(void) cveVideoWriterWrite(cv::VideoWriter* writer, cv::Mat* image);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideoWriterWrite", "ptr", $writer, "ptr", $image), "cveVideoWriterWrite", @error)
+
+    Local $bWriterDllType
+    If VarGetType($writer) == "DLLStruct" Then
+        $bWriterDllType = "struct*"
+    Else
+        $bWriterDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideoWriterWrite", $bWriterDllType, $writer, $bImageDllType, $image), "cveVideoWriterWrite", @error)
 EndFunc   ;==>_cveVideoWriterWrite
 
 Func _cveVideoWriterFourcc($c1, $c2, $c3, $c4)
@@ -368,7 +602,14 @@ Func _cveGetBackendName($api, $name)
         $name = _cveStringCreateFromStr($name)
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetBackendName", "int", $api, "ptr", $name), "cveGetBackendName", @error)
+    Local $bNameDllType
+    If VarGetType($name) == "DLLStruct" Then
+        $bNameDllType = "struct*"
+    Else
+        $bNameDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetBackendName", "int", $api, $bNameDllType, $name), "cveGetBackendName", @error)
 
     If $bNameIsString Then
         _cveStringRelease($name)
@@ -392,7 +633,14 @@ Func _cveGetBackends($backends)
         $vecBackends = $backends
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetBackends", "ptr", $vecBackends), "cveGetBackends", @error)
+    Local $bBackendsDllType
+    If VarGetType($backends) == "DLLStruct" Then
+        $bBackendsDllType = "struct*"
+    Else
+        $bBackendsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetBackends", $bBackendsDllType, $vecBackends), "cveGetBackends", @error)
 
     If $bBackendsIsArray Then
         _VectorOfIntRelease($vecBackends)
@@ -416,7 +664,14 @@ Func _cveGetCameraBackends($backends)
         $vecBackends = $backends
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetCameraBackends", "ptr", $vecBackends), "cveGetCameraBackends", @error)
+    Local $bBackendsDllType
+    If VarGetType($backends) == "DLLStruct" Then
+        $bBackendsDllType = "struct*"
+    Else
+        $bBackendsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetCameraBackends", $bBackendsDllType, $vecBackends), "cveGetCameraBackends", @error)
 
     If $bBackendsIsArray Then
         _VectorOfIntRelease($vecBackends)
@@ -440,7 +695,14 @@ Func _cveGetStreamBackends($backends)
         $vecBackends = $backends
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetStreamBackends", "ptr", $vecBackends), "cveGetStreamBackends", @error)
+    Local $bBackendsDllType
+    If VarGetType($backends) == "DLLStruct" Then
+        $bBackendsDllType = "struct*"
+    Else
+        $bBackendsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetStreamBackends", $bBackendsDllType, $vecBackends), "cveGetStreamBackends", @error)
 
     If $bBackendsIsArray Then
         _VectorOfIntRelease($vecBackends)
@@ -464,7 +726,14 @@ Func _cveGetWriterBackends($backends)
         $vecBackends = $backends
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetWriterBackends", "ptr", $vecBackends), "cveGetWriterBackends", @error)
+    Local $bBackendsDllType
+    If VarGetType($backends) == "DLLStruct" Then
+        $bBackendsDllType = "struct*"
+    Else
+        $bBackendsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetWriterBackends", $bBackendsDllType, $vecBackends), "cveGetWriterBackends", @error)
 
     If $bBackendsIsArray Then
         _VectorOfIntRelease($vecBackends)

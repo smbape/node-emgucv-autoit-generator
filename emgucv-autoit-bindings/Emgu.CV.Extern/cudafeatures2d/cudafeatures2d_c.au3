@@ -36,6 +36,13 @@ EndFunc   ;==>_cveCudaDescriptorMatcherRelease
 Func _cveCudaDescriptorMatcherAdd($matcher, $trainDescs)
     ; CVAPI(void) cveCudaDescriptorMatcherAdd(cv::cuda::DescriptorMatcher* matcher, const std::vector<cv::cuda::GpuMat>* trainDescs);
 
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+
     Local $vecTrainDescs, $iArrTrainDescsSize
     Local $bTrainDescsIsArray = VarGetType($trainDescs) == "Array"
 
@@ -50,7 +57,14 @@ Func _cveCudaDescriptorMatcherAdd($matcher, $trainDescs)
         $vecTrainDescs = $trainDescs
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherAdd", "ptr", $matcher, "ptr", $vecTrainDescs), "cveCudaDescriptorMatcherAdd", @error)
+    Local $bTrainDescsDllType
+    If VarGetType($trainDescs) == "DLLStruct" Then
+        $bTrainDescsDllType = "struct*"
+    Else
+        $bTrainDescsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherAdd", $bMatcherDllType, $matcher, $bTrainDescsDllType, $vecTrainDescs), "cveCudaDescriptorMatcherAdd", @error)
 
     If $bTrainDescsIsArray Then
         _VectorOfGpuMatRelease($vecTrainDescs)
@@ -59,26 +73,77 @@ EndFunc   ;==>_cveCudaDescriptorMatcherAdd
 
 Func _cveCudaDescriptorMatcherIsMaskSupported($matcher)
     ; CVAPI(bool) cveCudaDescriptorMatcherIsMaskSupported(cv::cuda::DescriptorMatcher* matcher);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveCudaDescriptorMatcherIsMaskSupported", "ptr", $matcher), "cveCudaDescriptorMatcherIsMaskSupported", @error)
+
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveCudaDescriptorMatcherIsMaskSupported", $bMatcherDllType, $matcher), "cveCudaDescriptorMatcherIsMaskSupported", @error)
 EndFunc   ;==>_cveCudaDescriptorMatcherIsMaskSupported
 
 Func _cveCudaDescriptorMatcherClear($matcher)
     ; CVAPI(void) cveCudaDescriptorMatcherClear(cv::cuda::DescriptorMatcher* matcher);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherClear", "ptr", $matcher), "cveCudaDescriptorMatcherClear", @error)
+
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherClear", $bMatcherDllType, $matcher), "cveCudaDescriptorMatcherClear", @error)
 EndFunc   ;==>_cveCudaDescriptorMatcherClear
 
 Func _cveCudaDescriptorMatcherEmpty($matcher)
     ; CVAPI(bool) cveCudaDescriptorMatcherEmpty(cv::cuda::DescriptorMatcher* matcher);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveCudaDescriptorMatcherEmpty", "ptr", $matcher), "cveCudaDescriptorMatcherEmpty", @error)
+
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveCudaDescriptorMatcherEmpty", $bMatcherDllType, $matcher), "cveCudaDescriptorMatcherEmpty", @error)
 EndFunc   ;==>_cveCudaDescriptorMatcherEmpty
 
 Func _cveCudaDescriptorMatcherTrain($matcher)
     ; CVAPI(void) cveCudaDescriptorMatcherTrain(cv::cuda::DescriptorMatcher* matcher);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherTrain", "ptr", $matcher), "cveCudaDescriptorMatcherTrain", @error)
+
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherTrain", $bMatcherDllType, $matcher), "cveCudaDescriptorMatcherTrain", @error)
 EndFunc   ;==>_cveCudaDescriptorMatcherTrain
 
 Func _cveCudaDescriptorMatcherMatch1($matcher, $queryDescriptors, $trainDescriptors, $matches, $mask)
     ; CVAPI(void) cveCudaDescriptorMatcherMatch1(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, std::vector< cv::DMatch >* matches, cv::_InputArray* mask);
+
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+
+    Local $bQueryDescriptorsDllType
+    If VarGetType($queryDescriptors) == "DLLStruct" Then
+        $bQueryDescriptorsDllType = "struct*"
+    Else
+        $bQueryDescriptorsDllType = "ptr"
+    EndIf
+
+    Local $bTrainDescriptorsDllType
+    If VarGetType($trainDescriptors) == "DLLStruct" Then
+        $bTrainDescriptorsDllType = "struct*"
+    Else
+        $bTrainDescriptorsDllType = "ptr"
+    EndIf
 
     Local $vecMatches, $iArrMatchesSize
     Local $bMatchesIsArray = VarGetType($matches) == "Array"
@@ -94,7 +159,21 @@ Func _cveCudaDescriptorMatcherMatch1($matcher, $queryDescriptors, $trainDescript
         $vecMatches = $matches
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherMatch1", "ptr", $matcher, "ptr", $queryDescriptors, "ptr", $trainDescriptors, "ptr", $vecMatches, "ptr", $mask), "cveCudaDescriptorMatcherMatch1", @error)
+    Local $bMatchesDllType
+    If VarGetType($matches) == "DLLStruct" Then
+        $bMatchesDllType = "struct*"
+    Else
+        $bMatchesDllType = "ptr"
+    EndIf
+
+    Local $bMaskDllType
+    If VarGetType($mask) == "DLLStruct" Then
+        $bMaskDllType = "struct*"
+    Else
+        $bMaskDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherMatch1", $bMatcherDllType, $matcher, $bQueryDescriptorsDllType, $queryDescriptors, $bTrainDescriptorsDllType, $trainDescriptors, $bMatchesDllType, $vecMatches, $bMaskDllType, $mask), "cveCudaDescriptorMatcherMatch1", @error)
 
     If $bMatchesIsArray Then
         _VectorOfDMatchRelease($vecMatches)
@@ -176,6 +255,20 @@ EndFunc   ;==>_cveCudaDescriptorMatcherMatch1Mat
 Func _cveCudaDescriptorMatcherMatch2($matcher, $queryDescriptors, $matches, $masks)
     ; CVAPI(void) cveCudaDescriptorMatcherMatch2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, std::vector< cv::DMatch >* matches, std::vector< cv::cuda::GpuMat >* masks);
 
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+
+    Local $bQueryDescriptorsDllType
+    If VarGetType($queryDescriptors) == "DLLStruct" Then
+        $bQueryDescriptorsDllType = "struct*"
+    Else
+        $bQueryDescriptorsDllType = "ptr"
+    EndIf
+
     Local $vecMatches, $iArrMatchesSize
     Local $bMatchesIsArray = VarGetType($matches) == "Array"
 
@@ -188,6 +281,13 @@ Func _cveCudaDescriptorMatcherMatch2($matcher, $queryDescriptors, $matches, $mas
         Next
     Else
         $vecMatches = $matches
+    EndIf
+
+    Local $bMatchesDllType
+    If VarGetType($matches) == "DLLStruct" Then
+        $bMatchesDllType = "struct*"
+    Else
+        $bMatchesDllType = "ptr"
     EndIf
 
     Local $vecMasks, $iArrMasksSize
@@ -204,7 +304,14 @@ Func _cveCudaDescriptorMatcherMatch2($matcher, $queryDescriptors, $matches, $mas
         $vecMasks = $masks
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherMatch2", "ptr", $matcher, "ptr", $queryDescriptors, "ptr", $vecMatches, "ptr", $vecMasks), "cveCudaDescriptorMatcherMatch2", @error)
+    Local $bMasksDllType
+    If VarGetType($masks) == "DLLStruct" Then
+        $bMasksDllType = "struct*"
+    Else
+        $bMasksDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherMatch2", $bMatcherDllType, $matcher, $bQueryDescriptorsDllType, $queryDescriptors, $bMatchesDllType, $vecMatches, $bMasksDllType, $vecMasks), "cveCudaDescriptorMatcherMatch2", @error)
 
     If $bMasksIsArray Then
         _VectorOfGpuMatRelease($vecMasks)
@@ -245,7 +352,50 @@ EndFunc   ;==>_cveCudaDescriptorMatcherMatch2Mat
 
 Func _cveCudaDescriptorMatcherMatchAsync1($matcher, $queryDescriptors, $trainDescriptors, $matches, $mask, $stream)
     ; CVAPI(void) cveCudaDescriptorMatcherMatchAsync1(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, cv::_OutputArray* matches, cv::_InputArray* mask, cv::cuda::Stream* stream);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherMatchAsync1", "ptr", $matcher, "ptr", $queryDescriptors, "ptr", $trainDescriptors, "ptr", $matches, "ptr", $mask, "ptr", $stream), "cveCudaDescriptorMatcherMatchAsync1", @error)
+
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+
+    Local $bQueryDescriptorsDllType
+    If VarGetType($queryDescriptors) == "DLLStruct" Then
+        $bQueryDescriptorsDllType = "struct*"
+    Else
+        $bQueryDescriptorsDllType = "ptr"
+    EndIf
+
+    Local $bTrainDescriptorsDllType
+    If VarGetType($trainDescriptors) == "DLLStruct" Then
+        $bTrainDescriptorsDllType = "struct*"
+    Else
+        $bTrainDescriptorsDllType = "ptr"
+    EndIf
+
+    Local $bMatchesDllType
+    If VarGetType($matches) == "DLLStruct" Then
+        $bMatchesDllType = "struct*"
+    Else
+        $bMatchesDllType = "ptr"
+    EndIf
+
+    Local $bMaskDllType
+    If VarGetType($mask) == "DLLStruct" Then
+        $bMaskDllType = "struct*"
+    Else
+        $bMaskDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherMatchAsync1", $bMatcherDllType, $matcher, $bQueryDescriptorsDllType, $queryDescriptors, $bTrainDescriptorsDllType, $trainDescriptors, $bMatchesDllType, $matches, $bMaskDllType, $mask, $bStreamDllType, $stream), "cveCudaDescriptorMatcherMatchAsync1", @error)
 EndFunc   ;==>_cveCudaDescriptorMatcherMatchAsync1
 
 Func _cveCudaDescriptorMatcherMatchAsync1Mat($matcher, $matQueryDescriptors, $matTrainDescriptors, $matMatches, $matMask, $stream)
@@ -345,6 +495,27 @@ EndFunc   ;==>_cveCudaDescriptorMatcherMatchAsync1Mat
 Func _cveCudaDescriptorMatcherMatchAsync2($matcher, $queryDescriptors, $matches, $masks, $stream)
     ; CVAPI(void) cveCudaDescriptorMatcherMatchAsync2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_OutputArray* matches, std::vector< cv::cuda::GpuMat >* masks, cv::cuda::Stream* stream);
 
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+
+    Local $bQueryDescriptorsDllType
+    If VarGetType($queryDescriptors) == "DLLStruct" Then
+        $bQueryDescriptorsDllType = "struct*"
+    Else
+        $bQueryDescriptorsDllType = "ptr"
+    EndIf
+
+    Local $bMatchesDllType
+    If VarGetType($matches) == "DLLStruct" Then
+        $bMatchesDllType = "struct*"
+    Else
+        $bMatchesDllType = "ptr"
+    EndIf
+
     Local $vecMasks, $iArrMasksSize
     Local $bMasksIsArray = VarGetType($masks) == "Array"
 
@@ -359,7 +530,21 @@ Func _cveCudaDescriptorMatcherMatchAsync2($matcher, $queryDescriptors, $matches,
         $vecMasks = $masks
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherMatchAsync2", "ptr", $matcher, "ptr", $queryDescriptors, "ptr", $matches, "ptr", $vecMasks, "ptr", $stream), "cveCudaDescriptorMatcherMatchAsync2", @error)
+    Local $bMasksDllType
+    If VarGetType($masks) == "DLLStruct" Then
+        $bMasksDllType = "struct*"
+    Else
+        $bMasksDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherMatchAsync2", $bMatcherDllType, $matcher, $bQueryDescriptorsDllType, $queryDescriptors, $bMatchesDllType, $matches, $bMasksDllType, $vecMasks, $bStreamDllType, $stream), "cveCudaDescriptorMatcherMatchAsync2", @error)
 
     If $bMasksIsArray Then
         _VectorOfGpuMatRelease($vecMasks)
@@ -419,6 +604,20 @@ EndFunc   ;==>_cveCudaDescriptorMatcherMatchAsync2Mat
 Func _cveCudaDescriptorMatcherMatchConvert($matcher, $gpuMatches, $matches)
     ; CVAPI(void) cveCudaDescriptorMatcherMatchConvert(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* gpuMatches, std::vector< cv::DMatch >* matches);
 
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+
+    Local $bGpuMatchesDllType
+    If VarGetType($gpuMatches) == "DLLStruct" Then
+        $bGpuMatchesDllType = "struct*"
+    Else
+        $bGpuMatchesDllType = "ptr"
+    EndIf
+
     Local $vecMatches, $iArrMatchesSize
     Local $bMatchesIsArray = VarGetType($matches) == "Array"
 
@@ -433,7 +632,14 @@ Func _cveCudaDescriptorMatcherMatchConvert($matcher, $gpuMatches, $matches)
         $vecMatches = $matches
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherMatchConvert", "ptr", $matcher, "ptr", $gpuMatches, "ptr", $vecMatches), "cveCudaDescriptorMatcherMatchConvert", @error)
+    Local $bMatchesDllType
+    If VarGetType($matches) == "DLLStruct" Then
+        $bMatchesDllType = "struct*"
+    Else
+        $bMatchesDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherMatchConvert", $bMatcherDllType, $matcher, $bGpuMatchesDllType, $gpuMatches, $bMatchesDllType, $vecMatches), "cveCudaDescriptorMatcherMatchConvert", @error)
 
     If $bMatchesIsArray Then
         _VectorOfDMatchRelease($vecMatches)
@@ -471,6 +677,27 @@ EndFunc   ;==>_cveCudaDescriptorMatcherMatchConvertMat
 Func _cveCudaDescriptorMatcherKnnMatch1($matcher, $queryDescs, $trainDescs, $matches, $k, $masks, $compactResult)
     ; CVAPI(void) cveCudaDescriptorMatcherKnnMatch1(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescs, cv::_InputArray* trainDescs, std::vector< std::vector< cv::DMatch > >* matches, int k, cv::_InputArray* masks, bool compactResult);
 
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+
+    Local $bQueryDescsDllType
+    If VarGetType($queryDescs) == "DLLStruct" Then
+        $bQueryDescsDllType = "struct*"
+    Else
+        $bQueryDescsDllType = "ptr"
+    EndIf
+
+    Local $bTrainDescsDllType
+    If VarGetType($trainDescs) == "DLLStruct" Then
+        $bTrainDescsDllType = "struct*"
+    Else
+        $bTrainDescsDllType = "ptr"
+    EndIf
+
     Local $vecMatches, $iArrMatchesSize
     Local $bMatchesIsArray = VarGetType($matches) == "Array"
 
@@ -485,7 +712,21 @@ Func _cveCudaDescriptorMatcherKnnMatch1($matcher, $queryDescs, $trainDescs, $mat
         $vecMatches = $matches
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherKnnMatch1", "ptr", $matcher, "ptr", $queryDescs, "ptr", $trainDescs, "ptr", $vecMatches, "int", $k, "ptr", $masks, "boolean", $compactResult), "cveCudaDescriptorMatcherKnnMatch1", @error)
+    Local $bMatchesDllType
+    If VarGetType($matches) == "DLLStruct" Then
+        $bMatchesDllType = "struct*"
+    Else
+        $bMatchesDllType = "ptr"
+    EndIf
+
+    Local $bMasksDllType
+    If VarGetType($masks) == "DLLStruct" Then
+        $bMasksDllType = "struct*"
+    Else
+        $bMasksDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherKnnMatch1", $bMatcherDllType, $matcher, $bQueryDescsDllType, $queryDescs, $bTrainDescsDllType, $trainDescs, $bMatchesDllType, $vecMatches, "int", $k, $bMasksDllType, $masks, "boolean", $compactResult), "cveCudaDescriptorMatcherKnnMatch1", @error)
 
     If $bMatchesIsArray Then
         _VectorOfVectorOfDMatchRelease($vecMatches)
@@ -567,6 +808,20 @@ EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatch1Mat
 Func _cveCudaDescriptorMatcherKnnMatch2($matcher, $queryDescriptors, $matches, $k, $masks, $compactResult)
     ; CVAPI(void) cveCudaDescriptorMatcherKnnMatch2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, std::vector< std::vector< cv::DMatch > >* matches, int k, std::vector< cv::cuda::GpuMat >* masks, bool compactResult);
 
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+
+    Local $bQueryDescriptorsDllType
+    If VarGetType($queryDescriptors) == "DLLStruct" Then
+        $bQueryDescriptorsDllType = "struct*"
+    Else
+        $bQueryDescriptorsDllType = "ptr"
+    EndIf
+
     Local $vecMatches, $iArrMatchesSize
     Local $bMatchesIsArray = VarGetType($matches) == "Array"
 
@@ -579,6 +834,13 @@ Func _cveCudaDescriptorMatcherKnnMatch2($matcher, $queryDescriptors, $matches, $
         Next
     Else
         $vecMatches = $matches
+    EndIf
+
+    Local $bMatchesDllType
+    If VarGetType($matches) == "DLLStruct" Then
+        $bMatchesDllType = "struct*"
+    Else
+        $bMatchesDllType = "ptr"
     EndIf
 
     Local $vecMasks, $iArrMasksSize
@@ -595,7 +857,14 @@ Func _cveCudaDescriptorMatcherKnnMatch2($matcher, $queryDescriptors, $matches, $
         $vecMasks = $masks
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherKnnMatch2", "ptr", $matcher, "ptr", $queryDescriptors, "ptr", $vecMatches, "int", $k, "ptr", $vecMasks, "boolean", $compactResult), "cveCudaDescriptorMatcherKnnMatch2", @error)
+    Local $bMasksDllType
+    If VarGetType($masks) == "DLLStruct" Then
+        $bMasksDllType = "struct*"
+    Else
+        $bMasksDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherKnnMatch2", $bMatcherDllType, $matcher, $bQueryDescriptorsDllType, $queryDescriptors, $bMatchesDllType, $vecMatches, "int", $k, $bMasksDllType, $vecMasks, "boolean", $compactResult), "cveCudaDescriptorMatcherKnnMatch2", @error)
 
     If $bMasksIsArray Then
         _VectorOfGpuMatRelease($vecMasks)
@@ -636,7 +905,50 @@ EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatch2Mat
 
 Func _cveCudaDescriptorMatcherKnnMatchAsync1($matcher, $queryDescriptors, $trainDescriptors, $matches, $k, $mask, $stream)
     ; CVAPI(void) cveCudaDescriptorMatcherKnnMatchAsync1(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, cv::_OutputArray* matches, int k, cv::_InputArray* mask, cv::cuda::Stream* stream);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherKnnMatchAsync1", "ptr", $matcher, "ptr", $queryDescriptors, "ptr", $trainDescriptors, "ptr", $matches, "int", $k, "ptr", $mask, "ptr", $stream), "cveCudaDescriptorMatcherKnnMatchAsync1", @error)
+
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+
+    Local $bQueryDescriptorsDllType
+    If VarGetType($queryDescriptors) == "DLLStruct" Then
+        $bQueryDescriptorsDllType = "struct*"
+    Else
+        $bQueryDescriptorsDllType = "ptr"
+    EndIf
+
+    Local $bTrainDescriptorsDllType
+    If VarGetType($trainDescriptors) == "DLLStruct" Then
+        $bTrainDescriptorsDllType = "struct*"
+    Else
+        $bTrainDescriptorsDllType = "ptr"
+    EndIf
+
+    Local $bMatchesDllType
+    If VarGetType($matches) == "DLLStruct" Then
+        $bMatchesDllType = "struct*"
+    Else
+        $bMatchesDllType = "ptr"
+    EndIf
+
+    Local $bMaskDllType
+    If VarGetType($mask) == "DLLStruct" Then
+        $bMaskDllType = "struct*"
+    Else
+        $bMaskDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherKnnMatchAsync1", $bMatcherDllType, $matcher, $bQueryDescriptorsDllType, $queryDescriptors, $bTrainDescriptorsDllType, $trainDescriptors, $bMatchesDllType, $matches, "int", $k, $bMaskDllType, $mask, $bStreamDllType, $stream), "cveCudaDescriptorMatcherKnnMatchAsync1", @error)
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchAsync1
 
 Func _cveCudaDescriptorMatcherKnnMatchAsync1Mat($matcher, $matQueryDescriptors, $matTrainDescriptors, $matMatches, $k, $matMask, $stream)
@@ -736,6 +1048,27 @@ EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchAsync1Mat
 Func _cveCudaDescriptorMatcherKnnMatchAsync2($matcher, $queryDescriptors, $matches, $k, $masks, $stream)
     ; CVAPI(void) cveCudaDescriptorMatcherKnnMatchAsync2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_OutputArray* matches, int k, std::vector< cv::cuda::GpuMat >* masks, cv::cuda::Stream* stream);
 
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+
+    Local $bQueryDescriptorsDllType
+    If VarGetType($queryDescriptors) == "DLLStruct" Then
+        $bQueryDescriptorsDllType = "struct*"
+    Else
+        $bQueryDescriptorsDllType = "ptr"
+    EndIf
+
+    Local $bMatchesDllType
+    If VarGetType($matches) == "DLLStruct" Then
+        $bMatchesDllType = "struct*"
+    Else
+        $bMatchesDllType = "ptr"
+    EndIf
+
     Local $vecMasks, $iArrMasksSize
     Local $bMasksIsArray = VarGetType($masks) == "Array"
 
@@ -750,7 +1083,21 @@ Func _cveCudaDescriptorMatcherKnnMatchAsync2($matcher, $queryDescriptors, $match
         $vecMasks = $masks
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherKnnMatchAsync2", "ptr", $matcher, "ptr", $queryDescriptors, "ptr", $matches, "int", $k, "ptr", $vecMasks, "ptr", $stream), "cveCudaDescriptorMatcherKnnMatchAsync2", @error)
+    Local $bMasksDllType
+    If VarGetType($masks) == "DLLStruct" Then
+        $bMasksDllType = "struct*"
+    Else
+        $bMasksDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherKnnMatchAsync2", $bMatcherDllType, $matcher, $bQueryDescriptorsDllType, $queryDescriptors, $bMatchesDllType, $matches, "int", $k, $bMasksDllType, $vecMasks, $bStreamDllType, $stream), "cveCudaDescriptorMatcherKnnMatchAsync2", @error)
 
     If $bMasksIsArray Then
         _VectorOfGpuMatRelease($vecMasks)
@@ -810,6 +1157,20 @@ EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchAsync2Mat
 Func _cveCudaDescriptorMatcherKnnMatchConvert($matcher, $gpuMatches, $matches, $compactResult)
     ; CVAPI(void) cveCudaDescriptorMatcherKnnMatchConvert(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* gpuMatches, std::vector< std::vector< cv::DMatch > >* matches, bool compactResult);
 
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+
+    Local $bGpuMatchesDllType
+    If VarGetType($gpuMatches) == "DLLStruct" Then
+        $bGpuMatchesDllType = "struct*"
+    Else
+        $bGpuMatchesDllType = "ptr"
+    EndIf
+
     Local $vecMatches, $iArrMatchesSize
     Local $bMatchesIsArray = VarGetType($matches) == "Array"
 
@@ -824,7 +1185,14 @@ Func _cveCudaDescriptorMatcherKnnMatchConvert($matcher, $gpuMatches, $matches, $
         $vecMatches = $matches
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherKnnMatchConvert", "ptr", $matcher, "ptr", $gpuMatches, "ptr", $vecMatches, "boolean", $compactResult), "cveCudaDescriptorMatcherKnnMatchConvert", @error)
+    Local $bMatchesDllType
+    If VarGetType($matches) == "DLLStruct" Then
+        $bMatchesDllType = "struct*"
+    Else
+        $bMatchesDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherKnnMatchConvert", $bMatcherDllType, $matcher, $bGpuMatchesDllType, $gpuMatches, $bMatchesDllType, $vecMatches, "boolean", $compactResult), "cveCudaDescriptorMatcherKnnMatchConvert", @error)
 
     If $bMatchesIsArray Then
         _VectorOfVectorOfDMatchRelease($vecMatches)
@@ -862,6 +1230,27 @@ EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchConvertMat
 Func _cveCudaDescriptorMatcherRadiusMatch1($matcher, $queryDescriptors, $trainDescriptors, $matches, $maxDistance, $mask, $compactResult)
     ; CVAPI(void) cveCudaDescriptorMatcherRadiusMatch1(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, std::vector< std::vector< cv::DMatch > >* matches, float maxDistance, cv::_InputArray* mask, bool compactResult);
 
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+
+    Local $bQueryDescriptorsDllType
+    If VarGetType($queryDescriptors) == "DLLStruct" Then
+        $bQueryDescriptorsDllType = "struct*"
+    Else
+        $bQueryDescriptorsDllType = "ptr"
+    EndIf
+
+    Local $bTrainDescriptorsDllType
+    If VarGetType($trainDescriptors) == "DLLStruct" Then
+        $bTrainDescriptorsDllType = "struct*"
+    Else
+        $bTrainDescriptorsDllType = "ptr"
+    EndIf
+
     Local $vecMatches, $iArrMatchesSize
     Local $bMatchesIsArray = VarGetType($matches) == "Array"
 
@@ -876,7 +1265,21 @@ Func _cveCudaDescriptorMatcherRadiusMatch1($matcher, $queryDescriptors, $trainDe
         $vecMatches = $matches
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherRadiusMatch1", "ptr", $matcher, "ptr", $queryDescriptors, "ptr", $trainDescriptors, "ptr", $vecMatches, "float", $maxDistance, "ptr", $mask, "boolean", $compactResult), "cveCudaDescriptorMatcherRadiusMatch1", @error)
+    Local $bMatchesDllType
+    If VarGetType($matches) == "DLLStruct" Then
+        $bMatchesDllType = "struct*"
+    Else
+        $bMatchesDllType = "ptr"
+    EndIf
+
+    Local $bMaskDllType
+    If VarGetType($mask) == "DLLStruct" Then
+        $bMaskDllType = "struct*"
+    Else
+        $bMaskDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherRadiusMatch1", $bMatcherDllType, $matcher, $bQueryDescriptorsDllType, $queryDescriptors, $bTrainDescriptorsDllType, $trainDescriptors, $bMatchesDllType, $vecMatches, "float", $maxDistance, $bMaskDllType, $mask, "boolean", $compactResult), "cveCudaDescriptorMatcherRadiusMatch1", @error)
 
     If $bMatchesIsArray Then
         _VectorOfVectorOfDMatchRelease($vecMatches)
@@ -958,6 +1361,20 @@ EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatch1Mat
 Func _cveCudaDescriptorMatcherRadiusMatch2($matcher, $queryDescriptors, $matches, $maxDistance, $masks, $compactResult)
     ; CVAPI(void) cveCudaDescriptorMatcherRadiusMatch2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, std::vector< std::vector< cv::DMatch > >* matches, float maxDistance, std::vector< cv::cuda::GpuMat >* masks, bool compactResult);
 
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+
+    Local $bQueryDescriptorsDllType
+    If VarGetType($queryDescriptors) == "DLLStruct" Then
+        $bQueryDescriptorsDllType = "struct*"
+    Else
+        $bQueryDescriptorsDllType = "ptr"
+    EndIf
+
     Local $vecMatches, $iArrMatchesSize
     Local $bMatchesIsArray = VarGetType($matches) == "Array"
 
@@ -970,6 +1387,13 @@ Func _cveCudaDescriptorMatcherRadiusMatch2($matcher, $queryDescriptors, $matches
         Next
     Else
         $vecMatches = $matches
+    EndIf
+
+    Local $bMatchesDllType
+    If VarGetType($matches) == "DLLStruct" Then
+        $bMatchesDllType = "struct*"
+    Else
+        $bMatchesDllType = "ptr"
     EndIf
 
     Local $vecMasks, $iArrMasksSize
@@ -986,7 +1410,14 @@ Func _cveCudaDescriptorMatcherRadiusMatch2($matcher, $queryDescriptors, $matches
         $vecMasks = $masks
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherRadiusMatch2", "ptr", $matcher, "ptr", $queryDescriptors, "ptr", $vecMatches, "float", $maxDistance, "ptr", $vecMasks, "boolean", $compactResult), "cveCudaDescriptorMatcherRadiusMatch2", @error)
+    Local $bMasksDllType
+    If VarGetType($masks) == "DLLStruct" Then
+        $bMasksDllType = "struct*"
+    Else
+        $bMasksDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherRadiusMatch2", $bMatcherDllType, $matcher, $bQueryDescriptorsDllType, $queryDescriptors, $bMatchesDllType, $vecMatches, "float", $maxDistance, $bMasksDllType, $vecMasks, "boolean", $compactResult), "cveCudaDescriptorMatcherRadiusMatch2", @error)
 
     If $bMasksIsArray Then
         _VectorOfGpuMatRelease($vecMasks)
@@ -1027,7 +1458,50 @@ EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatch2Mat
 
 Func _cveCudaDescriptorMatcherRadiusMatchAsync1($matcher, $queryDescriptors, $trainDescriptors, $matches, $maxDistance, $mask, $stream)
     ; CVAPI(void) cveCudaDescriptorMatcherRadiusMatchAsync1(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, cv::_OutputArray* matches, float maxDistance, cv::_InputArray* mask, cv::cuda::Stream* stream);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherRadiusMatchAsync1", "ptr", $matcher, "ptr", $queryDescriptors, "ptr", $trainDescriptors, "ptr", $matches, "float", $maxDistance, "ptr", $mask, "ptr", $stream), "cveCudaDescriptorMatcherRadiusMatchAsync1", @error)
+
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+
+    Local $bQueryDescriptorsDllType
+    If VarGetType($queryDescriptors) == "DLLStruct" Then
+        $bQueryDescriptorsDllType = "struct*"
+    Else
+        $bQueryDescriptorsDllType = "ptr"
+    EndIf
+
+    Local $bTrainDescriptorsDllType
+    If VarGetType($trainDescriptors) == "DLLStruct" Then
+        $bTrainDescriptorsDllType = "struct*"
+    Else
+        $bTrainDescriptorsDllType = "ptr"
+    EndIf
+
+    Local $bMatchesDllType
+    If VarGetType($matches) == "DLLStruct" Then
+        $bMatchesDllType = "struct*"
+    Else
+        $bMatchesDllType = "ptr"
+    EndIf
+
+    Local $bMaskDllType
+    If VarGetType($mask) == "DLLStruct" Then
+        $bMaskDllType = "struct*"
+    Else
+        $bMaskDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherRadiusMatchAsync1", $bMatcherDllType, $matcher, $bQueryDescriptorsDllType, $queryDescriptors, $bTrainDescriptorsDllType, $trainDescriptors, $bMatchesDllType, $matches, "float", $maxDistance, $bMaskDllType, $mask, $bStreamDllType, $stream), "cveCudaDescriptorMatcherRadiusMatchAsync1", @error)
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchAsync1
 
 Func _cveCudaDescriptorMatcherRadiusMatchAsync1Mat($matcher, $matQueryDescriptors, $matTrainDescriptors, $matMatches, $maxDistance, $matMask, $stream)
@@ -1127,6 +1601,27 @@ EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchAsync1Mat
 Func _cveCudaDescriptorMatcherRadiusMatchAsync2($matcher, $queryDescriptors, $matches, $maxDistance, $masks, $stream)
     ; CVAPI(void) cveCudaDescriptorMatcherRadiusMatchAsync2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_OutputArray* matches, float maxDistance, std::vector< cv::cuda::GpuMat >* masks, cv::cuda::Stream* stream);
 
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+
+    Local $bQueryDescriptorsDllType
+    If VarGetType($queryDescriptors) == "DLLStruct" Then
+        $bQueryDescriptorsDllType = "struct*"
+    Else
+        $bQueryDescriptorsDllType = "ptr"
+    EndIf
+
+    Local $bMatchesDllType
+    If VarGetType($matches) == "DLLStruct" Then
+        $bMatchesDllType = "struct*"
+    Else
+        $bMatchesDllType = "ptr"
+    EndIf
+
     Local $vecMasks, $iArrMasksSize
     Local $bMasksIsArray = VarGetType($masks) == "Array"
 
@@ -1141,7 +1636,21 @@ Func _cveCudaDescriptorMatcherRadiusMatchAsync2($matcher, $queryDescriptors, $ma
         $vecMasks = $masks
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherRadiusMatchAsync2", "ptr", $matcher, "ptr", $queryDescriptors, "ptr", $matches, "float", $maxDistance, "ptr", $vecMasks, "ptr", $stream), "cveCudaDescriptorMatcherRadiusMatchAsync2", @error)
+    Local $bMasksDllType
+    If VarGetType($masks) == "DLLStruct" Then
+        $bMasksDllType = "struct*"
+    Else
+        $bMasksDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherRadiusMatchAsync2", $bMatcherDllType, $matcher, $bQueryDescriptorsDllType, $queryDescriptors, $bMatchesDllType, $matches, "float", $maxDistance, $bMasksDllType, $vecMasks, $bStreamDllType, $stream), "cveCudaDescriptorMatcherRadiusMatchAsync2", @error)
 
     If $bMasksIsArray Then
         _VectorOfGpuMatRelease($vecMasks)
@@ -1201,6 +1710,20 @@ EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchAsync2Mat
 Func _cveCudaDescriptorMatcherRadiusMatchConvert($matcher, $gpu_matches, $matches, $compactResult)
     ; CVAPI(void) cveCudaDescriptorMatcherRadiusMatchConvert(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* gpu_matches, std::vector< std::vector< cv::DMatch > >* matches, bool compactResult);
 
+    Local $bMatcherDllType
+    If VarGetType($matcher) == "DLLStruct" Then
+        $bMatcherDllType = "struct*"
+    Else
+        $bMatcherDllType = "ptr"
+    EndIf
+
+    Local $bGpu_matchesDllType
+    If VarGetType($gpu_matches) == "DLLStruct" Then
+        $bGpu_matchesDllType = "struct*"
+    Else
+        $bGpu_matchesDllType = "ptr"
+    EndIf
+
     Local $vecMatches, $iArrMatchesSize
     Local $bMatchesIsArray = VarGetType($matches) == "Array"
 
@@ -1215,7 +1738,14 @@ Func _cveCudaDescriptorMatcherRadiusMatchConvert($matcher, $gpu_matches, $matche
         $vecMatches = $matches
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherRadiusMatchConvert", "ptr", $matcher, "ptr", $gpu_matches, "ptr", $vecMatches, "boolean", $compactResult), "cveCudaDescriptorMatcherRadiusMatchConvert", @error)
+    Local $bMatchesDllType
+    If VarGetType($matches) == "DLLStruct" Then
+        $bMatchesDllType = "struct*"
+    Else
+        $bMatchesDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherRadiusMatchConvert", $bMatcherDllType, $matcher, $bGpu_matchesDllType, $gpu_matches, $bMatchesDllType, $vecMatches, "boolean", $compactResult), "cveCudaDescriptorMatcherRadiusMatchConvert", @error)
 
     If $bMatchesIsArray Then
         _VectorOfVectorOfDMatchRelease($vecMatches)
@@ -1252,7 +1782,43 @@ EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchConvertMat
 
 Func _cveCudaFeature2dAsyncDetectAsync($feature2d, $image, $keypoints, $mask, $stream)
     ; CVAPI(void) cveCudaFeature2dAsyncDetectAsync(cv::cuda::Feature2DAsync* feature2d, cv::_InputArray* image, cv::_OutputArray* keypoints, cv::_InputArray* mask, cv::cuda::Stream* stream);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaFeature2dAsyncDetectAsync", "ptr", $feature2d, "ptr", $image, "ptr", $keypoints, "ptr", $mask, "ptr", $stream), "cveCudaFeature2dAsyncDetectAsync", @error)
+
+    Local $bFeature2dDllType
+    If VarGetType($feature2d) == "DLLStruct" Then
+        $bFeature2dDllType = "struct*"
+    Else
+        $bFeature2dDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bKeypointsDllType
+    If VarGetType($keypoints) == "DLLStruct" Then
+        $bKeypointsDllType = "struct*"
+    Else
+        $bKeypointsDllType = "ptr"
+    EndIf
+
+    Local $bMaskDllType
+    If VarGetType($mask) == "DLLStruct" Then
+        $bMaskDllType = "struct*"
+    Else
+        $bMaskDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaFeature2dAsyncDetectAsync", $bFeature2dDllType, $feature2d, $bImageDllType, $image, $bKeypointsDllType, $keypoints, $bMaskDllType, $mask, $bStreamDllType, $stream), "cveCudaFeature2dAsyncDetectAsync", @error)
 EndFunc   ;==>_cveCudaFeature2dAsyncDetectAsync
 
 Func _cveCudaFeature2dAsyncDetectAsyncMat($feature2d, $matImage, $matKeypoints, $matMask, $stream)
@@ -1329,7 +1895,43 @@ EndFunc   ;==>_cveCudaFeature2dAsyncDetectAsyncMat
 
 Func _cveCudaFeature2dAsyncComputeAsync($feature2d, $image, $keypoints, $descriptors, $stream)
     ; CVAPI(void) cveCudaFeature2dAsyncComputeAsync(cv::cuda::Feature2DAsync* feature2d, cv::_InputArray* image, cv::_OutputArray* keypoints, cv::_OutputArray* descriptors, cv::cuda::Stream* stream);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaFeature2dAsyncComputeAsync", "ptr", $feature2d, "ptr", $image, "ptr", $keypoints, "ptr", $descriptors, "ptr", $stream), "cveCudaFeature2dAsyncComputeAsync", @error)
+
+    Local $bFeature2dDllType
+    If VarGetType($feature2d) == "DLLStruct" Then
+        $bFeature2dDllType = "struct*"
+    Else
+        $bFeature2dDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bKeypointsDllType
+    If VarGetType($keypoints) == "DLLStruct" Then
+        $bKeypointsDllType = "struct*"
+    Else
+        $bKeypointsDllType = "ptr"
+    EndIf
+
+    Local $bDescriptorsDllType
+    If VarGetType($descriptors) == "DLLStruct" Then
+        $bDescriptorsDllType = "struct*"
+    Else
+        $bDescriptorsDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaFeature2dAsyncComputeAsync", $bFeature2dDllType, $feature2d, $bImageDllType, $image, $bKeypointsDllType, $keypoints, $bDescriptorsDllType, $descriptors, $bStreamDllType, $stream), "cveCudaFeature2dAsyncComputeAsync", @error)
 EndFunc   ;==>_cveCudaFeature2dAsyncComputeAsync
 
 Func _cveCudaFeature2dAsyncComputeAsyncMat($feature2d, $matImage, $matKeypoints, $matDescriptors, $stream)
@@ -1406,7 +2008,50 @@ EndFunc   ;==>_cveCudaFeature2dAsyncComputeAsyncMat
 
 Func _cveCudaFeature2dAsyncDetectAndComputeAsync($feature2d, $image, $mask, $keypoints, $descriptors, $useProvidedKeypoints, $stream)
     ; CVAPI(void) cveCudaFeature2dAsyncDetectAndComputeAsync(cv::cuda::Feature2DAsync* feature2d, cv::_InputArray* image, cv::_InputArray* mask, cv::_OutputArray* keypoints, cv::_OutputArray* descriptors, bool useProvidedKeypoints, cv::cuda::Stream* stream);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaFeature2dAsyncDetectAndComputeAsync", "ptr", $feature2d, "ptr", $image, "ptr", $mask, "ptr", $keypoints, "ptr", $descriptors, "boolean", $useProvidedKeypoints, "ptr", $stream), "cveCudaFeature2dAsyncDetectAndComputeAsync", @error)
+
+    Local $bFeature2dDllType
+    If VarGetType($feature2d) == "DLLStruct" Then
+        $bFeature2dDllType = "struct*"
+    Else
+        $bFeature2dDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bMaskDllType
+    If VarGetType($mask) == "DLLStruct" Then
+        $bMaskDllType = "struct*"
+    Else
+        $bMaskDllType = "ptr"
+    EndIf
+
+    Local $bKeypointsDllType
+    If VarGetType($keypoints) == "DLLStruct" Then
+        $bKeypointsDllType = "struct*"
+    Else
+        $bKeypointsDllType = "ptr"
+    EndIf
+
+    Local $bDescriptorsDllType
+    If VarGetType($descriptors) == "DLLStruct" Then
+        $bDescriptorsDllType = "struct*"
+    Else
+        $bDescriptorsDllType = "ptr"
+    EndIf
+
+    Local $bStreamDllType
+    If VarGetType($stream) == "DLLStruct" Then
+        $bStreamDllType = "struct*"
+    Else
+        $bStreamDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaFeature2dAsyncDetectAndComputeAsync", $bFeature2dDllType, $feature2d, $bImageDllType, $image, $bMaskDllType, $mask, $bKeypointsDllType, $keypoints, $bDescriptorsDllType, $descriptors, "boolean", $useProvidedKeypoints, $bStreamDllType, $stream), "cveCudaFeature2dAsyncDetectAndComputeAsync", @error)
 EndFunc   ;==>_cveCudaFeature2dAsyncDetectAndComputeAsync
 
 Func _cveCudaFeature2dAsyncDetectAndComputeAsyncMat($feature2d, $matImage, $matMask, $matKeypoints, $matDescriptors, $useProvidedKeypoints, $stream)
@@ -1506,6 +2151,20 @@ EndFunc   ;==>_cveCudaFeature2dAsyncDetectAndComputeAsyncMat
 Func _cveCudaFeature2dAsyncConvert($feature2d, $gpu_keypoints, $keypoints)
     ; CVAPI(void) cveCudaFeature2dAsyncConvert(cv::cuda::Feature2DAsync* feature2d, cv::_InputArray* gpu_keypoints, std::vector<cv::KeyPoint>* keypoints);
 
+    Local $bFeature2dDllType
+    If VarGetType($feature2d) == "DLLStruct" Then
+        $bFeature2dDllType = "struct*"
+    Else
+        $bFeature2dDllType = "ptr"
+    EndIf
+
+    Local $bGpu_keypointsDllType
+    If VarGetType($gpu_keypoints) == "DLLStruct" Then
+        $bGpu_keypointsDllType = "struct*"
+    Else
+        $bGpu_keypointsDllType = "ptr"
+    EndIf
+
     Local $vecKeypoints, $iArrKeypointsSize
     Local $bKeypointsIsArray = VarGetType($keypoints) == "Array"
 
@@ -1520,7 +2179,14 @@ Func _cveCudaFeature2dAsyncConvert($feature2d, $gpu_keypoints, $keypoints)
         $vecKeypoints = $keypoints
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaFeature2dAsyncConvert", "ptr", $feature2d, "ptr", $gpu_keypoints, "ptr", $vecKeypoints), "cveCudaFeature2dAsyncConvert", @error)
+    Local $bKeypointsDllType
+    If VarGetType($keypoints) == "DLLStruct" Then
+        $bKeypointsDllType = "struct*"
+    Else
+        $bKeypointsDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaFeature2dAsyncConvert", $bFeature2dDllType, $feature2d, $bGpu_keypointsDllType, $gpu_keypoints, $bKeypointsDllType, $vecKeypoints), "cveCudaFeature2dAsyncConvert", @error)
 
     If $bKeypointsIsArray Then
         _VectorOfKeyPointRelease($vecKeypoints)

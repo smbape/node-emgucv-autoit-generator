@@ -3,7 +3,14 @@
 
 Func _cveOutputArrayFixedSize($obj)
     ; CVAPI(bool) cveOutputArrayFixedSize(cv::_OutputArray* obj);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveOutputArrayFixedSize", "ptr", $obj), "cveOutputArrayFixedSize", @error)
+
+    Local $bObjDllType
+    If VarGetType($obj) == "DLLStruct" Then
+        $bObjDllType = "struct*"
+    Else
+        $bObjDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveOutputArrayFixedSize", $bObjDllType, $obj), "cveOutputArrayFixedSize", @error)
 EndFunc   ;==>_cveOutputArrayFixedSize
 
 Func _cveOutputArrayFixedSizeMat($matObj)
@@ -38,7 +45,14 @@ EndFunc   ;==>_cveOutputArrayFixedSizeMat
 
 Func _cveOutputArrayFixedType($obj)
     ; CVAPI(bool) cveOutputArrayFixedType(cv::_OutputArray* obj);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveOutputArrayFixedType", "ptr", $obj), "cveOutputArrayFixedType", @error)
+
+    Local $bObjDllType
+    If VarGetType($obj) == "DLLStruct" Then
+        $bObjDllType = "struct*"
+    Else
+        $bObjDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveOutputArrayFixedType", $bObjDllType, $obj), "cveOutputArrayFixedType", @error)
 EndFunc   ;==>_cveOutputArrayFixedType
 
 Func _cveOutputArrayFixedTypeMat($matObj)
@@ -73,7 +87,14 @@ EndFunc   ;==>_cveOutputArrayFixedTypeMat
 
 Func _cveOutputArrayNeeded($obj)
     ; CVAPI(bool) cveOutputArrayNeeded(cv::_OutputArray* obj);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveOutputArrayNeeded", "ptr", $obj), "cveOutputArrayNeeded", @error)
+
+    Local $bObjDllType
+    If VarGetType($obj) == "DLLStruct" Then
+        $bObjDllType = "struct*"
+    Else
+        $bObjDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveOutputArrayNeeded", $bObjDllType, $obj), "cveOutputArrayNeeded", @error)
 EndFunc   ;==>_cveOutputArrayNeeded
 
 Func _cveOutputArrayNeededMat($matObj)

@@ -16,6 +16,13 @@ EndFunc   ;==>_cveCCheckerCreate
 Func _cveCCheckerGetBox($checker, $box)
     ; CVAPI(void) cveCCheckerGetBox(cv::mcc::CChecker* checker, std::vector< cv::Point2f >* box);
 
+    Local $bCheckerDllType
+    If VarGetType($checker) == "DLLStruct" Then
+        $bCheckerDllType = "struct*"
+    Else
+        $bCheckerDllType = "ptr"
+    EndIf
+
     Local $vecBox, $iArrBoxSize
     Local $bBoxIsArray = VarGetType($box) == "Array"
 
@@ -30,7 +37,14 @@ Func _cveCCheckerGetBox($checker, $box)
         $vecBox = $box
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCCheckerGetBox", "ptr", $checker, "ptr", $vecBox), "cveCCheckerGetBox", @error)
+    Local $bBoxDllType
+    If VarGetType($box) == "DLLStruct" Then
+        $bBoxDllType = "struct*"
+    Else
+        $bBoxDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCCheckerGetBox", $bCheckerDllType, $checker, $bBoxDllType, $vecBox), "cveCCheckerGetBox", @error)
 
     If $bBoxIsArray Then
         _VectorOfPointFRelease($vecBox)
@@ -40,6 +54,13 @@ EndFunc   ;==>_cveCCheckerGetBox
 Func _cveCCheckerSetBox($checker, $box)
     ; CVAPI(void) cveCCheckerSetBox(cv::mcc::CChecker* checker, std::vector< cv::Point2f >* box);
 
+    Local $bCheckerDllType
+    If VarGetType($checker) == "DLLStruct" Then
+        $bCheckerDllType = "struct*"
+    Else
+        $bCheckerDllType = "ptr"
+    EndIf
+
     Local $vecBox, $iArrBoxSize
     Local $bBoxIsArray = VarGetType($box) == "Array"
 
@@ -54,7 +75,14 @@ Func _cveCCheckerSetBox($checker, $box)
         $vecBox = $box
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCCheckerSetBox", "ptr", $checker, "ptr", $vecBox), "cveCCheckerSetBox", @error)
+    Local $bBoxDllType
+    If VarGetType($box) == "DLLStruct" Then
+        $bBoxDllType = "struct*"
+    Else
+        $bBoxDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCCheckerSetBox", $bCheckerDllType, $checker, $bBoxDllType, $vecBox), "cveCCheckerSetBox", @error)
 
     If $bBoxIsArray Then
         _VectorOfPointFRelease($vecBox)
@@ -63,12 +91,42 @@ EndFunc   ;==>_cveCCheckerSetBox
 
 Func _cveCCheckerGetCenter($checker, $center)
     ; CVAPI(void) cveCCheckerGetCenter(cv::mcc::CChecker* checker, CvPoint2D32f* center);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCCheckerGetCenter", "ptr", $checker, "struct*", $center), "cveCCheckerGetCenter", @error)
+
+    Local $bCheckerDllType
+    If VarGetType($checker) == "DLLStruct" Then
+        $bCheckerDllType = "struct*"
+    Else
+        $bCheckerDllType = "ptr"
+    EndIf
+
+    Local $bCenterDllType
+    If VarGetType($center) == "DLLStruct" Then
+        $bCenterDllType = "struct*"
+    Else
+        $bCenterDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCCheckerGetCenter", $bCheckerDllType, $checker, $bCenterDllType, $center), "cveCCheckerGetCenter", @error)
 EndFunc   ;==>_cveCCheckerGetCenter
 
 Func _cveCCheckerSetCenter($checker, $center)
     ; CVAPI(void) cveCCheckerSetCenter(cv::mcc::CChecker* checker, CvPoint2D32f* center);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCCheckerSetCenter", "ptr", $checker, "struct*", $center), "cveCCheckerSetCenter", @error)
+
+    Local $bCheckerDllType
+    If VarGetType($checker) == "DLLStruct" Then
+        $bCheckerDllType = "struct*"
+    Else
+        $bCheckerDllType = "ptr"
+    EndIf
+
+    Local $bCenterDllType
+    If VarGetType($center) == "DLLStruct" Then
+        $bCenterDllType = "struct*"
+    Else
+        $bCenterDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCCheckerSetCenter", $bCheckerDllType, $checker, $bCenterDllType, $center), "cveCCheckerSetCenter", @error)
 EndFunc   ;==>_cveCCheckerSetCenter
 
 Func _cveCCheckerRelease($sharedPtr)
@@ -87,18 +145,47 @@ EndFunc   ;==>_cveCCheckerRelease
 Func _cveCCheckerDrawCreate($pChecker, $color, $thickness, $sharedPtr)
     ; CVAPI(cv::mcc::CCheckerDraw*) cveCCheckerDrawCreate(cv::mcc::CChecker* pChecker, CvScalar* color, int thickness, cv::Ptr<cv::mcc::CCheckerDraw>** sharedPtr);
 
+    Local $bPCheckerDllType
+    If VarGetType($pChecker) == "DLLStruct" Then
+        $bPCheckerDllType = "struct*"
+    Else
+        $bPCheckerDllType = "ptr"
+    EndIf
+
+    Local $bColorDllType
+    If VarGetType($color) == "DLLStruct" Then
+        $bColorDllType = "struct*"
+    Else
+        $bColorDllType = "ptr"
+    EndIf
+
     Local $bSharedPtrDllType
     If VarGetType($sharedPtr) == "DLLStruct" Then
         $bSharedPtrDllType = "struct*"
     Else
         $bSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCCheckerDrawCreate", "ptr", $pChecker, "struct*", $color, "int", $thickness, $bSharedPtrDllType, $sharedPtr), "cveCCheckerDrawCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCCheckerDrawCreate", $bPCheckerDllType, $pChecker, $bColorDllType, $color, "int", $thickness, $bSharedPtrDllType, $sharedPtr), "cveCCheckerDrawCreate", @error)
 EndFunc   ;==>_cveCCheckerDrawCreate
 
 Func _cveCCheckerDrawDraw($ccheckerDraw, $img)
     ; CVAPI(void) cveCCheckerDrawDraw(cv::mcc::CCheckerDraw* ccheckerDraw, cv::_InputOutputArray* img);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCCheckerDrawDraw", "ptr", $ccheckerDraw, "ptr", $img), "cveCCheckerDrawDraw", @error)
+
+    Local $bCcheckerDrawDllType
+    If VarGetType($ccheckerDraw) == "DLLStruct" Then
+        $bCcheckerDrawDllType = "struct*"
+    Else
+        $bCcheckerDrawDllType = "ptr"
+    EndIf
+
+    Local $bImgDllType
+    If VarGetType($img) == "DLLStruct" Then
+        $bImgDllType = "struct*"
+    Else
+        $bImgDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCCheckerDrawDraw", $bCcheckerDrawDllType, $ccheckerDraw, $bImgDllType, $img), "cveCCheckerDrawDraw", @error)
 EndFunc   ;==>_cveCCheckerDrawDraw
 
 Func _cveCCheckerDrawDrawMat($ccheckerDraw, $matImg)
@@ -163,7 +250,28 @@ EndFunc   ;==>_cveCCheckerDetectorCreate
 
 Func _cveCCheckerDetectorProcess($detector, $image, $chartType, $nc, $useNet, $param)
     ; CVAPI(bool) cveCCheckerDetectorProcess(cv::mcc::CCheckerDetector* detector, cv::_InputArray* image, const cv::mcc::TYPECHART chartType, const int nc, bool useNet, cv::mcc::DetectorParameters* param);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveCCheckerDetectorProcess", "ptr", $detector, "ptr", $image, "const cv::mcc::TYPECHART", $chartType, "const int", $nc, "boolean", $useNet, "ptr", $param), "cveCCheckerDetectorProcess", @error)
+
+    Local $bDetectorDllType
+    If VarGetType($detector) == "DLLStruct" Then
+        $bDetectorDllType = "struct*"
+    Else
+        $bDetectorDllType = "ptr"
+    EndIf
+
+    Local $bImageDllType
+    If VarGetType($image) == "DLLStruct" Then
+        $bImageDllType = "struct*"
+    Else
+        $bImageDllType = "ptr"
+    EndIf
+
+    Local $bParamDllType
+    If VarGetType($param) == "DLLStruct" Then
+        $bParamDllType = "struct*"
+    Else
+        $bParamDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveCCheckerDetectorProcess", $bDetectorDllType, $detector, $bImageDllType, $image, "cv::mcc::TYPECHART", $chartType, "int", $nc, "boolean", $useNet, $bParamDllType, $param), "cveCCheckerDetectorProcess", @error)
 EndFunc   ;==>_cveCCheckerDetectorProcess
 
 Func _cveCCheckerDetectorProcessMat($detector, $matImage, $chartType, $nc, $useNet, $param)
@@ -198,7 +306,14 @@ EndFunc   ;==>_cveCCheckerDetectorProcessMat
 
 Func _cveCCheckerDetectorGetBestColorChecker($detector)
     ; CVAPI(cv::mcc::CChecker*) cveCCheckerDetectorGetBestColorChecker(cv::mcc::CCheckerDetector* detector);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCCheckerDetectorGetBestColorChecker", "ptr", $detector), "cveCCheckerDetectorGetBestColorChecker", @error)
+
+    Local $bDetectorDllType
+    If VarGetType($detector) == "DLLStruct" Then
+        $bDetectorDllType = "struct*"
+    Else
+        $bDetectorDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCCheckerDetectorGetBestColorChecker", $bDetectorDllType, $detector), "cveCCheckerDetectorGetBestColorChecker", @error)
 EndFunc   ;==>_cveCCheckerDetectorGetBestColorChecker
 
 Func _cveCCheckerDetectorRelease($sharedPtr)

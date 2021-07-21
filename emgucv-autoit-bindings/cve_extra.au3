@@ -622,3 +622,10 @@ Func _cveSetControlPic($controlID, $matImg)
 
 	$tDsize = 0
 EndFunc   ;==>_cveSetControlPic
+
+Func _cveImshowControlPic($matImg, $hWnd, $controlID, $tBackgroundColor, $iCode = -1)
+	Local $aPicPos = ControlGetPos($hWnd, "", $controlID)
+	Local $matResized = _cveMatResizeAndCenter($matImg, $aPicPos[2], $aPicPos[3], $tBackgroundColor, $iCode)
+	_cveSetControlPic($controlID, $matResized)
+	_cveMatRelease($matResized)
+EndFunc   ;==>_cveImshowControlPic

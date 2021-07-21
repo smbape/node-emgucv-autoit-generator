@@ -3,10 +3,25 @@
 
 Func _cveTonemapGetGamma($obj)
     ; CVAPI(float) cveTonemapGetGamma(cv::Tonemap* obj);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveTonemapGetGamma", "ptr", $obj), "cveTonemapGetGamma", @error)
+
+    Local $bObjDllType
+    If VarGetType($obj) == "DLLStruct" Then
+        $bObjDllType = "struct*"
+    Else
+        $bObjDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveTonemapGetGamma", $bObjDllType, $obj), "cveTonemapGetGamma", @error)
 EndFunc   ;==>_cveTonemapGetGamma
 
 Func _cveTonemapSetGamma($obj, $value)
     ; CVAPI(void) cveTonemapSetGamma(cv::Tonemap* obj, float value);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTonemapSetGamma", "ptr", $obj, "float", $value), "cveTonemapSetGamma", @error)
+
+    Local $bObjDllType
+    If VarGetType($obj) == "DLLStruct" Then
+        $bObjDllType = "struct*"
+    Else
+        $bObjDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTonemapSetGamma", $bObjDllType, $obj, "float", $value), "cveTonemapSetGamma", @error)
 EndFunc   ;==>_cveTonemapSetGamma

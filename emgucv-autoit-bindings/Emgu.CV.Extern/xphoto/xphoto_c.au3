@@ -3,7 +3,29 @@
 
 Func _cveWhiteBalancerBalanceWhite($whiteBalancer, $src, $dst)
     ; CVAPI(void) cveWhiteBalancerBalanceWhite(cv::xphoto::WhiteBalancer* whiteBalancer, cv::_InputArray* src, cv::_OutputArray* dst);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWhiteBalancerBalanceWhite", "ptr", $whiteBalancer, "ptr", $src, "ptr", $dst), "cveWhiteBalancerBalanceWhite", @error)
+
+    Local $bWhiteBalancerDllType
+    If VarGetType($whiteBalancer) == "DLLStruct" Then
+        $bWhiteBalancerDllType = "struct*"
+    Else
+        $bWhiteBalancerDllType = "ptr"
+    EndIf
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWhiteBalancerBalanceWhite", $bWhiteBalancerDllType, $whiteBalancer, $bSrcDllType, $src, $bDstDllType, $dst), "cveWhiteBalancerBalanceWhite", @error)
 EndFunc   ;==>_cveWhiteBalancerBalanceWhite
 
 Func _cveWhiteBalancerBalanceWhiteMat($whiteBalancer, $matSrc, $matDst)
@@ -154,7 +176,22 @@ EndFunc   ;==>_cveLearningBasedWBRelease
 
 Func _cveApplyChannelGains($src, $dst, $gainB, $gainG, $gainR)
     ; CVAPI(void) cveApplyChannelGains(cv::_InputArray* src, cv::_OutputArray* dst, float gainB, float gainG, float gainR);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveApplyChannelGains", "ptr", $src, "ptr", $dst, "float", $gainB, "float", $gainG, "float", $gainR), "cveApplyChannelGains", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveApplyChannelGains", $bSrcDllType, $src, $bDstDllType, $dst, "float", $gainB, "float", $gainG, "float", $gainR), "cveApplyChannelGains", @error)
 EndFunc   ;==>_cveApplyChannelGains
 
 Func _cveApplyChannelGainsMat($matSrc, $matDst, $gainB, $gainG, $gainR)
@@ -209,17 +246,76 @@ EndFunc   ;==>_cveApplyChannelGainsMat
 
 Func _cveDctDenoising($src, $dst, $sigma, $psize)
     ; CVAPI(void) cveDctDenoising(const cv::Mat* src, cv::Mat* dst, const double sigma, const int psize);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDctDenoising", "ptr", $src, "ptr", $dst, "const double", $sigma, "const int", $psize), "cveDctDenoising", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDctDenoising", $bSrcDllType, $src, $bDstDllType, $dst, "double", $sigma, "int", $psize), "cveDctDenoising", @error)
 EndFunc   ;==>_cveDctDenoising
 
 Func _cveXInpaint($src, $mask, $dst, $algorithmType)
     ; CVAPI(void) cveXInpaint(const cv::Mat* src, const cv::Mat* mask, cv::Mat* dst, const int algorithmType);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveXInpaint", "ptr", $src, "ptr", $mask, "ptr", $dst, "const int", $algorithmType), "cveXInpaint", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bMaskDllType
+    If VarGetType($mask) == "DLLStruct" Then
+        $bMaskDllType = "struct*"
+    Else
+        $bMaskDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveXInpaint", $bSrcDllType, $src, $bMaskDllType, $mask, $bDstDllType, $dst, "int", $algorithmType), "cveXInpaint", @error)
 EndFunc   ;==>_cveXInpaint
 
 Func _cveBm3dDenoising1($src, $dstStep1, $dstStep2, $h, $templateWindowSize, $searchWindowSize, $blockMatchingStep1, $blockMatchingStep2, $groupSize, $slidingStep, $beta, $normType, $step, $transformType)
     ; CVAPI(void) cveBm3dDenoising1(cv::_InputArray* src, cv::_InputOutputArray* dstStep1, cv::_OutputArray* dstStep2, float h, int templateWindowSize, int searchWindowSize, int blockMatchingStep1, int blockMatchingStep2, int groupSize, int slidingStep, float beta, int normType, int step, int transformType);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBm3dDenoising1", "ptr", $src, "ptr", $dstStep1, "ptr", $dstStep2, "float", $h, "int", $templateWindowSize, "int", $searchWindowSize, "int", $blockMatchingStep1, "int", $blockMatchingStep2, "int", $groupSize, "int", $slidingStep, "float", $beta, "int", $normType, "int", $step, "int", $transformType), "cveBm3dDenoising1", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstStep1DllType
+    If VarGetType($dstStep1) == "DLLStruct" Then
+        $bDstStep1DllType = "struct*"
+    Else
+        $bDstStep1DllType = "ptr"
+    EndIf
+
+    Local $bDstStep2DllType
+    If VarGetType($dstStep2) == "DLLStruct" Then
+        $bDstStep2DllType = "struct*"
+    Else
+        $bDstStep2DllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBm3dDenoising1", $bSrcDllType, $src, $bDstStep1DllType, $dstStep1, $bDstStep2DllType, $dstStep2, "float", $h, "int", $templateWindowSize, "int", $searchWindowSize, "int", $blockMatchingStep1, "int", $blockMatchingStep2, "int", $groupSize, "int", $slidingStep, "float", $beta, "int", $normType, "int", $step, "int", $transformType), "cveBm3dDenoising1", @error)
 EndFunc   ;==>_cveBm3dDenoising1
 
 Func _cveBm3dDenoising1Mat($matSrc, $matDstStep1, $matDstStep2, $h, $templateWindowSize, $searchWindowSize, $blockMatchingStep1, $blockMatchingStep2, $groupSize, $slidingStep, $beta, $normType, $step, $transformType)
@@ -296,7 +392,22 @@ EndFunc   ;==>_cveBm3dDenoising1Mat
 
 Func _cveBm3dDenoising2($src, $dst, $h, $templateWindowSize, $searchWindowSize, $blockMatchingStep1, $blockMatchingStep2, $groupSize, $slidingStep, $beta, $normType, $step, $transformType)
     ; CVAPI(void) cveBm3dDenoising2(cv::_InputArray* src, cv::_OutputArray* dst, float h, int templateWindowSize, int searchWindowSize, int blockMatchingStep1, int blockMatchingStep2, int groupSize, int slidingStep, float beta, int normType, int step, int transformType);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBm3dDenoising2", "ptr", $src, "ptr", $dst, "float", $h, "int", $templateWindowSize, "int", $searchWindowSize, "int", $blockMatchingStep1, "int", $blockMatchingStep2, "int", $groupSize, "int", $slidingStep, "float", $beta, "int", $normType, "int", $step, "int", $transformType), "cveBm3dDenoising2", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBm3dDenoising2", $bSrcDllType, $src, $bDstDllType, $dst, "float", $h, "int", $templateWindowSize, "int", $searchWindowSize, "int", $blockMatchingStep1, "int", $blockMatchingStep2, "int", $groupSize, "int", $slidingStep, "float", $beta, "int", $normType, "int", $step, "int", $transformType), "cveBm3dDenoising2", @error)
 EndFunc   ;==>_cveBm3dDenoising2
 
 Func _cveBm3dDenoising2Mat($matSrc, $matDst, $h, $templateWindowSize, $searchWindowSize, $blockMatchingStep1, $blockMatchingStep2, $groupSize, $slidingStep, $beta, $normType, $step, $transformType)
@@ -351,7 +462,22 @@ EndFunc   ;==>_cveBm3dDenoising2Mat
 
 Func _cveOilPainting($src, $dst, $size, $dynRatio, $code)
     ; CVAPI(void) cveOilPainting(cv::_InputArray* src, cv::_OutputArray* dst, int size, int dynRatio, int code);
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveOilPainting", "ptr", $src, "ptr", $dst, "int", $size, "int", $dynRatio, "int", $code), "cveOilPainting", @error)
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+
+    Local $bDstDllType
+    If VarGetType($dst) == "DLLStruct" Then
+        $bDstDllType = "struct*"
+    Else
+        $bDstDllType = "ptr"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveOilPainting", $bSrcDllType, $src, $bDstDllType, $dst, "int", $size, "int", $dynRatio, "int", $code), "cveOilPainting", @error)
 EndFunc   ;==>_cveOilPainting
 
 Func _cveOilPaintingMat($matSrc, $matDst, $size, $dynRatio, $code)
