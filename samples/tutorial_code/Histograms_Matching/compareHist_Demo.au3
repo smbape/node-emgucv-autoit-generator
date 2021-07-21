@@ -17,36 +17,42 @@ Opt("MustDeclareVars", 1)
 
 ;~ Sources:
 ;~     https://docs.opencv.org/4.5.2/d8/dc8/tutorial_histogram_comparison.html
-;~     opencv\samples\cpp\tutorial_code\Histograms_Matching\compareHist_Demo.cpp
+;~     https://github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/Histograms_Matching/compareHist_Demo.cpp
 ;~     https://www.autoitscript.com/forum/topic/105814-table-udf/
 
 #Region ### START Koda GUI section ### Form=
-Local $iPicWidth = 300
-Local $iPicHeight = 300
+Local $FormGUI = GUICreate("Histogram Comparison", 997, 668, 192, 124)
 
-Local $FormGUI = GUICreate("Histogram Comparison", 996, 627, 192, 124)
-
+Local $LabelSrcBase = GUICtrlCreateLabel("Input 1", 144, 128, 49, 20)
+GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $InputSrcBase = GUICtrlCreateInput("", 230, 16, 449, 21)
-Local $ButtonSourceBase = GUICtrlCreateButton("Input 1", 689, 14, 75, 25)
-Local $PicSourceBase = GUICtrlCreatePic("", 25, 120, $iPicWidth, $iPicHeight)
+Local $ButtonSrcBase = GUICtrlCreateButton("Input 1", 689, 14, 75, 25)
+Local $GroupSrcBase = GUICtrlCreateGroup("", 20, 150, 310, 316)
+Local $PicSrcBase = GUICtrlCreatePic("", 25, 161, 300, 300)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
 
+Local $LabelSrcTest1 = GUICtrlCreateLabel("Input 2", 468, 128, 49, 20)
+GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $InputSrcTest1 = GUICtrlCreateInput("", 230, 52, 449, 21)
-Local $ButtonSourceTest1 = GUICtrlCreateButton("Input 2", 689, 50, 75, 25)
-Local $PicSourceTest1 = GUICtrlCreatePic("", 349, 120, $iPicWidth, $iPicHeight)
+Local $ButtonSrcTest1 = GUICtrlCreateButton("Input 2", 689, 50, 75, 25)
+Local $GroupSrcTest1 = GUICtrlCreateGroup("", 344, 150, 310, 316)
+Local $PicSrcTest1 = GUICtrlCreatePic("", 349, 161, 300, 300)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
 
+Local $LabelSrcTest2 = GUICtrlCreateLabel("Input 3", 792, 128, 49, 20)
+GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $InputSrcTest2 = GUICtrlCreateInput("", 230, 88, 449, 21)
-Local $ButtonSourceTest2 = GUICtrlCreateButton("Input 3", 689, 86, 75, 25)
-Local $PicSourceTest2 = GUICtrlCreatePic("", 673, 120, $iPicWidth, $iPicHeight)
+Local $ButtonSrcTest2 = GUICtrlCreateButton("Input 3", 689, 86, 75, 25)
+Local $GroupSrcTest2 = GUICtrlCreateGroup("", 668, 150, 310, 316)
+Local $PicSrcTest2 = GUICtrlCreatePic("", 673, 161, 300, 300)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 Local $BtnExec = GUICtrlCreateButton("Execute", 832, 48, 75, 25)
-
-; Local $EditOut = GUICtrlCreateEdit("", 25, 432, 948, 145)
-; GUICtrlSetState(-1, $GUI_DISABLE)
 
 GUISetState(@SW_SHOW)
 
 GUISetState(@SW_LOCK)
-Local $Table = _GUICtrlTable_Create(25, 432, 189, 28, 5, 5, 0)
+Local $Table = _GUICtrlTable_Create(20, 500, 191, 28, 5, 5, 0)
 _GUICtrlTable_Set_RowHeight($Table, 1, 35)
 _GUICtrlTable_Set_Justify_All($Table, 1, 1)
 _GUICtrlTable_Set_TextFont_All($Table, 8.5, 800, 0, "Tahoma")
@@ -84,21 +90,24 @@ While 1
 		Case $GUI_EVENT_CLOSE
 			clean()
 			Exit
-		Case $ButtonSourceBase
+		Case $ButtonSrcBase
+			$sSrcBase = ControlGetText($FormGUI, "", $InputSrcBase)
 			$sSrcBase = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg)", $FD_FILEMUSTEXIST, $sSrcBase)
 			If @error Then
 				$sSrcBase = ""
 			Else
 				ControlSetText($FormGUI, "", $InputSrcBase, $sSrcBase)
 			EndIf
-		Case $ButtonSourceTest1
+		Case $ButtonSrcTest1
+			$sSrcTest1 = ControlGetText($FormGUI, "", $InputSrcTest1)
 			$sSrcTest1 = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg)", $FD_FILEMUSTEXIST, $sSrcTest1)
 			If @error Then
 				$sSrcTest1 = ""
 			Else
 				ControlSetText($FormGUI, "", $InputSrcTest1, $sSrcTest1)
 			EndIf
-		Case $ButtonSourceTest2
+		Case $ButtonSrcTest2
+			$sSrcTest2 = ControlGetText($FormGUI, "", $InputSrcTest2)
 			$sSrcTest2 = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg)", $FD_FILEMUSTEXIST, $sSrcTest2)
 			If @error Then
 				$sSrcTest2 = ""
@@ -107,14 +116,14 @@ While 1
 			EndIf
 		Case $BtnExec
 			clean()
-			onImageChange()
+			main()
 	EndSwitch
 WEnd
 
 _Opencv_DLLClose()
 _GDIPlus_Shutdown()
 
-Func onImageChange()
+Func main()
 	;;! [Load three images with different environment settings]
 	$sSrcBase = ControlGetText($FormGUI, "", $InputSrcBase)
 	$src_base = _cveImreadAndCheck($sSrcBase, $CV_IMREAD_COLOR)
@@ -145,17 +154,9 @@ Func onImageChange()
 	;;! [Load three images with different environment settings]
 
 	;;! [Display]
-	Local $matSrcBaseResized = _cveMatResizeAndCenter($src_base, $iPicWidth, $iPicHeight, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
-	_cveSetControlPic($PicSourceBase, $matSrcBaseResized)
-	_cveMatRelease($matSrcBaseResized)
-
-	Local $matSrcTest1Resized = _cveMatResizeAndCenter($src_test1, $iPicWidth, $iPicHeight, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
-	_cveSetControlPic($PicSourceTest1, $matSrcTest1Resized)
-	_cveMatRelease($matSrcTest1Resized)
-
-	Local $matSrcTest2Resized = _cveMatResizeAndCenter($src_test2, $iPicWidth, $iPicHeight, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
-	_cveSetControlPic($PicSourceTest2, $matSrcTest2Resized)
-	_cveMatRelease($matSrcTest2Resized)
+	_cveImshowControlPic($src_base, $FormGUI, $PicSrcBase, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+	_cveImshowControlPic($src_test1, $FormGUI, $PicSrcTest1, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+	_cveImshowControlPic($src_test2, $FormGUI, $PicSrcTest2, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
 	;;! [Display]
 
 	;;! [Convert to HSV]
@@ -234,7 +235,7 @@ Func onImageChange()
 	;;! [Apply the histogram comparison methods]
 
 	ConsoleWrite("Done " & @CRLF) ;
-EndFunc   ;==>onImageChange
+EndFunc   ;==>main
 
 Func clean()
 	If $sSrcBase == "" Then Return

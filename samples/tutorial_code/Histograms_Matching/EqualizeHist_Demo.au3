@@ -16,18 +16,23 @@ Opt("MustDeclareVars", 1)
 
 ;~ Sources:
 ;~     https://docs.opencv.org/4.5.2/d4/d1b/tutorial_histogram_equalization.html
-;~     opencv\samples\cpp\tutorial_code\Histograms_Matching\EqualizeHist_Demo.cpp
+;~     https://github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/Histograms_Matching/calcHist_Demo.cppEqualizeHist_Demo.cpp
 
 #Region ### START Koda GUI section ### Form=
-Local $iPicWidth = 500
-Local $iPicHeight = 500
-
-Local $FormGUI = GUICreate("Histogram Equalization ", 1063, 573, 192, 124)
+Local $FormGUI = GUICreate("Histogram Equalization", 1065, 617, 192, 124)
 Local $InputSource = GUICtrlCreateInput("", 264, 24, 449, 21)
 GUICtrlSetState(-1, $GUI_DISABLE)
 Local $ButtonSource = GUICtrlCreateButton("Open", 723, 22, 75, 25)
-Local $PicSource = GUICtrlCreatePic("", 25, 56, $iPicWidth, $iPicHeight)
-Local $PicResult = GUICtrlCreatePic("", 537, 56, $iPicWidth, $iPicHeight)
+Local $GroupSource = GUICtrlCreateGroup("", 20, 83, 510, 516)
+Local $PicSource = GUICtrlCreatePic("", 25, 94, 500, 500)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+Local $LabelSource = GUICtrlCreateLabel("Source Image", 231, 60, 100, 20)
+GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
+Local $GroupResult = GUICtrlCreateGroup("", 532, 83, 510, 516)
+Local $PicResult = GUICtrlCreatePic("", 537, 94, 500, 500)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+Local $LabelResult = GUICtrlCreateLabel("Equalized Image", 735, 60, 120, 20)
+GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
@@ -52,12 +57,13 @@ While 1
 			Exit
 		Case $ButtonSource
 			clean()
+			$sImage = ControlGetText($FormGUI, "", $InputSource)
 			$sImage = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg)", $FD_FILEMUSTEXIST, $sImage)
 			If @error Then
 				$sImage = ""
 			Else
 				ControlSetText($FormGUI, "", $InputSource, $sImage)
-				onImageChange()
+				main()
 			EndIf
 	EndSwitch
 WEnd
@@ -65,7 +71,7 @@ WEnd
 _Opencv_DLLClose()
 _GDIPlus_Shutdown()
 
-Func onImageChange()
+Func main()
 	;;! [Load image]
 	$src = _cveImreadAndCheck($sImage, $CV_IMREAD_COLOR)
 	If @error Then
@@ -87,15 +93,10 @@ Func onImageChange()
 	; _cveImshowMat("Source image", $src );
 	; _cveImshowMat("Equalized Image", $dst );
 
-	Local $matSrcResized = _cveMatResizeAndCenter($src, $iPicWidth, $iPicHeight, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
-	_cveSetControlPic($PicSource, $matSrcResized)
-	_cveMatRelease($matSrcResized)
-
-	Local $matDstResized = _cveMatResizeAndCenter($dst, $iPicWidth, $iPicHeight, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
-	_cveSetControlPic($PicResult, $matDstResized)
-	_cveMatRelease($matDstResized)
+	_cveImshowControlPic($src, $FormGUI, $PicSource, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+	_cveImshowControlPic($dst, $FormGUI, $PicResult, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
 	;;! [Display]
-EndFunc   ;==>onImageChange
+EndFunc   ;==>main
 
 Func clean()
 	If $sImage == "" Then Return

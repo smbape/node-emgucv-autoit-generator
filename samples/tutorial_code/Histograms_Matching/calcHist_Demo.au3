@@ -16,18 +16,23 @@ Opt("MustDeclareVars", 1)
 
 ;~ Sources:
 ;~     https://docs.opencv.org/4.5.2/d8/dbc/tutorial_histogram_calculation.html
-;~     opencv\samples\cpp\tutorial_code\Histograms_Matching\calcHist_Demo.cpp
+;~     https://github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/Histograms_Matching/calcHist_Demo.cpp
 
 #Region ### START Koda GUI section ### Form=
-Local $iPicWidth = 500
-Local $iPicHeight = 500
-
-Local $FormGUI = GUICreate("Histogram Calculation", 1063, 573, 192, 124)
+Local $FormGUI = GUICreate("Histogram Calculation", 1065, 617, 192, 124)
 Local $InputSource = GUICtrlCreateInput("", 264, 24, 449, 21)
 GUICtrlSetState(-1, $GUI_DISABLE)
 Local $ButtonSource = GUICtrlCreateButton("Open", 723, 22, 75, 25)
-Local $PicSource = GUICtrlCreatePic("", 25, 56, $iPicWidth, $iPicHeight)
-Local $PicResult = GUICtrlCreatePic("", 537, 56, $iPicWidth, $iPicHeight)
+Local $GroupSource = GUICtrlCreateGroup("", 20, 83, 510, 516)
+Local $PicSource = GUICtrlCreatePic("", 25, 94, 500, 500)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+Local $LabelSource = GUICtrlCreateLabel("Source Image", 231, 60, 100, 20)
+GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
+Local $GroupResult = GUICtrlCreateGroup("", 532, 83, 510, 516)
+Local $PicResult = GUICtrlCreatePic("", 537, 94, 500, 500)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+Local $LabelResult = GUICtrlCreateLabel("calcHist Demo", 735, 60, 120, 20)
+GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
@@ -52,12 +57,13 @@ While 1
 			Exit
 		Case $ButtonSource
 			clean()
+			$sImage = ControlGetText($FormGUI, "", $InputSource)
 			$sImage = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg)", $FD_FILEMUSTEXIST, $sImage)
 			If @error Then
 				$sImage = ""
 			Else
 				ControlSetText($FormGUI, "", $InputSource, $sImage)
-				onImageChange()
+				main()
 			EndIf
 	EndSwitch
 WEnd
@@ -65,7 +71,7 @@ WEnd
 _Opencv_DLLClose()
 _GDIPlus_Shutdown()
 
-Func onImageChange()
+Func main()
 	;;! [Load image]
 	$src = _cveImreadAndCheck($sImage)
 	If @error Then
@@ -137,50 +143,58 @@ Func onImageChange()
 	;;! [Draw for each channel]
 	Local $hTimer
 
-	$hTimer = TimerInit()
-	For $i = 1 To $histSize[0] - 1
-		_cveLineMat($histImage, _cvPoint($bin_w * ($i - 1), $hist_h - Round(_cveMatGetAt("float", $b_hist, _cvPoint(0, $i - 1)))), _
-				_cvPoint($bin_w * $i, $hist_h - Round(_cveMatGetAt("float", $b_hist, _cvPoint(0, $i)))), _
-				$tBlueColor, 2, 8, 0) ;
-		_cveLineMat($histImage, _cvPoint($bin_w * ($i - 1), $hist_h - Round(_cveMatGetAt("float", $g_hist, _cvPoint(0, $i - 1)))), _
-				_cvPoint($bin_w * $i, $hist_h - Round(_cveMatGetAt("float", $g_hist, _cvPoint(0, $i)))), _
-				$tGreenColor, 2, 8, 0) ;
-		_cveLineMat($histImage, _cvPoint($bin_w * ($i - 1), $hist_h - Round(_cveMatGetAt("float", $r_hist, _cvPoint(0, $i - 1)))), _
-				_cvPoint($bin_w * $i, $hist_h - Round(_cveMatGetAt("float", $r_hist, _cvPoint(0, $i)))), _
-				$tRedColor, 2, 8, 0) ;
-	Next
-	ConsoleWrite("Easy loop " & TimerDiff($hTimer) & @CRLF)
+	If False Then
+		;;! [Inefficient, but easier to write, way of doing _cveMatGetAt in a loop]
+		$hTimer = TimerInit()
+		For $i = 1 To $histSize[0] - 1
+			_cveLineMat($histImage, _cvPoint($bin_w * ($i - 1), $hist_h - Round(_cveMatGetAt("float", $b_hist, _cvPoint(0, $i - 1)))), _
+					_cvPoint($bin_w * $i, $hist_h - Round(_cveMatGetAt("float", $b_hist, _cvPoint(0, $i)))), _
+					$tBlueColor, 2, 8, 0) ;
+			_cveLineMat($histImage, _cvPoint($bin_w * ($i - 1), $hist_h - Round(_cveMatGetAt("float", $g_hist, _cvPoint(0, $i - 1)))), _
+					_cvPoint($bin_w * $i, $hist_h - Round(_cveMatGetAt("float", $g_hist, _cvPoint(0, $i)))), _
+					$tGreenColor, 2, 8, 0) ;
+			_cveLineMat($histImage, _cvPoint($bin_w * ($i - 1), $hist_h - Round(_cveMatGetAt("float", $r_hist, _cvPoint(0, $i - 1)))), _
+					_cvPoint($bin_w * $i, $hist_h - Round(_cveMatGetAt("float", $r_hist, _cvPoint(0, $i)))), _
+					$tRedColor, 2, 8, 0) ;
+		Next
+		ConsoleWrite("Easy loop " & TimerDiff($hTimer) & @CRLF)
+		;;! [Inefficient, but easier to write, way of doing _cveMatGetAt in a loop]
+	Else
+		;;! [Efficient, but harder to write, way of doing _cveMatGetAt in a loop]
+		$hTimer = TimerInit()
+		Local $cvSize = DllStructCreate($tagCvSize)
 
-	$hTimer = TimerInit()
-	Local $cvSize = DllStructCreate($tagCvSize)
+		_cveMatGetSize($b_hist, $cvSize)
+		Local $b_data_ptr = _cveMatGetDataPointer($b_hist)
+		Local $b_step = _cveMatGetStep($b_hist)
+		Local $b_data_struct = DllStructCreate("float[" & $b_step * ($cvSize.height - 1) + $cvSize.width & "]", $b_data_ptr)
 
-	_cveMatGetSize($b_hist, $cvSize)
-	Local $b_data_ptr = _cveMatGetDataPointer($b_hist)
-	Local $b_step = _cveMatGetStep($b_hist)
-	Local $b_data_struct = DllStructCreate("float value[" & $b_step * ($cvSize.height - 1) + $cvSize.width & "]", $b_data_ptr)
+		_cveMatGetSize($g_hist, $cvSize)
+		Local $g_data_ptr = _cveMatGetDataPointer($g_hist)
+		Local $g_step = _cveMatGetStep($g_hist)
+		Local $g_data_struct = DllStructCreate("float[" & $g_step * ($cvSize.height - 1) + $cvSize.width & "]", $g_data_ptr)
 
-	_cveMatGetSize($g_hist, $cvSize)
-	Local $g_data_ptr = _cveMatGetDataPointer($g_hist)
-	Local $g_step = _cveMatGetStep($g_hist)
-	Local $g_data_struct = DllStructCreate("float value[" & $g_step * ($cvSize.height - 1) + $cvSize.width & "]", $g_data_ptr)
+		_cveMatGetSize($r_hist, $cvSize)
+		Local $r_data_ptr = _cveMatGetDataPointer($r_hist)
+		Local $r_step = _cveMatGetStep($r_hist)
+		Local $r_data_struct = DllStructCreate("float[" & $r_step * ($cvSize.height - 1) + $cvSize.width & "]", $r_data_ptr)
 
-	_cveMatGetSize($r_hist, $cvSize)
-	Local $r_data_ptr = _cveMatGetDataPointer($r_hist)
-	Local $r_step = _cveMatGetStep($r_hist)
-	Local $r_data_struct = DllStructCreate("float value[" & $r_step * ($cvSize.height - 1) + $cvSize.width & "]", $r_data_ptr)
+		$cvSize = 0
 
-	For $i = 1 To $histSize[0] - 1
-		_cveLineMat($histImage, _cvPoint($bin_w * ($i - 1), $hist_h - Round(DllStructGetData($b_data_struct, 1, $i))), _
-				_cvPoint($bin_w * $i, $hist_h - Round(DllStructGetData($b_data_struct, 1, $i + 1))), _
-				$tBlueColor, 2, 8, 0) ;
-		_cveLineMat($histImage, _cvPoint($bin_w * ($i - 1), $hist_h - Round(DllStructGetData($g_data_struct, 1, $i))), _
-				_cvPoint($bin_w * $i, $hist_h - Round(DllStructGetData($g_data_struct, 1, $i + 1))), _
-				$tGreenColor, 2, 8, 0) ;
-		_cveLineMat($histImage, _cvPoint($bin_w * ($i - 1), $hist_h - Round(DllStructGetData($r_data_struct, 1, $i))), _
-				_cvPoint($bin_w * $i, $hist_h - Round(DllStructGetData($r_data_struct, 1, $i + 1))), _
-				$tRedColor, 2, 8, 0) ;
-	Next
-	ConsoleWrite("Optimized loop " & TimerDiff($hTimer) & @CRLF)
+		For $i = 1 To $histSize[0] - 1
+			_cveLineMat($histImage, _cvPoint($bin_w * ($i - 1), $hist_h - Round(DllStructGetData($b_data_struct, 1, $i))), _
+					_cvPoint($bin_w * $i, $hist_h - Round(DllStructGetData($b_data_struct, 1, $i + 1))), _
+					$tBlueColor, 2, 8, 0) ;
+			_cveLineMat($histImage, _cvPoint($bin_w * ($i - 1), $hist_h - Round(DllStructGetData($g_data_struct, 1, $i))), _
+					_cvPoint($bin_w * $i, $hist_h - Round(DllStructGetData($g_data_struct, 1, $i + 1))), _
+					$tGreenColor, 2, 8, 0) ;
+			_cveLineMat($histImage, _cvPoint($bin_w * ($i - 1), $hist_h - Round(DllStructGetData($r_data_struct, 1, $i))), _
+					_cvPoint($bin_w * $i, $hist_h - Round(DllStructGetData($r_data_struct, 1, $i + 1))), _
+					$tRedColor, 2, 8, 0) ;
+		Next
+		ConsoleWrite("Optimized loop " & TimerDiff($hTimer) & @CRLF)
+		;;! [Efficient, but harder to write, way of doing _cveMatGetAt in a loop]
+	EndIf
 	;;! [Draw for each channel]
 
 	;;! [Display]
@@ -191,15 +205,11 @@ Func onImageChange()
 	If _cveMatNumberOfChannels($src) == 3 Then
 		$iCode = $CV_COLOR_BGR2BGRA
 	EndIf
-	Local $matSrcResized = _cveMatResizeAndCenter($src, $iPicWidth, $iPicHeight, $tBackgroundColor, $iCode)
-	_cveSetControlPic($PicSource, $matSrcResized)
-	_cveMatRelease($matSrcResized)
 
-	Local $matHistResized = _cveMatResizeAndCenter($histImage, $iPicWidth, $iPicHeight, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
-	_cveSetControlPic($PicResult, $matHistResized)
-	_cveMatRelease($matHistResized)
+	_cveImshowControlPic($src, $FormGUI, $PicSource, $tBackgroundColor, $iCode)
+	_cveImshowControlPic($histImage, $FormGUI, $PicResult, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
 	;;! [Display]
-EndFunc   ;==>onImageChange
+EndFunc   ;==>main
 
 Func clean()
 	If $sImage == Null Then Return
