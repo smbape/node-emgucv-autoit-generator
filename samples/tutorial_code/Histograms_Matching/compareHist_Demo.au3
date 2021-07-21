@@ -26,7 +26,7 @@ Local $FormGUI = GUICreate("Histogram Comparison", 997, 668, 192, 124)
 Local $LabelSrcBase = GUICtrlCreateLabel("Input 1", 144, 128, 49, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $InputSrcBase = GUICtrlCreateInput("", 230, 16, 449, 21)
-Local $ButtonSrcBase = GUICtrlCreateButton("Input 1", 689, 14, 75, 25)
+Local $BtnSrcBase = GUICtrlCreateButton("Input 1", 689, 14, 75, 25)
 Local $GroupSrcBase = GUICtrlCreateGroup("", 20, 150, 310, 316)
 Local $PicSrcBase = GUICtrlCreatePic("", 25, 161, 300, 300)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
@@ -34,7 +34,7 @@ GUICtrlCreateGroup("", -99, -99, 1, 1)
 Local $LabelSrcTest1 = GUICtrlCreateLabel("Input 2", 468, 128, 49, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $InputSrcTest1 = GUICtrlCreateInput("", 230, 52, 449, 21)
-Local $ButtonSrcTest1 = GUICtrlCreateButton("Input 2", 689, 50, 75, 25)
+Local $BtnSrcTest1 = GUICtrlCreateButton("Input 2", 689, 50, 75, 25)
 Local $GroupSrcTest1 = GUICtrlCreateGroup("", 344, 150, 310, 316)
 Local $PicSrcTest1 = GUICtrlCreatePic("", 349, 161, 300, 300)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
@@ -42,7 +42,7 @@ GUICtrlCreateGroup("", -99, -99, 1, 1)
 Local $LabelSrcTest2 = GUICtrlCreateLabel("Input 3", 792, 128, 49, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $InputSrcTest2 = GUICtrlCreateInput("", 230, 88, 449, 21)
-Local $ButtonSrcTest2 = GUICtrlCreateButton("Input 3", 689, 86, 75, 25)
+Local $BtnSrcTest2 = GUICtrlCreateButton("Input 3", 689, 86, 75, 25)
 Local $GroupSrcTest2 = GUICtrlCreateGroup("", 668, 150, 310, 316)
 Local $PicSrcTest2 = GUICtrlCreatePic("", 673, 161, 300, 300)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
@@ -90,25 +90,25 @@ While 1
 		Case $GUI_EVENT_CLOSE
 			clean()
 			Exit
-		Case $ButtonSrcBase
+		Case $BtnSrcBase
 			$sSrcBase = ControlGetText($FormGUI, "", $InputSrcBase)
-			$sSrcBase = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg)", $FD_FILEMUSTEXIST, $sSrcBase)
+			$sSrcBase = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sSrcBase)
 			If @error Then
 				$sSrcBase = ""
 			Else
 				ControlSetText($FormGUI, "", $InputSrcBase, $sSrcBase)
 			EndIf
-		Case $ButtonSrcTest1
+		Case $BtnSrcTest1
 			$sSrcTest1 = ControlGetText($FormGUI, "", $InputSrcTest1)
-			$sSrcTest1 = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg)", $FD_FILEMUSTEXIST, $sSrcTest1)
+			$sSrcTest1 = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sSrcTest1)
 			If @error Then
 				$sSrcTest1 = ""
 			Else
 				ControlSetText($FormGUI, "", $InputSrcTest1, $sSrcTest1)
 			EndIf
-		Case $ButtonSrcTest2
+		Case $BtnSrcTest2
 			$sSrcTest2 = ControlGetText($FormGUI, "", $InputSrcTest2)
-			$sSrcTest2 = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg)", $FD_FILEMUSTEXIST, $sSrcTest2)
+			$sSrcTest2 = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sSrcTest2)
 			If @error Then
 				$sSrcTest2 = ""
 			Else

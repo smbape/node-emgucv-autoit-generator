@@ -26,7 +26,7 @@ Local $FormGUI = GUICreate("Back Projection", 1263, 601, 187, 122)
 
 Local $InputSource = GUICtrlCreateInput("", 364, 16, 449, 21)
 GUICtrlSetState(-1, $GUI_DISABLE)
-Local $ButtonSource = GUICtrlCreateButton("Open", 823, 14, 75, 25)
+Local $BtnSource = GUICtrlCreateButton("Open", 823, 14, 75, 25)
 
 Local $LabelBins = GUICtrlCreateLabel("* Hue  bins: 25", 364, 72, 110, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
@@ -53,7 +53,7 @@ Local $PicHistogram = GUICtrlCreatePic("", 847, 161, 400, 400)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 GUISetOnEvent($GUI_EVENT_CLOSE, "_cleanExit")
-GUICtrlSetOnEvent($ButtonSource, "_handleButtonSourceClick")
+GUICtrlSetOnEvent($BtnSource, "_handleButtonSourceClick")
 GUICtrlSetOnEvent($SliderBins, "Hist_and_Backproj")
 
 GUISetState(@SW_SHOW)
@@ -140,7 +140,7 @@ EndFunc   ;==>clean
 
 Func _handleButtonSourceClick()
 	$sInputSource = ControlGetText($FormGUI, "", $InputSource)
-	$sInputSource = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg)", $FD_FILEMUSTEXIST, $sInputSource)
+	$sInputSource = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sInputSource)
 	If @error Then
 		$sInputSource = ""
 		Return
