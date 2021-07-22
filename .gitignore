@@ -2,3 +2,4 @@
 /libemgucv-windesktop-*
 /node_modules
 /*.sublime-workspace
+/samples/autoit-addon/build_x64

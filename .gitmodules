@@ -1,0 +1,4 @@
+[submodule "emgucv"]
+	path = emgucv
+	url = https://github.com/emgucv/emgucv.git
+	ignore = dirty

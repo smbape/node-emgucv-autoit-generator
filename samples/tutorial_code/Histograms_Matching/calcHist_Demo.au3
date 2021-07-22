@@ -152,6 +152,7 @@ Func main()
 
 	;;! [Draw for each channel]
 	Local $hTimer
+	Local $addon_dll = @ScriptDir & "\..\..\autoit-addon\build_x64\Release\autoit_addon.dll"
 
 	If False Then
 		;;! [Inefficient, but easier to write, way of doing _cveMatGetAt in a loop]
@@ -169,7 +170,7 @@ Func main()
 		Next
 		ConsoleWrite("Easy loop " & TimerDiff($hTimer) & @CRLF)
 		;;! [Inefficient, but easier to write, way of doing _cveMatGetAt in a loop]
-	Else
+	ElseIf Not FileExists($addon_dll) Then
 		;;! [Efficient, but harder to write, way of doing _cveMatGetAt in a loop]
 		$hTimer = TimerInit()
 		Local $cvSize = DllStructCreate($tagCvSize)
@@ -204,6 +205,12 @@ Func main()
 		Next
 		ConsoleWrite("Optimized loop " & TimerDiff($hTimer) & @CRLF)
 		;;! [Efficient, but harder to write, way of doing _cveMatGetAt in a loop]
+	Else
+		;;: [The hardcore way of dealing with loop is by make a dll that does the loop]
+		$hTimer = TimerInit()
+		CVEDllCallResult(DllCall($addon_dll, "none:cdecl", "draw", "ptr", $histImage, "int", $histSize[0], "int", $hist_w, "int", $hist_h, "ptr", $b_hist, "ptr", $g_hist, "ptr", $r_hist), "draw", @error)
+		ConsoleWrite("Dll loop " & TimerDiff($hTimer) & @CRLF)
+		;;: [The hardcore way of dealing with loop is by make a dll that does the loop]
 	EndIf
 	;;! [Draw for each channel]
 
