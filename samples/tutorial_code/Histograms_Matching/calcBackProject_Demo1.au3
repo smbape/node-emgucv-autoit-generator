@@ -81,7 +81,7 @@ Local $last_bins = $current_bins
 While 1
 	$current_bins = GUICtrlRead($SliderBins)
 	If $last_bins <> $current_bins Then
-		main()
+		Hist_and_Backproj()
 		$last_bins = $current_bins
 	EndIf
 	Sleep(50) ; Sleep to reduce CPU usage

@@ -18,7 +18,6 @@ add_definitions("-DAUTOIT_EXPORTS=__declspec(dllexport)")
 include(OpenCVConfig.cmake)
 
 set(SOURCE_FILES
-  addon.h
   addon.cpp
 )
 

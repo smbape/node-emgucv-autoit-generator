@@ -1,4 +1,6 @@
-#include "addon.h"
+#include "opencv2/core/mat.hpp"
+#include "core/core_c_extra.h"
+#include "imgproc/imgproc_c.h"
 
 #ifdef __cplusplus
 extern "C" {

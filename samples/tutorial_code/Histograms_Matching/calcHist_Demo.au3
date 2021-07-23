@@ -54,6 +54,14 @@ Local $nMsg
 
 Local $src, $brg_planes, $histImage, $b_hist, $g_hist, $r_hist
 
+Local $addon_dll = ""
+Local $aSearchDirs[3] = [@ScriptDir & "\..\..\autoit-addon\build_x64\Release", @ScriptDir & "\..\..\autoit-addon\build_x64\Debug", @ScriptDir]
+For $i = 0 To UBound($aSearchDirs) - 1
+	$addon_dll = $aSearchDirs[$i] & "\autoit_addon.dll"
+	If FileExists($addon_dll) Then ExitLoop
+	$addon_dll = ""
+Next
+
 main()
 
 While 1
@@ -152,8 +160,6 @@ Func main()
 
 	;;! [Draw for each channel]
 	Local $hTimer
-	Local $addon_dll = @ScriptDir & "\..\..\autoit-addon\build_x64\Release\autoit_addon.dll"
-
 	If False Then
 		;;! [Inefficient, but easier to write, way of doing _cveMatGetAt in a loop]
 		$hTimer = TimerInit()
@@ -170,7 +176,7 @@ Func main()
 		Next
 		ConsoleWrite("Easy loop " & TimerDiff($hTimer) & @CRLF)
 		;;! [Inefficient, but easier to write, way of doing _cveMatGetAt in a loop]
-	ElseIf Not FileExists($addon_dll) Then
+	ElseIf $addon_dll == "" Then
 		;;! [Efficient, but harder to write, way of doing _cveMatGetAt in a loop]
 		$hTimer = TimerInit()
 		Local $cvSize = DllStructCreate($tagCvSize)
