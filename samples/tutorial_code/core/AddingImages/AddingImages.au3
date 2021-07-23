@@ -57,6 +57,7 @@ GUICtrlCreateGroup("", -99, -99, 1, 1)
 GUISetOnEvent($GUI_EVENT_CLOSE, "_cleanExit")
 GUICtrlSetOnEvent($BtnSrc1, "_handleBtnSrc1Click")
 GUICtrlSetOnEvent($BtnSrc2, "_handleBtnSrc2Click")
+GUICtrlSetOnEvent($BtnExec, "_handleExecuteClick")
 GUICtrlSetOnEvent($SliderAlpha, "AddWeighted")
 
 GUISetState(@SW_SHOW)
@@ -71,6 +72,7 @@ Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 
 Local $sSrc1 = "", $sSrc2 = ""
 Local $src1, $src2
+Local $warned = False
 
 main()
 
@@ -109,6 +111,11 @@ Func _handleBtnSrc2Click()
 	EndIf
 EndFunc   ;==>_handleBtnSrc2Click
 
+Func _handleExecuteClick()
+	clean()
+	main()
+EndFunc   ;==>_handleExecuteClick
+
 Func main()
 	;;! [Load three images with different environment settings]
 	$sSrc1 = ControlGetText($FormGUI, "", $InputSrc1)
@@ -133,6 +140,7 @@ Func main()
 	_cveImshowControlPic($src2, $FormGUI, $PicSrc2, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
 	;;! [Display]
 
+	$warned = False
 	AddWeighted()
 EndFunc   ;==>main
 
@@ -151,6 +159,20 @@ Func AddWeighted()
 	GUICtrlSetData($LabelAlpha, "Alpha: " & StringFormat("%.2f", $alpha))
 
 	If $sSrc1 == "" Then Return
+
+	Local $tSrc1Size = _cvSize()
+	_cveMatGetSize($src1, $tSrc1Size)
+
+	Local $tSrc2Size = _cvSize()
+	_cveMatGetSize($src2, $tSrc2Size)
+
+	If $tSrc1Size.width <> $tSrc2Size.width Or $tSrc1Size.height <> $tSrc2Size.height Then
+		If Not $warned Then
+			ConsoleWriteError("!>Error: 'Input 1' and 'Input 2' should be of the same size" & @CRLF)
+			$warned = True
+		EndIf
+		Return
+	EndIf
 
 	Local $dst = _cveMatCreate()
 

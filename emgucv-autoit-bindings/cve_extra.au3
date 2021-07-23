@@ -206,7 +206,7 @@ Func _cveImreadAndCheck($fileName, $flags = $CV_IMREAD_UNCHANGED, $result = Null
 		$fileName = $tStr.value
 	EndIf
 
-	ConsoleWriteError("!> The image " & $fileName & " could not be loaded." & @CRLF)
+	ConsoleWriteError("!>Error: The image " & $fileName & " could not be loaded." & @CRLF)
 	$tStr = 0
 	Return SetError(1, 0, $matImg)
 EndFunc   ;==>_cveImreadAndCheck
