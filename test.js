@@ -16,6 +16,12 @@ const normalizeVectType = type => {
 
 const {hasOwnProperty: hasProp} = Object.prototype;
 
+const isFileIncluded = (files, file) => {
+    return files.some(include => {
+        return include.length > file.length ? include.startsWith(file) : file.startsWith(include);
+    });
+};
+
 const convertFile = (localFile, remoteFile, remotePath, remoteBaseDir, remoteSep, parser, options, cb) => {
     const remoteFileDir = sysPath.dirname(remoteFile);
 
@@ -248,7 +254,21 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
 
     const start = vcxproj.indexOf(INCLUDE_START) + INCLUDE_START.length;
     const end = vcxproj.indexOf(INCLUDE_END, start);
-    const included = vcxproj.slice(start, end).toString().split(";");
+
+    // explore include directories from the deepesth
+    // to have a correct cppRemoteIncludeFolder
+    // otherwise will be taken from the top directory
+    const included = vcxproj.slice(start, end).toString().split(";").map(dir => sysPath.resolve(dir)).sort((a, b) => {
+        if (a.startsWith(b)) {
+            return -1;
+        }
+
+        if (b.startsWith(a)) {
+            return 1;
+        }
+
+        return a > b ? 1 : a < b ? -1 : 0;
+    });
 
     // const compiled = getSourceFiles(vcxproj, "Compile");
 
@@ -264,23 +284,65 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
     const hparser = new ExportsParser(true, hoptions);
     let hasError = false;
 
-    const additionalIncludes = [];
-    const excluded = [
-        sysPath.join("opencv", "modules", "core", "include", "opencv2", "core", "utils"),
-        sysPath.join("opencv", "modules", "gapi", "include", "opencv2", "gapi", "own"),
-        "tesseract",
+    const emgucvGitRepo = sysPath.dirname(localPath);
+
+    const apiFiles = [
+        sysPath.join(emgucvGitRepo, "Emgu.CV.Extern"),
+        sysPath.join(emgucvGitRepo, "opencv"),
+        sysPath.join(emgucvGitRepo, "opencv_contrib"),
     ];
 
-    const xfiles = [
-        "check.hpp",
-        "color_detail.hpp",
-        "miniflann.hpp",
-        "traits.hpp",
+    const headerFiles = [
+        sysPath.join(emgucvGitRepo, "build_x64", "install", "include", "freetype2"),
+        sysPath.join(emgucvGitRepo, "build_x64", "install", "include", "harfbuzz"),
+        sysPath.join(emgucvGitRepo, "build_x64", "opencv", "3rdparty", "libtiff"),
+        sysPath.join(emgucvGitRepo, "build_x64", "opencv", "3rdparty", "zlib"),
+        sysPath.join(emgucvGitRepo, "build_x64", "opencv2"),
     ];
+
+    const excludedFiles = [];
+
+    const excludedParsedHeaders = [
+        sysPath.join(emgucvGitRepo, "opencv", "modules", "core", "include", "opencv2", "core", "check.hpp"),
+        sysPath.join(emgucvGitRepo, "opencv", "modules", "core", "include", "opencv2", "core", "cuda", "detail", "color_detail.hpp"),
+        sysPath.join(emgucvGitRepo, "opencv", "modules", "core", "include", "opencv2", "core", "cuda", "scan.hpp"),
+        sysPath.join(emgucvGitRepo, "opencv", "modules", "core", "include", "opencv2", "core", "hal", "intrin_avx.hpp"),
+        sysPath.join(emgucvGitRepo, "opencv", "modules", "core", "include", "opencv2", "core", "hal", "intrin_avx512.hpp"),
+        sysPath.join(emgucvGitRepo, "opencv", "modules", "core", "include", "opencv2", "core", "hal", "intrin_cpp.hpp"),
+        sysPath.join(emgucvGitRepo, "opencv", "modules", "core", "include", "opencv2", "core", "hal", "intrin_vsx.hpp"),
+        sysPath.join(emgucvGitRepo, "opencv", "modules", "core", "include", "opencv2", "core", "quaternion.inl.hpp"),
+        sysPath.join(emgucvGitRepo, "opencv", "modules", "core", "include", "opencv2", "core", "traits.hpp"),
+        sysPath.join(emgucvGitRepo, "opencv", "modules", "core", "include", "opencv2", "core", "utils"),
+        sysPath.join(emgucvGitRepo, "opencv", "modules", "flann", "include", "opencv2", "flann", "miniflann.hpp"),
+        sysPath.join(emgucvGitRepo, "opencv", "modules", "gapi", "include", "opencv2", "gapi", "own"),
+        sysPath.join(emgucvGitRepo, "Emgu.CV.Extern", "tesseract"),
+    ];
+
+    const buildFolder = sysPath.join(emgucvGitRepo, "build_x64");
+
+    const additionalIncludes = [];
+    const globals = new Set();
 
     const seen = new Set();
-
     eachOfLimit(included, 1, (directory, i, next) => {
+        let cppLocalIncludeFolder = directory;
+        let cppRemoteIncludeFolder = sysPath.join(__dirname, "libemgucv-includes");
+
+        if (directory === buildFolder) {
+            cppRemoteIncludeFolder = sysPath.join(cppRemoteIncludeFolder, sysPath.basename(directory));
+        } else if (directory.startsWith(buildFolder) || directory.indexOf("3rdparty") !== -1) {
+            cppRemoteIncludeFolder = sysPath.join(cppRemoteIncludeFolder, "3rdparty", sysPath.basename(directory));
+        } else if (directory.indexOf("3rdparty") !== -1) {
+            cppRemoteIncludeFolder = sysPath.join(cppRemoteIncludeFolder, "3rdparty", sysPath.basename(directory));
+        } else if (directory.startsWith(localPath)) {
+            cppLocalIncludeFolder = localPath;
+            cppRemoteIncludeFolder = sysPath.join(cppRemoteIncludeFolder, sysPath.basename(localPath));
+        } else {
+            const relpath = sysPath.relative(sysPath.dirname(localPath), directory);
+            const parts = relpath.split(sysPath.sep);
+            cppRemoteIncludeFolder = sysPath.join(cppRemoteIncludeFolder, parts[0]);
+        }
+
         explore(directory, (localFile, stats, next) => {
             if (seen.has(localFile)) {
                 next();
@@ -288,20 +350,29 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
             }
             seen.add(localFile);
 
-            if (hasError || xfiles.some(xfile => localFile.endsWith(xfile)) || (!localFile.endsWith(".hpp") && !localFile.endsWith(".h"))) {
+            if (hasError
+                || isFileIncluded(excludedFiles, localFile)
+                || (!localFile.endsWith(".hpp") && !localFile.endsWith(".h"))
+                || (!isFileIncluded(apiFiles, localFile) && !isFileIncluded(headerFiles, localFile))
+            ) {
                 next();
                 return;
             }
 
             waterfall([
                 next => {
-                    fs.readFile(localFile, next);
+                    if (isFileIncluded(excludedParsedHeaders, localFile)) {
+                        next(null, null);
+                    } else {
+                        fs.readFile(localFile, next);
+                    }
                 },
 
                 (buffer, next) => {
-                    // if (/\benum\s+(?:\w+\s*)?{/.test(buffer)) {
-                    //     console.log(localFile, "has enum");
-                    // }
+                    if (buffer === null) {
+                        next(null, buffer);
+                        return;
+                    }
 
                     buffer = buffer.toString().replace(/CV_(?:IN|OUT|IN_OUT) /g, "").replace(/CV_EXPORTS_W inline/g, "CV_NOT_EXPORTS_W");
                     const api = hparser.parseFile(buffer);
@@ -347,6 +418,11 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
                 },
 
                 (buffer, next) => {
+                    if (buffer === null) {
+                        next();
+                        return;
+                    }
+
                     const parser = new EnumParser(true);
                     const ast = parser.parse(buffer);
 
@@ -362,7 +438,7 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
                     const enums = Object.keys(ast_enum).filter(key => key.indexOf("::") !== -1 && key.indexOf("<") === -1);
 
                     if (enums.length === 0) {
-                        next(null, false, false);
+                        next();
                         return;
                     }
 
@@ -372,6 +448,13 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
                         // enums that are outside the cv namespace will be putted in the _cv namespace
                         if (parts[0] !== "cv") {
                             parts.unshift("_cv");
+                        }
+
+                        // remove nested namespaces
+                        for (let i = parts.length - 1; i > 0; i--) {
+                            if (/^[a-z]+$/.test(parts[i])) {
+                                parts.splice(i, 1);
+                            }
                         }
 
                         const name = parts.pop() || "anonymous";
@@ -390,13 +473,20 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
                         };
 
                         return `; ${ name }\n${ variables.map(vkey => {
+                            const vname = getVariableName(vkey);
+                            if (globals.has(vname)) {
+                                console.log("skip already defined global", vname);
+                                return null;
+                            }
+
+                            globals.add(vname);
                             const value = coerceExpression(values[vkey], options).replace(expansionRe, getVariableName);
-                            return `Global Const ${ getVariableName(vkey) } = ${ value }`;
+                            return `Global Const ${ vname } = ${ value }`;
                         }).join("\n") }`;
                     }).join("\n\n").trim();
 
                     if (text.length === 0) {
-                        next(null, false, false);
+                        next();
                         return;
                     }
 
@@ -405,6 +495,15 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
                     additionalIncludes.push([src, dst, text]);
                     next();
                 },
+
+                next => {
+                    const src_inc = sysPath.relative(cppLocalIncludeFolder, localFile);
+                    const dst_inc = sysPath.resolve(cppRemoteIncludeFolder, src_inc);
+
+                    mkdirp(sysPath.dirname(dst_inc)).then(performed => {
+                        fs.copyFile(localFile, dst_inc, next);
+                    }, next);
+                }
             ], err => {
                 if (err) {
                     hasError = true;
@@ -420,8 +519,9 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
 
             const parts = dir.split(sysPath.sep);
             const skip = hasError
-                || !["Emgu.CV.Extern", "opencv"].some(lib => parts.indexOf(lib) !== -1)
-                || excluded.some(exclude => dir.endsWith(exclude) || dir.startsWith(localPath, exclude));
+                || isFileIncluded(excludedFiles, dir)
+                || (!isFileIncluded(apiFiles, dir) && !isFileIncluded(headerFiles, dir));
+
             next(null, skip);
         }, {
             limit: 1
@@ -429,7 +529,7 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
             next(!hasError && err && err.code === "ENOENT" ? null : err);
         });
     }, err => {
-        options.additionalIncludes = additionalIncludes;
+        options.additionalIncludes = additionalIncludes.sort(([a], [b]) => a > b ? 1 : a < b ? -1 : 0);
         options.defaults = defaults;
         cb(err);
     });
@@ -758,10 +858,11 @@ const parser = new ExportsParser(true, options);
 // });
 
 // eachOfLimit([
-//     "E:\\development\\git\\emgucv\\opencv\\modules\\core\\include\\opencv2\\core.hpp",
-//     "E:\\development\\git\\emgucv\\opencv\\modules\\imgproc\\include\\opencv2\\imgproc.hpp",
-//     "E:\\development\\git\\emgucv\\opencv\\modules\\features2d\\include\\opencv2\\features2d.hpp",
-//     "E:\\development\\git\\emgucv\\opencv\\modules\\calib3d\\include\\opencv2\\calib3d.hpp",
+//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\core\\include\\opencv2\\core.hpp"),
+//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\imgproc\\include\\opencv2\\imgproc.hpp"),
+//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\features2d\\include\\opencv2\\features2d.hpp"),
+//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\calib3d\\include\\opencv2\\calib3d.hpp"),
+//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\mat.hpp"),
 // ], 1, (localFile, i, next) => {
 //     parser.noexception = true;
 //     parser.options.exports.start = "CV_EXPORTS_W ";
@@ -795,18 +896,19 @@ const parser = new ExportsParser(true, options);
 // });
 
 // eachOfLimit([
-//     "E:\\development\\git\\emgucv\\Emgu.CV.Extern\\depthai-core\\shared\\depthai-shared\\include\\depthai-shared\\metadata\\camera_control.hpp",
-//     "E:\\development\\git\\emgucv\\opencv\\modules\\calib3d\\include\\opencv2\\calib3d.hpp",
-//     "E:\\development\\git\\emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\affine.hpp",
-//     "E:\\development\\git\\emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\base.hpp",
-//     "E:\\development\\git\\emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\check.hpp",
-//     "E:\\development\\git\\emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\cuda.hpp",
-//     "E:\\development\\git\\emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\cuda\\detail\\type_traits_detail.hpp",
-//     "E:\\development\\git\\emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\mat.hpp",
-//     "E:\\development\\git\\emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\types.hpp",
-//     "E:\\development\\git\\emgucv\\opencv\\modules\\features2d\\include\\opencv2\\features2d.hpp",
-//     "E:\\development\\git\\emgucv\\opencv\\modules\\imgcodecs\\include\\opencv2\\imgcodecs.hpp",
-//     "E:\\development\\git\\emgucv\\opencv\\modules\\imgproc\\include\\opencv2\\imgproc.hpp",
+//     sysPath.join(__dirname, "emgucv\\Emgu.CV.Extern\\depthai-core\\shared\\depthai-shared\\include\\depthai-shared\\metadata\\camera_control.hpp"),
+//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\calib3d\\include\\opencv2\\calib3d.hpp"),
+//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\affine.hpp"),
+//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\base.hpp"),
+//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\check.hpp"),
+//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\cuda.hpp"),
+//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\cuda\\detail\\type_traits_detail.hpp"),
+//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\mat.hpp"),
+//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\types.hpp"),
+//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\features2d\\include\\opencv2\\features2d.hpp"),
+//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\imgcodecs\\include\\opencv2\\imgcodecs.hpp"),
+//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\imgproc\\include\\opencv2\\imgproc.hpp"),
+//     sysPath.join(__dirname, "emgucv\\opencv_contrib\\modules\\ximgproc\\include\\opencv2\\ximgproc\\weighted_median_filter.hpp"),
 // ], 1, (localFile, i, next) => {
 //     const parser = new EnumParser();
 
@@ -828,13 +930,13 @@ const parser = new ExportsParser(true, options);
 
 // return;
 
-const vcxprojPath = "E:\\development\\git\\emgucv\\build_x64\\Emgu.CV.Extern\\cvextern.vcxproj";
+const vcxprojPath = fs.realpathSync(sysPath.join(__dirname, "emgucv\\build_x64\\Emgu.CV.Extern\\cvextern.vcxproj"));
 
-// const localPath = "E:\\development\\git\\emgucv\\Emgu.CV.Extern\\imgproc";
-const localPath = "E:\\development\\git\\emgucv\\Emgu.CV.Extern";
+// const localPath = fs.realpathSync(sysPath.join(__dirname, "emgucv\\Emgu.CV.Extern\\imgproc"));
+const localPath = fs.realpathSync(sysPath.join(__dirname, "emgucv\\Emgu.CV.Extern"));
 
-// const remotePath = sysPath.join(__dirname, "emgucv-autoIt-bindings\\Emgu.CV.Extern\\imgproc");
-const remotePath = sysPath.join(__dirname, "emgucv-autoIt-bindings\\Emgu.CV.Extern");
+// const remotePath = fs.realpathSync(sysPath.join(__dirname, "emgucv-autoit-bindings\\Emgu.CV.Extern\\imgproc"));
+const remotePath = fs.realpathSync(sysPath.join(__dirname, "emgucv-autoit-bindings\\Emgu.CV.Extern"));
 
 const remoteBaseDir = sysPath.dirname(remotePath);
 const remoteBase = sysPath.basename(remotePath);

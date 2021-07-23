@@ -1,7 +1,7 @@
 #include-once
 #include "..\..\CVEUtils.au3"
 
-Func _cveDrawCorrespondencies($bundle, $cols, $colors)
+Func _cveDrawCorrespondencies($bundle, $cols, $colors = _cveNoArray())
     ; CVAPI(void) cveDrawCorrespondencies(cv::_InputOutputArray* bundle, cv::_InputArray* cols, cv::_InputArray* colors);
 
     Local $bBundleDllType
@@ -28,7 +28,7 @@ Func _cveDrawCorrespondencies($bundle, $cols, $colors)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDrawCorrespondencies", $bBundleDllType, $bundle, $bColsDllType, $cols, $bColorsDllType, $colors), "cveDrawCorrespondencies", @error)
 EndFunc   ;==>_cveDrawCorrespondencies
 
-Func _cveDrawCorrespondenciesMat($matBundle, $matCols, $matColors)
+Func _cveDrawCorrespondenciesMat($matBundle, $matCols, $matColors = _cveNoArrayMat())
     ; cveDrawCorrespondencies using cv::Mat instead of _*Array
 
     Local $ioArrBundle, $vectorOfMatBundle, $iArrBundleSize
@@ -177,7 +177,7 @@ Func _cveDrawSearchLinesMat($matImg, $matLocations, $color)
     _cveInputOutputArrayRelease($ioArrImg)
 EndFunc   ;==>_cveDrawSearchLinesMat
 
-Func _cveDrawWireframe($img, $pts2d, $tris, $color, $type, $cullBackface)
+Func _cveDrawWireframe($img, $pts2d, $tris, $color, $type = $CV_LINE_8, $cullBackface = false)
     ; CVAPI(void) cveDrawWireframe(cv::_InputOutputArray* img, cv::_InputArray* pts2d, cv::_InputArray* tris, CvScalar* color, int type, bool cullBackface);
 
     Local $bImgDllType
@@ -211,7 +211,7 @@ Func _cveDrawWireframe($img, $pts2d, $tris, $color, $type, $cullBackface)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDrawWireframe", $bImgDllType, $img, $bPts2dDllType, $pts2d, $bTrisDllType, $tris, $bColorDllType, $color, "int", $type, "boolean", $cullBackface), "cveDrawWireframe", @error)
 EndFunc   ;==>_cveDrawWireframe
 
-Func _cveDrawWireframeMat($matImg, $matPts2d, $matTris, $color, $type, $cullBackface)
+Func _cveDrawWireframeMat($matImg, $matPts2d, $matTris, $color, $type = $CV_LINE_8, $cullBackface = false)
     ; cveDrawWireframe using cv::Mat instead of _*Array
 
     Local $ioArrImg, $vectorOfMatImg, $iArrImgSize
@@ -633,7 +633,7 @@ Func _cveExtractLineBundleMat($len, $matCtl2d, $matImg, $matBundle, $matSrcLocat
     _cveInputArrayRelease($iArrCtl2d)
 EndFunc   ;==>_cveExtractLineBundleMat
 
-Func _cveFindCorrespondencies($bundle, $cols, $response)
+Func _cveFindCorrespondencies($bundle, $cols, $response = _cveNoArray())
     ; CVAPI(void) cveFindCorrespondencies(cv::_InputArray* bundle, cv::_OutputArray* cols, cv::_OutputArray* response);
 
     Local $bBundleDllType
@@ -660,7 +660,7 @@ Func _cveFindCorrespondencies($bundle, $cols, $response)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFindCorrespondencies", $bBundleDllType, $bundle, $bColsDllType, $cols, $bResponseDllType, $response), "cveFindCorrespondencies", @error)
 EndFunc   ;==>_cveFindCorrespondencies
 
-Func _cveFindCorrespondenciesMat($matBundle, $matCols, $matResponse)
+Func _cveFindCorrespondenciesMat($matBundle, $matCols, $matResponse = _cveNoArrayMat())
     ; cveFindCorrespondencies using cv::Mat instead of _*Array
 
     Local $iArrBundle, $vectorOfMatBundle, $iArrBundleSize
@@ -732,7 +732,7 @@ Func _cveFindCorrespondenciesMat($matBundle, $matCols, $matResponse)
     _cveInputArrayRelease($iArrBundle)
 EndFunc   ;==>_cveFindCorrespondenciesMat
 
-Func _cveConvertCorrespondencies($cols, $srcLocations, $pts2d, $pts3d, $mask)
+Func _cveConvertCorrespondencies($cols, $srcLocations, $pts2d, $pts3d = _cveNoArray(), $mask = _cveNoArray())
     ; CVAPI(void) cveConvertCorrespondencies(cv::_InputArray* cols, cv::_InputArray* srcLocations, cv::_OutputArray* pts2d, cv::_InputOutputArray* pts3d, cv::_InputArray* mask);
 
     Local $bColsDllType
@@ -773,7 +773,7 @@ Func _cveConvertCorrespondencies($cols, $srcLocations, $pts2d, $pts3d, $mask)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveConvertCorrespondencies", $bColsDllType, $cols, $bSrcLocationsDllType, $srcLocations, $bPts2dDllType, $pts2d, $bPts3dDllType, $pts3d, $bMaskDllType, $mask), "cveConvertCorrespondencies", @error)
 EndFunc   ;==>_cveConvertCorrespondencies
 
-Func _cveConvertCorrespondenciesMat($matCols, $matSrcLocations, $matPts2d, $matPts3d, $matMask)
+Func _cveConvertCorrespondenciesMat($matCols, $matSrcLocations, $matPts2d, $matPts3d = _cveNoArrayMat(), $matMask = _cveNoArrayMat())
     ; cveConvertCorrespondencies using cv::Mat instead of _*Array
 
     Local $iArrCols, $vectorOfMatCols, $iArrColsSize
@@ -889,7 +889,7 @@ Func _cveConvertCorrespondenciesMat($matCols, $matSrcLocations, $matPts2d, $matP
     _cveInputArrayRelease($iArrCols)
 EndFunc   ;==>_cveConvertCorrespondenciesMat
 
-Func _cveRapid($img, $num, $len, $pts3d, $tris, $K, $rvec, $tvec, $rmsd)
+Func _cveRapid($img, $num, $len, $pts3d, $tris, $K, $rvec, $tvec, $rmsd = 0)
     ; CVAPI(float) cveRapid(cv::_InputArray* img, int num, int len, cv::_InputArray* pts3d, cv::_InputArray* tris, cv::_InputArray* K, cv::_InputOutputArray* rvec, cv::_InputOutputArray* tvec, double* rmsd);
 
     Local $bImgDllType
@@ -943,7 +943,7 @@ Func _cveRapid($img, $num, $len, $pts3d, $tris, $K, $rvec, $tvec, $rmsd)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveRapid", $bImgDllType, $img, "int", $num, "int", $len, $bPts3dDllType, $pts3d, $bTrisDllType, $tris, $bKDllType, $K, $bRvecDllType, $rvec, $bTvecDllType, $tvec, $bRmsdDllType, $rmsd), "cveRapid", @error)
 EndFunc   ;==>_cveRapid
 
-Func _cveRapidMat($matImg, $num, $len, $matPts3d, $matTris, $matK, $matRvec, $matTvec, $rmsd)
+Func _cveRapidMat($matImg, $num, $len, $matPts3d, $matTris, $matK, $matRvec, $matTvec, $rmsd = 0)
     ; cveRapid using cv::Mat instead of _*Array
 
     Local $iArrImg, $vectorOfMatImg, $iArrImgSize

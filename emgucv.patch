@@ -1,0 +1,194 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 7b0d7ab2..36c6353a 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -42,6 +42,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.16)
+ cmake_policy(SET CMP0022 NEW)
+ cmake_policy(SET CMP0069 NEW)
+ 
++STRING(TOUPPER "${CMAKE_BUILD_TYPE}" cmake_build_type_toupper)
++
+ IF(EMGU_CV_WITH_DEPTHAI)
+   # Always build depthai-core as a static library
+   SET(BUILD_SHARED_LIBS_CACHE ${BUILD_SHARED_LIBS})
+@@ -71,7 +73,7 @@ ENDIF()
+ #IF(WIN32)
+ #  FIND_PACKAGE(HDF5)
+ #  IF (TARGET hdf5-static) 
+-#	get_target_property(HDF5_LIBRARIES hdf5-static IMPORTED_LOCATION_RELEASE)
++#	get_target_property(HDF5_LIBRARIES hdf5-static IMPORTED_LOCATION_${cmake_build_type_toupper})
+ #	MESSAGE(STATUS "HDF5_DIRS: ${HDF5_DIRS}")
+ #	MESSAGE(STATUS "HDF5_INCLUDE_DIRS: ${HDF5_INCLUDE_DIRS}")
+ #	MESSAGE(STATUS "HDF5_LIBRARIES: ${HDF5_LIBRARIES}")
+@@ -87,7 +89,6 @@ ENDIF()
+ #ENDIF()
+ 
+ IF (EMGU_CV_WITH_FREETYPE)
+-	
+ #	ExternalProject_Add(
+ #		harfbuzz
+ #		GIT_REPOSITORY https://github.com/harfbuzz/harfbuzz.git
+@@ -109,7 +110,7 @@ IF (EMGU_CV_WITH_FREETYPE)
+ 		message(STATUS "FREETYPE:   ${FREETYPE_DIR} (ver ${FREETYPE_VERSION})")
+ 		SET(FREETYPE_INCLUDE_DIRS "${FREETYPE_DIR}/../../../include/freetype2")
+ 		SET(FREETYPE_LIBRARY freetype)
+-		get_target_property(FREETYPE_LIBRARIES freetype IMPORTED_LOCATION_RELEASE)
++		get_target_property(FREETYPE_LIBRARIES freetype IMPORTED_LOCATION_${cmake_build_type_toupper})
+ 		#SET(FREETYPE_LIBRARIES ${FREETYPE_LIBRARIES} CACHE STRING "FREETYPE library")
+ 		#SET(FREETYPE_LINK_LIBRARIES ${FREETYPE_LIBRARIES} CACHE STRING "FREETYPE library")
+ 		#SET(FREETYPE_LIBRARIES ${FREETYPE_LIBRARIES})
+@@ -126,7 +127,7 @@ IF (EMGU_CV_WITH_FREETYPE)
+ 	else()
+ 		message(STATUS "HARFBUZZ:    ${HARFBUZZ_DIR} (ver ${HARFBUZZ_VERSION})")
+ 		SET(HARFBUZZ_INCLUDE_DIRS "${HARFBUZZ_DIR}/../../../include/harfbuzz")
+-		get_target_property(HARFBUZZ_LIBRARY harfbuzz::harfbuzz IMPORTED_LOCATION_RELEASE)
++		get_target_property(HARFBUZZ_LIBRARY harfbuzz::harfbuzz IMPORTED_LOCATION_${cmake_build_type_toupper})
+ 		
+ 		#SET(HARFBUZZ_LIBRARIES ${HARFBUZZ_LIBRARY} CACHE STRING "HARFBUZZ library")
+ 		#SET(HARFBUZZ_LINK_LIBRARIES ${HARFBUZZ_LIBRARY} CACHE STRING "HARFBUZZ library")
+diff --git a/Emgu.CV.Extern/cudaarithm/cudaarithm_c.h b/Emgu.CV.Extern/cudaarithm/cudaarithm_c.h
+index 82d31386..aef9bd18 100644
+--- a/Emgu.CV.Extern/cudaarithm/cudaarithm_c.h
++++ b/Emgu.CV.Extern/cudaarithm/cudaarithm_c.h
+@@ -48,7 +48,7 @@ CVAPI(void) cudaMagnitudeSqr(cv::_InputArray* x, cv::_InputArray* y, cv::_Output
+ 
+ CVAPI(void) cudaPhase(cv::_InputArray* x, cv::_InputArray* y, cv::_OutputArray* angle, bool angleInDegrees, cv::cuda::Stream* stream);
+ 
+-CVAPI(void) cudaCartToPolar(cv::_InputArray* x, cv::_InputArray* y, cv::_OutputArray*, cv::_OutputArray*, bool angleInDegrees, cv::cuda::Stream* stream);
++CVAPI(void) cudaCartToPolar(cv::_InputArray* x, cv::_InputArray* y, cv::_OutputArray* magnitude, cv::_OutputArray* angle, bool angleInDegrees, cv::cuda::Stream* stream);
+ 
+ CVAPI(void) cudaPolarToCart(cv::_InputArray* magnitude, cv::_InputArray* angle, cv::_OutputArray* x, cv::_OutputArray* y, bool angleInDegrees, cv::cuda::Stream* stream);
+ 
+diff --git a/Emgu.CV.Extern/superres/superres_c.h b/Emgu.CV.Extern/superres/superres_c.h
+index 13ba467f..d864aa79 100644
+--- a/Emgu.CV.Extern/superres/superres_c.h
++++ b/Emgu.CV.Extern/superres/superres_c.h
+@@ -39,6 +39,6 @@ CVAPI(cv::superres::FrameSource*) cveSuperresCreateFrameSourceCamera(int deviceI
+ CVAPI(void) cveSuperresFrameSourceNextFrame(cv::superres::FrameSource* frameSource, cv::_OutputArray* frame);
+ CVAPI(void) cveSuperresFrameSourceRelease(cv::Ptr<cv::superres::FrameSource>** sharedPtr);
+ 
+-CVAPI(cv::superres::SuperResolution*) cveSuperResolutionCreate(int type, cv::superres::FrameSource* frameSource, cv::superres::FrameSource** frameSourceOut, cv::Ptr<cv::superres::SuperResolution>**);
++CVAPI(cv::superres::SuperResolution*) cveSuperResolutionCreate(int type, cv::superres::FrameSource* frameSource, cv::superres::FrameSource** frameSourceOut, cv::Ptr<cv::superres::SuperResolution>** sharedPtr);
+ CVAPI(void) cveSuperResolutionRelease(cv::Ptr<cv::superres::SuperResolution>** sharedPtr);
+ #endif
+\ No newline at end of file
+diff --git a/Emgu.CV.Extern/viz/viz_c.h b/Emgu.CV.Extern/viz/viz_c.h
+index 2fd6dbcc..37776d11 100644
+--- a/Emgu.CV.Extern/viz/viz_c.h
++++ b/Emgu.CV.Extern/viz/viz_c.h
+@@ -112,7 +112,7 @@ CVAPI(cv::viz::WCloud*) cveWCloudCreateWithColorArray(cv::_InputArray* cloud, cv
+ CVAPI(cv::viz::WCloud*) cveWCloudCreateWithColor(cv::_InputArray* cloud, CvScalar* color, cv::viz::Widget3D** widget3d, cv::viz::Widget** widget);
+ CVAPI(void) cveWCloudRelease(cv::viz::WCloud** cloud);
+ 
+-CVAPI(void) cveWriteCloud(cv::String* file, cv::_InputArray* cloud, cv::_InputArray* colors, cv::_InputArray*, bool binary);
++CVAPI(void) cveWriteCloud(cv::String* file, cv::_InputArray* cloud, cv::_InputArray* colors, cv::_InputArray* normals, bool binary);
+ CVAPI(void) cveReadCloud(cv::String* file, cv::Mat* cloud, cv::_OutputArray* colors, cv::_OutputArray* normals);
+ 
+ CVAPI(cv::viz::WCube*) cveWCubeCreate(CvPoint3D64f* minPoint, CvPoint3D64f* maxPoint, bool wireFrame, CvScalar* color, cv::viz::Widget3D** widget3d, cv::viz::Widget** widget);
+diff --git a/platforms/windows/Build_Binary_x86.bat b/platforms/windows/Build_Binary_x86.bat
+index 1c98ac27..7b281d20 100644
+--- a/platforms/windows/Build_Binary_x86.bat
++++ b/platforms/windows/Build_Binary_x86.bat
+@@ -18,6 +18,8 @@ REM %7%: "build", if set to "build", the script will also build the target
+ REM %8%: "nuget", this flag indicates if we should build the nuget package
+ REM %9%: Use this field for the CUDA_ARCH_BIN_OPTION if you want to specify it manually. e.g. "6.1"
+ 
++IF NOT DEFINED CMAKE_BUILD_TYPE SET CMAKE_BUILD_TYPE=Release
++
+ SET BUILD_FOLDER=build
+ SET BUILD_TOOLS_FOLDER=C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools
+ 
+@@ -149,17 +151,17 @@ REM IF "%3%"=="intel_inf" GOTO SET_BUILD_TYPE
+ IF EXIST %VS2019% SET DEVENV=%VS2019%
+ 
+ :SET_BUILD_TYPE
+-IF %DEVENV%=="%MSBUILD35%" SET BUILD_TYPE=/property:Configuration=Release
+-IF %DEVENV%=="%MSBUILD40%" SET BUILD_TYPE=/property:Configuration=Release
+-IF %DEVENV%=="%MSBUILD_BUILDTOOLS%" SET BUILD_TYPE=/property:Configuration=Release
+-IF %DEVENV%==%VS2005% SET BUILD_TYPE=/Build Release
+-IF %DEVENV%==%VS2008% SET BUILD_TYPE=/Build Release
+-IF %DEVENV%==%VS2010% SET BUILD_TYPE=/Build Release
+-IF %DEVENV%==%VS2012% SET BUILD_TYPE=/Build Release
+-IF %DEVENV%==%VS2013% SET BUILD_TYPE=/Build Release
+-IF %DEVENV%==%VS2015% SET BUILD_TYPE=/Build Release
+-IF %DEVENV%==%VS2017% SET BUILD_TYPE=/Build Release
+-IF %DEVENV%==%VS2019% SET BUILD_TYPE=/Build Release
++IF %DEVENV%=="%MSBUILD35%" SET BUILD_TYPE=/property:Configuration=%CMAKE_BUILD_TYPE%
++IF %DEVENV%=="%MSBUILD40%" SET BUILD_TYPE=/property:Configuration=%CMAKE_BUILD_TYPE%
++IF %DEVENV%=="%MSBUILD_BUILDTOOLS%" SET BUILD_TYPE=/property:Configuration=%CMAKE_BUILD_TYPE%
++IF %DEVENV%==%VS2005% SET BUILD_TYPE=/Build %CMAKE_BUILD_TYPE%
++IF %DEVENV%==%VS2008% SET BUILD_TYPE=/Build %CMAKE_BUILD_TYPE%
++IF %DEVENV%==%VS2010% SET BUILD_TYPE=/Build %CMAKE_BUILD_TYPE%
++IF %DEVENV%==%VS2012% SET BUILD_TYPE=/Build %CMAKE_BUILD_TYPE%
++IF %DEVENV%==%VS2013% SET BUILD_TYPE=/Build %CMAKE_BUILD_TYPE%
++IF %DEVENV%==%VS2015% SET BUILD_TYPE=/Build %CMAKE_BUILD_TYPE%
++IF %DEVENV%==%VS2017% SET BUILD_TYPE=/Build %CMAKE_BUILD_TYPE%
++IF %DEVENV%==%VS2019% SET BUILD_TYPE=/Build %CMAKE_BUILD_TYPE%
+ 
+ IF %DEVENV%=="%MSBUILD35%" SET CMAKE_CONF="Visual Studio 12 2005%OS_MODE%"
+ IF %DEVENV%=="%MSBUILD40%" SET CMAKE_CONF="Visual Studio 16" %BUILD_ARCH%
+@@ -175,7 +177,7 @@ IF %DEVENV%==%VS2019% SET CMAKE_CONF="Visual Studio 16" %BUILD_ARCH%
+ 
+ SET INSTALL_FOLDER=%cd%\install
+ SET HDF5_DIR=%INSTALL_FOLDER:\=/%/cmake/hdf5
+-SET GENERAL_CMAKE_CONFIG_FLAGS=%GENERAL_CMAKE_CONFIG_FLAGS% -DCMAKE_BUILD_TYPE:STRING="Release" -DCMAKE_INSTALL_PREFIX:STRING="%INSTALL_FOLDER:\=/%" -DCMAKE_FIND_ROOT_PATH:STRING="%INSTALL_FOLDER:\=/%"
++SET GENERAL_CMAKE_CONFIG_FLAGS=%GENERAL_CMAKE_CONFIG_FLAGS% -DCMAKE_BUILD_TYPE:STRING="%CMAKE_BUILD_TYPE%" -DCMAKE_INSTALL_PREFIX:STRING="%INSTALL_FOLDER:\=/%" -DCMAKE_FIND_ROOT_PATH:STRING="%INSTALL_FOLDER:\=/%"
+  
+ IF NOT "%3%"=="WindowsStore10" GOTO END_CONFIG_WINDOWS_STORE_10_GENERAL_CMAKE_CONFIG_FLAGS
+ SET GENERAL_CMAKE_CONFIG_FLAGS=%GENERAL_CMAKE_CONFIG_FLAGS% -DCMAKE_SYSTEM_NAME:String="WindowsStore" 
+@@ -224,7 +226,7 @@ cd %BUILD_FOLDER%
+ -DCMAKE_DISABLE_FIND_PACKAGE_PNG:BOOL=TRUE ^
+ -DCMAKE_DISABLE_FIND_PACKAGE_HarfBuzz:BOOL=TRUE ^
+ ..
+-%CMAKE% --build . --config Release --target INSTALL
++%CMAKE% --build . --config %CMAKE_BUILD_TYPE% --target INSTALL
+ cd ..
+ cd ..
+ cd ..
+@@ -235,7 +237,7 @@ cd harfbuzz
+ IF NOT EXIST %BUILD_FOLDER% mkdir %BUILD_FOLDER%
+ cd %BUILD_FOLDER%
+ %CMAKE% -G %CMAKE_CONF% %GENERAL_CMAKE_CONFIG_FLAGS% -DHB_HAVE_FREETYPE:BOOL=TRUE ..
+-%CMAKE% --build . --config Release --target INSTALL
++%CMAKE% --build . --config %CMAKE_BUILD_TYPE% --target INSTALL
+ cd ..
+ cd ..
+ REM SET HARFBUZZ_DIR=%cd%\harfbuzz\%BUILD_FOLDER%
+@@ -254,7 +256,7 @@ cd hdf5
+ IF NOT EXIST %BUILD_FOLDER% mkdir %BUILD_FOLDER%
+ cd %BUILD_FOLDER%
+ %CMAKE% -G %CMAKE_CONF% %GENERAL_CMAKE_CONFIG_FLAGS% -DBUILD_SHARED_LIBS:BOOL=FALSE -DBUILD_TESTING:BOOL=FALSE -DHDF5_BUILD_EXAMPLES:BOOL=FALSE -DHDF5_BUILD_TOOLS:BOOL=FALSE ..
+-%CMAKE% --build . --config Release --target INSTALL
++%CMAKE% --build . --config %CMAKE_BUILD_TYPE% --target INSTALL
+ cd ..
+ cd ..
+ SET HDF5_DIR=%BUILD_FOLDER%\install\cmake
+@@ -339,7 +341,7 @@ cd eigen
+ IF NOT EXIST %BUILD_FOLDER% mkdir %BUILD_FOLDER%
+ cd %BUILD_FOLDER%
+ %CMAKE% -G %CMAKE_CONF% %GENERAL_CMAKE_CONFIG_FLAGS% -DCMAKE_INSTALL_PREFIX:STRING="%INSTALL_FOLDER:\=/%" ..
+-%CMAKE% --build . --config Release --target INSTALL
++%CMAKE% --build . --config %CMAKE_BUILD_TYPE% --target INSTALL
+ SET EIGEN_DIR=%cd%
+ cd ..
+ cd ..
+@@ -357,7 +359,7 @@ IF NOT EXIST %BUILD_FOLDER% mkdir %BUILD_FOLDER%
+ cd %BUILD_FOLDER%
+ SET VTK_DIR=%cd%
+ %CMAKE% -G %CMAKE_CONF% %GENERAL_CMAKE_CONFIG_FLAGS% -DVTK_DATA_EXCLUDE_FROM_ALL:BOOL=TRUE -DBUILD_TESTING:BOOL=FALSE -DBUILD_SHARED_LIBS:BOOL=FALSE -DCMAKE_INSTALL_PREFIX:STRING="%INSTALL_FOLDER:\=/%" -DCMAKE_FIND_ROOT_PATH:STRING=%INSTALL_FOLDER:\=/% -DVTK_MODULE_ENABLE_VTK_RenderingFreeType:STRING="NO"  -DVTK_MODULE_ENABLE_VTK_png:STRING="NO" ..
+-%CMAKE% --build . --config Release --target INSTALL
++%CMAKE% --build . --config %CMAKE_BUILD_TYPE% --target INSTALL
+ cd ..
+ cd ..
+ REM SET VTK_DIR=%cd%\vtk\%BUILD_FOLDER%
+@@ -650,8 +652,8 @@ SET CMAKE_BUILD_TARGET=%CMAKE_BUILD_TARGET% Emgu.CV.runtime.windows.nuget
+ REM echo CMAKE_BUILD_TARGET=%CMAKE_BUILD_TARGET% Emgu.CV.nuget
+ 
+ REM Don't build with parallel at this time. Multiple Example demo projects building in parallel will results in build errors.
+-REM %CMAKE% --build . --config Release --parallel --target %CMAKE_BUILD_TARGET%
+-%CMAKE% --build . --config Release --target %CMAKE_BUILD_TARGET%
++REM %CMAKE% --build . --config %CMAKE_BUILD_TYPE% --parallel --target %CMAKE_BUILD_TARGET%
++%CMAKE% --build . --config %CMAKE_BUILD_TYPE% --target %CMAKE_BUILD_TARGET%
+ 
+ REM IF "%2%"=="gpu" ^
+ REM call %DEVENV% %BUILD_TYPE% emgucv.sln /project Emgu.CV.CUDA.nuget 

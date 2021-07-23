@@ -803,7 +803,7 @@ Func _cveFacemarkFitMat($facemark, $matImage, $matFaces, $matLandmarks)
     Return $retval
 EndFunc   ;==>_cveFacemarkFitMat
 
-Func _cveDrawFacemarks($image, $points, $color)
+Func _cveDrawFacemarks($image, $points, $color = _cvScalar(255,0,0))
     ; CVAPI(void) cveDrawFacemarks(cv::_InputOutputArray* image, cv::_InputArray* points, CvScalar* color);
 
     Local $bImageDllType
@@ -830,7 +830,7 @@ Func _cveDrawFacemarks($image, $points, $color)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDrawFacemarks", $bImageDllType, $image, $bPointsDllType, $points, $bColorDllType, $color), "cveDrawFacemarks", @error)
 EndFunc   ;==>_cveDrawFacemarks
 
-Func _cveDrawFacemarksMat($matImage, $matPoints, $color)
+Func _cveDrawFacemarksMat($matImage, $matPoints, $color = _cvScalar(255,0,0))
     ; cveDrawFacemarks using cv::Mat instead of _*Array
 
     Local $ioArrImage, $vectorOfMatImage, $iArrImageSize

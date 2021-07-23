@@ -100,7 +100,7 @@ Func _cveDtFilterMat($matGuide, $matSrc, $matDst, $sigmaSpatial, $sigmaColor, $m
     _cveInputArrayRelease($iArrGuide)
 EndFunc   ;==>_cveDtFilterMat
 
-Func _cveGuidedFilter($guide, $src, $dst, $radius, $eps, $dDepth)
+Func _cveGuidedFilter($guide, $src, $dst, $radius, $eps, $dDepth = -1)
     ; CVAPI(void) cveGuidedFilter(cv::_InputArray* guide, cv::_InputArray* src, cv::_OutputArray* dst, int radius, double eps, int dDepth);
 
     Local $bGuideDllType
@@ -127,7 +127,7 @@ Func _cveGuidedFilter($guide, $src, $dst, $radius, $eps, $dDepth)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGuidedFilter", $bGuideDllType, $guide, $bSrcDllType, $src, $bDstDllType, $dst, "int", $radius, "double", $eps, "int", $dDepth), "cveGuidedFilter", @error)
 EndFunc   ;==>_cveGuidedFilter
 
-Func _cveGuidedFilterMat($matGuide, $matSrc, $matDst, $radius, $eps, $dDepth)
+Func _cveGuidedFilterMat($matGuide, $matSrc, $matDst, $radius, $eps, $dDepth = -1)
     ; cveGuidedFilter using cv::Mat instead of _*Array
 
     Local $iArrGuide, $vectorOfMatGuide, $iArrGuideSize
@@ -636,7 +636,7 @@ Func _cveFastGlobalSmootherFilterMat($matGuide, $matSrc, $matDst, $lambda, $sigm
     _cveInputArrayRelease($iArrGuide)
 EndFunc   ;==>_cveFastGlobalSmootherFilterMat
 
-Func _cveL0Smooth($src, $dst, $lambda, $kappa)
+Func _cveL0Smooth($src, $dst, $lambda = 0.02, $kappa = 2.0)
     ; CVAPI(void) cveL0Smooth(cv::_InputArray* src, cv::_OutputArray* dst, double lambda, double kappa);
 
     Local $bSrcDllType
@@ -656,7 +656,7 @@ Func _cveL0Smooth($src, $dst, $lambda, $kappa)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveL0Smooth", $bSrcDllType, $src, $bDstDllType, $dst, "double", $lambda, "double", $kappa), "cveL0Smooth", @error)
 EndFunc   ;==>_cveL0Smooth
 
-Func _cveL0SmoothMat($matSrc, $matDst, $lambda, $kappa)
+Func _cveL0SmoothMat($matSrc, $matDst, $lambda = 0.02, $kappa = 2.0)
     ; cveL0Smooth using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -2045,7 +2045,7 @@ Func _cveGraphSegmentationRelease($segmentation, $sharedPtr)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGraphSegmentationRelease", $bSegmentationDllType, $segmentation, $bSharedPtrDllType, $sharedPtr), "cveGraphSegmentationRelease", @error)
 EndFunc   ;==>_cveGraphSegmentationRelease
 
-Func _cveWeightedMedianFilter($joint, $src, $dst, $r, $sigma, $weightType, $mask)
+Func _cveWeightedMedianFilter($joint, $src, $dst, $r, $sigma = 25.5, $weightType = $CV_WMF_EXP, $mask = _cveNoArray())
     ; CVAPI(void) cveWeightedMedianFilter(cv::_InputArray* joint, cv::_InputArray* src, cv::_OutputArray* dst, int r, double sigma, cv::ximgproc::WMFWeightType weightType, cv::Mat* mask);
 
     Local $bJointDllType
@@ -2079,7 +2079,7 @@ Func _cveWeightedMedianFilter($joint, $src, $dst, $r, $sigma, $weightType, $mask
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWeightedMedianFilter", $bJointDllType, $joint, $bSrcDllType, $src, $bDstDllType, $dst, "int", $r, "double", $sigma, "cv::ximgproc::WMFWeightType", $weightType, $bMaskDllType, $mask), "cveWeightedMedianFilter", @error)
 EndFunc   ;==>_cveWeightedMedianFilter
 
-Func _cveWeightedMedianFilterMat($matJoint, $matSrc, $matDst, $r, $sigma, $weightType, $mask)
+Func _cveWeightedMedianFilterMat($matJoint, $matSrc, $matDst, $r, $sigma = 25.5, $weightType = $CV_WMF_EXP, $mask = _cveNoArrayMat())
     ; cveWeightedMedianFilter using cv::Mat instead of _*Array
 
     Local $iArrJoint, $vectorOfMatJoint, $iArrJointSize
@@ -2636,7 +2636,7 @@ Func _cveGradientDericheXMat($matOp, $matDst, $alphaDerive, $alphaMean)
     _cveInputArrayRelease($iArrOp)
 EndFunc   ;==>_cveGradientDericheXMat
 
-Func _cveThinning($src, $dst, $thinningType)
+Func _cveThinning($src, $dst, $thinningType = $CV_THINNING_ZHANGSUEN)
     ; CVAPI(void) cveThinning(cv::_InputArray* src, cv::_OutputArray* dst, int thinningType);
 
     Local $bSrcDllType
@@ -2656,7 +2656,7 @@ Func _cveThinning($src, $dst, $thinningType)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveThinning", $bSrcDllType, $src, $bDstDllType, $dst, "int", $thinningType), "cveThinning", @error)
 EndFunc   ;==>_cveThinning
 
-Func _cveThinningMat($matSrc, $matDst, $thinningType)
+Func _cveThinningMat($matSrc, $matDst, $thinningType = $CV_THINNING_ZHANGSUEN)
     ; cveThinning using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize

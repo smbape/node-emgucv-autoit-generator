@@ -81,7 +81,7 @@ class EnumParser {
             switch (match[0]) {
                 case PREPROCESS_IF:
                     // ignore the first #ifndef XXX_HPP
-                    if (!preprocessed) {
+                    if (!preprocessed || input.startsWith("#ifdef __cplusplus", match.index)) {
                         preprocessed = true;
                         break;
                     }

@@ -83,7 +83,7 @@ Func main()
 	If $sImage == "" Then Return
 
 	;;! [Load image]
-	$src = _cveImreadAndCheck($sImage)
+	$src = _cveImreadAndCheck($sImage, $CV_IMREAD_COLOR)
 	If @error Then
 		$sImage = Null
 		Return

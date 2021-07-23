@@ -71,7 +71,7 @@ Func _cveUpdateMotionHistoryMat($matSilhouette, $matMhi, $timestamp, $duration)
     _cveInputArrayRelease($iArrSilhouette)
 EndFunc   ;==>_cveUpdateMotionHistoryMat
 
-Func _cveCalcMotionGradient($mhi, $mask, $orientation, $delta1, $delta2, $apertureSize)
+Func _cveCalcMotionGradient($mhi, $mask, $orientation, $delta1, $delta2, $apertureSize = 3)
     ; CVAPI(void) cveCalcMotionGradient(cv::_InputArray* mhi, cv::_OutputArray* mask, cv::_OutputArray* orientation, double delta1, double delta2, int apertureSize);
 
     Local $bMhiDllType
@@ -98,7 +98,7 @@ Func _cveCalcMotionGradient($mhi, $mask, $orientation, $delta1, $delta2, $apertu
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCalcMotionGradient", $bMhiDllType, $mhi, $bMaskDllType, $mask, $bOrientationDllType, $orientation, "double", $delta1, "double", $delta2, "int", $apertureSize), "cveCalcMotionGradient", @error)
 EndFunc   ;==>_cveCalcMotionGradient
 
-Func _cveCalcMotionGradientMat($matMhi, $matMask, $matOrientation, $delta1, $delta2, $apertureSize)
+Func _cveCalcMotionGradientMat($matMhi, $matMask, $matOrientation, $delta1, $delta2, $apertureSize = 3)
     ; cveCalcMotionGradient using cv::Mat instead of _*Array
 
     Local $iArrMhi, $vectorOfMatMhi, $iArrMhiSize

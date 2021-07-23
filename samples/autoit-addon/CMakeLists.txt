@@ -22,11 +22,11 @@ set(SOURCE_FILES
   addon.cpp
 )
 
-# Build a shared library named after the project from the files in `src/`
+# Build a shared library named as the project
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
-# Essential include files to build an autoit emgucv addon
+# Include files to build an autoit emgucv addon
 target_include_directories(${PROJECT_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS})
 
-# Essential library files to link to an autoit emgucv addon
+# Library files to link to an autoit emgucv addon
 target_link_libraries(${PROJECT_NAME} ${OpenCV_INCLUDE_LIBS})

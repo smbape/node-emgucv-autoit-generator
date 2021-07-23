@@ -81,7 +81,7 @@ Func _cveContrastStretching($input, $output, $r1, $s1, $r2, $s2)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveContrastStretching", $bInputDllType, $input, $bOutputDllType, $output, "int", $r1, "int", $s1, "int", $r2, "int", $s2), "cveContrastStretching", @error)
 EndFunc   ;==>_cveContrastStretching
 
-Func _cveBIMEF($input, $output, $mu, $a, $b)
+Func _cveBIMEF($input, $output, $mu = 0.5, $a = -0.3293, $b = 1.1258)
     ; CVAPI(void) cveBIMEF(cv::_InputArray* input, cv::_OutputArray* output, float mu, float a, float b);
 
     Local $bInputDllType
@@ -101,7 +101,7 @@ Func _cveBIMEF($input, $output, $mu, $a, $b)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBIMEF", $bInputDllType, $input, $bOutputDllType, $output, "float", $mu, "float", $a, "float", $b), "cveBIMEF", @error)
 EndFunc   ;==>_cveBIMEF
 
-Func _cveBIMEFMat($matInput, $matOutput, $mu, $a, $b)
+Func _cveBIMEFMat($matInput, $matOutput, $mu = 0.5, $a = -0.3293, $b = 1.1258)
     ; cveBIMEF using cv::Mat instead of _*Array
 
     Local $iArrInput, $vectorOfMatInput, $iArrInputSize
