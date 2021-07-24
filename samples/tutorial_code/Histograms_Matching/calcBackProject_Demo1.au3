@@ -54,7 +54,7 @@ Local $PicHistogram = GUICtrlCreatePic("", 847, 161, 400, 400)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 GUISetOnEvent($GUI_EVENT_CLOSE, "_cleanExit")
-GUICtrlSetOnEvent($BtnSource, "_handleButtonSourceClick")
+GUICtrlSetOnEvent($BtnSource, "_handleBtnSourceClick")
 GUICtrlSetOnEvent($SliderBins, "Hist_and_Backproj")
 
 GUISetState(@SW_SHOW)
@@ -139,7 +139,7 @@ Func clean()
 	_cveMatRelease($src)
 EndFunc   ;==>clean
 
-Func _handleButtonSourceClick()
+Func _handleBtnSourceClick()
 	$sInputSource = ControlGetText($FormGUI, "", $InputSource)
 	$sInputSource = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sInputSource)
 	If @error Then
@@ -149,7 +149,7 @@ Func _handleButtonSourceClick()
 
 	ControlSetText($FormGUI, "", $InputSource, $sInputSource)
 	main()
-EndFunc   ;==>_handleButtonSourceClick
+EndFunc   ;==>_handleBtnSourceClick
 
 Func Hist_and_Backproj()
 	If $sInputSource == "" Then Return

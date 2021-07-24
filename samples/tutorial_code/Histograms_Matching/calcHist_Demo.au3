@@ -55,7 +55,7 @@ Local $nMsg
 Local $src, $brg_planes, $histImage, $b_hist, $g_hist, $r_hist
 
 Local $addon_dll = ""
-Local $aSearchDirs[3] = [@ScriptDir & "\..\..\autoit-addon\build_x64\Release", @ScriptDir & "\..\..\autoit-addon\build_x64\Debug", @ScriptDir]
+Local $aSearchDirs[3] = [@ScriptDir & "\..\..\..\autoit-addon\build_x64\Release", @ScriptDir & "\..\..\..\autoit-addon\build_x64\Debug", @ScriptDir]
 For $i = 0 To UBound($aSearchDirs) - 1
 	$addon_dll = $aSearchDirs[$i] & "\autoit_addon.dll"
 	If FileExists($addon_dll) Then ExitLoop

@@ -35,19 +35,19 @@ Local $BtnSrcTest2 = GUICtrlCreateButton("Input 3", 689, 86, 75, 25)
 
 Local $BtnExec = GUICtrlCreateButton("Execute", 832, 48, 75, 25)
 
-Local $LabelSrcBase = GUICtrlCreateLabel("Source 1", 144, 128, 49, 20)
+Local $LabelSrcBase = GUICtrlCreateLabel("Source 1", 144, 128, 65, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $GroupSrcBase = GUICtrlCreateGroup("", 20, 150, 310, 316)
 Local $PicSrcBase = GUICtrlCreatePic("", 25, 161, 300, 300)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-Local $LabelSrcTest1 = GUICtrlCreateLabel("Source 2", 468, 128, 49, 20)
+Local $LabelSrcTest1 = GUICtrlCreateLabel("Source 2", 468, 128, 65, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $GroupSrcTest1 = GUICtrlCreateGroup("", 344, 150, 310, 316)
 Local $PicSrcTest1 = GUICtrlCreatePic("", 349, 161, 300, 300)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-Local $LabelSrcTest2 = GUICtrlCreateLabel("Source 3", 792, 128, 49, 20)
+Local $LabelSrcTest2 = GUICtrlCreateLabel("Source 3", 792, 128, 65, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $GroupSrcTest2 = GUICtrlCreateGroup("", 668, 150, 310, 316)
 Local $PicSrcTest2 = GUICtrlCreatePic("", 673, 161, 300, 300)

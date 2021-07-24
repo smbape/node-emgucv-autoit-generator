@@ -38,6 +38,7 @@ Local $LabelMethod = GUICtrlCreateLabel("Method:", 604, 128, 59, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $ComboMethod = GUICtrlCreateCombo("", 670, 128, 145, 25, BitOR($GUI_SS_DEFAULT_COMBO, $CBS_SIMPLE))
 GUICtrlSetData(-1, "TM SQDIFF|TM SQDIFF NORMED|TM CCORR|TM CCORR NORMED|TM CCOEFF|TM CCOEFF NORMED")
+
 Local $BtnExec = GUICtrlCreateButton("Execute", 825, 126, 75, 25)
 
 Local $LabelSource = GUICtrlCreateLabel("Source Image", 141, 168, 100, 20)

@@ -81,7 +81,7 @@ While 1
 		Case $BtnSource
 			clean()
 			$sImage = ControlGetText($FormGUI, "", $InputSource)
-			FileOpenDialog("Select an image", @ScriptDir & "\..\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sImage)
+			$sImage = FileOpenDialog("Select an image", @ScriptDir & "\..\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sImage)
 			If Not @error Then
 				ControlSetText($FormGUI, "", $InputSource, $sImage)
 				main()

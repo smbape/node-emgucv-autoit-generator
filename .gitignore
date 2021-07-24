@@ -1,5 +1,5 @@
+/autoit-addon/build_x64
 /emgucv-autoit-bindings*.zip
 /libemgucv-windesktop-*
 /node_modules
 /*.sublime-workspace
-/samples/autoit-addon/build_x64

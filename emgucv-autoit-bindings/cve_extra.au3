@@ -236,8 +236,8 @@ EndFunc   ;==>_cveCompareMatHist
 ; Name ..........: _cveFindTemplate
 ; Description ...: Find matches of a template in an image
 ; Syntax ........: _cveFindTemplate($matImg, $matTempl[, $fThreshold = 0.95[, $iCode = -1[, $iMatchMethod = $CV_TM_CCOEFF_NORMED[,
-;                  $matTemplMask = _cveNoArrayMat([, $fOverlapping = 2[, $aChannels = _cveDefaultBGRChannels([,
-;                  $aHistSize = _cveDefaultBGRHistSize([, $aRanges = _cveDefaultBGRRanges([, $iCompareMethod = $CV_HISTCMP_CORREL[,
+;                  $matTemplMask = _cveNoArrayMat()[, $fOverlapping = 2[, $aChannels = _cveDefaultBGRChannels()[,
+;                  $aHistSize = _cveDefaultBGRHistSize()[, $aRanges = _cveDefaultBGRRanges()[, $iCompareMethod = $CV_HISTCMP_CORREL[,
 ;                  $iDstCn = 0[, $bAccumulate = False[, $iLimit = 100]]]]]]]]]]]])
 ; Parameters ....: $matImg              - image matrix.
 ;                  $matTempl            - template matrix.
@@ -251,9 +251,9 @@ EndFunc   ;==>_cveCompareMatHist
 ;                                             $fOverlapping = > 2   : distancing matches
 ;                                             0 < $fOverlapping < 1 : matches can overlap more then half.
 ;                                             Default is 2.
-;                  $aChannels           - [optional] an array of unknowns. Default is _cveDefaultBGRChannels(.
-;                  $aHistSize           - [optional] an array of unknowns. Default is _cveDefaultBGRHistSize(.
-;                  $aRanges             - [optional] an array of unknowns. Default is _cveDefaultBGRRanges(.
+;                  $aChannels           - [optional] an array of ints. List of the dims channels used to compute the histogram.. Default is _cveDefaultBGRChannels().
+;                  $aHistSize           - [optional] an array of int. Array of histogram sizes in each dimension. Default is _cveDefaultBGRHistSize().
+;                  $aRanges             - [optional] an array of float. Array of the dims arrays of the histogram bin boundaries in each dimension. Default is _cveDefaultBGRRanges().
 ;                  $iCompareMethod      - [optional] an integer value. Default is $CV_HISTCMP_CORREL.
 ;                  $iDstCn              - [optional] an integer value. Default is 0.
 ;                  $bAccumulate         - [optional] a boolean value. Default is False.
@@ -561,7 +561,10 @@ Func _cveMatResizeAndCenter($matImg, $iDstWidth, $iDstHeight, $tBackgroundColor,
 	Local $iPadCols = 0
 	Local $iPadRows = 0
 
-	If $fRatio * $iDstHeight > $iDstWidth Then
+	If $iWidth <= $iDstWidth And $iHeight <= $iDstHeight Then
+		$iPadCols = Floor(($iDstHeight - $iHeight) / 2)
+		$iPadRows = Floor(($iDstWidth - $iWidth) / 2)
+	ElseIf $fRatio * $iDstHeight > $iDstWidth Then
 		$iWidth = $iDstWidth
 		$iHeight = Floor($iWidth / $fRatio)
 		$iPadCols = Floor(($iDstHeight - $iHeight) / 2)
