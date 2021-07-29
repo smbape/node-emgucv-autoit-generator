@@ -44,7 +44,7 @@ Now you can run any file in the `samples\tutorial_code` folder.
 
 ### \[optional\] Build the addon dll
 
-This shows how to put performance critical task in c++ functions, export those functions in a dll and the use it in autoit.
+This shows how to put performance critical task in c++ functions, export those functions in a dll and then use it in autoit.
 
 Look at `samples\tutorial_code\Histograms_Matching\calcHist_Demo.au3` for an example of usage.
 
