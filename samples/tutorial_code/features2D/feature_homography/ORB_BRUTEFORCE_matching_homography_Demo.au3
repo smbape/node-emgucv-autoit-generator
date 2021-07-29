@@ -21,13 +21,15 @@ Opt("MustDeclareVars", 1)
 ;~     https://docs.opencv.org/4.5.2/d7/dff/tutorial_feature_homography.html
 ;~     https://github.com/opencv/opencv/tree/master/samples/cpp/tutorial_code/features2D/feature_homography/SURF_FLANN_matching_homography_Demo.cpp
 
+Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\..\data")
+
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Features2D + Homography to find a known object", 1000, 707, 192, 95)
 
-Local $InputObject = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\..\data\box.png"), 230, 16, 449, 21)
+Local $InputObject = GUICtrlCreateInput($OPENCV_SAMPLES_DATA_PATH & "\box.png", 230, 16, 449, 21)
 Local $BtnObject = GUICtrlCreateButton("Object", 689, 14, 75, 25)
 
-Local $InputScene = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\..\data\box_in_scene.png"), 230, 52, 449, 21)
+Local $InputScene = GUICtrlCreateInput($OPENCV_SAMPLES_DATA_PATH & "\box_in_scene.png", 230, 52, 449, 21)
 Local $BtnScene = GUICtrlCreateButton("Scene", 689, 50, 75, 25)
 
 Local $LabelMatchType = GUICtrlCreateLabel("Match type", 414, 92, 79, 20)
@@ -73,7 +75,7 @@ While 1
 			Exit
 		Case $BtnObject
 			$sObject = ControlGetText($FormGUI, "", $InputObject)
-			$sObject = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sObject)
+			$sObject = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sObject)
 			If @error Then
 				$sObject = ""
 			Else
@@ -81,7 +83,7 @@ While 1
 			EndIf
 		Case $BtnScene
 			$sScene = ControlGetText($FormGUI, "", $InputScene)
-			$sScene = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sScene)
+			$sScene = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sScene)
 			If @error Then
 				$sScene = ""
 			Else

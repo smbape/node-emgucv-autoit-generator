@@ -22,16 +22,18 @@ Opt("MustDeclareVars", 1)
 ;~     https://docs.opencv.org/4.5.2/de/da9/tutorial_template_matching.html
 ;~     https://github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/Histograms_Matching/MatchTemplate_Demo.cpp
 
+Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")
+
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Template Matching", 1267, 556, 185, 122)
 
-Local $InputSource = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\data\lena_tmpl.jpg"), 366, 16, 449, 21)
+Local $InputSource = GUICtrlCreateInput($OPENCV_SAMPLES_DATA_PATH & "\lena_tmpl.jpg", 366, 16, 449, 21)
 Local $BtnSource = GUICtrlCreateButton("Source", 825, 14, 75, 25)
 
-Local $InputTemplate = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\data\tmpl.png"), 366, 52, 449, 21)
+Local $InputTemplate = GUICtrlCreateInput($OPENCV_SAMPLES_DATA_PATH & "\tmpl.png", 366, 52, 449, 21)
 Local $BtnTemplate = GUICtrlCreateButton("Template", 825, 50, 75, 25)
 
-Local $InputMask = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\data\mask.png"), 366, 88, 449, 21)
+Local $InputMask = GUICtrlCreateInput($OPENCV_SAMPLES_DATA_PATH & "\mask.png", 366, 88, 449, 21)
 Local $BtnMask = GUICtrlCreateButton("Mask", 825, 86, 75, 25)
 
 Local $LabelMethod = GUICtrlCreateLabel("Method:", 604, 128, 59, 20)
@@ -103,7 +105,7 @@ While 1
 			Exit
 		Case $BtnSource
 			$sSource = ControlGetText($FormGUI, "", $InputSource)
-			$sSource = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sSource)
+			$sSource = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sSource)
 			If @error Then
 				$sSource = ""
 			Else
@@ -111,7 +113,7 @@ While 1
 			EndIf
 		Case $BtnTemplate
 			$sTemplate = ControlGetText($FormGUI, "", $InputTemplate)
-			$sTemplate = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sTemplate)
+			$sTemplate = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sTemplate)
 			If @error Then
 				$sTemplate = ""
 			Else
@@ -119,7 +121,7 @@ While 1
 			EndIf
 		Case $BtnMask
 			$sMask = ControlGetText($FormGUI, "", $InputMask)
-			$sMask = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sMask)
+			$sMask = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sMask)
 			If @error Then
 				$sMask = ""
 			Else

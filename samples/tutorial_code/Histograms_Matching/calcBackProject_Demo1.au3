@@ -22,10 +22,12 @@ Opt("GUIOnEventMode", 1)
 ;~     https://docs.opencv.org/4.5.2/da/d7f/tutorial_back_projection.html
 ;~     https://github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/Histograms_Matching/calcBackProject_Demo1.cpp
 
+Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")
+
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Back Projection", 1263, 601, 187, 122)
 
-Local $InputSource = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\data\lena.jpg"), 364, 16, 449, 21)
+Local $InputSource = GUICtrlCreateInput($OPENCV_SAMPLES_DATA_PATH & "\lena.jpg", 364, 16, 449, 21)
 GUICtrlSetState(-1, $GUI_DISABLE)
 Local $BtnSource = GUICtrlCreateButton("Open", 823, 14, 75, 25)
 
@@ -141,7 +143,7 @@ EndFunc   ;==>Clean
 
 Func _handleBtnSourceClick()
 	$sInputSource = ControlGetText($FormGUI, "", $InputSource)
-	$sInputSource = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sInputSource)
+	$sInputSource = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sInputSource)
 	If @error Then
 		$sInputSource = ""
 		Return

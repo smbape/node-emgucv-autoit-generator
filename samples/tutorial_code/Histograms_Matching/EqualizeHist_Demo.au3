@@ -19,10 +19,12 @@ Opt("MustDeclareVars", 1)
 ;~     https://docs.opencv.org/4.5.2/d4/d1b/tutorial_histogram_equalization.html
 ;~     https://github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/Histograms_Matching/EqualizeHist_Demo.cpp
 
+Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")
+
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Histogram Equalization", 1065, 617, 192, 124)
 
-Local $InputSource = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\data\lena.jpg"), 264, 24, 449, 21)
+Local $InputSource = GUICtrlCreateInput($OPENCV_SAMPLES_DATA_PATH & "\lena.jpg", 264, 24, 449, 21)
 GUICtrlSetState(-1, $GUI_DISABLE)
 Local $BtnSource = GUICtrlCreateButton("Open", 723, 22, 75, 25)
 
@@ -65,7 +67,7 @@ While 1
 		Case $BtnSource
 			Clean()
 			$sImage = ControlGetText($FormGUI, "", $InputSource)
-			$sImage = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sImage)
+			$sImage = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH,  "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sImage)
 			If @error Then
 				$sImage = ""
 			Else

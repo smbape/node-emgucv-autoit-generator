@@ -21,16 +21,18 @@ Opt("MustDeclareVars", 1)
 ;~     https://github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/Histograms_Matching/compareHist_Demo.cpp
 ;~     https://www.autoitscript.com/forum/topic/105814-table-udf/
 
+Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")
+
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Histogram Comparison", 997, 668, 192, 124)
 
-Local $InputSrcBase = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\data\Histogram_Comparison_Source_0.jpg"), 230, 16, 449, 21)
+Local $InputSrcBase = GUICtrlCreateInput($OPENCV_SAMPLES_DATA_PATH & "\Histogram_Comparison_Source_0.jpg", 230, 16, 449, 21)
 Local $BtnSrcBase = GUICtrlCreateButton("Input 1", 689, 14, 75, 25)
 
-Local $InputSrcTest1 = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\data\Histogram_Comparison_Source_1.jpg"), 230, 52, 449, 21)
+Local $InputSrcTest1 = GUICtrlCreateInput($OPENCV_SAMPLES_DATA_PATH & "\Histogram_Comparison_Source_1.jpg", 230, 52, 449, 21)
 Local $BtnSrcTest1 = GUICtrlCreateButton("Input 2", 689, 50, 75, 25)
 
-Local $InputSrcTest2 = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\data\Histogram_Comparison_Source_2.jpg"), 230, 88, 449, 21)
+Local $InputSrcTest2 = GUICtrlCreateInput($OPENCV_SAMPLES_DATA_PATH & "\Histogram_Comparison_Source_2.jpg", 230, 88, 449, 21)
 Local $BtnSrcTest2 = GUICtrlCreateButton("Input 3", 689, 86, 75, 25)
 
 Local $BtnExec = GUICtrlCreateButton("Execute", 832, 48, 75, 25)
@@ -98,7 +100,7 @@ While 1
 			Exit
 		Case $BtnSrcBase
 			$sSrcBase = ControlGetText($FormGUI, "", $InputSrcBase)
-			$sSrcBase = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sSrcBase)
+			$sSrcBase = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sSrcBase)
 			If @error Then
 				$sSrcBase = ""
 			Else
@@ -106,7 +108,7 @@ While 1
 			EndIf
 		Case $BtnSrcTest1
 			$sSrcTest1 = ControlGetText($FormGUI, "", $InputSrcTest1)
-			$sSrcTest1 = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sSrcTest1)
+			$sSrcTest1 = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sSrcTest1)
 			If @error Then
 				$sSrcTest1 = ""
 			Else
@@ -114,7 +116,7 @@ While 1
 			EndIf
 		Case $BtnSrcTest2
 			$sSrcTest2 = ControlGetText($FormGUI, "", $InputSrcTest2)
-			$sSrcTest2 = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sSrcTest2)
+			$sSrcTest2 = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sSrcTest2)
 			If @error Then
 				$sSrcTest2 = ""
 			Else

@@ -20,13 +20,15 @@ Opt("GUIOnEventMode", 1)
 ;~     https://docs.opencv.org/4.5.2/d5/dc4/tutorial_adding_images.html
 ;~     https://github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/core/AddingImages/AddingImages.cpp
 
+Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\..\data")
+
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Adding (blending) two images using OpenCV", 999, 500, 192, 124)
 
-Local $InputSrc1 = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\..\data\LinuxLogo.jpg"), 230, 16, 449, 21)
+Local $InputSrc1 = GUICtrlCreateInput($OPENCV_SAMPLES_DATA_PATH & "\LinuxLogo.jpg", 230, 16, 449, 21)
 Local $BtnSrc1 = GUICtrlCreateButton("Input 1", 689, 14, 75, 25)
 
-Local $InputSrc2 = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\..\data\WindowsLogo.jpg"), 230, 52, 449, 21)
+Local $InputSrc2 = GUICtrlCreateInput($OPENCV_SAMPLES_DATA_PATH & "\WindowsLogo.jpg", 230, 52, 449, 21)
 Local $BtnSrc2 = GUICtrlCreateButton("Input 2", 689, 50, 75, 25)
 
 Local $LabelAlpha = GUICtrlCreateLabel("Alpha: 0.5", 230, 84, 104, 20)
@@ -93,7 +95,7 @@ _GDIPlus_Shutdown()
 
 Func _handleBtnSrc1Click()
 	$sSrc1 = ControlGetText($FormGUI, "", $InputSrc1)
-	$sSrc1 = FileOpenDialog("Select an image", @ScriptDir & "\..\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sSrc1)
+	$sSrc1 = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sSrc1)
 	If @error Then
 		$sSrc1 = ""
 	Else
@@ -103,7 +105,7 @@ EndFunc   ;==>_handleBtnSrc1Click
 
 Func _handleBtnSrc2Click()
 	$sSrc2 = ControlGetText($FormGUI, "", $InputSrc2)
-	$sSrc2 = FileOpenDialog("Select an image", @ScriptDir & "\..\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sSrc2)
+	$sSrc2 = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sSrc2)
 	If @error Then
 		$sSrc2 = ""
 	Else

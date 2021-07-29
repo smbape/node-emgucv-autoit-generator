@@ -21,13 +21,15 @@ Opt("GUIOnEventMode", 1)
 ;~ Sources:
 ;~     https://docs.opencv.org/4.5.2/d4/dc6/tutorial_py_template_matching.html
 
+Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")
+
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Multi-template matching", 906, 607, 183, 120)
 
-Local $InputSource = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\data\mario.png"), 185, 16, 449, 21)
+Local $InputSource = GUICtrlCreateInput($OPENCV_SAMPLES_DATA_PATH & "\mario.png", 185, 16, 449, 21)
 Local $BtnSource = GUICtrlCreateButton("Source", 644, 14, 75, 25)
 
-Local $InputTemplate = GUICtrlCreateInput(_PathFull(@ScriptDir & "\..\..\data\mario_coin.png"), 185, 52, 449, 21)
+Local $InputTemplate = GUICtrlCreateInput($OPENCV_SAMPLES_DATA_PATH & "\mario_coin.png", 185, 52, 449, 21)
 Local $BtnTemplate = GUICtrlCreateButton("Template", 644, 50, 75, 25)
 
 Local $InputMask = GUICtrlCreateInput("", 185, 88, 449, 21)
@@ -120,7 +122,7 @@ _GDIPlus_Shutdown()
 
 Func _handleBtnSourceClick()
     $sSource = ControlGetText($FormGUI, "", $InputSource)
-    $sSource = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sSource)
+    $sSource = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sSource)
     If @error Then
         $sSource = ""
     Else
@@ -130,7 +132,7 @@ EndFunc
 
 Func _handleBtnTemplateClick()
     $sTemplate = ControlGetText($FormGUI, "", $InputTemplate)
-    $sTemplate = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sTemplate)
+    $sTemplate = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sTemplate)
     If @error Then
         $sTemplate = ""
     Else
@@ -140,7 +142,7 @@ EndFunc
 
 Func _handleBtnMaskClick()
     $sMask = ControlGetText($FormGUI, "", $InputMask)
-    $sMask = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sMask)
+    $sMask = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sMask)
     If @error Then
         $sMask = ""
     Else
