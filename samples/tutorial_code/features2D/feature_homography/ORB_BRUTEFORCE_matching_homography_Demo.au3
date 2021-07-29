@@ -120,7 +120,6 @@ Func Main()
 	EndIf
 	;;! [load_image]
 
-
 	Detect()
 EndFunc   ;==>Main
 
@@ -137,10 +136,10 @@ Func Detect()
 	Local $match_type = $aMatchTypes[_GUICtrlComboBox_GetCurSel($ComboMatchType)]
 
 	;;-- Step 1: Detect the keypoints using ORB Detector, compute the descriptors
-	Local $minHessian = 400 ;
+	Local $numberOfFeatures = 500 ;
 	Local $tFeature2DPtr = DllStructCreate("ptr value")
 	Local $tSharedPtr = DllStructCreate("ptr")
-	_cveOrbCreate($minHessian, 1.2, 8, 31, 0, 2, $CV_ORB_HARRIS_SCORE, 31, 20, $tFeature2DPtr, $tSharedPtr)
+	_cveOrbCreate($numberOfFeatures, 1.2, 8, 31, 0, 2, $CV_ORB_HARRIS_SCORE, 31, 20, $tFeature2DPtr, $tSharedPtr)
 	Local $detector = $tFeature2DPtr.value
 	Local $keypoints_object = _VectorOfKeyPointCreate()
 	Local $keypoints_scene = _VectorOfKeyPointCreate()

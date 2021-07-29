@@ -1,14 +1,14 @@
 # Emgucv autoit udf
 
 Do you want to use [OpenCV](https://opencv.org/) v4+ in [AutoIt v3](https://www.autoitscript.com/) ?  
-This udf might be for you.
+If yes, then this udf might be for you.
 
 # Usage of the UDF
 
-Download [libemgucv-windesktop-4.5.2.4673.zip](https://github.com/emgucv/emgucv/releases/download/4.5.2/libemgucv-windesktop-4.5.2.4673.zip) and extract it a folder
-Download the emgucv-autoit-bindings folder
+Download [libemgucv-windesktop-4.5.2.4673.zip](https://github.com/emgucv/emgucv/releases/download/4.5.2/libemgucv-windesktop-4.5.2.4673.zip) and extract it into a folder.
+Download the emgucv-autoit-bindings folder of this repository.
 
-Then in you autoit file
+Then in your autoit file
 
 ```autoit
 #include "emgucv-autoit-bindings\cve_extra.au3"
@@ -30,9 +30,27 @@ _Opencv_DLLClose()
 ## Running examples
 
 ```sh
+git clone https://github.com/smbape/node-emgucv-autoit-generator
+cd node-emgucv-autoit-generator
+
+# download libemgucv-windesktop-4.5.2.4673 
 curl -L 'https://github.com/emgucv/emgucv/releases/download/4.5.2/libemgucv-windesktop-4.5.2.4673.zip' -o libemgucv-windesktop-4.5.2.4673.zip
 unzip libemgucv-windesktop-4.5.2.4673.zip -d libemgucv-windesktop-4.5.2.4673
+
 ```
+
+Now you can run any file in the `samples\tutorial_code` folder.
+
+### \[optional\] Build the addon dll
+
+#### Prerequisite
+
+  - You will need to install [CMAKE >= 3.5](https://cmake.org/download/)
+  - You will need to install [visual studio >= 10](https://visualstudio.microsoft.com/vs/community/)
+
+#### Building
+
+Run `build.bat` script located in the `autoit-addon` folder. 
 
 ## History
 
@@ -58,18 +76,38 @@ I looked for [OpenCV](https://opencv.org/) in .Net and I found [emgucv](https://
 [emgucv](https://github.com/emgucv/emgucv) is a cross platform .Net wrapper to the [OpenCV](https://opencv.org/) image processing library.  
 The project exported almost all the [OpenCV](https://opencv.org/) in a dll, making their dll suitable to be used with [AutoIt v3](https://www.autoitscript.com/)
 
-## Build the addon dll
-
 ## Developpement
 
+### Prerequisites
+
+  - You will need to install [CMAKE >= 3.5](https://cmake.org/download/)
+  - You will need to install [visual studio >= 10](https://visualstudio.microsoft.com/vs/community/)
+  - You will need to install [Git for Windows](https://gitforwindows.org/)
+  - You will need to install [nodejs](https://nodejs.org/en/download/)
+
+### Environment
+
+In Git BASH, excute the following commands
+
 ```sh
+# get the source files
 git clone https://github.com/smbape/node-emgucv-autoit-generator
 
+# Install nodejs dependencies
+npm ci
+
+# Install submodules
 cd node-emgucv-autoit-generator
 git submodule update --init --recursive
 
+# Build emgucv cvextern.dll
 git apply -v emgucv.patch --directory emgucv
 find emgucv -type f -name '*.bat' -exec unix2dos '{}' \;
-
 (cd emgucv/platforms/windows; cmd.exe //c Build_Binary_x86-64_doc.bat)
+```
+
+### Generate the UDF files
+
+```sh
+node test.js
 ```
