@@ -73,7 +73,7 @@ Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 Local $sInputSource = ""
 Local $src, $hsv, $hue
 
-main()
+Main()
 
 Local $current_bins = GUICtrlRead($SliderBins)
 Local $last_bins = $current_bins
@@ -90,7 +90,7 @@ WEnd
 _Opencv_DLLClose()
 _GDIPlus_Shutdown()
 
-Func main()
+Func Main()
 	$sInputSource = ControlGetText($FormGUI, "", $InputSource)
 	If $sInputSource == "" Then Return
 
@@ -126,18 +126,18 @@ Func main()
 	;;! [Create Trackbar to enter the number of bins]
 
 	;;! [Show the image]
-	_cveImshowControlPic($src, $FormGUI, $PicSource, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+	_cveImshowControlPic($src, $FormGUI, $PicSource, $tBackgroundColor)
 	;;! [Show the image]
 
-EndFunc   ;==>main
+EndFunc   ;==>Main
 
-Func clean()
+Func Clean()
 	If $sInputSource == "" Then Return
 
 	_cveMatRelease($hue)
 	_cveMatRelease($hsv)
 	_cveMatRelease($src)
-EndFunc   ;==>clean
+EndFunc   ;==>Clean
 
 Func _handleBtnSourceClick()
 	$sInputSource = ControlGetText($FormGUI, "", $InputSource)
@@ -148,7 +148,7 @@ Func _handleBtnSourceClick()
 	EndIf
 
 	ControlSetText($FormGUI, "", $InputSource, $sInputSource)
-	main()
+	Main()
 EndFunc   ;==>_handleBtnSourceClick
 
 Func Hist_and_Backproj()
@@ -179,7 +179,7 @@ Func Hist_and_Backproj()
 
 	;;! [Draw the backproj]
 	; _cveImshowMat( "BackProj", $backproj );
-	_cveImshowControlPic($backproj, $FormGUI, $PicBackProj, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+	_cveImshowControlPic($backproj, $FormGUI, $PicBackProj, $tBackgroundColor)
 	;;! [Draw the backproj]
 
 	;;! [Draw the histogram]
@@ -221,7 +221,7 @@ Func Hist_and_Backproj()
 	$cvRect = 0
 
 	; _cveImshowMat( "Histogram", $histImg );
-	_cveImshowControlPic($histImg, $FormGUI, $PicHistogram, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+	_cveImshowControlPic($histImg, $FormGUI, $PicHistogram, $tBackgroundColor)
 	;;! [Draw the histogram]
 
 	_cveMatRelease($histImg)
@@ -234,6 +234,6 @@ Func _cleanExit()
 		Return
 	EndIf
 
-	clean()
+	Clean()
 	Exit
 EndFunc   ;==>_cleanExit

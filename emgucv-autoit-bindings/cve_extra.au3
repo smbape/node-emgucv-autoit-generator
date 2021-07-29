@@ -628,7 +628,39 @@ EndFunc   ;==>_cveSetControlPic
 
 Func _cveImshowControlPic($matImg, $hWnd, $controlID, $tBackgroundColor, $iCode = -1)
 	Local $aPicPos = ControlGetPos($hWnd, "", $controlID)
+
+	Local $tMatImg = Null
+	Local $matTemp = Null
+
+	If $iCode == -1 Then
+		$tMatImg = DllStructCreate($tagMat, $matImg)
+
+		Switch CV_MAT_TYPE($tMatImg.flags)
+			Case $CV_8UC1
+				$iCode = $CV_COLOR_GRAY2BGRA
+			Case $CV_8UC3
+				$iCode = $CV_COLOR_BGR2BGRA
+			Case $CV_8UC4
+				$iCode = -1
+			Case $CV_32FC1
+				; convert CV_32FC1 in range [0, 1] to CV_8UC1 in range [0, 255]
+				$matTemp = _cveMatCreate()
+				_cveMatConvertToMat($matImg, $matTemp, $CV_8UC1, 255.0, 0)
+				$matImg = $matTemp
+
+				; then display the CV_8UC1 image (.i.e gray) as a BGRA image
+				$iCode = $CV_COLOR_GRAY2BGRA
+			Case Else
+				ConsoleWriteError("!>Error: The image type is not supported." & @CRLF)
+				Return
+		EndSwitch
+	EndIf
+
 	Local $matResized = _cveMatResizeAndCenter($matImg, $aPicPos[2], $aPicPos[3], $tBackgroundColor, $iCode)
 	_cveSetControlPic($controlID, $matResized)
 	_cveMatRelease($matResized)
+
+	If $matTemp <> Null Then
+		_cveMatRelease($matTemp)
+	EndIf
 EndFunc   ;==>_cveImshowControlPic

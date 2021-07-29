@@ -13,7 +13,6 @@ Opt("GUIOnEventMode", 1)
 #include <GDIPlus.au3>
 #include <GuiComboBox.au3>
 #include <GUIConstantsEx.au3>
-#include <GUIConstantsEx.au3>
 #include <Math.au3>
 #include <StaticConstants.au3>
 #include <WindowsConstants.au3>
@@ -78,6 +77,7 @@ GUICtrlSetOnEvent($BtnTemplate, "_handleBtnTemplateClick")
 GUICtrlSetOnEvent($Btnmask, "_handleBtnmaskClick")
 GUICtrlSetOnEvent($BtnExec, "_handleBtnExecClick")
 GUICtrlSetOnEvent($SliderThreshold, "MultiMatchTemplate")
+GUICtrlSetOnEvent($ComboMethod, "MultiMatchTemplate")
 
 GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
@@ -101,7 +101,7 @@ Local $result_window = "Result window";
 Local $use_mask = False
 Local $tMatchRect = _cvRect(0, 0, 0, 0)
 
-main()
+Main()
 
 Local $current_threshold = GUICtrlRead($SliderThreshold)
 Local $last_threshold = $current_threshold
@@ -149,11 +149,11 @@ Func _handleBtnMaskClick()
 EndFunc
 
 Func _handleBtnExecClick()
-    clean()
-    main()
+    Clean()
+    Main()
 EndFunc
 
-Func main()
+Func Main()
     ;;! [load_image]
     ;;/ Load image and template
     $sSource = ControlGetText($FormGUI, "", $InputSource)
@@ -198,18 +198,18 @@ Func main()
     ;;! [prepare_match_rect]
 
     ;;! [Display]
-    _cveImshowControlPic($img, $FormGUI, $PicSource, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
-    _cveImshowControlPic($templ, $FormGUI, $PicTemplate, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+    _cveImshowControlPic($img, $FormGUI, $PicSource, $tBackgroundColor)
+    _cveImshowControlPic($templ, $FormGUI, $PicTemplate, $tBackgroundColor)
 
     If $use_mask Then
-        _cveImshowControlPic($mask, $FormGUI, $PicMask, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+        _cveImshowControlPic($mask, $FormGUI, $PicMask, $tBackgroundColor)
     EndIf
     ;;! [Display]
 
     MultiMatchTemplate()
-EndFunc   ;==>main
+EndFunc   ;==>Main
 
-Func clean()
+Func Clean()
     If $sSource == "" Then Return
 
     _cveMatRelease($img)
@@ -220,7 +220,7 @@ Func clean()
     EndIf
 
     $sSource = ""
-EndFunc   ;==>clean
+EndFunc   ;==>Clean
 
 Func MultiMatchTemplate()
     $match_method = $aMethods[_GUICtrlComboBox_GetCurSel($ComboMethod)]
@@ -257,7 +257,7 @@ Func MultiMatchTemplate()
     ;;! [match_template]
 
     ;;! [imshow]
-    _cveImshowControlPic($img_display, $FormGUI, $PicMatchTemplate, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+    _cveImshowControlPic($img_display, $FormGUI, $PicMatchTemplate, $tBackgroundColor)
     ;;! [imshow]
 
     _cveMatRelease($img_display)
@@ -268,6 +268,6 @@ Func _cleanExit()
         Return
     EndIf
 
-    clean()
+    Clean()
     Exit
 EndFunc   ;==>_cleanExit

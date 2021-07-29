@@ -70,21 +70,21 @@ Local $MAX_KERNEL_LENGTH = 31 ;
 Local $aMethods[4] = ["Homogeneous Blur", "Gaussian Blur", "Median Blur", "Bilateral Blur"]
 _GUICtrlComboBox_SetCurSel($ComboMethod, 0)
 
-main()
+Main()
 
 While 1
 	$nMsg = GUIGetMsg()
 	Switch $nMsg
 		Case $GUI_EVENT_CLOSE
-			clean()
+			Clean()
 			Exit
 		Case $BtnSource
-			clean()
+			Clean()
 			$sImage = ControlGetText($FormGUI, "", $InputSource)
 			$sImage = FileOpenDialog("Select an image", @ScriptDir & "\..\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sImage)
 			If Not @error Then
 				ControlSetText($FormGUI, "", $InputSource, $sImage)
-				main()
+				Main()
 			EndIf
 		Case $BtnReplay
 			Smooth()
@@ -96,7 +96,7 @@ WEnd
 _Opencv_DLLClose()
 _GDIPlus_Shutdown()
 
-Func main()
+Func Main()
 	$sImage = ControlGetText($FormGUI, "", $InputSource)
 	If $sImage == "" Then Return
 
@@ -110,11 +110,11 @@ Func main()
 
 	;;! [Display]
 	; _cveImshowMat("Source image", $src );
-	_cveImshowControlPic($src, $FormGUI, $PicSource, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+	_cveImshowControlPic($src, $FormGUI, $PicSource, $tBackgroundColor)
 	;;! [Display]
 
 	Smooth()
-EndFunc   ;==>main
+EndFunc   ;==>Main
 
 Func Smooth()
 	If $sImage == "" Then Return
@@ -127,7 +127,7 @@ Func Smooth()
 			;;![blur]
 			For $i = 1 To $MAX_KERNEL_LENGTH - 1 Step 2
 				_cveBlurMat($src, $dst, _cvSize($i, $i), _cvPoint(-1, -1))   ;
-				_cveImshowControlPic($dst, $FormGUI, $PicResult, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+				_cveImshowControlPic($dst, $FormGUI, $PicResult, $tBackgroundColor)
 				Sleep($DELAY_BLUR)
 			Next
 			;;![blur]
@@ -135,7 +135,7 @@ Func Smooth()
 			;;![gaussianblur]
 			For $i = 1 To $MAX_KERNEL_LENGTH - 1 Step 2
 				_cveGaussianBlurMat($src, $dst, _cvSize($i, $i), 0, 0)    ;
-				_cveImshowControlPic($dst, $FormGUI, $PicResult, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+				_cveImshowControlPic($dst, $FormGUI, $PicResult, $tBackgroundColor)
 				Sleep($DELAY_BLUR)
 			Next
 			;;![gaussianblur]
@@ -143,7 +143,7 @@ Func Smooth()
 			;;![medianblur]
 			For $i = 1 To $MAX_KERNEL_LENGTH - 1 Step 2
 				_cveMedianBlurMat($src, $dst, $i)  ;
-				_cveImshowControlPic($dst, $FormGUI, $PicResult, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+				_cveImshowControlPic($dst, $FormGUI, $PicResult, $tBackgroundColor)
 				Sleep($DELAY_BLUR)
 			Next
 			;;![medianblur]
@@ -151,7 +151,7 @@ Func Smooth()
 			;;![bilateralfilter]
 			For $i = 1 To $MAX_KERNEL_LENGTH - 1 Step 2
 				_cveBilateralFilterMat($src, $dst, $i, $i * 2, $i / 2)
-				_cveImshowControlPic($dst, $FormGUI, $PicResult, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+				_cveImshowControlPic($dst, $FormGUI, $PicResult, $tBackgroundColor)
 				Sleep($DELAY_BLUR)
 			Next
 			;;![bilateralfilter]
@@ -160,8 +160,8 @@ Func Smooth()
 	_cveMatRelease($dst)
 EndFunc   ;==>Smooth
 
-Func clean()
+Func Clean()
 	If $sImage == "" Then Return
 	_cveMatRelease($src)
 	$sImage = ""
-EndFunc   ;==>clean
+EndFunc   ;==>Clean

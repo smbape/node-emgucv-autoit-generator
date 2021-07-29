@@ -88,13 +88,13 @@ Local $hist_base, $hist_half_down, $hist_test1, $hist_test2
 Local $hsv_base, $hsv_test1, $hsv_test2, $hsv_half_down
 Local $aMethodName[4] = ["Correlation", "Chi-square", "Intersection", "Bhattacharyya"]
 
-main()
+Main()
 
 While 1
 	$nMsg = GUIGetMsg()
 	Switch $nMsg
 		Case $GUI_EVENT_CLOSE
-			clean()
+			Clean()
 			Exit
 		Case $BtnSrcBase
 			$sSrcBase = ControlGetText($FormGUI, "", $InputSrcBase)
@@ -121,15 +121,15 @@ While 1
 				ControlSetText($FormGUI, "", $InputSrcTest2, $sSrcTest2)
 			EndIf
 		Case $BtnExec
-			clean()
-			main()
+			Clean()
+			Main()
 	EndSwitch
 WEnd
 
 _Opencv_DLLClose()
 _GDIPlus_Shutdown()
 
-Func main()
+Func Main()
 	;;! [Load three images with different environment settings]
 	$sSrcBase = ControlGetText($FormGUI, "", $InputSrcBase)
 	$src_base = _cveImreadAndCheck($sSrcBase, $CV_IMREAD_COLOR)
@@ -160,9 +160,9 @@ Func main()
 	;;! [Load three images with different environment settings]
 
 	;;! [Display]
-	_cveImshowControlPic($src_base, $FormGUI, $PicSrcBase, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
-	_cveImshowControlPic($src_test1, $FormGUI, $PicSrcTest1, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
-	_cveImshowControlPic($src_test2, $FormGUI, $PicSrcTest2, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+	_cveImshowControlPic($src_base, $FormGUI, $PicSrcBase, $tBackgroundColor)
+	_cveImshowControlPic($src_test1, $FormGUI, $PicSrcTest1, $tBackgroundColor)
+	_cveImshowControlPic($src_test2, $FormGUI, $PicSrcTest2, $tBackgroundColor)
 	;;! [Display]
 
 	;;! [Convert to HSV]
@@ -241,9 +241,9 @@ Func main()
 	;;! [Apply the histogram comparison methods]
 
 	ConsoleWrite("Done " & @CRLF) ;
-EndFunc   ;==>main
+EndFunc   ;==>Main
 
-Func clean()
+Func Clean()
 	If $sSrcBase == "" Then Return
 
 	_cveMatRelease($hist_base)
@@ -263,4 +263,4 @@ Func clean()
 	$sSrcBase = ""
 	$sSrcTest1 = ""
 	$sSrcTest2 = ""
-EndFunc   ;==>clean
+EndFunc   ;==>Clean

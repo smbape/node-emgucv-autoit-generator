@@ -40,22 +40,27 @@ foreach(d ${__OpenCV_INCLUDE_DIRS})
 endforeach()
 unset(__d)
 
-# Library files
-set(__OpenCV_INCLUDE_LIBS
-  "${CMAKE_SOURCE_DIR}/../libemgucv-windesktop-4.5.2.4673/libs/x64/cvextern.lib"
+# Library directories
+set(__OpenCV_LIBRARY_DIRS
+  "${CMAKE_SOURCE_DIR}/../libemgucv-windesktop-4.5.2.4673/libs/x64"
 )
-set(OpenCV_INCLUDE_LIBS "")
-foreach(f ${__OpenCV_INCLUDE_LIBS})
+set(OpenCV_LIBRARY_DIRS "")
+foreach(f ${__OpenCV_LIBRARY_DIRS})
   get_filename_component(__f "${f}" REALPATH)
   if(NOT EXISTS "${__f}")
     if(NOT OpenCV_FIND_QUIETLY)
       message(WARNING "OpenCV: Include library doesn't exist: '${f}'. OpenCV installation may be broken. Skip...")
     endif()
   else()
-    list(APPEND OpenCV_INCLUDE_LIBS "${__f}")
+    list(APPEND OpenCV_LIBRARY_DIRS "${__f}")
   endif()
 endforeach()
 unset(__f)
+
+# Library files
+set(OpenCV_LIBS
+  "cvextern.lib"
+)
 
 # Build a shared library named as the project
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
@@ -64,4 +69,5 @@ add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS})
 
 # Library files to link to an autoit emgucv addon
-target_link_libraries(${PROJECT_NAME} ${OpenCV_INCLUDE_LIBS})
+target_link_directories(${PROJECT_NAME} PRIVATE ${OpenCV_LIBRARY_DIRS})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${OpenCV_LIBS})

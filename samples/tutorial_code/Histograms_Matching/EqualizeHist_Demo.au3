@@ -54,23 +54,23 @@ Local $nMsg
 
 Local $src, $dst
 
-main()
+Main()
 
 While 1
 	$nMsg = GUIGetMsg()
 	Switch $nMsg
 		Case $GUI_EVENT_CLOSE
-			clean()
+			Clean()
 			Exit
 		Case $BtnSource
-			clean()
+			Clean()
 			$sImage = ControlGetText($FormGUI, "", $InputSource)
 			$sImage = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sImage)
 			If @error Then
 				$sImage = ""
 			Else
 				ControlSetText($FormGUI, "", $InputSource, $sImage)
-				main()
+				Main()
 			EndIf
 	EndSwitch
 WEnd
@@ -78,7 +78,7 @@ WEnd
 _Opencv_DLLClose()
 _GDIPlus_Shutdown()
 
-Func main()
+Func Main()
 	$sImage = ControlGetText($FormGUI, "", $InputSource)
 	If $sImage == "" Then Return
 
@@ -103,15 +103,15 @@ Func main()
 	; _cveImshowMat("Source image", $src );
 	; _cveImshowMat("Equalized Image", $dst );
 
-	_cveImshowControlPic($src, $FormGUI, $PicSource, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
-	_cveImshowControlPic($dst, $FormGUI, $PicResult, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+	_cveImshowControlPic($src, $FormGUI, $PicSource, $tBackgroundColor)
+	_cveImshowControlPic($dst, $FormGUI, $PicResult, $tBackgroundColor)
 	;;! [Display]
-EndFunc   ;==>main
+EndFunc   ;==>Main
 
-Func clean()
+Func Clean()
 	If $sImage == "" Then Return
 
 	_cveMatRelease($dst)
 	_cveMatRelease($src)
 	$sImage = ""
-EndFunc   ;==>clean
+EndFunc   ;==>Clean

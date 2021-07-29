@@ -74,7 +74,7 @@ Local $sSrc1 = "", $sSrc2 = ""
 Local $src1, $src2
 Local $warned = False
 
-main()
+Main()
 
 Local $current_alpha = GUICtrlRead($SliderAlpha)
 Local $last_alpha = $current_alpha
@@ -112,11 +112,11 @@ Func _handleBtnSrc2Click()
 EndFunc   ;==>_handleBtnSrc2Click
 
 Func _handleExecuteClick()
-	clean()
-	main()
+	Clean()
+	Main()
 EndFunc   ;==>_handleExecuteClick
 
-Func main()
+Func Main()
 	;;! [Load three images with different environment settings]
 	$sSrc1 = ControlGetText($FormGUI, "", $InputSrc1)
 	$src1 = _cveImreadAndCheck($sSrc1, $CV_IMREAD_COLOR)
@@ -136,15 +136,15 @@ Func main()
 	;;! [Load three images with different environment settings]
 
 	;;! [Display]
-	_cveImshowControlPic($src1, $FormGUI, $PicSrc1, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
-	_cveImshowControlPic($src2, $FormGUI, $PicSrc2, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+	_cveImshowControlPic($src1, $FormGUI, $PicSrc1, $tBackgroundColor)
+	_cveImshowControlPic($src2, $FormGUI, $PicSrc2, $tBackgroundColor)
 	;;! [Display]
 
 	$warned = False
 	AddWeighted()
-EndFunc   ;==>main
+EndFunc   ;==>Main
 
-Func clean()
+Func Clean()
 	If $sSrc1 == "" Then Return
 
 	_cveMatRelease($src1)
@@ -152,7 +152,7 @@ Func clean()
 
 	$sSrc1 = ""
 	$sSrc2 = ""
-EndFunc   ;==>clean
+EndFunc   ;==>Clean
 
 Func AddWeighted()
 	Local $alpha = GUICtrlRead($SliderAlpha) / 100
@@ -184,7 +184,7 @@ Func AddWeighted()
 	;;![display]
 	; _cveImshowMat( "Linear Blend", $dst );
 	; _cveWaitKey(0);
-	_cveImshowControlPic($dst, $FormGUI, $PicResult, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+	_cveImshowControlPic($dst, $FormGUI, $PicResult, $tBackgroundColor)
 	;;![display]
 
 	_cveMatRelease($dst)
@@ -195,6 +195,6 @@ Func _cleanExit()
 		Return
 	EndIf
 
-	clean()
+	Clean()
 	Exit
 EndFunc   ;==>_cleanExit

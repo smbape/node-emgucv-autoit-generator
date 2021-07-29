@@ -93,13 +93,13 @@ Local $image_window = "Source Image";
 Local $result_window = "Result window";
 Local $use_mask = False
 
-main()
+Main()
 
 While 1
 	$nMsg = GUIGetMsg()
 	Switch $nMsg
 		Case $GUI_EVENT_CLOSE
-			clean()
+			Clean()
 			Exit
 		Case $BtnSource
 			$sSource = ControlGetText($FormGUI, "", $InputSource)
@@ -128,15 +128,15 @@ While 1
 		Case $ComboMethod
 			MatchingMethod()
 		Case $BtnExec
-			clean()
-			main()
+			Clean()
+			Main()
 	EndSwitch
 WEnd
 
 _Opencv_DLLClose()
 _GDIPlus_Shutdown()
 
-Func main()
+Func Main()
 	;;! [load_image]
 	;;/ Load image and template
 	$sSource = ControlGetText($FormGUI, "", $InputSource)
@@ -174,18 +174,18 @@ Func main()
 	;;! [load_image]
 
 	;;! [Display]
-	_cveImshowControlPic($img, $FormGUI, $PicSource, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
-	_cveImshowControlPic($templ, $FormGUI, $PicTemplate, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+	_cveImshowControlPic($img, $FormGUI, $PicSource, $tBackgroundColor)
+	_cveImshowControlPic($templ, $FormGUI, $PicTemplate, $tBackgroundColor)
 
 	If $use_mask Then
-		_cveImshowControlPic($mask, $FormGUI, $PicMask, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+		_cveImshowControlPic($mask, $FormGUI, $PicMask, $tBackgroundColor)
 	EndIf
 	;;! [Display]
 
 	MatchingMethod()
-EndFunc   ;==>main
+EndFunc   ;==>Main
 
-Func clean()
+Func Clean()
 	If $sSource == "" Then Return
 
 	_cveMatRelease($img)
@@ -196,7 +196,7 @@ Func clean()
 	EndIf
 
 	$sSource = ""
-EndFunc   ;==>clean
+EndFunc   ;==>Clean
 
 Func MatchingMethod()
 	$match_method = $aMethods[_GUICtrlComboBox_GetCurSel($ComboMethod)]
@@ -277,13 +277,8 @@ Func MatchingMethod()
 	; _cveImshowMat( $image_window, $img_display );
 	; _cveImshowMat( $result_window, $result );
 
-	_cveImshowControlPic($img_display, $FormGUI, $PicMatchTemplate, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
-
-	; convert CV_32FC1 in range [0, 1] to CV_8UC1 in range [0, 255]
-	; then display the CV_8UC1 image (.i.e gray) as a BGRA image
-	Local $temp = _cveMatCreate()
-	_cveMatConvertToMat($result, $temp, $CV_8UC1, 255.0, 0)
-	_cveImshowControlPic($temp, $FormGUI, $PicResultImage, $tBackgroundColor, $CV_COLOR_GRAY2BGRA)
+	_cveImshowControlPic($img_display, $FormGUI, $PicMatchTemplate, $tBackgroundColor)
+	_cveImshowControlPic($result, $FormGUI, $PicResultImage, $tBackgroundColor)
 	;;! [imshow]
 
 	_cveMatRelease($result)

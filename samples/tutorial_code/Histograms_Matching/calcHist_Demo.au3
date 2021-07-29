@@ -62,23 +62,23 @@ For $i = 0 To UBound($aSearchDirs) - 1
 	$addon_dll = ""
 Next
 
-main()
+Main()
 
 While 1
 	$nMsg = GUIGetMsg()
 	Switch $nMsg
 		Case $GUI_EVENT_CLOSE
-			clean()
+			Clean()
 			Exit
 		Case $BtnSource
-			clean()
+			Clean()
 			$sImage = ControlGetText($FormGUI, "", $InputSource)
 			$sImage = FileOpenDialog("Select an image", @ScriptDir & "\..\..\data", "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sImage)
 			If @error Then
 				$sImage = ""
 			Else
 				ControlSetText($FormGUI, "", $InputSource, $sImage)
-				main()
+				Main()
 			EndIf
 	EndSwitch
 WEnd
@@ -86,7 +86,7 @@ WEnd
 _Opencv_DLLClose()
 _GDIPlus_Shutdown()
 
-Func main()
+Func Main()
 	$sImage = ControlGetText($FormGUI, "", $InputSource)
 	If $sImage == "" Then Return
 
@@ -224,17 +224,12 @@ Func main()
 	; _cveImshowMat("Source image", $src );
 	; _cveImshowMat("calcHist Demo", $histImage );
 
-	Local $iCode = -1
-	If _cveMatNumberOfChannels($src) == 3 Then
-		$iCode = $CV_COLOR_BGR2BGRA
-	EndIf
-
-	_cveImshowControlPic($src, $FormGUI, $PicSource, $tBackgroundColor, $iCode)
-	_cveImshowControlPic($histImage, $FormGUI, $PicResult, $tBackgroundColor, $CV_COLOR_BGR2BGRA)
+	_cveImshowControlPic($src, $FormGUI, $PicSource, $tBackgroundColor)
+	_cveImshowControlPic($histImage, $FormGUI, $PicResult, $tBackgroundColor)
 	;;! [Display]
-EndFunc   ;==>main
+EndFunc   ;==>Main
 
-Func clean()
+Func Clean()
 	If $sImage == Null Then Return
 
 	; _cveDestroyAllWindows()
@@ -250,4 +245,4 @@ Func clean()
 	_cveMatRelease($src)
 
 	$sImage = Null
-EndFunc   ;==>clean
+EndFunc   ;==>Clean

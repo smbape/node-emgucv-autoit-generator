@@ -23,6 +23,13 @@ Func _cvPoint($x = 0, $y = 0)
 	Return $cvPoint
 EndFunc   ;==>_cvPoint
 
+Func _cvPoint2f($x = 0, $y = 0)
+	Local $cvPoint2f = DllStructCreate($tagCvPoint2f)
+	DllStructSetData($cvPoint2f, "x", $x)
+	DllStructSetData($cvPoint2f, "y", $y)
+	Return $cvPoint2f
+EndFunc   ;==>_cvPoint2f
+
 Func _cvScalar($v0 = 0, $v1 = 0, $v2 = 0, $v3 = 0)
 	Local $cvScalar = DllStructCreate($tagCvScalar)
 	DllStructSetData($cvScalar, 1, $v0)
