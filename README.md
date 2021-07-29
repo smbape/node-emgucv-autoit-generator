@@ -5,17 +5,26 @@ If yes, then this udf might be for you.
 
 # Usage of the UDF
 
-Download [libemgucv-windesktop-4.5.2.4673.zip](https://github.com/emgucv/emgucv/releases/download/4.5.2/libemgucv-windesktop-4.5.2.4673.zip) and extract it into a folder.
-Download the emgucv-autoit-bindings folder of this repository.
+## Prerequisites
 
-Then in your autoit file
+  - Download and extract [libemgucv-windesktop-4.5.2.4673.zip](https://github.com/emgucv/emgucv/releases/download/4.5.2/libemgucv-windesktop-4.5.2.4673.zip) into a folder
+  - Download the emgucv-autoit-bindings folder of this repository.
+
+## Usage
 
 ```autoit
+#Region ;**** Directives created by AutoIt3Wrapper_GUI ****
+#AutoIt3Wrapper_UseX64=y
+#EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
+
+Opt("MustDeclareVars", 1)
+
 #include "emgucv-autoit-bindings\cve_extra.au3"
 
+; Open the library
 _OpenCV_DLLOpen("libemgucv-windesktop-4.5.2.4673\libs\x64\cvextern.dll")
 
-; you the emgucv user defined functions
+; use any emgucv udf
 Local $img = _cveImreadAndCheck("lena.jpg")
 _cveImshowMat("Source image", $img)
 _cveWaitKey()
@@ -23,6 +32,7 @@ _cveWaitKey()
 ; always release resources to avoid memory leaks on long running processes
 _cveMatRelease($img)
 
+; Close the library
 _Opencv_DLLClose()
 
 ```
@@ -50,8 +60,8 @@ Look at `samples\tutorial_code\Histograms_Matching\calcHist_Demo.au3` for an exa
 
 #### Prerequisite
 
-  - You will need to install [CMAKE >= 3.5](https://cmake.org/download/)
-  - You will need to install [visual studio >= 10](https://visualstudio.microsoft.com/vs/community/)
+  - Install [CMAKE >= 3.5](https://cmake.org/download/)
+  - Install [visual studio >= 10](https://visualstudio.microsoft.com/vs/community/)
 
 #### Building
 
@@ -61,10 +71,10 @@ Run `build.bat` script located in the `autoit-addon` folder.
 
 ### Prerequisites
 
-  - You will need to install [CMAKE >= 3.5](https://cmake.org/download/)
-  - You will need to install [visual studio >= 10](https://visualstudio.microsoft.com/vs/community/)
-  - You will need to install [Git for Windows](https://gitforwindows.org/)
-  - You will need to install [nodejs](https://nodejs.org/en/download/)
+  - Install [CMAKE >= 3.5](https://cmake.org/download/)
+  - Install [visual studio >= 10](https://visualstudio.microsoft.com/vs/community/)
+  - Install [Git for Windows](https://gitforwindows.org/)
+  - Install [nodejs](https://nodejs.org/en/download/)
 
 ### Environment
 
