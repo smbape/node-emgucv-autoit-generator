@@ -633,7 +633,7 @@ Func _cveImshowControlPic($matImg, $hWnd, $controlID, $tBackgroundColor, $iCode 
 	Local $matTemp = Null
 
 	If $iCode == -1 Then
-		$tMatImg = DllStructCreate($tagMat, $matImg)
+		$tMatImg = DllStructCreate($tagCvMat, $matImg)
 
 		Switch CV_MAT_TYPE($tMatImg.flags)
 			Case $CV_8UC1

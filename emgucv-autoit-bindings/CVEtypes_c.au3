@@ -24,11 +24,19 @@ Func _cvPoint($x = 0, $y = 0)
 EndFunc   ;==>_cvPoint
 
 Func _cvPoint2f($x = 0, $y = 0)
-	Local $cvPoint2f = DllStructCreate($tagCvPoint2f)
+	Local $cvPoint2f = DllStructCreate($tagCvPoint2D32f)
 	DllStructSetData($cvPoint2f, "x", $x)
 	DllStructSetData($cvPoint2f, "y", $y)
 	Return $cvPoint2f
 EndFunc   ;==>_cvPoint2f
+
+Func _cvPoint3f($x = 0, $y = 0, $z = 0)
+	Local $cvPoint3f = DllStructCreate($tagCvPoint3D32f)
+	DllStructSetData($cvPoint3f, "x", $x)
+	DllStructSetData($cvPoint3f, "y", $y)
+	DllStructSetData($cvPoint3f, "z", $z)
+	Return $cvPoint3f
+EndFunc   ;==>_cvPoint3f
 
 Func _cvScalar($v0 = 0, $v1 = 0, $v2 = 0, $v3 = 0)
 	Local $cvScalar = DllStructCreate($tagCvScalar)
@@ -43,7 +51,7 @@ Func _cvScalarAll($v0)
 	Return _cvScalar($v0, $v0, $v0, $v0)
 EndFunc   ;==>_cvScalarAll
 
-Func _cvRect($x, $y, $width, $height)
+Func _cvRect($x = 0, $y = 0, $width = 0, $height = 0)
 	Local $cvRect = DllStructCreate($tagCvRect)
 	DllStructSetData($cvRect, "x", $x)
 	DllStructSetData($cvRect, "y", $y)
@@ -69,10 +77,10 @@ Func _cvNativeType($type, $value)
 	Return $tStruct
 EndFunc   ;==>_cvNativeType
 
-Func _cvTermCriteria($type, $maxCount, $epsilon = _cvScalar())
+Func _cvTermCriteria($type, $max_iter, $epsilon)
 	Local $tStruct = DllStructCreate($tagCvTermCriteria)
 	DllStructSetData($tStruct, "type", $type)
-	DllStructSetData($tStruct, "maxCount", $maxCount)
+	DllStructSetData($tStruct, "max_iter", $max_iter)
 	DllStructSetData($tStruct, "epsilon", $epsilon)
 	Return $tStruct
 EndFunc   ;==>_cvTermCriteria

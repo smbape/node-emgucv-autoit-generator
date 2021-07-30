@@ -108,23 +108,24 @@ node test.js
 I wanted to use [OpenCV](https://opencv.org/) v4+ in [AutoIt v3](https://www.autoitscript.com/).
 
 I found the [Opencv UDF](https://www.autoitscript.com/forum/topic/160732-opencv-udf/) on the forum.  
-However it was for [OpenCV](https://opencv.org/) v2 and there was a [question](https://www.autoitscript.com/forum/topic/160732-opencv-udf/?do=findComment&comment=1441185) for [OpenCV](https://opencv.org/) without any anwser.
+However it was for [OpenCV](https://opencv.org/) v2 and there was a [question](https://www.autoitscript.com/forum/topic/160732-opencv-udf/?do=findComment&comment=1441185) for [OpenCV](https://opencv.org/) v4+ without any anwser.
 
-There was no other option than trying find an answer myself.
+Therefore, there was no other option than trying find an answer myself.
 
 [AutoIt v3](https://www.autoitscript.com/) is a freeware BASIC-like scripting language designed for automating the Windows GUI and general scripting.  
 [AutoIt v3](https://www.autoitscript.com/) can use dynamic libraries (dll).  
-However, since v3, [OpenCV](https://opencv.org/) do not expose all the needed functions for image processing.  
+However, since v3, [OpenCV](https://opencv.org/) does not expose all the needed functions for image processing.  
 It is now focused on c++ project integration.  
-This means that, if you want to use [OpenCV](https://opencv.org/) in [AutoIt v3](https://www.autoitscript.com/),   
-you need to write your own dll and export as many functions as you need.
+That means, if you want to use [OpenCV](https://opencv.org/) in [AutoIt v3](https://www.autoitscript.com/),   
+you will need to write your own dll and export as many functions as you need.
 
 It can be tedious.
 
 I supposed that other languages will have the same problem.  
 [AutoIt v3](https://www.autoitscript.com/) is focused on windows and .Net is, at least in the past, focused on windows.  
-There was a high chance that an [OpenCV](https://opencv.org/) binding to .Net will have involved dlls.  
-I looked for [OpenCV](https://opencv.org/) in .Net and I found [emgucv](https://github.com/emgucv/emgucv).
+There was a high chance that an [OpenCV](https://opencv.org/) binding to .Net will involve dlls.
+
+Therefore, I looked for [OpenCV](https://opencv.org/) in .Net and I found [emgucv](https://github.com/emgucv/emgucv).
 
 [emgucv](https://github.com/emgucv/emgucv) is a cross platform .Net wrapper to the [OpenCV](https://opencv.org/) image processing library.  
-The project exported almost all the [OpenCV](https://opencv.org/) in a dll, making their dll suitable to be used with [AutoIt v3](https://www.autoitscript.com/)
+The project has exported almost all the [OpenCV](https://opencv.org/) functions in a dll, making their dll suitable to be used with [AutoIt v3](https://www.autoitscript.com/)

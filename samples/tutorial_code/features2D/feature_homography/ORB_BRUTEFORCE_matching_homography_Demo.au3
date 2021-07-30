@@ -167,10 +167,10 @@ Func Detect()
 		_VectorOfVectorOfDMatchGetItemPtr($knn_matches, $i, $tVectorDMatchPtr)
 
 		_VectorOfDMatchGetItemPtr($tVectorDMatchPtr.value, 0, $tDMatchPtr0)
-		Local $tDMatch0 = DllStructCreate($tagDMatch, $tDMatchPtr0.value)
+		Local $tDMatch0 = DllStructCreate($tagCvDMatch, $tDMatchPtr0.value)
 
 		_VectorOfDMatchGetItemPtr($tVectorDMatchPtr.value, 1, $tDMatchPtr1)
-		Local $tDMatch1 = DllStructCreate($tagDMatch, $tDMatchPtr1.value)
+		Local $tDMatch1 = DllStructCreate($tagCvDMatch, $tDMatchPtr1.value)
 
 		If $tDMatch0.distance < $ratio_thresh * $tDMatch1.distance Then
 			_VectorOfDMatchPush($good_matches, $tDMatch0)
@@ -192,14 +192,14 @@ Func Detect()
 	For $i = 0 To _VectorOfDMatchGetSize($good_matches) - 1
 		;;-- Get the keypoints from the good matches
 		_VectorOfDMatchGetItemPtr($good_matches, $i, $tDMatchPtr0)
-		Local $tDMatch0 = DllStructCreate($tagDMatch, $tDMatchPtr0.value)
+		Local $tDMatch0 = DllStructCreate($tagCvDMatch, $tDMatchPtr0.value)
 
 		_VectorOfKeyPointGetItemPtr($keypoints_object, $tDMatch0.queryIdx, $tObjectKeyPointPtr)
-		Local $tObjectKeyPoint = DllStructCreate($tagKeyPoint, $tObjectKeyPointPtr.value)
+		Local $tObjectKeyPoint = DllStructCreate($tagCvKeyPoint, $tObjectKeyPointPtr.value)
 		_VectorOfPointFPush($obj, $tObjectKeyPoint)
 
 		_VectorOfKeyPointGetItemPtr($keypoints_scene, $tDMatch0.trainIdx, $tSceneKeyPointPtr)
-		Local $tSceneKeyPoint = DllStructCreate($tagKeyPoint, $tSceneKeyPointPtr.value)
+		Local $tSceneKeyPoint = DllStructCreate($tagCvKeyPoint, $tSceneKeyPointPtr.value)
 		_VectorOfPointFPush($scene, $tSceneKeyPoint)
 	Next
 
@@ -235,16 +235,16 @@ Func Detect()
 		Local $tPointFPtr = DllStructCreate("ptr value")
 
 		_VectorOfPointFGetItemPtr($scene_corners, 0, $tPointFPtr)
-		Local $scene_corners_0 = DllStructCreate($tagCvPoint2f, $tPointFPtr.value)
+		Local $scene_corners_0 = DllStructCreate($tagCvPoint2D32f, $tPointFPtr.value)
 
 		_VectorOfPointFGetItemPtr($scene_corners, 1, $tPointFPtr)
-		Local $scene_corners_1 = DllStructCreate($tagCvPoint2f, $tPointFPtr.value)
+		Local $scene_corners_1 = DllStructCreate($tagCvPoint2D32f, $tPointFPtr.value)
 
 		_VectorOfPointFGetItemPtr($scene_corners, 2, $tPointFPtr)
-		Local $scene_corners_2 = DllStructCreate($tagCvPoint2f, $tPointFPtr.value)
+		Local $scene_corners_2 = DllStructCreate($tagCvPoint2D32f, $tPointFPtr.value)
 
 		_VectorOfPointFGetItemPtr($scene_corners, 3, $tPointFPtr)
-		Local $scene_corners_3 = DllStructCreate($tagCvPoint2f, $tPointFPtr.value)
+		Local $scene_corners_3 = DllStructCreate($tagCvPoint2D32f, $tPointFPtr.value)
 
 		;;-- Draw lines between the corners (the mapped object in the scene - image_2 )
 		_cveLineMat($img_matches, _cvPoint($scene_corners_0.x + $img_object_size.width, $scene_corners_0.y), _
