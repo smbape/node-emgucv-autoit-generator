@@ -32,6 +32,11 @@ Local $BtnObject = GUICtrlCreateButton("Object", 689, 14, 75, 25)
 Local $InputScene = GUICtrlCreateInput($OPENCV_SAMPLES_DATA_PATH & "\box_in_scene.png", 230, 52, 449, 21)
 Local $BtnScene = GUICtrlCreateButton("Scene", 689, 50, 75, 25)
 
+Local $LabelAlgorithm = GUICtrlCreateLabel("Algorithm", 150, 92, 69, 20)
+GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
+Local $ComboAlgorithm = GUICtrlCreateCombo("", 230, 92, 169, 25, BitOR($GUI_SS_DEFAULT_COMBO,$CBS_SIMPLE))
+GUICtrlSetData(-1, "ORB|Brisk|FAST|MSER|SimpleBlobDetector")
+
 Local $LabelMatchType = GUICtrlCreateLabel("Match type", 414, 92, 79, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $ComboMatchType = GUICtrlCreateCombo("", 502, 92, 177, 25, BitOR($GUI_SS_DEFAULT_COMBO, $CBS_SIMPLE))
@@ -56,6 +61,14 @@ Local $aMatchTypes[6] = [ _
 	$CV_NORM_HAMMING2, _
 	$CV_NORM_L2SQR _
 ]
+
+Local $ORB_DETECTOR = 0
+Local $BRISK_DETECTOR = 1
+Local $FAST_DETECTOR = 2
+Local $MSER_DETECTOR = 3
+Local $SIMPLE_BLOB_DETECTOR = 4
+
+_GUICtrlComboBox_SetCurSel($ComboAlgorithm, 0)
 _GUICtrlComboBox_SetCurSel($ComboMatchType, 2)
 
 _GDIPlus_Startup()
@@ -89,6 +102,8 @@ While 1
 			Else
 				ControlSetText($FormGUI, "", $InputScene, $sScene)
 			EndIf
+		Case $ComboAlgorithm
+			Detect()
 		Case $ComboMatchType
 			Detect()
 		Case $BtnExec
@@ -133,20 +148,41 @@ Func Clean()
 EndFunc   ;==>Clean
 
 Func Detect()
+	Local $algorithm = _GUICtrlComboBox_GetCurSel($ComboAlgorithm)
 	Local $match_type = $aMatchTypes[_GUICtrlComboBox_GetCurSel($ComboMatchType)]
 
+	Local $can_compute = $algorithm == $ORB_DETECTOR Or $algorithm == $BRISK_DETECTOR
+
 	;;-- Step 1: Detect the keypoints using ORB Detector, compute the descriptors
-	Local $numberOfFeatures = 500 ;
 	Local $tFeature2DPtr = DllStructCreate("ptr value")
 	Local $tSharedPtr = DllStructCreate("ptr")
-	_cveOrbCreate($numberOfFeatures, 1.2, 8, 31, 0, 2, $CV_ORB_HARRIS_SCORE, 31, 20, $tFeature2DPtr, $tSharedPtr)
+
+	Switch $algorithm
+		Case $ORB_DETECTOR
+			_cveOrbCreate(500, 1.2, 8, 31, 0, 2, $CV_ORB_HARRIS_SCORE, 31, 20, $tFeature2DPtr, $tSharedPtr)
+		Case $BRISK_DETECTOR
+			_cveBriskCreate(30, 3, 1, $tFeature2DPtr, $tSharedPtr)
+		Case $FAST_DETECTOR
+			_cveFASTFeatureDetectorCreate(10, True, $CV_FAST_FEATURE_DETECTOR_TYPE_9_16, $tFeature2DPtr, $tSharedPtr)
+		Case $MSER_DETECTOR
+			_cveMserCreate(5, 60, 14400, 0.25, 0.2, 200, 1.01, 0.003, 5, $tFeature2DPtr, $tSharedPtr)
+		Case $SIMPLE_BLOB_DETECTOR
+			_cveSimpleBlobDetectorCreate($tFeature2DPtr, $tSharedPtr)
+	EndSwitch
+
 	Local $detector = $tFeature2DPtr.value
 	Local $keypoints_object = _VectorOfKeyPointCreate()
 	Local $keypoints_scene = _VectorOfKeyPointCreate()
 	Local $descriptors_object = _cveMatCreate()
 	Local $descriptors_scene = _cveMatCreate()
-	_CvFeature2DDetectAndComputeMat($detector, $img_object, _cveNoArrayMat(), $keypoints_object, $descriptors_object, False) ;
-	_CvFeature2DDetectAndComputeMat($detector, $img_scene, _cveNoArrayMat(), $keypoints_scene, $descriptors_scene, False) ;
+
+	If $can_compute Then
+		_CvFeature2DDetectAndComputeMat($detector, $img_object, _cveNoArrayMat(), $keypoints_object, $descriptors_object, False) ;
+		_CvFeature2DDetectAndComputeMat($detector, $img_scene, _cveNoArrayMat(), $keypoints_scene, $descriptors_scene, False) ;
+	Else
+		_CvFeature2DDetectMat($detector, $img_object, $keypoints_object, _cveNoArrayMat()) ;
+		_CvFeature2DDetectMat($detector, $img_scene, $keypoints_scene, _cveNoArrayMat()) ;
+	EndIf
 
 	;;-- Step 2: Matching descriptor vectors with a BruteForce based matcher
 	;; Since ORB is a floating-point descriptor NORM_L2 is used
@@ -154,7 +190,10 @@ Func Detect()
 	Local $bf_matcher = _cveBFMatcherCreate($match_type, False, $tMatcherPtr) ;
 	Local $matcher = $tMatcherPtr.value
 	Local $knn_matches = _VectorOfVectorOfDMatchCreate() ;
-	_cveDescriptorMatcherKnnMatch1Mat($matcher, $descriptors_object, $descriptors_scene, $knn_matches, 2, _cveNoArrayMat(), False) ;
+
+	If $can_compute Then
+		_cveDescriptorMatcherKnnMatch1Mat($matcher, $descriptors_object, $descriptors_scene, $knn_matches, 2, _cveNoArrayMat(), False) ;
+	EndIf
 
 	;;-- Filter matches using the Lowe's ratio test
 	Local $ratio_thresh = 0.75 ;
@@ -180,8 +219,24 @@ Func Detect()
 	;;-- Draw matches
 	Local $img_matches = _cveMatCreate() ;
 	Local $matchesMask = _VectorOfByteCreate()
-	_drawMatchedFeatures1Mat($img_object, $keypoints_object, $img_scene, $keypoints_scene, $good_matches, $img_matches, _cvScalarAll(-1), _
+
+	If $can_compute Then
+		_drawMatchedFeatures1Mat($img_object, $keypoints_object, $img_scene, $keypoints_scene, $good_matches, $img_matches, _cvScalarAll(-1), _
 			_cvScalarAll(-1), $matchesMask, $CV_DRAW_MATCHES_FLAGS_NOT_DRAW_SINGLE_POINTS) ;
+	Else
+		Local $img_object_with_keypoints = _cveMatCreate()
+		_drawKeypointsMat($img_object, $keypoints_object, $img_object_with_keypoints, _cvScalarAll(-1), $CV_DRAW_MATCHES_FLAGS_NOT_DRAW_SINGLE_POINTS)
+
+		Local $img_scene_with_keypoints = _cveMatCreate()
+		_drawKeypointsMat($img_scene, $keypoints_scene, $img_scene_with_keypoints, _cvScalarAll(-1), $CV_DRAW_MATCHES_FLAGS_NOT_DRAW_SINGLE_POINTS)
+
+		; workaround to concatenate the two images
+		_drawMatchedFeatures1Mat($img_object_with_keypoints, $keypoints_object, $img_scene_with_keypoints, $keypoints_scene, $good_matches, $img_matches, _cvScalarAll(-1), _
+			_cvScalarAll(-1), $matchesMask, $CV_DRAW_MATCHES_FLAGS_NOT_DRAW_SINGLE_POINTS) ;
+
+		_cveMatRelease($img_scene_with_keypoints)
+		_cveMatRelease($img_object_with_keypoints)
+	EndIf
 
 	;;-- Need at least 4 point correspondences to calculate Homography
 	If _VectorOfDMatchGetSize($good_matches) >= 4 Then
@@ -289,5 +344,17 @@ Func Detect()
 	_cveMatRelease($descriptors_object)
 	_VectorOfKeyPointRelease($keypoints_scene)
 	_VectorOfKeyPointRelease($keypoints_object)
-	_cveOrbRelease($tSharedPtr)
+
+	Switch $algorithm
+		Case $ORB_DETECTOR
+			_cveOrbRelease($tSharedPtr)
+		Case $BRISK_DETECTOR
+			_cveBriskRelease($tSharedPtr)
+		Case $FAST_DETECTOR
+			_cveFASTFeatureDetectorRelease($tSharedPtr)
+		Case $MSER_DETECTOR
+			_cveMserRelease($tSharedPtr)
+		Case $SIMPLE_BLOB_DETECTOR
+			_cveSimpleBlobDetectorRelease($tSharedPtr)
+	EndSwitch
 EndFunc   ;==>Detect
