@@ -101,11 +101,11 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
 
         if (byRef || argType.endsWith("*")) {
             if (argType.endsWith("**")) {
-                autoItDllType = "ptr*"
+                autoItDllType = "ptr*";
             } else if (isString) {
                 autoItDllType = "str";
             } else if (isNativeType) {
-                autoItDllType = getAutoItType(argType, isNativeType)
+                autoItDllType = getAutoItType(argType, isNativeType);
             } else {
                 autoItDllType = "ptr";
             }
@@ -134,7 +134,7 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
 
     for (let i = autoItArgs.length - 1, canDefault = true; i >= 0; i--) {
         const arg = args[i];
-        const [argType] = arg;
+        // const [argType] = arg;
         const value = autoItArgs[i];
         const pos = value.indexOf(" = ");
         const hasDefault = pos !== -1;

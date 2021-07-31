@@ -404,8 +404,8 @@ Global Const $CV_MAT_AUTO_STEP = 0
 Global Const $CV_MAT_CONTINUOUS_FLAG = $CV_MAT_CONT_FLAG
 Global Const $CV_MAT_SUBMATRIX_FLAG = $CV_SUBMAT_FLAG
 Global Const $CV_MAT_MAGIC_MASK = 0xFFFF0000
-; Global Const $CV_MAT_TYPE_MASK = 0x00000FFF
-; Global Const $CV_MAT_DEPTH_MASK = 7
+
+
 
 ; anonymous
 Global Const $CV_UMAT_MAGIC_VAL = 0x42FF0000

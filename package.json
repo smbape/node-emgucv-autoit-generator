@@ -1,6 +1,7 @@
 {
   "name": "node-emgucv-autoit-generator",
-  "version": "1.0.0",
+  "version": "0.0.0",
+  "private": true,
   "main": "parseExports.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,11 +10,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@ffi-packager/libclang": "github:node-ffi-packager/node-libclang#semver:v2.0.2",
     "async": "^3.2.0",
     "eol": "^0.9.1",
     "fs-explorer": "^1.4.2",
     "mkdirp": "^1.0.4"
+  },
+  "devDependencies": {
+    "@ffi-packager/libclang": "github:node-ffi-packager/node-libclang#semver:v2.0.2"
   },
   "description": ""
 }

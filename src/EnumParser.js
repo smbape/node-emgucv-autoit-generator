@@ -16,21 +16,6 @@ const STRUCT = "struct";
 const BLOCK_START = "{";
 const BLOCK_END = "}";
 
-const tokenizer = new RegExp(`(?:/[/*]|^${ [ PREPROCESS_IF ].join("|") }|[${ [
-    BLOCK_START,
-    BLOCK_END,
-    OPEN_PARENTHESIS,
-    CLOSE_PARENTHESIS,
-].join("") }]|\\b(?:${ [
-    NAMESPACE,
-    CLASS,
-    TEMPLATE,
-    ENUM_CLASS,
-    ENUM_STRUCT,
-    ENUM,
-    STRUCT,
-].join("|") })\\b)`, "mg");
-
 class EnumParser {
     constructor(noexception = false, options = {}) {
         this.noexception = noexception;
@@ -47,6 +32,21 @@ class EnumParser {
         if (Buffer.isBuffer(input)) {
             input = input.toString();
         }
+
+        const tokenizer = new RegExp(`(?:/[/*]|^${ [ PREPROCESS_IF ].join("|") }|[${ [
+            BLOCK_START,
+            BLOCK_END,
+            OPEN_PARENTHESIS,
+            CLOSE_PARENTHESIS,
+        ].join("") }]|\\b(?:${ [
+            NAMESPACE,
+            CLASS,
+            TEMPLATE,
+            ENUM_CLASS,
+            ENUM_STRUCT,
+            ENUM,
+            STRUCT,
+        ].join("|") })\\b)`, "mg");
 
         tokenizer.lastIndex = offset;
 
@@ -170,6 +170,9 @@ class EnumParser {
                     // }
                     parenthesis--;
                     break;
+
+                default:
+                    // continue
             }
         }
 

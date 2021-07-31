@@ -172,12 +172,6 @@ Global Const $tagCvSlice = _
 	"int start_index;" & _
 	"int end_index;"
 
-Global Const $tagCvDMatch = _
-	"int queryIdx;" & _ ; query descriptor index
-	"int trainIdx;" & _ ; train descriptor index
-	"int imgIdx;"   & _ ; train image index
-	"float distance;"
-
 Global Const $tagCvKeyPoint = _
 	"struct;" & $tagCvPoint2D32f & "endstruct;" & _ ; coordinates of the keypoints
 	"float size;"       & _ ; diameter of the meaningful keypoint neighborhood
@@ -185,3 +179,9 @@ Global Const $tagCvKeyPoint = _
 	"float response;"   & _ ; the response by which the most strong keypoints have been selected. Can be used for the further sorting or subsampling
 	"int octave;"       & _ ; octave (pyramid layer) from which the keypoint has been extracted
 	"int class_id;"         ; object class (if the keypoints need to be clustered by an object they belong to)
+
+Global Const $tagCvDMatch = _
+	"int queryIdx;" & _ ; query descriptor index
+	"int trainIdx;" & _ ; train descriptor index
+	"int imgIdx;"   & _ ; train image index
+	"float distance;"

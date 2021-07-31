@@ -183,95 +183,98 @@ Func Detect()
 	_drawMatchedFeatures1Mat($img_object, $keypoints_object, $img_scene, $keypoints_scene, $good_matches, $img_matches, _cvScalarAll(-1), _
 			_cvScalarAll(-1), $matchesMask, $CV_DRAW_MATCHES_FLAGS_NOT_DRAW_SINGLE_POINTS) ;
 
-	;;-- Localize the object
-	Local $obj = _VectorOfPointFCreate() ;
-	Local $scene = _VectorOfPointFCreate() ;
-	Local $tObjectKeyPointPtr = DllStructCreate("ptr value")
-	Local $tSceneKeyPointPtr = DllStructCreate("ptr value")
+	;;-- Need at least 4 point correspondences to calculate Homography
+	If _VectorOfDMatchGetSize($good_matches) >= 4 Then
+		;;-- Localize the object
+		Local $obj = _VectorOfPointFCreate() ;
+		Local $scene = _VectorOfPointFCreate() ;
+		Local $tObjectKeyPointPtr = DllStructCreate("ptr value")
+		Local $tSceneKeyPointPtr = DllStructCreate("ptr value")
 
-	For $i = 0 To _VectorOfDMatchGetSize($good_matches) - 1
-		;;-- Get the keypoints from the good matches
-		_VectorOfDMatchGetItemPtr($good_matches, $i, $tDMatchPtr0)
-		Local $tDMatch0 = DllStructCreate($tagCvDMatch, $tDMatchPtr0.value)
+		For $i = 0 To _VectorOfDMatchGetSize($good_matches) - 1
+			;;-- Get the keypoints from the good matches
+			_VectorOfDMatchGetItemPtr($good_matches, $i, $tDMatchPtr0)
+			Local $tDMatch0 = DllStructCreate($tagCvDMatch, $tDMatchPtr0.value)
 
-		_VectorOfKeyPointGetItemPtr($keypoints_object, $tDMatch0.queryIdx, $tObjectKeyPointPtr)
-		Local $tObjectKeyPoint = DllStructCreate($tagCvKeyPoint, $tObjectKeyPointPtr.value)
-		_VectorOfPointFPush($obj, $tObjectKeyPoint)
+			_VectorOfKeyPointGetItemPtr($keypoints_object, $tDMatch0.queryIdx, $tObjectKeyPointPtr)
+			Local $tObjectKeyPoint = DllStructCreate($tagCvKeyPoint, $tObjectKeyPointPtr.value)
+			_VectorOfPointFPush($obj, $tObjectKeyPoint)
 
-		_VectorOfKeyPointGetItemPtr($keypoints_scene, $tDMatch0.trainIdx, $tSceneKeyPointPtr)
-		Local $tSceneKeyPoint = DllStructCreate($tagCvKeyPoint, $tSceneKeyPointPtr.value)
-		_VectorOfPointFPush($scene, $tSceneKeyPoint)
-	Next
+			_VectorOfKeyPointGetItemPtr($keypoints_scene, $tDMatch0.trainIdx, $tSceneKeyPointPtr)
+			Local $tSceneKeyPoint = DllStructCreate($tagCvKeyPoint, $tSceneKeyPointPtr.value)
+			_VectorOfPointFPush($scene, $tSceneKeyPoint)
+		Next
 
-	Local $H = _cveMatCreate()
-	Local $i_arr_H = _cveInputArrayFromMat($H)
-	Local $o_arr_H = _cveOutputArrayFromMat($H)
-	Local $i_arr_obj = _cveInputArrayFromVectorOfPointF($obj)
-	Local $i_arr_scene = _cveInputArrayFromVectorOfPointF($scene)
-	Local $resultMask = _cveMatCreate()
-	Local $o_arr_resultMask = _cveOutputArrayFromMat($resultMask)
-	_cveFindHomography($i_arr_obj, $i_arr_scene, $o_arr_H, $CV_RANSAC, 3, $o_arr_resultMask) ;
-	_cveOutputArrayRelease($o_arr_resultMask)
-	_cveMatRelease($resultMask)
+		Local $H = _cveMatCreate()
+		Local $i_arr_H = _cveInputArrayFromMat($H)
+		Local $o_arr_H = _cveOutputArrayFromMat($H)
+		Local $i_arr_obj = _cveInputArrayFromVectorOfPointF($obj)
+		Local $i_arr_scene = _cveInputArrayFromVectorOfPointF($scene)
+		Local $resultMask = _cveMatCreate()
+		Local $o_arr_resultMask = _cveOutputArrayFromMat($resultMask)
+		_cveFindHomography($i_arr_obj, $i_arr_scene, $o_arr_H, $CV_RANSAC, 3, $o_arr_resultMask) ;
+		_cveOutputArrayRelease($o_arr_resultMask)
+		_cveMatRelease($resultMask)
 
-	If Not _cveMatIsEmpty($H) Then
-		;;-- Get the corners from the image_1 ( the object to be "detected" )
-		Local $img_object_size = _cvSize()
-		_cveMatGetSize($img_object, $img_object_size)
+		If Not _cveMatIsEmpty($H) Then
+			;;-- Get the corners from the image_1 ( the object to be "detected" )
+			Local $img_object_size = _cvSize()
+			_cveMatGetSize($img_object, $img_object_size)
 
-		Local $obj_corners = _VectorOfPointFCreate()
-		_VectorOfPointFPush($obj_corners, _cvPoint2f(0, 0))
-		_VectorOfPointFPush($obj_corners, _cvPoint2f($img_object_size.width, 0))
-		_VectorOfPointFPush($obj_corners, _cvPoint2f($img_object_size.width, $img_object_size.height))
-		_VectorOfPointFPush($obj_corners, _cvPoint2f(0, $img_object_size.height))
+			Local $obj_corners = _VectorOfPointFCreate()
+			_VectorOfPointFPush($obj_corners, _cvPoint2f(0, 0))
+			_VectorOfPointFPush($obj_corners, _cvPoint2f($img_object_size.width, 0))
+			_VectorOfPointFPush($obj_corners, _cvPoint2f($img_object_size.width, $img_object_size.height))
+			_VectorOfPointFPush($obj_corners, _cvPoint2f(0, $img_object_size.height))
 
-		Local $scene_corners = _VectorOfPointFCreateSize(4)
+			Local $scene_corners = _VectorOfPointFCreateSize(4)
 
-		Local $i_arr_obj_corners = _cveInputArrayFromVectorOfPointF($obj_corners)
-		Local $o_arr_scene_corners = _cveOutputArrayFromVectorOfPointF($scene_corners)
+			Local $i_arr_obj_corners = _cveInputArrayFromVectorOfPointF($obj_corners)
+			Local $o_arr_scene_corners = _cveOutputArrayFromVectorOfPointF($scene_corners)
 
-		_cvePerspectiveTransform($i_arr_obj_corners, $o_arr_scene_corners, $i_arr_H) ;
+			_cvePerspectiveTransform($i_arr_obj_corners, $o_arr_scene_corners, $i_arr_H) ;
 
-		Local $tPointFPtr = DllStructCreate("ptr value")
+			Local $tPointFPtr = DllStructCreate("ptr value")
 
-		_VectorOfPointFGetItemPtr($scene_corners, 0, $tPointFPtr)
-		Local $scene_corners_0 = DllStructCreate($tagCvPoint2D32f, $tPointFPtr.value)
+			_VectorOfPointFGetItemPtr($scene_corners, 0, $tPointFPtr)
+			Local $scene_corners_0 = DllStructCreate($tagCvPoint2D32f, $tPointFPtr.value)
 
-		_VectorOfPointFGetItemPtr($scene_corners, 1, $tPointFPtr)
-		Local $scene_corners_1 = DllStructCreate($tagCvPoint2D32f, $tPointFPtr.value)
+			_VectorOfPointFGetItemPtr($scene_corners, 1, $tPointFPtr)
+			Local $scene_corners_1 = DllStructCreate($tagCvPoint2D32f, $tPointFPtr.value)
 
-		_VectorOfPointFGetItemPtr($scene_corners, 2, $tPointFPtr)
-		Local $scene_corners_2 = DllStructCreate($tagCvPoint2D32f, $tPointFPtr.value)
+			_VectorOfPointFGetItemPtr($scene_corners, 2, $tPointFPtr)
+			Local $scene_corners_2 = DllStructCreate($tagCvPoint2D32f, $tPointFPtr.value)
 
-		_VectorOfPointFGetItemPtr($scene_corners, 3, $tPointFPtr)
-		Local $scene_corners_3 = DllStructCreate($tagCvPoint2D32f, $tPointFPtr.value)
+			_VectorOfPointFGetItemPtr($scene_corners, 3, $tPointFPtr)
+			Local $scene_corners_3 = DllStructCreate($tagCvPoint2D32f, $tPointFPtr.value)
 
-		;;-- Draw lines between the corners (the mapped object in the scene - image_2 )
-		_cveLineMat($img_matches, _cvPoint($scene_corners_0.x + $img_object_size.width, $scene_corners_0.y), _
-				_cvPoint($scene_corners_1.x + $img_object_size.width, $scene_corners_1.y), _cvScalar(0, 255, 0), 4) ;
+			;;-- Draw lines between the corners (the mapped object in the scene - image_2 )
+			_cveLineMat($img_matches, _cvPoint($scene_corners_0.x + $img_object_size.width, $scene_corners_0.y), _
+					_cvPoint($scene_corners_1.x + $img_object_size.width, $scene_corners_1.y), _cvScalar(0, 255, 0), 4) ;
 
-		_cveLineMat($img_matches, _cvPoint($scene_corners_1.x + $img_object_size.width, $scene_corners_1.y), _
-				_cvPoint($scene_corners_2.x + $img_object_size.width, $scene_corners_2.y), _cvScalar(0, 255, 0), 4) ;
+			_cveLineMat($img_matches, _cvPoint($scene_corners_1.x + $img_object_size.width, $scene_corners_1.y), _
+					_cvPoint($scene_corners_2.x + $img_object_size.width, $scene_corners_2.y), _cvScalar(0, 255, 0), 4) ;
 
-		_cveLineMat($img_matches, _cvPoint($scene_corners_2.x + $img_object_size.width, $scene_corners_2.y), _
-				_cvPoint($scene_corners_3.x + $img_object_size.width, $scene_corners_3.y), _cvScalar(0, 255, 0), 4) ;
+			_cveLineMat($img_matches, _cvPoint($scene_corners_2.x + $img_object_size.width, $scene_corners_2.y), _
+					_cvPoint($scene_corners_3.x + $img_object_size.width, $scene_corners_3.y), _cvScalar(0, 255, 0), 4) ;
 
-		_cveLineMat($img_matches, _cvPoint($scene_corners_3.x + $img_object_size.width, $scene_corners_3.y), _
-				_cvPoint($scene_corners_0.x + $img_object_size.width, $scene_corners_0.y), _cvScalar(0, 255, 0), 4) ;
+			_cveLineMat($img_matches, _cvPoint($scene_corners_3.x + $img_object_size.width, $scene_corners_3.y), _
+					_cvPoint($scene_corners_0.x + $img_object_size.width, $scene_corners_0.y), _cvScalar(0, 255, 0), 4) ;
 
-		_cveOutputArrayRelease($o_arr_scene_corners)
-		_cveInputArrayRelease($i_arr_obj_corners)
-		_VectorOfPointFRelease($scene_corners)
-		_VectorOfPointFRelease($obj_corners)
+			_cveOutputArrayRelease($o_arr_scene_corners)
+			_cveInputArrayRelease($i_arr_obj_corners)
+			_VectorOfPointFRelease($scene_corners)
+			_VectorOfPointFRelease($obj_corners)
+		EndIf
+
+		_cveInputArrayRelease($i_arr_scene)
+		_cveInputArrayRelease($i_arr_obj)
+		_cveOutputArrayRelease($o_arr_H)
+		_cveInputArrayRelease($i_arr_H)
+		_cveMatRelease($H)
+		_VectorOfPointFRelease($scene)
+		_VectorOfPointFRelease($obj)
 	EndIf
-
-	_cveInputArrayRelease($i_arr_scene)
-	_cveInputArrayRelease($i_arr_obj)
-	_cveOutputArrayRelease($o_arr_H)
-	_cveInputArrayRelease($i_arr_H)
-	_cveMatRelease($H)
-	_VectorOfPointFRelease($scene)
-	_VectorOfPointFRelease($obj)
 
 	;-- Show detected matches
 	; _cveImshowMat("Good Matches & Object detection", $img_matches) ;

@@ -6,15 +6,15 @@ const waterfall = require("async/waterfall");
 const mkdirp = require("mkdirp");
 const eol = require("eol");
 
-const ExportsParser = require("./ExportsParser");
-const EnumParser = require("./EnumParser");
-const { convertToAutoIt } = require("./autoit-converter");
+const ExportsParser = require("./src/ExportsParser");
+const EnumParser = require("./src/EnumParser");
+const { convertToAutoIt } = require("./src/autoit-converter");
+
+const {hasOwnProperty: hasProp} = Object.prototype;
 
 const normalizeVectType = type => {
     return type.replace(/^const /, "").replace(/ *< */g, "<").replace(/ *> */g, ">");
 };
-
-const {hasOwnProperty: hasProp} = Object.prototype;
 
 const isFileIncluded = (files, file) => {
     return files.some(include => {
@@ -122,7 +122,6 @@ const coerceDefaultValue = (defaultValue, {vectmap}) => {
         .replace(/\bDrawMatchesFlags::/g, "$CV_DRAW_MATCHES_FLAGS_")
         .replace(/\bTermCriteria\(/g, "_cvTermCriteria(")
         .replace(/\bTermCriteria::/g, "$CV_TERM_CRITERIA_")
-        // .replace(/\b(?<!\$)(DBL|DECOMP|CALIB|CV|FLT|SOLVEPNP)_/g, "$$$1_")
         .replace(/\b(?<!\$)(?=CV_)/g, "$")
         .replace(/\bcv::(?=[A-Z]{2,})/g, "$CV_")
         .replace(/\b(?<!\$)(?=[A-Z]{2,})/g, "$CV_")
@@ -133,7 +132,7 @@ const coerceDefaultValue = (defaultValue, {vectmap}) => {
         return defaultValue;
     }
 
-    if (defaultValue.startsWith("std::vector")) {
+    if (defaultValue.startsWith("std::vector") && defaultValue.endsWith("()")) {
         const vecttype = `${ normalizeVectType(defaultValue.slice(0, -2)) }*`;
 
         if (hasProp.call(vectmap, vecttype)) {
@@ -321,10 +320,10 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
     const buildFolder = sysPath.join(emgucvGitRepo, "build_x64");
 
     const additionalIncludes = [];
-    const globals = new Set();
+    const globals = new Set(["$CV_MAT_DEPTH_MASK", "$CV_MAT_TYPE_MASK"]);
 
     const seen = new Set();
-    eachOfLimit(included, 1, (directory, i, next) => {
+    eachOfLimit(included, 1, (directory, _i, next) => {
         let cppLocalIncludeFolder = directory;
         let cppRemoteIncludeFolder = sysPath.join(__dirname, "libemgucv-includes");
 
@@ -430,7 +429,7 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
 
                     // enum structs are accessible trough the struct
                     // adding :: will namespace the enum keys
-                    for (const key in ast["enum struct"]) {
+                    for (const key in ast["enum struct"]) { // eslint-disable-line guard-for-in
                         ast_enum[`${ key }::`] = ast["enum struct"][key];
                     }
 
@@ -517,7 +516,6 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
             }
             seen.add(dir);
 
-            const parts = dir.split(sysPath.sep);
             const skip = hasError
                 || isFileIncluded(excludedFiles, dir)
                 || (!isFileIncluded(apiFiles, dir) && !isFileIncluded(headerFiles, dir));
@@ -529,406 +527,14 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
             next(!hasError && err && err.code === "ENOENT" ? null : err);
         });
     }, err => {
-        options.additionalIncludes = additionalIncludes.sort(([a], [b]) => a > b ? 1 : a < b ? -1 : 0);
+        options.additionalIncludes = additionalIncludes.sort(([a], [b]) => (a > b ? 1 : a < b ? -1 : 0));
         options.defaults = defaults;
         cb(err);
     });
 };
 
-const DECLARATION_MAP = {
-    "cv::String*": (autoItArgName, [argType, argName, defaultValue], declarations, destructors, entry, options) => {
-        const capitalCasedName = argName[0].toUpperCase() + argName.slice(1);
-
-        declarations.push(""); // new line
-        declarations.push(...`
-            Local $b${ capitalCasedName }IsString = VarGetType(${ autoItArgName }) == "String"
-            If $b${ capitalCasedName }IsString Then
-                ${ autoItArgName } = _cveStringCreateFromStr(${ autoItArgName })
-            EndIf
-        `.replace(/^ {12}/mg, "").trim().split("\n"));
-
-        destructors.unshift(...`
-            If $b${ capitalCasedName }IsString Then
-                _cveStringRelease(${ autoItArgName })
-            EndIf
-        `.replace(/^ {12}/mg, "").trim().split("\n"));
-        destructors.unshift(""); // new line
-    },
-
-    vector: (autoItArgName, [argType, argName, defaultValue], declarations, destructors, entry, options) => {
-        const {vectmap} = options;
-        const isPointer = argType.endsWith("**");
-        const vecttype = normalizeVectType(isPointer ? argType.slice(0, -1) : argType);
-
-        if (!hasProp.call(vectmap, vecttype)) {
-            console.log(entry[1], "cannot bind", argType);
-            return null;
-        }
-
-        const method = vectmap[vecttype];
-        const capitalCasedName = argName[0].toUpperCase() + argName.slice(1);
-        const vector = `$vec${ capitalCasedName }`;
-        const size = `$iArr${ capitalCasedName }Size`;
-
-        declarations.push(""); // new line
-        declarations.push(...`
-            Local ${ vector }, ${ size }
-            Local $b${ capitalCasedName }IsArray = VarGetType(${ autoItArgName }) == "Array"
-
-            If $b${ capitalCasedName }IsArray Then
-                ${ vector } = _${ method }Create()
-
-                ${ size } = UBound(${ autoItArgName })
-                For $i = 0 To ${ size } - 1
-                    _${ method }Push(${ vector }, ${ autoItArgName }[$i])
-                Next
-            Else
-                ${ vector } = ${ autoItArgName }
-            EndIf
-        `.replace(/^ {12}/mg, "").trim().split("\n"));
-
-        destructors.unshift(...`
-            If $b${ capitalCasedName }IsArray Then
-                _${ method }Release(${ vector })
-            EndIf
-        `.replace(/^ {12}/mg, "").trim().split("\n"));
-        destructors.unshift(""); // new line
-
-        return vector;
-    },
-};
-
-const OVERRIDE_MAP = {
-    cveImread(entry, declarations, destructors, options) {
-        const args = entry[2];
-
-        for (const arg of args) {
-            const [, argName] = arg;
-
-            if (argName === "result") {
-                arg[2] = "Null";
-                arg[3] = false;
-
-                declarations.push(""); // new line
-                declarations.push(...`
-                    If $result == Null Then
-                        $result = _cveMatCreate()
-                    EndIf
-                `.replace(/^ {20}/mg, "").trim().split("\n"));
-
-                destructors.push("Return $result");
-                destructors.unshift(""); // new line
-            }
-        }
-    },
-};
-
-const options = {
-    exports: {
-        start: "CVAPI(",
-        end: ")",
-    },
-    cdecl: true,
-
-    defaults: {
-        // cveWaitKey: {
-        //     delay: "0",
-        // },
-        // cveImread: {
-        //     flags: "$CV_IMREAD_UNCHANGED",
-        // },
-        // cveNamedWindow: {
-        //     flags: "$CV_WINDOW_AUTOSIZE",
-        // },
-        // cveCvtColor: {
-        //     dstCn: "0",
-        // },
-        // cveCanny: {
-        //     apertureSize: "3",
-        //     L2gradient: "False",
-        // },
-        // cveResize: {
-        //     fx: "0",
-        //     fy: "0",
-        //     interpolation: "$CV_INTER_LINEAR",
-        // },
-        // cveNormalize: {
-        //     alpha: "1.0",
-        //     beta: "0.0",
-        //     normType: "$CV_L2",
-        //     dType: "-1",
-        // }
-    },
-
-    isbyref(argType) {
-        return argType !== "cv::String*" && argType.endsWith("*") && !argType.startsWith("const ");
-    },
-
-    overrides(...args) {
-        const name = args[0][1];
-
-        if (hasProp.call(OVERRIDE_MAP, name)) {
-            OVERRIDE_MAP[name](...args);
-        }
-    },
-
-    dllvar: "$_h_cvextern_dll",
-
-    retwrap(retval, [, name], _options) {
-        return `CVEDllCallResult(${ retval }, "${ name }", @error)`;
-    },
-
-    getAutoItType(autoItType, isNativeType, [argType, argName, defaultValue], [returnType, name, args], _options) {
-        if (!isNativeType || !/^VectorOf\w+Push$/.test(name)) {
-            return autoItType;
-        }
-        return `"${ argType }"`;
-    },
-
-    rettype(returnType, entry, _options) {
-        return `CVAPI(${ returnType })`;
-    },
-
-    declaration(...args) {
-        const [argType] = args[1];
-        if (hasProp.call(DECLARATION_MAP, argType)) {
-            return DECLARATION_MAP[argType](...args);
-        }
-
-        if (/(?:const )?std::vector/.test(argType)) {
-            return DECLARATION_MAP.vector(...args);
-        }
-
-        return null;
-    },
-
-    fnwrap(func, fnname, entry, _options) {
-        const [returnType, , args] = entry;
-        const autoItArgs = [];
-        const funcArgs = [];
-        const declarations = [];
-        const destructors = [];
-        const {isbyref} = _options;
-
-        for (const arg of args) {
-            const [argType, argName, defaultValue, , canDefault] = arg;
-
-            let byRef = arg[3];
-            if (byRef === undefined) {
-                byRef = typeof isbyref === "function" ? isbyref(argType, arg, entry, options) : argType.endsWith("*") && !argType.startsWith("const ");
-            }
-
-            const match = /cv::_(Input|Output|InputOutput)Array\*/.exec(argType);
-
-            if (match === null) {
-                const autoItArgName = `$${ argName }`;
-                const isString = /^const char\*$/.test(argType);
-
-                if (canDefault !== false && defaultValue !== undefined) {
-                    autoItArgs.push(`${ autoItArgName } = ${ defaultValue === "_cveNoArray()" ? "_cveNoArrayMat()" : defaultValue }`);
-                } else {
-                    autoItArgs.push(autoItArgName);
-                }
-
-                funcArgs.push(autoItArgName);
-                continue;
-            }
-
-            const capitalCasedName = argName[0].toUpperCase() + argName.slice(1);
-            const arrType = match[1];
-            const autoItArgName = `$mat${ capitalCasedName }`;
-            const vector = `$vectorOfMat${ capitalCasedName }`;
-            const size = `$iArr${ capitalCasedName }Size`;
-
-            const ARRAY_PREFIXES = {
-                Input: "iArr",
-                Output: "oArr",
-                InputOutput: "ioArr",
-            };
-
-            const arrArgName = `$${ ARRAY_PREFIXES[arrType] }${ capitalCasedName }`;
-
-            if (canDefault !== false && defaultValue === "_cveNoArray()") {
-                autoItArgs.push(`${ autoItArgName } = _cveNoArrayMat()`);
-            } else {
-                autoItArgs.push(autoItArgName);
-            }
-
-            funcArgs.push(arrArgName);
-
-            declarations.push(""); // new line
-            declarations.push(...`
-                Local ${ arrArgName }, ${ vector }, ${ size }
-                Local $b${ capitalCasedName }IsArray = VarGetType(${ autoItArgName }) == "Array"
-
-                If $b${ capitalCasedName }IsArray Then
-                    ${ vector } = _VectorOfMatCreate()
-
-                    ${ size } = UBound(${ autoItArgName })
-                    For $i = 0 To ${ size } - 1
-                        _VectorOfMatPush(${ vector }, ${ autoItArgName }[$i])
-                    Next
-
-                    ${ arrArgName } = _cve${ arrType }ArrayFromVectorOfMat(${ vector })
-                Else
-                    ${ arrArgName } = _cve${ arrType }ArrayFromMat(${ autoItArgName })
-                EndIf
-            `.replace(/^ {16}/mg, "").trim().split("\n"));
-
-            destructors.unshift(...`
-                If $b${ capitalCasedName }IsArray Then
-                    _VectorOfMatRelease(${ vector })
-                EndIf
-
-                _cve${ arrType }ArrayRelease(${ arrArgName })
-            `.replace(/^ {16}/mg, "").trim().split("\n"));
-            destructors.unshift(""); // new line
-        }
-
-        if (declarations.length === 0) {
-            return func;
-        }
-
-        const indent = " ".repeat(16);
-        const retval = returnType === "void" ? "" : "Local $retval = ";
-        const ret = returnType === "void" ? "" : `\n\n${ indent }Return $retval`;
-        const body = [];
-        body.push(`; ${ fnname } using cv::Mat instead of _*Array`);
-        body.push(...declarations);
-        body.push(""); // new line
-        body.push(`${ retval }_${ fnname }(${ funcArgs.join(", ") })`);
-        body.push(...destructors);
-
-        const added = `
-            Func _${ fnname }Mat(${ autoItArgs.join(", ") })
-                ${ body.join(`\n${ indent }`) }${ ret }
-            EndFunc   ;==>_${ fnname }Mat
-        `.replace(/^ {12}/mg, "").trim();
-
-        return `${ func }\n\n${ added }`;
-    }
-};
-
+const options = require("./src/options");
 const parser = new ExportsParser(true, options);
-
-// [
-//     "CVAPI(void) VectorOfDoublePushVector(std::vector< double >* v, std::vector< double >* other);",
-//     "CVAPI(std::vector< double >*) VectorOfDoubleCreate();",
-//     "CVAPI(void) VectorOfDoubleGetItemPtr(std::vector<  double >* vec, int index,  double** element);",
-//     "CVAPI(void) setPlane3D(Plane3D* plane, const CvPoint3D64f* unitNormal, const CvPoint3D64f* pointInPlane);",
-//     "CVAPI(void) VectorOfDMatchPushMatrix(std::vector<cv::DMatch>* matches, const CvMat* trainIdx, const CvMat* distance = 0, const CvMat* mask = 0);",
-//     "CVAPI(std::vector< unsigned char >*) VectorOfByteCreateSize(int size);",
-//     "CVAPI(void) cudaCartToPolar(cv::_InputArray* x, cv::_InputArray* y, cv::_OutputArray* magnitude, cv::_OutputArray* angle, bool angleInDegrees, cv::cuda::Stream* stream);",
-//     "CVAPI(void) cveDetectorParametersSetMinGroupSize(cv::mcc::DetectorParameters* obj, unsigned value);     ",
-//     `CVAPI(void) OpenniGetColorPoints(
-//                                  CvCapture* capture, // must be an openni capture
-//                                  std::vector<ColorPoint>* points, // sequence of ColorPoint
-//                                  IplImage* mask // CV_8UC1
-//                                  );`,
-// ].forEach(expr => {
-//     parser.noexception = false;
-//     parser.parse(expr, 0);
-//     console.log(parser.returnType, parser.name, parser.args);
-// });
-
-// [
-//     "CV_EXPORTS_W int waitKey(int delay = 0);",
-//     `CV_EXPORTS_W void resize( InputArray src, OutputArray dst,
-//                           Size dsize, double fx = 0, double fy = 0,
-//                           int interpolation = INTER_LINEAR );`,
-//     `CV_EXPORTS_W void accumulateWeighted( InputArray src, InputOutputArray dst,
-//                                       double alpha, InputArray mask = noArray() );`,
-//     `CV_EXPORTS_W void add(InputArray src1, InputArray src2, OutputArray dst,
-//                       InputArray mask = noArray(), int dtype = -1);`,
-//     "CV_EXPORTS_W double PSNR(InputArray src1, InputArray src2, double R=255.);",
-//     `CV_EXPORTS_W void minMaxLoc(InputArray src, CV_OUT double* minVal,
-//                             CV_OUT double* maxVal = 0, CV_OUT Point* minLoc = 0,
-//                             CV_OUT Point* maxLoc = 0, InputArray mask = noArray());`,
-//     "CV_EXPORTS_W void setIdentity(InputOutputArray mtx, const Scalar& s = Scalar(1));",
-//     `CV_EXPORTS_W void drawKeypoints( InputArray image, const std::vector<KeyPoint>& keypoints, InputOutputArray outImage,
-//                                const Scalar& color=Scalar::all(-1), DrawMatchesFlags flags=DrawMatchesFlags::DEFAULT );`,
-// ].forEach(expr => {
-//     expr = expr.replace(/CV_(?:IN|OUT|IN_OUT) /g, "").replace(/CV_EXPORTS_W inline/g, "CV_NOT_EXPORTS_W");
-//     parser.noexception = false;
-//     parser.options.exports.start = "CV_EXPORTS_W ";
-//     parser.options.exports.end = " ";
-//     parser.init(parser.options);
-//     parser.parse(expr, 0);
-//     console.log(parser.returnType, parser.name, parser.args);
-// });
-
-// eachOfLimit([
-//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\core\\include\\opencv2\\core.hpp"),
-//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\imgproc\\include\\opencv2\\imgproc.hpp"),
-//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\features2d\\include\\opencv2\\features2d.hpp"),
-//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\calib3d\\include\\opencv2\\calib3d.hpp"),
-//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\mat.hpp"),
-// ], 1, (localFile, i, next) => {
-//     parser.noexception = true;
-//     parser.options.exports.start = "CV_EXPORTS_W ";
-//     parser.options.exports.end = " ";
-//     parser.init(parser.options);
-
-//     fs.readFile(localFile, (err, buffer) => {
-//         if (err) {
-//             next(err);
-//             return;
-//         }
-//         buffer = buffer.toString().replace(/CV_(?:IN|OUT|IN_OUT) /g, "").replace(/CV_EXPORTS_W inline/g, "CV_NOT_EXPORTS_W");
-//         const api = parser.parseFile(buffer);
-
-//         if (parser.lastError) {
-//             console.log("reading", localFile, "error");
-//             next(parser.lastError);
-//             return;
-//         }
-
-//         for (const [returnType, name, args] of api) {
-//             console.log(returnType, name, args);
-//         }
-
-//         next();
-//     });
-// }, err => {
-//     if (err) {
-//         throw err;
-//     }
-// });
-
-// eachOfLimit([
-//     sysPath.join(__dirname, "emgucv\\Emgu.CV.Extern\\depthai-core\\shared\\depthai-shared\\include\\depthai-shared\\metadata\\camera_control.hpp"),
-//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\calib3d\\include\\opencv2\\calib3d.hpp"),
-//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\affine.hpp"),
-//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\base.hpp"),
-//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\check.hpp"),
-//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\cuda.hpp"),
-//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\cuda\\detail\\type_traits_detail.hpp"),
-//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\mat.hpp"),
-//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\core\\include\\opencv2\\core\\types.hpp"),
-//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\features2d\\include\\opencv2\\features2d.hpp"),
-//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\imgcodecs\\include\\opencv2\\imgcodecs.hpp"),
-//     sysPath.join(__dirname, "emgucv\\opencv\\modules\\imgproc\\include\\opencv2\\imgproc.hpp"),
-//     sysPath.join(__dirname, "emgucv\\opencv_contrib\\modules\\ximgproc\\include\\opencv2\\ximgproc\\weighted_median_filter.hpp"),
-// ], 1, (localFile, i, next) => {
-//     const parser = new EnumParser();
-
-//     fs.readFile(localFile, (err, buffer) => {
-//         if (err) {
-//             next(err);
-//             return;
-//         }
-
-//         const ast = parser.parse(buffer);
-
-//         next();
-//     });
-// }, err => {
-//     if (err) {
-//         throw err;
-//     }
-// });
-
-// return;
 
 const vcxprojPath = fs.realpathSync(sysPath.join(__dirname, "emgucv\\build_x64\\Emgu.CV.Extern\\cvextern.vcxproj"));
 
@@ -957,7 +563,6 @@ const single = [
     "#include \"CVEUtils.au3\"",
     ""
 ];
-
 
 const core_excluded = [
     /^cuda/,

@@ -9,17 +9,23 @@ Global $_h_cvextern_dll
 Local $_mat_none = Null
 Local $_io_arr_none = Null
 
-Local $aOpenHooks[100]
-Local $aCloseHooks[100]
+Local $aOpenHooks[8]
+Local $aCloseHooks[8]
 Local $iOpenHook = 0
 Local $iCloseHook = 0
 
 Func _cveRegisterOpenHook($sCallback)
+	If $iOpenHook == UBound($aOpenHooks) Then
+		ReDim $aOpenHooks[$iOpenHook * 2]
+	EndIf
 	$aOpenHooks[$iOpenHook] = $sCallback
 	$iOpenHook += 1
 EndFunc   ;==>_cveRegisterOpenHook
 
 Func _cveRegisterCloseHook($sCallback)
+	If $iCloseHook == UBound($aCloseHooks) Then
+		ReDim $aCloseHooks[$iCloseHook * 2]
+	EndIf
 	$aCloseHooks[$iCloseHook] = $sCallback
 	$iCloseHook += 1
 EndFunc   ;==>_cveRegisterCloseHook
@@ -52,7 +58,7 @@ Func _OpenCV_DLLOpen($s_cvextern_dll = "cvextern.dll")
 EndFunc   ;==>_OpenCV_DLLOpen
 
 Func _Opencv_DLLClose()
-	For $i = 0 To $iCloseHook - 1
+	For $i = $iCloseHook - 1 To 0 Step -1
 		Call($aCloseHooks[$i])
 	Next
 	CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveInputOutputArrayRelease", "ptr*", $_io_arr_none), "cveInputOutputArrayRelease", @error)
