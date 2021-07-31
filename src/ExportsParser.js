@@ -45,7 +45,7 @@ class ExportsParser {
         this.lf = lf || LF;
         this.export_start = export_start;
         this.export_end = export_end;
-        this.export_end_is_space = !notSpaceRe.test(export_end);
+        this.export_end_is_space = /\s/.test(export_end);
         this.tokenizer = new RegExp(`(?:^/[/*]|^${ export_start.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&") }|#if WINAPI_FAMILY)`, "mg");
     }
 
@@ -164,10 +164,10 @@ class ExportsParser {
 
     isEndOfExports() {
         if (this.export_end_is_space) {
-            return this.pos - 1 !== -1 && !notSpaceRe.test(this.input[this.pos - 1]);
+            return this.pos - 1 !== -1 && /\s/.test(this.input[this.pos - 1]);
         }
 
-        if (!this.input.slice(this.pos, this.pos + this.export_end.length) === this.export_end) {
+        if (!this.input.startsWith(this.export_end, this.pos)) {
             return false;
         }
 

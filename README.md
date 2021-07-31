@@ -100,7 +100,7 @@ find emgucv -type f -name '*.bat' -exec unix2dos '{}' \;
 ### Generate the UDF files
 
 ```sh
-node test.js
+node generate.js
 ```
 
 ## History
