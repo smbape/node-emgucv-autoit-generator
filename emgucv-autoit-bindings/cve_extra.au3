@@ -242,9 +242,10 @@ EndFunc   ;==>_cveCompareMatHist
 ; Parameters ....: $matImg              - image matrix.
 ;                  $matTempl            - template matrix.
 ;                  $fThreshold          - [optional] matching correlation should not be under this value. 1 means only keep perfect matches. Default is 0.95.
-;                  $iCode               - [optional] color space conversion code. Use -1 for no conversion. Default is -1.
 ;                  $iMatchMethod        - [optional] parameter specifying the comparison method. Default is $CV_TM_CCOEFF_NORMED.
 ;                  $matTemplMask        - [optional] mask to use for matching. Default is _cveNoArrayMat().
+;                  $iLimit              - [optional] an integer value. Default is 20.
+;                  $iCode               - [optional] color space conversion code. Use -1 for no conversion. Default is -1.
 ;                  $fOverlapping        - [optional] koeffitient to control overlapping of matches.
 ;                                             $fOverlapping = 1     : two matches can overlap half-body of template
 ;                                             $fOverlapping = 2     : no overlapping,only border touching possible
@@ -257,15 +258,14 @@ EndFunc   ;==>_cveCompareMatHist
 ;                  $iCompareMethod      - [optional] an integer value. Default is $CV_HISTCMP_CORREL.
 ;                  $iDstCn              - [optional] an integer value. Default is 0.
 ;                  $bAccumulate         - [optional] a boolean value. Default is False.
-;                  $iLimit              - [optional] an integer value. Default is 100.
-; Return values .: An array of matches [[x1, y1], [x2, y2], ..., [xn, yn]]
+; Return values .: An array of matches [[x1, y1, s1], [x2, y2, s2], ..., [xn, yn, sn]]
 ; Author ........: Stéphane MBAPE
 ; Modified ......:
 ; Sources .......: https://stackoverflow.com/a/28647930
 ;                  https://docs.opencv.org/4.5.1/d8/ded/samples_2cpp_2tutorial_code_2Histograms_Matching_2MatchTemplate_Demo_8cpp-example.html#a16
 ;                  https://vovkos.github.io/doxyrest-showcase/opencv/sphinx_rtd_theme/page_tutorial_histogram_calculation.html
 ; ===============================================================================================================================
-Func _cveFindTemplate($matImg, $matTempl, $fThreshold = 0.95, $iCode = -1, $iMatchMethod = $CV_TM_CCOEFF_NORMED, $matTemplMask = _cveNoArrayMat(), $fOverlapping = 2, $aChannels = _cveDefaultBGRChannels(), $aHistSize = _cveDefaultBGRHistSize(), $aRanges = _cveDefaultBGRRanges(), $iCompareMethod = $CV_HISTCMP_CORREL, $iDstCn = 0, $bAccumulate = False, $iLimit = 100)
+Func _cveFindTemplate($matImg, $matTempl, $fThreshold = 0.95, $iMatchMethod = $CV_TM_CCOEFF_NORMED, $matTemplMask = _cveNoArrayMat(), $iLimit = 20, $iCode = -1, $fOverlapping = 2, $aChannels = _cveDefaultBGRChannels(), $aHistSize = _cveDefaultBGRHistSize(), $aRanges = _cveDefaultBGRRanges(), $iCompareMethod = $CV_HISTCMP_CORREL, $iDstCn = 0, $bAccumulate = False)
 	Local $matCvtImg = $matImg
 	Local $matCvtTempl = $matTempl
 
@@ -327,7 +327,7 @@ Func _cveFindTemplate($matImg, $matTempl, $fThreshold = 0.95, $iCode = -1, $iMat
 	Local $fHistScore = 1
 	Local $fScore = 0
 	Local $fVisited
-	Local $aResult[$iLimit][2]
+	Local $aResult[$iLimit][3]
 	Local $iFound = 0
 
 	; For SQDIFF and SQDIFF_NORMED, the best matches are lower values. For all the other methods, the higher the better
@@ -370,12 +370,15 @@ Func _cveFindTemplate($matImg, $matTempl, $fThreshold = 0.95, $iCode = -1, $iMat
 			; ConsoleWrite("$fHistScore: " & $fHistScore & @CRLF)
 		EndIf
 
-		If $fScore * $fHistScore < $fThreshold Then
+		$fScore *= $fHistScore
+
+		If $fScore < $fThreshold Then
 			ExitLoop
 		EndIf
 
 		$aResult[$iFound][0] = $tMatchLoc.x
 		$aResult[$iFound][1] = $tMatchLoc.y
+		$aResult[$iFound][2] = $fScore
 		$iFound = $iFound + 1
 
 		; Mark as visited
@@ -424,7 +427,7 @@ Func _cveFindTemplate($matImg, $matTempl, $fThreshold = 0.95, $iCode = -1, $iMat
 		_cveMatRelease($matCvtImg)
 	EndIf
 
-	ReDim $aResult[$iFound][2]
+	ReDim $aResult[$iFound][3]
 
 	Return $aResult
 EndFunc   ;==>_cveFindTemplate

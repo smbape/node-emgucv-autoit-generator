@@ -176,7 +176,7 @@ Func Main()
 
     $sMask = ControlGetText($FormGUI, "", $InputMask)
     If $sMask <> "" Then
-        $mask = _cveImreadAndCheck($sMask, $CV_IMREAD_COLOR)
+        $mask = _cveImreadAndCheck($sMask, $CV_IMREAD_GRAYSCALE)
         If @error Then
             _cveMatRelease($img)
             _cveMatRelease($templ)
@@ -247,7 +247,7 @@ Func MultiMatchTemplate()
     ;;! [copy_source]
 
     ;;! [match_template]
-    Local $aMatches = _cveFindTemplate($img_display, $templ, $threshold, $CV_COLOR_BGRA2BGR, $match_method, $mask)
+    Local $aMatches = _cveFindTemplate($img_display, $templ, $threshold, $match_method, $mask)
     Local $iMatches = UBound($aMatches)
     For $i = 0 To $iMatches - 1
         $tMatchRect.x = $aMatches[$i][0]

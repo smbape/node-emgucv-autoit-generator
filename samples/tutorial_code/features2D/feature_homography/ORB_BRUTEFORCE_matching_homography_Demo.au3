@@ -44,7 +44,7 @@ GUICtrlSetData(-1, "BruteForce|BruteForce-L1|BruteForce-Hamming|BruteForce-Hammi
 
 Local $BtnExec = GUICtrlCreateButton("Execute", 832, 48, 75, 25)
 
-Local $LabelMatches = GUICtrlCreateLabel("Good Matches & Object detection", 377, 144, 245, 20)
+Local $LabelMatches = GUICtrlCreateLabel("Good Matches && Object detection", 377, 144, 245, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $GroupMatches = GUICtrlCreateGroup("", 20, 166, 958, 532)
 Local $PicMatches = GUICtrlCreatePic("", 25, 177, 948, 516)

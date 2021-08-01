@@ -36,6 +36,18 @@ Local $BtnTemplate = GUICtrlCreateButton("Template", 825, 50, 75, 25)
 Local $InputMask = GUICtrlCreateInput($OPENCV_SAMPLES_DATA_PATH & "\mask.png", 366, 88, 449, 21)
 Local $BtnMask = GUICtrlCreateButton("Mask", 825, 86, 75, 25)
 
+Local $CheckboxGrayScale = GUICtrlCreateCheckbox("Gray scale", 152, 64, 97, 17)
+GUICtrlSetState(-1, $GUI_CHECKED)
+GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
+
+Local $CheckboxCanny = GUICtrlCreateCheckbox("Canny", 152, 96, 97, 17)
+GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
+
+Local $LabelThreshold = GUICtrlCreateLabel("Threshold: 0.6", 153, 128, 110, 20)
+GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
+Local $SliderThreshold = GUICtrlCreateSlider(260, 128, 334, 45)
+GUICtrlSetData(-1, 60)
+
 Local $LabelMethod = GUICtrlCreateLabel("Method:", 604, 128, 59, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $ComboMethod = GUICtrlCreateCombo("", 670, 128, 145, 25, BitOR($GUI_SS_DEFAULT_COMBO, $CBS_SIMPLE))
@@ -85,17 +97,20 @@ Local $tRedColor = _cvScalar(0, 0, 255)
 Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 
 Local $sSource = "", $sTemplate = "", $sMask = ""
-Local $img, $templ, $mask, $match_method
+Local $img, $img_gray, $img_size, $templ, $templ_gray, $templ_size, $mask, $match_method, $scale_direction, $min_scale, $max_scale, $threshold
 Local $nMsg
 
 Local $aMethods[6] = [$CV_TM_SQDIFF, $CV_TM_SQDIFF_NORMED, $CV_TM_CCORR, $CV_TM_CCORR_NORMED, $CV_TM_CCOEFF, $CV_TM_CCOEFF_NORMED]
 _GUICtrlComboBox_SetCurSel($ComboMethod, 3)
 
-Local $image_window = "Source Image";
-Local $result_window = "Result window";
+Local $image_window = "Source Image" ;
+Local $result_window = "Result window" ;
 Local $use_mask = False
 
 Main()
+
+Local $current_threshold = GUICtrlRead($SliderThreshold)
+Local $last_threshold = $current_threshold
 
 While 1
 	$nMsg = GUIGetMsg()
@@ -127,7 +142,15 @@ While 1
 			Else
 				ControlSetText($FormGUI, "", $InputMask, $sMask)
 			EndIf
+		Case $CheckboxGrayScale
+			Clean()
+			Main()
+		Case $CheckboxCanny
+			Clean()
+			Main()
 		Case $ComboMethod
+			MatchingMethod()
+		Case $SliderThreshold
 			MatchingMethod()
 		Case $BtnExec
 			Clean()
@@ -184,6 +207,40 @@ Func Main()
 	EndIf
 	;;! [Display]
 
+	$img_size = _cvSize()
+	_cveMatGetSize($img, $img_size)
+
+	$templ_size = _cvSize()
+	_cveMatGetSize($templ, $templ_size)
+
+	; convert to gray to speed up computation
+	If _IsChecked($CheckboxGrayScale) Then
+		$img_gray = _cveMatCreate()
+		_cveCvtColorMat($img, $img_gray, $CV_COLOR_BGR2GRAY)
+
+		$templ_gray = _cveMatCreate()
+		_cveCvtColorMat($templ, $templ_gray, $CV_COLOR_BGR2GRAY)
+	Else
+		$img_gray = $img
+		$templ_gray = $templ
+	EndIf
+
+	; finds edges in the input image and marks them in the output map edges using the Canny algorithm
+	; also a tip to speed up computation
+	If _IsChecked($CheckboxGrayScale) And _IsChecked($CheckboxCanny) Then
+		_cveCannyMat($templ_gray, $templ_gray, 50, 200)
+	EndIf
+
+	If $img_size.width >= $templ_size.width And $img_size.height >= $templ_size.height Then
+		$scale_direction = 1
+		$min_scale = 1
+	Else
+		$scale_direction = -1
+		$min_scale = Round(_Max($templ_size.width / $img_size.width, $templ_size.height / $img_size.height))
+	EndIf
+
+	$max_scale = 2.5 * $min_scale
+
 	MatchingMethod()
 EndFunc   ;==>Main
 
@@ -202,8 +259,9 @@ EndFunc   ;==>Clean
 
 Func MatchingMethod()
 	$match_method = $aMethods[_GUICtrlComboBox_GetCurSel($ComboMethod)]
+	Local $method_accepts_mask = $CV_TM_SQDIFF == $match_method Or $match_method == $CV_TM_CCORR_NORMED ;
 
-	If $CV_TM_SQDIFF == $match_method Or $match_method == $CV_TM_CCORR_NORMED Then
+	If $method_accepts_mask Then
 		GUICtrlSetState($InputMask, $GUI_ENABLE)
 		GUICtrlSetState($BtnMask, $GUI_ENABLE)
 	Else
@@ -211,78 +269,85 @@ Func MatchingMethod()
 		GUICtrlSetState($BtnMask, $GUI_DISABLE)
 	EndIf
 
+	If _IsChecked($CheckboxGrayScale) Then
+		GUICtrlSetState($CheckboxCanny, $GUI_ENABLE)
+	Else
+		GUICtrlSetState($CheckboxCanny, $GUI_DISABLE)
+	EndIf
+
+	$threshold = GUICtrlRead($SliderThreshold) / 100
+	GUICtrlSetData($LabelThreshold, "Threshold: " & StringFormat("%.2f", $threshold))
+
 	If $sSource == "" Then Return
 
-	;;! [copy_source]
-	;;/ Source image to display
+	Local $tDsize = _cvSize()
+	Local $tMatchRect = _cvRect(0, 0, $templ_size.width, $templ_size.height)
+	Local $scale, $img_resized, $aMatches
+	Local $fBestScore = 0
+	Local $tBestMatchRect = _cvRect()
+
+	For $i = $min_scale To $max_scale Step 0.25
+		$scale = $i ^ $scale_direction
+
+		$tDsize.width = $img_size.width / $scale
+		$tDsize.height = $img_size.height / $scale
+		If ($tDsize.width < $templ_size.width) Or ($tDsize.height < $templ_size.height) Then
+			ExitLoop
+		EndIf
+
+		; Resize the image and draw edges
+		$img_resized = _cveMatCreate()
+		_cveResizeMat($img_gray, $img_resized, $tDsize)
+
+		If _IsChecked($CheckboxGrayScale) And _IsChecked($CheckboxCanny) Then
+			_cveCannyMat($img_resized, $img_resized, 50, 200)
+		EndIf
+
+		_cveMatGetSize($img_resized, $tDsize)
+
+		;;! [match_template]
+		Local $rw = $tDsize.width - $templ_size.width + 1 ;
+		Local $rh = $tDsize.height - $templ_size.height + 1 ;
+		Local $mat_result = _cveMatCreate()
+		_cveMatCreateData($mat_result, $rh, $rw, $CV_32FC1)
+
+		$aMatches = _cveFindTemplate($img_resized, $templ_gray, $threshold, $match_method, $mask, 1)
+		Local $iMatches = UBound($aMatches)
+		For $m = 0 To $iMatches - 1 Step 1
+			$tMatchRect.x = $aMatches[$m][0]
+			$tMatchRect.y = $aMatches[$m][1]
+
+			If $fBestScore < $aMatches[$m][2] Then
+				$fBestScore = $aMatches[$m][2]
+				$tBestMatchRect.x = $aMatches[$m][0] * $scale
+				$tBestMatchRect.y = $aMatches[$m][1] * $scale
+				$tBestMatchRect.width = $tMatchRect.width * $scale
+				$tBestMatchRect.height = $tMatchRect.height * $scale
+			EndIf
+
+			; Draw a red rectangle around the matched position
+			_cveRectangleMat($img_resized, $tMatchRect, $tGreenColor, 2, $CV_LINE_8, 0)
+		Next
+		;;! [match_template]
+
+		;;! [imshow]
+		_cveImshowControlPic($img_resized, $FormGUI, $PicMatchTemplate, $tBackgroundColor)
+		;;! [imshow]
+
+		_cveMatRelease($img_resized)
+		Sleep(100)
+	Next
+
+	;;! [imshow]
+	; Draw a red rectangle around the matched position
 	Local $img_display = _cveMatCreate()
 	_cveMatCopyToMat($img, $img_display, _cveNoArrayMat())
-	;;! [copy_source]
-
-	;;! [create_result_matrix]
-	;;/ Create the result matrix
-	Local $cvSizeImg = _cvSize()
-	_cveMatGetSize($img, $cvSizeImg)
-
-	Local $cvSizeTempl = _cvSize()
-	_cveMatGetSize($templ, $cvSizeTempl)
-
-	Local $result_cols = $cvSizeImg.width - $cvSizeTempl.width + 1 ;
-	Local $result_rows = $cvSizeImg.height - $cvSizeTempl.height + 1 ;
-
-	Local $result = _cveMatCreate()
-	_cveMatCreateData($result, $result_rows, $result_cols, $CV_32FC1)
-	;;! [create_result_matrix]
-
-	;;! [match_template]
-	;;/ Do the Matching and Normalize
-	Local $method_accepts_mask = $CV_TM_SQDIFF == $match_method Or $match_method == $CV_TM_CCORR_NORMED ;
-	If $use_mask And $method_accepts_mask Then
-		_cveMatchTemplateMat($img, $templ, $result, $match_method, $mask) ;
-	Else
-		_cveMatchTemplateMat($img, $templ, $result, $match_method) ;
-	EndIf
-	;;! [match_template]
-
-	;;! [normalize]
-	_cveNormalizeMat($result, $result, 0, 1, $CV_NORM_MINMAX, -1, _cveNoArrayMat())  ;
-	;;! [normalize]
-
-	;;! [best_match]
-	;;/ Localizing the best match with minMaxLoc
-	Local $minVal = DllStructCreate("double value;")
-	Local $maxVal = DllStructCreate("double value;")
-	Local $minLoc = DllStructCreate($tagCvPoint)
-	Local $maxLoc = DllStructCreate($tagCvPoint)
-
-	Local $matchLoc
-
-	_cveMinMaxLocMat($result, $minVal, $maxVal, $minLoc, $maxLoc, _cveNoArrayMat())  ;
-	;;! [best_match]
-
-	;;! [match_loc]
-	;;/ For SQDIFF and SQDIFF_NORMED, the best matches are lower values. For all the other methods, the higher the better
-	If $match_method == $CV_TM_SQDIFF Or $match_method == $CV_TM_SQDIFF_NORMED Then
-		$matchLoc = $minLoc
-	Else
-		$matchLoc = $maxLoc
-	EndIf
-	;;! [match_loc]
-
-	;;! [imshow]
-	;;/ Show me what you got
-	Local $matchRect = _cvRect($matchLoc.x, $matchLoc.y, $cvSizeTempl.width, $cvSizeTempl.height)
-
-	_cveRectangleMat($img_display, $matchRect, $tGreenColor, 2, 8, 0)  ;
-	_cveRectangleMat($result, $matchRect, _cvScalarAll(0), 2, 8, 0)  ;
-
-	; _cveImshowMat( $image_window, $img_display );
-	; _cveImshowMat( $result_window, $result );
-
-	_cveImshowControlPic($img_display, $FormGUI, $PicMatchTemplate, $tBackgroundColor)
-	_cveImshowControlPic($result, $FormGUI, $PicResultImage, $tBackgroundColor)
-	;;! [imshow]
-
-	_cveMatRelease($result)
+	_cveRectangleMat($img_display, $tBestMatchRect, $tGreenColor, 2, $CV_LINE_8, 0)
+	_cveImshowControlPic($img_display, $FormGUI, $PicResultImage, $tBackgroundColor)
 	_cveMatRelease($img_display)
+	;;! [imshow]
 EndFunc   ;==>MatchingMethod
+
+Func _IsChecked($idControlID)
+	Return BitAND(GUICtrlRead($idControlID), $GUI_CHECKED) = $GUI_CHECKED
+EndFunc   ;==>_IsChecked
