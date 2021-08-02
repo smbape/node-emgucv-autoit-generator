@@ -57,7 +57,7 @@ Local $nMsg
 Local $src, $brg_planes, $histImage, $b_hist, $g_hist, $r_hist
 
 Local $addon_dll = ""
-Local $aSearchDirs[3] = [@ScriptDir & "\..\..\..\autoit-addon\build_x64\Release", @ScriptDir & "\..\..\..\autoit-addon\build_x64\Debug", @ScriptDir]
+Local $aSearchDirs[3] = [@ScriptDir, @ScriptDir & "\..\..\..\autoit-addon\build_x64\Release", @ScriptDir & "\..\..\..\autoit-addon\build_x64\Debug"]
 For $i = 0 To UBound($aSearchDirs) - 1
 	$addon_dll = $aSearchDirs[$i] & "\autoit_addon.dll"
 	If FileExists($addon_dll) Then ExitLoop
@@ -176,7 +176,7 @@ Func Main()
 					_cvPoint($bin_w * $i, $hist_h - Round(_cveMatGetAt("float", $r_hist, _cvPoint(0, $i)))), _
 					$tRedColor, 2, 8, 0) ;
 		Next
-		ConsoleWrite("Easy loop " & TimerDiff($hTimer) & @CRLF)
+		ConsoleWrite("Easy loop " & TimerDiff($hTimer) & "ms" & @CRLF)
 		;;! [Inefficient, but easier to write, way of doing _cveMatGetAt in a loop]
 	ElseIf $addon_dll == "" Then
 		;;! [Efficient, but harder to write, way of doing _cveMatGetAt in a loop]
@@ -211,14 +211,22 @@ Func Main()
 					_cvPoint($bin_w * $i, $hist_h - Round(DllStructGetData($r_data_struct, 1, $i + 1))), _
 					$tRedColor, 2, 8, 0) ;
 		Next
-		ConsoleWrite("Optimized loop " & TimerDiff($hTimer) & @CRLF)
+		ConsoleWrite("Optimized loop " & TimerDiff($hTimer) & "ms" & @CRLF)
 		;;! [Efficient, but harder to write, way of doing _cveMatGetAt in a loop]
 	Else
-		;;: [The hardcore way of dealing with loop is by make a dll that does the loop]
+		;;: [A way of dealing with slow loops in auto is to make a dll that does the loop]
 		$hTimer = TimerInit()
-		CVEDllCallResult(DllCall($addon_dll, "none:cdecl", "draw", "ptr", $histImage, "int", $histSize[0], "int", $hist_w, "int", $hist_h, "ptr", $b_hist, "ptr", $g_hist, "ptr", $r_hist), "draw", @error)
-		ConsoleWrite("Dll loop " & TimerDiff($hTimer) & @CRLF)
-		;;: [The hardcore way of dealing with loop is by make a dll that does the loop]
+		CVEDllCallResult(DllCall($addon_dll, "none:cdecl", "calcHist_Demo_draw", _
+			"ptr", $histImage, _
+			"int", $histSize[0], _
+			"int", $hist_w, _
+			"int", $hist_h, _
+			"ptr", $b_hist, _
+			"ptr", $g_hist, _
+			"ptr", $r_hist _
+		), "calcHist_Demo_draw", @error)
+		ConsoleWrite("Dll loop " & TimerDiff($hTimer) & "ms" & @CRLF)
+		;;: [A way of dealing with slow loops in auto is to make a dll that does the loop]
 	EndIf
 	;;! [Draw for each channel]
 

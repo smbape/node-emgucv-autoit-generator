@@ -35,7 +35,7 @@ Local $BtnScene = GUICtrlCreateButton("Scene", 689, 50, 75, 25)
 Local $LabelAlgorithm = GUICtrlCreateLabel("Algorithm", 150, 92, 69, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $ComboAlgorithm = GUICtrlCreateCombo("", 230, 92, 169, 25, BitOR($GUI_SS_DEFAULT_COMBO,$CBS_SIMPLE))
-GUICtrlSetData(-1, "ORB|Brisk|FAST|MSER|SimpleBlobDetector")
+GUICtrlSetData(-1, "ORB|Brisk|FAST|MSER|SimpleBlob|GFTT|KAZE|AKAZE|Agast")
 
 Local $LabelMatchType = GUICtrlCreateLabel("Match type", 414, 92, 79, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
@@ -67,6 +67,10 @@ Local $BRISK_DETECTOR = 1
 Local $FAST_DETECTOR = 2
 Local $MSER_DETECTOR = 3
 Local $SIMPLE_BLOB_DETECTOR = 4
+Local $GFTT_DETECTOR = 5
+Local $KAZE_DETECTOR = 6
+Local $AKAZE_DETECTOR = 7
+Local $AGAST_DETECTOR = 8
 
 _GUICtrlComboBox_SetCurSel($ComboAlgorithm, 0)
 _GUICtrlComboBox_SetCurSel($ComboMatchType, 2)
@@ -151,23 +155,44 @@ Func Detect()
 	Local $algorithm = _GUICtrlComboBox_GetCurSel($ComboAlgorithm)
 	Local $match_type = $aMatchTypes[_GUICtrlComboBox_GetCurSel($ComboMatchType)]
 
-	Local $can_compute = $algorithm == $ORB_DETECTOR Or $algorithm == $BRISK_DETECTOR
+	Local $can_compute = False
 
 	;;-- Step 1: Detect the keypoints using ORB Detector, compute the descriptors
 	Local $tFeature2DPtr = DllStructCreate("ptr value")
 	Local $tSharedPtr = DllStructCreate("ptr")
+	Local $destructor
 
 	Switch $algorithm
 		Case $ORB_DETECTOR
+			$can_compute = True
 			_cveOrbCreate(500, 1.2, 8, 31, 0, 2, $CV_ORB_HARRIS_SCORE, 31, 20, $tFeature2DPtr, $tSharedPtr)
+			$destructor = "_cveOrbRelease"
 		Case $BRISK_DETECTOR
+			$can_compute = True
 			_cveBriskCreate(30, 3, 1, $tFeature2DPtr, $tSharedPtr)
+			$destructor = "_cveBriskRelease"
 		Case $FAST_DETECTOR
 			_cveFASTFeatureDetectorCreate(10, True, $CV_FAST_FEATURE_DETECTOR_TYPE_9_16, $tFeature2DPtr, $tSharedPtr)
+			$destructor = "_cveFASTFeatureDetectorRelease"
 		Case $MSER_DETECTOR
 			_cveMserCreate(5, 60, 14400, 0.25, 0.2, 200, 1.01, 0.003, 5, $tFeature2DPtr, $tSharedPtr)
+			$destructor = "_cveMserRelease"
 		Case $SIMPLE_BLOB_DETECTOR
 			_cveSimpleBlobDetectorCreate($tFeature2DPtr, $tSharedPtr)
+			$destructor = "_cveSimpleBlobDetectorRelease"
+		Case $GFTT_DETECTOR
+			_cveGFTTDetectorCreate(1000, 0.01, 1, 3, False, 0.04, $tFeature2DPtr, $tSharedPtr)
+			$destructor = "cveGFTTDetectorRelease"
+		Case $KAZE_DETECTOR
+			_cveKAZEDetectorCreate(false, false, 0.001, 4, 4, $CV_KAZE_DIFF_PM_G2, $tFeature2DPtr, $tSharedPtr)
+			$destructor = "_cveKAZEDetectorRelease"
+		Case $AKAZE_DETECTOR
+			$can_compute = True
+			_cveAKAZEDetectorCreate($CV_AKAZE_DESCRIPTOR_MLDB, 0, 3, 0.001, 4, 4, $CV_KAZE_DIFF_PM_G2, $tFeature2DPtr, $tSharedPtr)
+			$destructor = "_cveAKAZEDetectorRelease"
+		Case $AGAST_DETECTOR
+			_cveAgastFeatureDetectorCreate(10, True, $CV_AGAST_FEATURE_DETECTOR_OAST_9_16, $tFeature2DPtr, $tSharedPtr)
+			$destructor = "_cveAgastFeatureDetectorRelease"
 	EndSwitch
 
 	Local $detector = $tFeature2DPtr.value
@@ -345,16 +370,5 @@ Func Detect()
 	_VectorOfKeyPointRelease($keypoints_scene)
 	_VectorOfKeyPointRelease($keypoints_object)
 
-	Switch $algorithm
-		Case $ORB_DETECTOR
-			_cveOrbRelease($tSharedPtr)
-		Case $BRISK_DETECTOR
-			_cveBriskRelease($tSharedPtr)
-		Case $FAST_DETECTOR
-			_cveFASTFeatureDetectorRelease($tSharedPtr)
-		Case $MSER_DETECTOR
-			_cveMserRelease($tSharedPtr)
-		Case $SIMPLE_BLOB_DETECTOR
-			_cveSimpleBlobDetectorRelease($tSharedPtr)
-	EndSwitch
+	Call($destructor, $tSharedPtr)
 EndFunc   ;==>Detect

@@ -131,7 +131,8 @@ module.exports = {
     },
 
     declaration(...args) {
-        const [argType] = args[1];
+        const argType = args[1][0].replace("const ", "");
+
         if (hasProp.call(DECLARATION_MAP, argType)) {
             return DECLARATION_MAP[argType](...args);
         }

@@ -259,6 +259,11 @@ EndFunc   ;==>_cveImread
 Func _cveImreadmulti($filename, $mats, $flags = $CV_IMREAD_ANYCOLOR)
     ; CVAPI(bool) cveImreadmulti(const cv::String* filename, std::vector<cv::Mat>* mats, int flags);
 
+    Local $bFilenameIsString = VarGetType($filename) == "String"
+    If $bFilenameIsString Then
+        $filename = _cveStringCreateFromStr($filename)
+    EndIf
+
     Local $bFilenameDllType
     If VarGetType($filename) == "DLLStruct" Then
         $bFilenameDllType = "struct*"
@@ -291,6 +296,10 @@ Func _cveImreadmulti($filename, $mats, $flags = $CV_IMREAD_ANYCOLOR)
 
     If $bMatsIsArray Then
         _VectorOfMatRelease($vecMats)
+    EndIf
+
+    If $bFilenameIsString Then
+        _cveStringRelease($filename)
     EndIf
 
     Return $retval

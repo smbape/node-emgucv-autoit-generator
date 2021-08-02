@@ -7286,11 +7286,21 @@ EndFunc   ;==>_cveRanduMat
 Func _cveFileStorageCreate($source, $flags, $encoding)
     ; CVAPI(cv::FileStorage*) cveFileStorageCreate(const cv::String* source, int flags, const cv::String* encoding);
 
+    Local $bSourceIsString = VarGetType($source) == "String"
+    If $bSourceIsString Then
+        $source = _cveStringCreateFromStr($source)
+    EndIf
+
     Local $bSourceDllType
     If VarGetType($source) == "DLLStruct" Then
         $bSourceDllType = "struct*"
     Else
         $bSourceDllType = "ptr"
+    EndIf
+
+    Local $bEncodingIsString = VarGetType($encoding) == "String"
+    If $bEncodingIsString Then
+        $encoding = _cveStringCreateFromStr($encoding)
     EndIf
 
     Local $bEncodingDllType
@@ -7299,7 +7309,18 @@ Func _cveFileStorageCreate($source, $flags, $encoding)
     Else
         $bEncodingDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFileStorageCreate", $bSourceDllType, $source, "int", $flags, $bEncodingDllType, $encoding), "cveFileStorageCreate", @error)
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFileStorageCreate", $bSourceDllType, $source, "int", $flags, $bEncodingDllType, $encoding), "cveFileStorageCreate", @error)
+
+    If $bEncodingIsString Then
+        _cveStringRelease($encoding)
+    EndIf
+
+    If $bSourceIsString Then
+        _cveStringRelease($source)
+    EndIf
+
+    Return $retval
 EndFunc   ;==>_cveFileStorageCreate
 
 Func _cveFileStorageIsOpened($storage)

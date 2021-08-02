@@ -16,6 +16,11 @@ Func _cveDnnSuperResImplSetModel($dnnSuperRes, $algo, $scale)
         $bDnnSuperResDllType = "ptr"
     EndIf
 
+    Local $bAlgoIsString = VarGetType($algo) == "String"
+    If $bAlgoIsString Then
+        $algo = _cveStringCreateFromStr($algo)
+    EndIf
+
     Local $bAlgoDllType
     If VarGetType($algo) == "DLLStruct" Then
         $bAlgoDllType = "struct*"
@@ -24,6 +29,10 @@ Func _cveDnnSuperResImplSetModel($dnnSuperRes, $algo, $scale)
     EndIf
 
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnSuperResImplSetModel", $bDnnSuperResDllType, $dnnSuperRes, $bAlgoDllType, $algo, "int", $scale), "cveDnnSuperResImplSetModel", @error)
+
+    If $bAlgoIsString Then
+        _cveStringRelease($algo)
+    EndIf
 EndFunc   ;==>_cveDnnSuperResImplSetModel
 
 Func _cveDnnSuperResImplReadModel1($dnnSuperRes, $path)
@@ -36,6 +45,11 @@ Func _cveDnnSuperResImplReadModel1($dnnSuperRes, $path)
         $bDnnSuperResDllType = "ptr"
     EndIf
 
+    Local $bPathIsString = VarGetType($path) == "String"
+    If $bPathIsString Then
+        $path = _cveStringCreateFromStr($path)
+    EndIf
+
     Local $bPathDllType
     If VarGetType($path) == "DLLStruct" Then
         $bPathDllType = "struct*"
@@ -44,6 +58,10 @@ Func _cveDnnSuperResImplReadModel1($dnnSuperRes, $path)
     EndIf
 
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnSuperResImplReadModel1", $bDnnSuperResDllType, $dnnSuperRes, $bPathDllType, $path), "cveDnnSuperResImplReadModel1", @error)
+
+    If $bPathIsString Then
+        _cveStringRelease($path)
+    EndIf
 EndFunc   ;==>_cveDnnSuperResImplReadModel1
 
 Func _cveDnnSuperResImplReadModel2($dnnSuperRes, $weights, $definition)
@@ -54,6 +72,11 @@ Func _cveDnnSuperResImplReadModel2($dnnSuperRes, $weights, $definition)
         $bDnnSuperResDllType = "struct*"
     Else
         $bDnnSuperResDllType = "ptr"
+    EndIf
+
+    Local $bWeightsIsString = VarGetType($weights) == "String"
+    If $bWeightsIsString Then
+        $weights = _cveStringCreateFromStr($weights)
     EndIf
 
     Local $bWeightsDllType
@@ -79,6 +102,10 @@ Func _cveDnnSuperResImplReadModel2($dnnSuperRes, $weights, $definition)
 
     If $bDefinitionIsString Then
         _cveStringRelease($definition)
+    EndIf
+
+    If $bWeightsIsString Then
+        _cveStringRelease($weights)
     EndIf
 EndFunc   ;==>_cveDnnSuperResImplReadModel2
 
