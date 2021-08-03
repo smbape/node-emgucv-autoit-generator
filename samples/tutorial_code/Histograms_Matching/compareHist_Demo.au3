@@ -17,7 +17,7 @@ Opt("MustDeclareVars", 1)
 #include "..\..\Table.au3"
 
 ;~ Sources:
-;~     https://docs.opencv.org/4.5.2/d8/dc8/tutorial_histogram_comparison.html
+;~     https://docs.opencv.org/4.5.3/d8/dc8/tutorial_histogram_comparison.html
 ;~     https://github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/Histograms_Matching/compareHist_Demo.cpp
 ;~     https://www.autoitscript.com/forum/topic/105814-table-udf/
 
@@ -75,7 +75,7 @@ GUISetState(@SW_UNLOCK)
 #EndRegion ### END Koda GUI section ###
 
 _GDIPlus_Startup()
-_OpenCV_DLLOpen(@ScriptDir & "\..\..\..\libemgucv-windesktop-4.5.2.4673\libs\x64\cvextern.dll")
+_OpenCV_DLLOpen(@ScriptDir & "\..\..\..\libemgucv-windesktop-4.5.3.4721\libs\x64\cvextern.dll")
 
 Local $tBlueColor = _cvScalar(255, 0, 0)
 Local $tGreenColor = _cvScalar(0, 255, 0)

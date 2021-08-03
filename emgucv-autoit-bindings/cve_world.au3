@@ -1,6 +1,7 @@
 #include-once
 #include "Emgu.CV.Extern\alphamat\alphamat_c.au3"
 #include "Emgu.CV.Extern\aruco\aruco_c.au3"
+#include "Emgu.CV.Extern\barcode\barcode_c.au3"
 #include "Emgu.CV.Extern\bgsegm\bgsegm_c.au3"
 #include "Emgu.CV.Extern\bioinspired\bioinspired_c.au3"
 #include "Emgu.CV.Extern\calib3d\calib3d_c.au3"
@@ -156,6 +157,7 @@
 #include "Emgu.CV.Extern\video\BackgroundSubtractorMOG2_property.au3"
 #include "Emgu.CV.Extern\video\disopticalflow_property.au3"
 #include "Emgu.CV.Extern\video\kalmanfilter_property.au3"
+#include "Emgu.CV.Extern\video\TrackerDaSiamRPN_property.au3"
 #include "Emgu.CV.Extern\video\variational_refinement_property.au3"
 #include "Emgu.CV.Extern\video\video_c.au3"
 #include "Emgu.CV.Extern\videoio\videoio_c_extra.au3"

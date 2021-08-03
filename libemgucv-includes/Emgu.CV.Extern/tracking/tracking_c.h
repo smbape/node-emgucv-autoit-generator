@@ -88,6 +88,7 @@ CVAPI(cv::TrackerCSRT*) cveTrackerCSRTCreate(
 	cv::Ptr<cv::TrackerCSRT>** sharedPtr);
 CVAPI(void) cveTrackerCSRTRelease(cv::TrackerCSRT** tracker, cv::Ptr<cv::TrackerCSRT>** sharedPtr);
 
+
 CVAPI(bool) cveLegacyTrackerInit(cv::legacy::Tracker* tracker, cv::Mat* image, CvRect* boundingBox);
 CVAPI(bool) cveLegacyTrackerUpdate(cv::legacy::Tracker* tracker, cv::Mat* image, CvRect* boundingBox);
 

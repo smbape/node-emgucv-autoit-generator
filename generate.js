@@ -12,6 +12,10 @@ const { convertToAutoIt } = require("./src/autoit-converter");
 
 const {hasOwnProperty: hasProp} = Object.prototype;
 
+const regexEscape = str => {
+    return str.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+};
+
 const normalizeVectType = type => {
     return type.replace(/^const /, "").replace(/ *< */g, "<").replace(/ *> */g, ">");
 };
@@ -537,12 +541,13 @@ const options = require("./src/options");
 const parser = new ExportsParser(true, options);
 
 const vcxprojPath = fs.realpathSync(sysPath.join(__dirname, "emgucv\\build_x64\\Emgu.CV.Extern\\cvextern.vcxproj"));
-
-// const localPath = fs.realpathSync(sysPath.join(__dirname, "emgucv\\Emgu.CV.Extern\\imgproc"));
 const localPath = fs.realpathSync(sysPath.join(__dirname, "emgucv\\Emgu.CV.Extern"));
-
-// const remotePath = fs.realpathSync(sysPath.join(__dirname, "emgucv-autoit-bindings\\Emgu.CV.Extern\\imgproc"));
 const remotePath = fs.realpathSync(sysPath.join(__dirname, "emgucv-autoit-bindings\\Emgu.CV.Extern"));
+
+const emgucv = sysPath.join(__dirname, "emgucv");
+const emgucv_extern = sysPath.join(__dirname, "emgucv\\Emgu.CV.Extern");
+const remgucv = fs.realpathSync(emgucv);
+const remgucv_extern = fs.realpathSync(emgucv_extern);
 
 const remoteBaseDir = sysPath.dirname(remotePath);
 const remoteBase = sysPath.basename(remotePath);
@@ -582,6 +587,9 @@ waterfall([
     },
 
     (vcxproj, next) => {
+        // handle cases where emgucv is a symlink and vcxproj containes symlink paths not real paths
+        vcxproj = vcxproj.toString().replace(new RegExp(regexEscape(emgucv_extern), "g"), remgucv_extern).replace(new RegExp(regexEscape(emgucv), "g"), remgucv);
+
         getIncludedFiles(vcxproj, options, (err, included) => {
             next(err, vcxproj, included);
         });

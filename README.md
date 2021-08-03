@@ -7,7 +7,7 @@ If yes, then this udf might be for you.
 
 ## Prerequisites
 
-  - Download and extract [libemgucv-windesktop-4.5.2.4673.zip](https://github.com/emgucv/emgucv/releases/download/4.5.2/libemgucv-windesktop-4.5.2.4673.zip) into a folder
+  - Download and extract [libemgucv-windesktop-4.5.3.4721.zip](https://github.com/emgucv/emgucv/releases/download/4.5.2/libemgucv-windesktop-4.5.3.4721.zip) into a folder
   - Download the emgucv-autoit-bindings folder of this repository.
 
 ## Usage
@@ -22,7 +22,7 @@ Opt("MustDeclareVars", 1)
 #include "emgucv-autoit-bindings\cve_extra.au3"
 
 ; Open the library
-_OpenCV_DLLOpen("libemgucv-windesktop-4.5.2.4673\libs\x64\cvextern.dll")
+_OpenCV_DLLOpen("libemgucv-windesktop-4.5.3.4721\libs\x64\cvextern.dll")
 
 ; use any emgucv udf
 Local $img = _cveImreadAndCheck("lena.jpg")
@@ -44,9 +44,9 @@ _Opencv_DLLClose()
 git clone https://github.com/smbape/node-emgucv-autoit-generator
 cd node-emgucv-autoit-generator
 
-# download libemgucv-windesktop-4.5.2.4673 
-curl -L 'https://github.com/emgucv/emgucv/releases/download/4.5.2/libemgucv-windesktop-4.5.2.4673.zip' -o libemgucv-windesktop-4.5.2.4673.zip
-unzip libemgucv-windesktop-4.5.2.4673.zip -d libemgucv-windesktop-4.5.2.4673
+# download libemgucv-windesktop-4.5.3.4721 
+curl -L 'https://github.com/emgucv/emgucv/releases/download/4.5.2/libemgucv-windesktop-4.5.3.4721.zip' -o libemgucv-windesktop-4.5.3.4721.zip
+unzip libemgucv-windesktop-4.5.3.4721.zip -d libemgucv-windesktop-4.5.3.4721
 
 ```
 
@@ -94,7 +94,7 @@ git submodule update --init --recursive
 # Build emgucv cvextern.dll
 git apply -v emgucv.patch --directory emgucv
 find emgucv/ -type f -name '*.bat' -exec unix2dos '{}' \;
-(cd emgucv/platforms/windows; CMAKE_BUILD_TARGET=opencv_modules cmd.exe //c Build_Binary_x86-64_doc.bat)
+(cd $(realpath emgucv)/platforms/windows; CMAKE_BUILD_TYPE=Release ADDITIONAL_BUILD_TARGET=opencv_modules cmd.exe //c Build_Binary_x86.bat 64 nogpu vc no-openni "" "" build)
 ```
 
 ### Generate the UDF files

@@ -1371,6 +1371,18 @@ Func _cveGapiWarpAffine($src, $M, $dsize, $flags, $borderMode, $borderValue)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveGapiWarpAffine", $bSrcDllType, $src, $bMDllType, $M, $bDsizeDllType, $dsize, "int", $flags, "int", $borderMode, $bBorderValueDllType, $borderValue), "cveGapiWarpAffine", @error)
 EndFunc   ;==>_cveGapiWarpAffine
 
+Func _cveGapiTranspose($src)
+    ; CVAPI(cv::GMat*) cveGapiTranspose(cv::GMat* src);
+
+    Local $bSrcDllType
+    If VarGetType($src) == "DLLStruct" Then
+        $bSrcDllType = "struct*"
+    Else
+        $bSrcDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveGapiTranspose", $bSrcDllType, $src), "cveGapiTranspose", @error)
+EndFunc   ;==>_cveGapiTranspose
+
 Func _cveGComputationCreate1($input, $output)
     ; CVAPI(cv::GComputation*) cveGComputationCreate1(cv::GMat* input, cv::GMat* output);
 
@@ -2443,3 +2455,22 @@ Func _cveGapiRGB2YUV422($src)
     EndIf
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveGapiRGB2YUV422", $bSrcDllType, $src), "cveGapiRGB2YUV422", @error)
 EndFunc   ;==>_cveGapiRGB2YUV422
+
+Func _cveGapiStereo($left, $right, $of)
+    ; CVAPI(cv::GMat*) cveGapiStereo(cv::GMat* left, cv::GMat* right, int of);
+
+    Local $bLeftDllType
+    If VarGetType($left) == "DLLStruct" Then
+        $bLeftDllType = "struct*"
+    Else
+        $bLeftDllType = "ptr"
+    EndIf
+
+    Local $bRightDllType
+    If VarGetType($right) == "DLLStruct" Then
+        $bRightDllType = "struct*"
+    Else
+        $bRightDllType = "ptr"
+    EndIf
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveGapiStereo", $bLeftDllType, $left, $bRightDllType, $right, "int", $of), "cveGapiStereo", @error)
+EndFunc   ;==>_cveGapiStereo

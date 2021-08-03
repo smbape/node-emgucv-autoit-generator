@@ -19,7 +19,7 @@ Opt("GUIOnEventMode", 1)
 #include "..\..\Table.au3"
 
 ;~ Sources:
-;~     https://docs.opencv.org/4.5.2/da/d7f/tutorial_back_projection.html
+;~     https://docs.opencv.org/4.5.3/da/d7f/tutorial_back_projection.html
 ;~     https://github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/Histograms_Matching/calcBackProject_Demo1.cpp
 
 Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")
@@ -65,7 +65,7 @@ GUISetState(@SW_SHOW)
 _GUICtrlSlider_SetTicFreq($SliderBins, 1)
 
 _GDIPlus_Startup()
-_OpenCV_DLLOpen(@ScriptDir & "\..\..\..\libemgucv-windesktop-4.5.2.4673\libs\x64\cvextern.dll")
+_OpenCV_DLLOpen(@ScriptDir & "\..\..\..\libemgucv-windesktop-4.5.3.4721\libs\x64\cvextern.dll")
 
 Local $tBlueColor = _cvScalar(255, 0, 0)
 Local $tGreenColor = _cvScalar(0, 255, 0)

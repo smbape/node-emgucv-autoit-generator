@@ -19,7 +19,7 @@ Opt("MustDeclareVars", 1)
 #include "..\..\..\..\emgucv-autoit-bindings\cve_extra.au3"
 
 ;~ Sources:
-;~     https://docs.opencv.org/4.5.2/dc/dd3/tutorial_gausian_median_blur_bilateral_filter.html
+;~     https://docs.opencv.org/4.5.3/dc/dd3/tutorial_gausian_median_blur_bilateral_filter.html
 ;~     https://github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/ImgProc/Smoothing/Smoothing.cpp
 
 Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\..\data")
@@ -54,7 +54,7 @@ GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
 _GDIPlus_Startup()
-_OpenCV_DLLOpen(@ScriptDir & "\..\..\..\..\libemgucv-windesktop-4.5.2.4673\libs\x64\cvextern.dll")
+_OpenCV_DLLOpen(@ScriptDir & "\..\..\..\..\libemgucv-windesktop-4.5.3.4721\libs\x64\cvextern.dll")
 
 Local $tBlueColor = _cvScalar(255, 0, 0)
 Local $tGreenColor = _cvScalar(0, 255, 0)

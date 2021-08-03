@@ -18,7 +18,7 @@ Opt("MustDeclareVars", 1)
 #include "..\..\..\..\emgucv-autoit-bindings\cve_extra.au3"
 
 ;~ Sources:
-;~     https://docs.opencv.org/4.5.2/d7/dff/tutorial_feature_homography.html
+;~     https://docs.opencv.org/4.5.3/d7/dff/tutorial_feature_homography.html
 ;~     https://github.com/opencv/opencv/tree/master/samples/cpp/tutorial_code/features2D/feature_homography/SURF_FLANN_matching_homography_Demo.cpp
 
 Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\..\data")
@@ -76,7 +76,7 @@ _GUICtrlComboBox_SetCurSel($ComboAlgorithm, 0)
 _GUICtrlComboBox_SetCurSel($ComboMatchType, 2)
 
 _GDIPlus_Startup()
-_OpenCV_DLLOpen(@ScriptDir & "\..\..\..\..\libemgucv-windesktop-4.5.2.4673\libs\x64\cvextern.dll")
+_OpenCV_DLLOpen(@ScriptDir & "\..\..\..\..\libemgucv-windesktop-4.5.3.4721\libs\x64\cvextern.dll")
 
 Local $img_object, $img_scene
 Local $nMsg

@@ -1545,3 +1545,93 @@ Func _cveTrackerGOTURNRelease($tracker, $sharedPtr)
 
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTrackerGOTURNRelease", $bTrackerDllType, $tracker, $bSharedPtrDllType, $sharedPtr), "cveTrackerGOTURNRelease", @error)
 EndFunc   ;==>_cveTrackerGOTURNRelease
+
+Func _cveTrackerDaSiamRPNCreate($model, $kernel_cls1, $kernel_r1, $backend, $target, $tracker, $sharedPtr)
+    ; CVAPI(cv::TrackerDaSiamRPN*) cveTrackerDaSiamRPNCreate(cv::String* model, cv::String* kernel_cls1, cv::String* kernel_r1, int backend, int target, cv::Tracker** tracker, cv::Ptr< cv::TrackerDaSiamRPN >** sharedPtr);
+
+    Local $bModelIsString = VarGetType($model) == "String"
+    If $bModelIsString Then
+        $model = _cveStringCreateFromStr($model)
+    EndIf
+
+    Local $bModelDllType
+    If VarGetType($model) == "DLLStruct" Then
+        $bModelDllType = "struct*"
+    Else
+        $bModelDllType = "ptr"
+    EndIf
+
+    Local $bKernel_cls1IsString = VarGetType($kernel_cls1) == "String"
+    If $bKernel_cls1IsString Then
+        $kernel_cls1 = _cveStringCreateFromStr($kernel_cls1)
+    EndIf
+
+    Local $bKernel_cls1DllType
+    If VarGetType($kernel_cls1) == "DLLStruct" Then
+        $bKernel_cls1DllType = "struct*"
+    Else
+        $bKernel_cls1DllType = "ptr"
+    EndIf
+
+    Local $bKernel_r1IsString = VarGetType($kernel_r1) == "String"
+    If $bKernel_r1IsString Then
+        $kernel_r1 = _cveStringCreateFromStr($kernel_r1)
+    EndIf
+
+    Local $bKernel_r1DllType
+    If VarGetType($kernel_r1) == "DLLStruct" Then
+        $bKernel_r1DllType = "struct*"
+    Else
+        $bKernel_r1DllType = "ptr"
+    EndIf
+
+    Local $bTrackerDllType
+    If VarGetType($tracker) == "DLLStruct" Then
+        $bTrackerDllType = "struct*"
+    Else
+        $bTrackerDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTrackerDaSiamRPNCreate", $bModelDllType, $model, $bKernel_cls1DllType, $kernel_cls1, $bKernel_r1DllType, $kernel_r1, "int", $backend, "int", $target, $bTrackerDllType, $tracker, $bSharedPtrDllType, $sharedPtr), "cveTrackerDaSiamRPNCreate", @error)
+
+    If $bKernel_r1IsString Then
+        _cveStringRelease($kernel_r1)
+    EndIf
+
+    If $bKernel_cls1IsString Then
+        _cveStringRelease($kernel_cls1)
+    EndIf
+
+    If $bModelIsString Then
+        _cveStringRelease($model)
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveTrackerDaSiamRPNCreate
+
+Func _cveTrackerDaSiamRPNRelease($tracker, $sharedPtr)
+    ; CVAPI(void) cveTrackerDaSiamRPNRelease(cv::TrackerDaSiamRPN** tracker, cv::Ptr< cv::TrackerDaSiamRPN >** sharedPtr);
+
+    Local $bTrackerDllType
+    If VarGetType($tracker) == "DLLStruct" Then
+        $bTrackerDllType = "struct*"
+    Else
+        $bTrackerDllType = "ptr*"
+    EndIf
+
+    Local $bSharedPtrDllType
+    If VarGetType($sharedPtr) == "DLLStruct" Then
+        $bSharedPtrDllType = "struct*"
+    Else
+        $bSharedPtrDllType = "ptr*"
+    EndIf
+
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTrackerDaSiamRPNRelease", $bTrackerDllType, $tracker, $bSharedPtrDllType, $sharedPtr), "cveTrackerDaSiamRPNRelease", @error)
+EndFunc   ;==>_cveTrackerDaSiamRPNRelease

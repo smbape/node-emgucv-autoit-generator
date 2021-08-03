@@ -17,7 +17,7 @@ Opt("GUIOnEventMode", 1)
 #include "..\..\..\..\emgucv-autoit-bindings\cve_extra.au3"
 
 ;~ Sources:
-;~     https://docs.opencv.org/4.5.2/d5/dc4/tutorial_adding_images.html
+;~     https://docs.opencv.org/4.5.3/d5/dc4/tutorial_adding_images.html
 ;~     https://github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/core/AddingImages/AddingImages.cpp
 
 Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\..\data")
@@ -68,7 +68,7 @@ GUISetState(@SW_SHOW)
 _GUICtrlSlider_SetTicFreq($SliderAlpha, 1)
 
 _GDIPlus_Startup()
-_OpenCV_DLLOpen(@ScriptDir & "\..\..\..\..\libemgucv-windesktop-4.5.2.4673\libs\x64\cvextern.dll")
+_OpenCV_DLLOpen(@ScriptDir & "\..\..\..\..\libemgucv-windesktop-4.5.3.4721\libs\x64\cvextern.dll")
 
 Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 

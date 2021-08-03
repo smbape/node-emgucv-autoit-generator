@@ -570,7 +570,7 @@ Func _cveVideoWriterRelease($writer)
 EndFunc   ;==>_cveVideoWriterRelease
 
 Func _cveVideoWriterWrite($writer, $image)
-    ; CVAPI(void) cveVideoWriterWrite(cv::VideoWriter* writer, cv::Mat* image);
+    ; CVAPI(void) cveVideoWriterWrite(cv::VideoWriter* writer, cv::_InputArray* image);
 
     Local $bWriterDllType
     If VarGetType($writer) == "DLLStruct" Then
@@ -588,6 +588,34 @@ Func _cveVideoWriterWrite($writer, $image)
 
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideoWriterWrite", $bWriterDllType, $writer, $bImageDllType, $image), "cveVideoWriterWrite", @error)
 EndFunc   ;==>_cveVideoWriterWrite
+
+Func _cveVideoWriterWriteMat($writer, $matImage)
+    ; cveVideoWriterWrite using cv::Mat instead of _*Array
+
+    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
+    Local $bImageIsArray = VarGetType($matImage) == "Array"
+
+    If $bImageIsArray Then
+        $vectorOfMatImage = _VectorOfMatCreate()
+
+        $iArrImageSize = UBound($matImage)
+        For $i = 0 To $iArrImageSize - 1
+            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+        Next
+
+        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+    Else
+        $iArrImage = _cveInputArrayFromMat($matImage)
+    EndIf
+
+    _cveVideoWriterWrite($writer, $iArrImage)
+
+    If $bImageIsArray Then
+        _VectorOfMatRelease($vectorOfMatImage)
+    EndIf
+
+    _cveInputArrayRelease($iArrImage)
+EndFunc   ;==>_cveVideoWriterWriteMat
 
 Func _cveVideoWriterFourcc($c1, $c2, $c3, $c4)
     ; CVAPI(int) cveVideoWriterFourcc(char c1, char c2, char c3, char c4);
