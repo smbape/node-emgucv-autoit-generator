@@ -7,7 +7,7 @@ If yes, then this udf might be for you.
 
 ## Prerequisites
 
-  - Download and extract [libemgucv-windesktop-4.5.3.4721.zip](https://github.com/emgucv/emgucv/releases/download/4.5.2/libemgucv-windesktop-4.5.3.4721.zip) into a folder
+  - Download and extract [libemgucv-windesktop-4.5.3.4721.zip](https://github.com/emgucv/emgucv/releases/download/4.5.3/libemgucv-windesktop-4.5.3.4721.zip) into a folder
   - Download the emgucv-autoit-bindings folder of this repository.
 
 ## Usage
@@ -45,7 +45,7 @@ git clone https://github.com/smbape/node-emgucv-autoit-generator
 cd node-emgucv-autoit-generator
 
 # download libemgucv-windesktop-4.5.3.4721 
-curl -L 'https://github.com/emgucv/emgucv/releases/download/4.5.2/libemgucv-windesktop-4.5.3.4721.zip' -o libemgucv-windesktop-4.5.3.4721.zip
+curl -L 'https://github.com/emgucv/emgucv/releases/download/4.5.3/libemgucv-windesktop-4.5.3.4721.zip' -o libemgucv-windesktop-4.5.3.4721.zip
 unzip libemgucv-windesktop-4.5.3.4721.zip -d libemgucv-windesktop-4.5.3.4721
 
 ```
@@ -54,7 +54,7 @@ Now you can run any file in the `samples\tutorial_code` folder.
 
 ### \[optional\] Build the addon dll
 
-This shows how to put performance critical task in c++ functions, export those functions in a dll and then use it in autoit.
+This shows how to put performance critical tasks in c++ functions, export those functions in a dll and then use them in autoit.
 
 Look at `samples\tutorial_code\Histograms_Matching\calcHist_Demo.au3` for an example of usage.
 
@@ -72,7 +72,7 @@ Run `build.bat` script located in the `autoit-addon` folder.
 ### Prerequisites
 
   - Install [CMAKE >= 3.5](https://cmake.org/download/)
-  - Install [visual studio >= 10](https://visualstudio.microsoft.com/vs/community/)
+  - Install [visual studio >= 2017](https://visualstudio.microsoft.com/vs/community/)
   - Install [Git for Windows](https://gitforwindows.org/)
   - Install [nodejs](https://nodejs.org/en/download/)
 
