@@ -93,8 +93,8 @@ git submodule update --init --recursive
 
 # Build emgucv cvextern.dll
 git apply -v emgucv.patch --directory emgucv
-find emgucv -type f -name '*.bat' -exec unix2dos '{}' \;
-(cd emgucv/platforms/windows; cmd.exe //c Build_Binary_x86-64_doc.bat)
+find emgucv/ -type f -name '*.bat' -exec unix2dos '{}' \;
+(cd emgucv/platforms/windows; CMAKE_BUILD_TARGET=opencv_modules cmd.exe //c Build_Binary_x86-64_doc.bat)
 ```
 
 ### Generate the UDF files

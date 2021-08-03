@@ -1872,6 +1872,17 @@ Global Const $CV_ITERATIVE = 3
 
 
 
+#Region ..\opencv_contrib\modules\hdf\include\opencv2\hdf\hdf5.hpp
+; anonymous
+Global Const $CV_HDF5_H5_UNLIMITED = -1
+Global Const $CV_HDF5_H5_NONE = -1
+Global Const $CV_HDF5_H5_GETDIMS = 100
+Global Const $CV_HDF5_H5_GETMAXDIMS = 101
+Global Const $CV_HDF5_H5_GETCHUNKDIMS = 102
+#EndRegion ..\opencv_contrib\modules\hdf\include\opencv2\hdf\hdf5.hpp
+
+
+
 #Region ..\opencv_contrib\modules\img_hash\include\opencv2\img_hash\block_mean_hash.hpp
 ; BlockMeanHashMode
 Global Const $CV_IMG_HASH_BLOCK_MEAN_HASH_MODE_0 = 0

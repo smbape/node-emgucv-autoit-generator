@@ -86,7 +86,7 @@ index 2fd6dbcc..37776d11 100644
  
  CVAPI(cv::viz::WCube*) cveWCubeCreate(CvPoint3D64f* minPoint, CvPoint3D64f* maxPoint, bool wireFrame, CvScalar* color, cv::viz::Widget3D** widget3d, cv::viz::Widget** widget);
 diff --git a/platforms/windows/Build_Binary_x86.bat b/platforms/windows/Build_Binary_x86.bat
-index 1c98ac27..7b281d20 100644
+index 1c98ac27..7b555719 100644
 --- a/platforms/windows/Build_Binary_x86.bat
 +++ b/platforms/windows/Build_Binary_x86.bat
 @@ -18,6 +18,8 @@ REM %7%: "build", if set to "build", the script will also build the target
@@ -181,6 +181,15 @@ index 1c98ac27..7b281d20 100644
  cd ..
  cd ..
  REM SET VTK_DIR=%cd%\vtk\%BUILD_FOLDER%
+@@ -637,7 +639,7 @@ SET EMGU_CV_CMAKE_CONFIG_FLAGS=%EMGU_CV_CMAKE_CONFIG_FLAGS% %IPP_BUILD_FLAGS% %C
+ :BUILD
+ IF NOT "%7%"=="build" GOTO END
+ 
+-SET CMAKE_BUILD_TARGET=cvextern
++SET CMAKE_BUILD_TARGET=%CMAKE_BUILD_TARGET% cvextern
+ IF NOT "%6%"=="package" GOTO CHECK_DOC_BUILD
+ SET CMAKE_BUILD_TARGET=%CMAKE_BUILD_TARGET% PACKAGE
+ :CHECK_DOC_BUILD
 @@ -650,8 +652,8 @@ SET CMAKE_BUILD_TARGET=%CMAKE_BUILD_TARGET% Emgu.CV.runtime.windows.nuget
  REM echo CMAKE_BUILD_TARGET=%CMAKE_BUILD_TARGET% Emgu.CV.nuget
  

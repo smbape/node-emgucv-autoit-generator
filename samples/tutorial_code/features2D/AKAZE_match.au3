@@ -233,7 +233,7 @@ Func Detect()
 		Next
 		ConsoleWrite("AutoIt AKAZE_match_ratio_test_filtering " & TimerDiff($hTimer) & "ms" & @CRLF)
 	Else
-		;;: [A way of dealing with slow loops in auto is to make a dll that does the loop]
+		;;: [doing the loop in a compiled code is way faster than doing it in autoit]
 		$hTimer = TimerInit()
 		CVEDllCallResult(DllCall($addon_dll, "none:cdecl", "AKAZE_match_ratio_test_filtering", _
 			"ptr", $matched1, _
@@ -244,7 +244,7 @@ Func Detect()
 			"float", $nn_match_ratio _
 		), "AKAZE_match_ratio_test_filtering", @error)
 		ConsoleWrite("DllCall AKAZE_match_ratio_test_filtering " & TimerDiff($hTimer) & "ms" & @CRLF)
-		;;: [A way of dealing with slow loops in auto is to make a dll that does the loop]
+		;;: [doing the loop in a compiled code is way faster than doing it in autoit]
 	EndIf
 	;;! [ratio test filtering]
 
@@ -296,7 +296,7 @@ Func Detect()
 		ReDim $good_matches[_VectorOfKeyPointGetSize($inliers1)]
 		ConsoleWrite("AutoIt AKAZE_homograpy_check " & TimerDiff($hTimer) & "ms" & @CRLF)
 	Else
-		;;: [A way of dealing with slow loops in auto is to make a dll that does the loop]
+		;;: [doing the loop in a compiled code is way faster than doing it in autoit]
 		$hTimer = TimerInit()
 		$good_matches = _VectorOfDMatchCreate()
 		CVEDllCallResult(DllCall($addon_dll, "none:cdecl", "AKAZE_homograpy_check", _
@@ -309,7 +309,7 @@ Func Detect()
 			"ptr", $good_matches _
 		), "AKAZE_homograpy_check", @error)
 		ConsoleWrite("DllCall AKAZE_homograpy_check " & TimerDiff($hTimer) & "ms" & @CRLF)
-		;;: [A way of dealing with slow loops in auto is to make a dll that does the loop]
+		;;: [doing the loop in a compiled code is way faster than doing it in autoit]
 	EndIf
 	;;! [homography check]
 

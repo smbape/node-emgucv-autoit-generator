@@ -214,7 +214,7 @@ Func Main()
 		ConsoleWrite("Optimized loop " & TimerDiff($hTimer) & "ms" & @CRLF)
 		;;! [Efficient, but harder to write, way of doing _cveMatGetAt in a loop]
 	Else
-		;;: [A way of dealing with slow loops in auto is to make a dll that does the loop]
+		;;: [doing the loop in a compiled code is way faster than doing it in autoit]
 		$hTimer = TimerInit()
 		CVEDllCallResult(DllCall($addon_dll, "none:cdecl", "calcHist_Demo_draw", _
 			"ptr", $histImage, _
@@ -226,7 +226,7 @@ Func Main()
 			"ptr", $r_hist _
 		), "calcHist_Demo_draw", @error)
 		ConsoleWrite("Dll loop " & TimerDiff($hTimer) & "ms" & @CRLF)
-		;;: [A way of dealing with slow loops in auto is to make a dll that does the loop]
+		;;: [doing the loop in a compiled code is way faster than doing it in autoit]
 	EndIf
 	;;! [Draw for each channel]
 

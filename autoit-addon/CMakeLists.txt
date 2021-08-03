@@ -15,59 +15,59 @@ endif()
 add_definitions(-DAUTOIT_MODULE_NAME=${PROJECT_NAME})
 add_definitions("-DAUTOIT_EXPORTS=__declspec(dllexport)")
 
-set(SOURCE_FILES
-  addon.cpp
-)
+if(CMAKE_COMPILER_IS_GNUCXX)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-function")
+endif()
+
+file(GLOB project_srcs "./*.cpp")
+source_group("Src" FILES ${project_srcs})
+file(GLOB project_hdrs "./*.h*")
+source_group("Include" FILES ${project_hdrs})
+
+# Build a shared library named as the project
+add_library(${PROJECT_NAME} SHARED ${project_srcs} ${project_hdrs})
 
 # Include directories
-set(__OpenCV_INCLUDE_DIRS
-  "${CMAKE_SOURCE_DIR}/../libemgucv-includes/3rdparty"
-  "${CMAKE_SOURCE_DIR}/../libemgucv-includes/build_x64"
-  "${CMAKE_SOURCE_DIR}/../libemgucv-includes/Emgu.CV.Extern"
-  "${CMAKE_SOURCE_DIR}/../libemgucv-includes/opencv"
-  "${CMAKE_SOURCE_DIR}/../libemgucv-includes/opencv_contrib"
+set(__PROJECT_INCLUDE_DIRS
+  "${CMAKE_CURRENT_SOURCE_DIR}/../libemgucv-includes/3rdparty"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../libemgucv-includes/build_x64"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../libemgucv-includes/Emgu.CV.Extern"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../libemgucv-includes/opencv"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../libemgucv-includes/opencv_contrib"
 )
-set(OpenCV_INCLUDE_DIRS "")
-foreach(d ${__OpenCV_INCLUDE_DIRS})
+set(PROJECT_INCLUDE_DIRS "")
+foreach(d ${__PROJECT_INCLUDE_DIRS})
   get_filename_component(__d "${d}" REALPATH)
   if(NOT EXISTS "${__d}")
     if(NOT OpenCV_FIND_QUIETLY)
       message(WARNING "OpenCV: Include directory doesn't exist: '${d}'. OpenCV installation may be broken. Skip...")
     endif()
   else()
-    list(APPEND OpenCV_INCLUDE_DIRS "${__d}")
+    list(APPEND PROJECT_INCLUDE_DIRS "${__d}")
   endif()
 endforeach()
 unset(__d)
 
 # Library directories
-set(__OpenCV_LIBRARY_DIRS
-  "${CMAKE_SOURCE_DIR}/../libemgucv-windesktop-4.5.2.4673/libs/x64"
+set(__PROJECT_LIBRARY_DIRS
+  "${CMAKE_CURRENT_SOURCE_DIR}/../libemgucv-windesktop-4.5.2.4673/libs/x64"
 )
-set(OpenCV_LIBRARY_DIRS "")
-foreach(f ${__OpenCV_LIBRARY_DIRS})
+set(PROJECT_LIBRARY_DIRS "")
+foreach(f ${__PROJECT_LIBRARY_DIRS})
   get_filename_component(__f "${f}" REALPATH)
   if(NOT EXISTS "${__f}")
     if(NOT OpenCV_FIND_QUIETLY)
       message(WARNING "OpenCV: Include library doesn't exist: '${f}'. OpenCV installation may be broken. Skip...")
     endif()
   else()
-    list(APPEND OpenCV_LIBRARY_DIRS "${__f}")
+    list(APPEND PROJECT_LIBRARY_DIRS "${__f}")
   endif()
 endforeach()
 unset(__f)
 
-# Library files
-set(OpenCV_LIBS
-  "cvextern.lib"
-)
+# Add the required include directories for compiling:
+target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE_DIRS})
 
-# Build a shared library named as the project
-add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
-
-# Include files to build an autoit emgucv addon
-target_include_directories(${PROJECT_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS})
-
-# Library files to link to an autoit emgucv addon
-target_link_directories(${PROJECT_NAME} PRIVATE ${OpenCV_LIBRARY_DIRS})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${OpenCV_LIBS})
+# Add the required libraries for linking:
+target_link_directories(${PROJECT_NAME} PRIVATE ${PROJECT_LIBRARY_DIRS})
+target_link_libraries(${PROJECT_NAME} PRIVATE "cvextern.lib")
