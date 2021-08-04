@@ -67,7 +67,7 @@ While 1
 		Case $BtnSource
 			Clean()
 			$sImage = ControlGetText($FormGUI, "", $InputSource)
-			$sImage = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH,  "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sImage)
+			$sImage = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sImage)
 			If @error Then
 				$sImage = ""
 			Else

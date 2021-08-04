@@ -39,7 +39,7 @@ GUICtrlSetState(-1, $GUI_DISABLE)
 
 Local $LabelMethod = GUICtrlCreateLabel("Method:", 423, 128, 59, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
-Local $ComboMethod = GUICtrlCreateCombo("", 489, 128, 145, 25, BitOR($GUI_SS_DEFAULT_COMBO,$CBS_SIMPLE))
+Local $ComboMethod = GUICtrlCreateCombo("", 489, 128, 145, 25, BitOR($GUI_SS_DEFAULT_COMBO, $CBS_SIMPLE))
 GUICtrlSetData(-1, "TM SQDIFF|TM SQDIFF NORMED|TM CCORR|TM CCORR NORMED|TM CCOEFF|TM CCOEFF NORMED")
 
 Local $LabelThreshold = GUICtrlCreateLabel("Threshold: 0.8", 185, 180, 110, 20)
@@ -76,7 +76,7 @@ GUICtrlCreateGroup("", -99, -99, 1, 1)
 GUISetOnEvent($GUI_EVENT_CLOSE, "_cleanExit")
 GUICtrlSetOnEvent($BtnSource, "_handleBtnSourceClick")
 GUICtrlSetOnEvent($BtnTemplate, "_handleBtnTemplateClick")
-GUICtrlSetOnEvent($Btnmask, "_handleBtnmaskClick")
+GUICtrlSetOnEvent($BtnMask, "_handleBtnMaskClick")
 GUICtrlSetOnEvent($BtnExec, "_handleBtnExecClick")
 GUICtrlSetOnEvent($SliderThreshold, "MultiMatchTemplate")
 GUICtrlSetOnEvent($ComboMethod, "MultiMatchTemplate")
@@ -98,8 +98,8 @@ Local $img, $templ, $mask, $match_method, $threshold
 Local $aMethods[6] = [$CV_TM_SQDIFF, $CV_TM_SQDIFF_NORMED, $CV_TM_CCORR, $CV_TM_CCORR_NORMED, $CV_TM_CCOEFF, $CV_TM_CCOEFF_NORMED]
 _GUICtrlComboBox_SetCurSel($ComboMethod, 5)
 
-Local $image_window = "Source Image";
-Local $result_window = "Result window";
+Local $image_window = "Source Image" ;
+Local $result_window = "Result window" ;
 Local $use_mask = False
 Local $tMatchRect = _cvRect(0, 0, 0, 0)
 
@@ -109,167 +109,167 @@ Local $current_threshold = GUICtrlRead($SliderThreshold)
 Local $last_threshold = $current_threshold
 
 While 1
-    $current_threshold = GUICtrlRead($SliderThreshold)
-    If $last_threshold <> $current_threshold Then
-        MultiMatchTemplate()
-        $last_threshold = $current_threshold
-    EndIf
-    Sleep(50) ; Sleep to reduce CPU usage
+	$current_threshold = GUICtrlRead($SliderThreshold)
+	If $last_threshold <> $current_threshold Then
+		MultiMatchTemplate()
+		$last_threshold = $current_threshold
+	EndIf
+	Sleep(50) ; Sleep to reduce CPU usage
 WEnd
 
 _Opencv_DLLClose()
 _GDIPlus_Shutdown()
 
 Func _handleBtnSourceClick()
-    $sSource = ControlGetText($FormGUI, "", $InputSource)
-    $sSource = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sSource)
-    If @error Then
-        $sSource = ""
-    Else
-        ControlSetText($FormGUI, "", $InputSource, $sSource)
-    EndIf
-EndFunc
+	$sSource = ControlGetText($FormGUI, "", $InputSource)
+	$sSource = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sSource)
+	If @error Then
+		$sSource = ""
+	Else
+		ControlSetText($FormGUI, "", $InputSource, $sSource)
+	EndIf
+EndFunc   ;==>_handleBtnSourceClick
 
 Func _handleBtnTemplateClick()
-    $sTemplate = ControlGetText($FormGUI, "", $InputTemplate)
-    $sTemplate = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sTemplate)
-    If @error Then
-        $sTemplate = ""
-    Else
-        ControlSetText($FormGUI, "", $InputTemplate, $sTemplate)
-    EndIf
-EndFunc
+	$sTemplate = ControlGetText($FormGUI, "", $InputTemplate)
+	$sTemplate = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sTemplate)
+	If @error Then
+		$sTemplate = ""
+	Else
+		ControlSetText($FormGUI, "", $InputTemplate, $sTemplate)
+	EndIf
+EndFunc   ;==>_handleBtnTemplateClick
 
 Func _handleBtnMaskClick()
-    $sMask = ControlGetText($FormGUI, "", $InputMask)
-    $sMask = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sMask)
-    If @error Then
-        $sMask = ""
-    Else
-        ControlSetText($FormGUI, "", $InputMask, $sMask)
-    EndIf
-EndFunc
+	$sMask = ControlGetText($FormGUI, "", $InputMask)
+	$sMask = FileOpenDialog("Select an image", $OPENCV_SAMPLES_DATA_PATH, "Image files (*.bmp;*.jpg;*.jpeg;*.png;*.gif)", $FD_FILEMUSTEXIST, $sMask)
+	If @error Then
+		$sMask = ""
+	Else
+		ControlSetText($FormGUI, "", $InputMask, $sMask)
+	EndIf
+EndFunc   ;==>_handleBtnMaskClick
 
 Func _handleBtnExecClick()
-    Clean()
-    Main()
-EndFunc
+	Clean()
+	Main()
+EndFunc   ;==>_handleBtnExecClick
 
 Func Main()
-    ;;! [load_image]
-    ;;/ Load image and template
-    $sSource = ControlGetText($FormGUI, "", $InputSource)
-    $img = _cveImreadAndCheck($sSource, $CV_IMREAD_COLOR)
-    If @error Then
-        $sSource = ""
-        Return
-    EndIf
+	;;! [load_image]
+	;;/ Load image and template
+	$sSource = ControlGetText($FormGUI, "", $InputSource)
+	$img = _cveImreadAndCheck($sSource, $CV_IMREAD_COLOR)
+	If @error Then
+		$sSource = ""
+		Return
+	EndIf
 
-    $sTemplate = ControlGetText($FormGUI, "", $InputTemplate)
-    $templ = _cveImreadAndCheck($sTemplate, $CV_IMREAD_COLOR)
-    If @error Then
-        _cveMatRelease($img)
-        $sSource = ""
-        $sTemplate = ""
-        Return
-    EndIf
+	$sTemplate = ControlGetText($FormGUI, "", $InputTemplate)
+	$templ = _cveImreadAndCheck($sTemplate, $CV_IMREAD_COLOR)
+	If @error Then
+		_cveMatRelease($img)
+		$sSource = ""
+		$sTemplate = ""
+		Return
+	EndIf
 
-    $sMask = ControlGetText($FormGUI, "", $InputMask)
-    If $sMask <> "" Then
-        $mask = _cveImreadAndCheck($sMask, $CV_IMREAD_GRAYSCALE)
-        If @error Then
-            _cveMatRelease($img)
-            _cveMatRelease($templ)
-            $sSource = ""
-            $sTemplate = ""
-            $sMask = ""
-            Return
-        EndIf
-        $use_mask = True
-    Else
-        $use_mask = False
-        $mask = _cveNoArrayMat()
-    EndIf
-    ;;! [load_image]
+	$sMask = ControlGetText($FormGUI, "", $InputMask)
+	If $sMask <> "" Then
+		$mask = _cveImreadAndCheck($sMask, $CV_IMREAD_GRAYSCALE)
+		If @error Then
+			_cveMatRelease($img)
+			_cveMatRelease($templ)
+			$sSource = ""
+			$sTemplate = ""
+			$sMask = ""
+			Return
+		EndIf
+		$use_mask = True
+	Else
+		$use_mask = False
+		$mask = _cveNoArrayMat()
+	EndIf
+	;;! [load_image]
 
-    ;;! [prepare_match_rect]
-    Local $cvSize = _cvSize()
-    _cveMatGetSize($templ, $cvSize)
-    $tMatchRect.width = $cvSize.width
-    $tMatchRect.height = $cvSize.height
-    ;;! [prepare_match_rect]
+	;;! [prepare_match_rect]
+	Local $cvSize = _cvSize()
+	_cveMatGetSize($templ, $cvSize)
+	$tMatchRect.width = $cvSize.width
+	$tMatchRect.height = $cvSize.height
+	;;! [prepare_match_rect]
 
-    ;;! [Display]
-    _cveImshowControlPic($img, $FormGUI, $PicSource, $tBackgroundColor)
-    _cveImshowControlPic($templ, $FormGUI, $PicTemplate, $tBackgroundColor)
+	;;! [Display]
+	_cveImshowControlPic($img, $FormGUI, $PicSource, $tBackgroundColor)
+	_cveImshowControlPic($templ, $FormGUI, $PicTemplate, $tBackgroundColor)
 
-    If $use_mask Then
-        _cveImshowControlPic($mask, $FormGUI, $PicMask, $tBackgroundColor)
-    EndIf
-    ;;! [Display]
+	If $use_mask Then
+		_cveImshowControlPic($mask, $FormGUI, $PicMask, $tBackgroundColor)
+	EndIf
+	;;! [Display]
 
-    MultiMatchTemplate()
+	MultiMatchTemplate()
 EndFunc   ;==>Main
 
 Func Clean()
-    If $sSource == "" Then Return
+	If $sSource == "" Then Return
 
-    _cveMatRelease($img)
-    _cveMatRelease($templ)
+	_cveMatRelease($img)
+	_cveMatRelease($templ)
 
-    If $use_mask Then
-        _cveMatRelease($mask)
-    EndIf
+	If $use_mask Then
+		_cveMatRelease($mask)
+	EndIf
 
-    $sSource = ""
+	$sSource = ""
 EndFunc   ;==>Clean
 
 Func MultiMatchTemplate()
-    $match_method = $aMethods[_GUICtrlComboBox_GetCurSel($ComboMethod)]
+	$match_method = $aMethods[_GUICtrlComboBox_GetCurSel($ComboMethod)]
 
-    If $CV_TM_SQDIFF == $match_method Or $match_method == $CV_TM_CCORR_NORMED Then
-        GUICtrlSetState($InputMask, $GUI_ENABLE)
-        GUICtrlSetState($BtnMask, $GUI_ENABLE)
-    Else
-        GUICtrlSetState($InputMask, $GUI_DISABLE)
-        GUICtrlSetState($BtnMask, $GUI_DISABLE)
-    EndIf
+	If $CV_TM_SQDIFF == $match_method Or $match_method == $CV_TM_CCORR_NORMED Then
+		GUICtrlSetState($InputMask, $GUI_ENABLE)
+		GUICtrlSetState($BtnMask, $GUI_ENABLE)
+	Else
+		GUICtrlSetState($InputMask, $GUI_DISABLE)
+		GUICtrlSetState($BtnMask, $GUI_DISABLE)
+	EndIf
 
-    $threshold = GUICtrlRead($SliderThreshold) / 100
-    GUICtrlSetData($LabelThreshold, "Threshold: " & StringFormat("%.2f", $threshold))
+	$threshold = GUICtrlRead($SliderThreshold) / 100
+	GUICtrlSetData($LabelThreshold, "Threshold: " & StringFormat("%.2f", $threshold))
 
-    If $sSource == "" Then Return
+	If $sSource == "" Then Return
 
-    ;;! [copy_source]
-    ;;/ Source image to display
-    Local $img_display = _cveMatCreate()
-    _cveMatCopyToMat($img, $img_display, _cveNoArrayMat())
-    ;;! [copy_source]
+	;;! [copy_source]
+	;;/ Source image to display
+	Local $img_display = _cveMatCreate()
+	_cveMatCopyToMat($img, $img_display, _cveNoArrayMat())
+	;;! [copy_source]
 
-    ;;! [match_template]
-    Local $aMatches = _cveFindTemplate($img_display, $templ, $threshold, $match_method, $mask)
-    Local $iMatches = UBound($aMatches)
-    For $i = 0 To $iMatches - 1
-        $tMatchRect.x = $aMatches[$i][0]
-        $tMatchRect.y = $aMatches[$i][1]
+	;;! [match_template]
+	Local $aMatches = _cveFindTemplate($img_display, $templ, $threshold, $match_method, $mask)
+	Local $iMatches = UBound($aMatches)
+	For $i = 0 To $iMatches - 1
+		$tMatchRect.x = $aMatches[$i][0]
+		$tMatchRect.y = $aMatches[$i][1]
 
-        ; Draw a red rectangle around the matched position
-        _cveRectangleMat($img_display, $tMatchRect, $tRedColor, 1, $CV_LINE_8, 0)
-    Next
-    ;;! [match_template]
+		; Draw a red rectangle around the matched position
+		_cveRectangleMat($img_display, $tMatchRect, $tRedColor, 1, $CV_LINE_8, 0)
+	Next
+	;;! [match_template]
 
-    ;;! [imshow]
-    _cveImshowControlPic($img_display, $FormGUI, $PicMatchTemplate, $tBackgroundColor)
-    ;;! [imshow]
+	;;! [imshow]
+	_cveImshowControlPic($img_display, $FormGUI, $PicMatchTemplate, $tBackgroundColor)
+	;;! [imshow]
 
-    _cveMatRelease($img_display)
+	_cveMatRelease($img_display)
 EndFunc   ;==>MultiMatchTemplate
 
 Func _cleanExit()
-    If @GUI_WinHandle <> $FormGUI Then
-        Return
-    EndIf
+	If @GUI_WinHandle <> $FormGUI Then
+		Return
+	EndIf
 
-    Clean()
-    Exit
+	Clean()
+	Exit
 EndFunc   ;==>_cleanExit

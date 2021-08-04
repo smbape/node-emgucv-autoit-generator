@@ -31,6 +31,7 @@ _cveWaitKey()
 
 ; always release resources to avoid memory leaks on long running processes
 _cveMatRelease($img)
+_cveDestroyAllWindows()
 
 ; Close the library
 _Opencv_DLLClose()

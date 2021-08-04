@@ -91,8 +91,8 @@ Local $nMsg
 Local $aMethods[6] = [$CV_TM_SQDIFF, $CV_TM_SQDIFF_NORMED, $CV_TM_CCORR, $CV_TM_CCORR_NORMED, $CV_TM_CCOEFF, $CV_TM_CCOEFF_NORMED]
 _GUICtrlComboBox_SetCurSel($ComboMethod, 3)
 
-Local $image_window = "Source Image";
-Local $result_window = "Result window";
+Local $image_window = "Source Image" ;
+Local $result_window = "Result window" ;
 Local $use_mask = False
 
 Main()

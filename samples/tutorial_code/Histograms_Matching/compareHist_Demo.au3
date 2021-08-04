@@ -66,7 +66,7 @@ _GUICtrlTable_Set_CellColor_Row($Table, 1, 0x374F7F)
 _GUICtrlTable_Set_TextColor_All($Table, 0x555555)
 _GUICtrlTable_Set_TextColor_Row($Table, 1, 0xFFFFFF)
 For $row = 3 To 5 Step 2
-    _GUICtrlTable_Set_CellColor_Row($Table, $row, 0xDDDDDD)
+	_GUICtrlTable_Set_CellColor_Row($Table, $row, 0xDDDDDD)
 Next
 _GUICtrlTable_Set_Text_Row($Table, 1, "*Method*|Base - Base|Base - Half|Base - Test 1|Base - Test 2")
 _GUICtrlTable_Set_Border_Table($Table, 0x555555)

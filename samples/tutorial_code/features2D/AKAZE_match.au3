@@ -138,7 +138,7 @@ Func Main()
 			Return
 		EndIf
 
-		$homography_size =_cvSize()
+		$homography_size = _cvSize()
 		_cveMatGetSize($homography, $homography_size)
 	EndIf
 	;;! [load]
@@ -166,8 +166,8 @@ EndFunc   ;==>Clean
 Func Detect()
 	If $sImg1 == "" Or $sImg2 == "" Or $sHomography == "" Then Return
 
-	Local $inlier_threshold = 2.5; // Distance threshold to identify inliers with homography check
-	Local $nn_match_ratio = 0.8;   // Nearest neighbor matching ratio
+	Local $inlier_threshold = 2.5 ; // Distance threshold to identify inliers with homography check
+	Local $nn_match_ratio = 0.8 ;   // Nearest neighbor matching ratio
 
 	;;! [AKAZE]
 	$hTimer = TimerInit()
@@ -218,8 +218,8 @@ Func Detect()
 			_VectorOfDMatchGetItemPtr($tVectorDMatchPtr.value, 1, $tDMatchPtr1)
 			Local $tDMatch1 = DllStructCreate($tagCvDMatch, $tDMatchPtr1.value)
 
-			Local $dist1 = $tDMatch0.distance;
-			Local $dist2 = $tDMatch1.distance;
+			Local $dist1 = $tDMatch0.distance ;
+			Local $dist2 = $tDMatch1.distance ;
 
 			If $dist1 < $nn_match_ratio * $dist2 Then
 				_VectorOfKeyPointGetItemPtr($kpts1, $tDMatch0.queryIdx, $tKpt1Ptr)
@@ -252,7 +252,7 @@ Func Detect()
 	Local $inliers1 = _VectorOfKeyPointCreate()
 	Local $inliers2 = _VectorOfKeyPointCreate()
 
-	Local $good_matches[_VectorOfKeyPointGetSize($matched1)];
+	Local $good_matches[_VectorOfKeyPointGetSize($matched1)] ;
 
 	If $addon_dll == "" Then
 		; Inefficient
@@ -277,11 +277,11 @@ Func Detect()
 
 			_cveMatConvertToMat($col, $col, -1, 1 / _cveMatGetAt("double", $col, _cvPoint(0, 2)), 0.0)
 
-			Local $dist = Sqrt( ((_cveMatGetAt("double", $col, _cvPoint(0, 0)) - $tKpt2.x) ^ 2) + _
-								((_cveMatGetAt("double", $col, _cvPoint(0, 1)) - $tKpt2.y) ^ 2));
+			Local $dist = Sqrt(((_cveMatGetAt("double", $col, _cvPoint(0, 0)) - $tKpt2.x) ^ 2) + _
+					((_cveMatGetAt("double", $col, _cvPoint(0, 1)) - $tKpt2.y) ^ 2))            ;
 
 			If $dist < $inlier_threshold Then
-				Local $new_i = _VectorOfKeyPointGetSize($inliers1);
+				Local $new_i = _VectorOfKeyPointGetSize($inliers1) ;
 				_VectorOfKeyPointPush($inliers1, $tKpt1)
 				_VectorOfKeyPointPush($inliers2, $tKpt2)
 				$good_matches[$new_i] = DllStructCreate($tagCvDMatch)
@@ -319,15 +319,15 @@ Func Detect()
 	_drawMatchedFeatures1Mat($img1, $inliers1, $img2, $inliers2, $good_matches, $res, _cvScalarAll(-1), _
 			_cvScalarAll(-1), $matchesMask, $CV_DRAW_MATCHES_FLAGS_DEFAULT) ;
 
-	Local $inlier_ratio = _VectorOfKeyPointGetSize($inliers1) / _VectorOfKeyPointGetSize($matched1);
-	ConsoleWrite("A-KAZE Matching Results" & @CRLF);
-	ConsoleWrite("*******************************" & @CRLF);
-	ConsoleWrite("# Keypoints 1:                        " & @TAB & _VectorOfKeyPointGetSize($kpts1) & @CRLF);
-	ConsoleWrite("# Keypoints 2:                        " & @TAB & _VectorOfKeyPointGetSize($kpts2) & @CRLF);
-	ConsoleWrite("# Matches:                            " & @TAB & _VectorOfKeyPointGetSize($matched1) & @CRLF);
-	ConsoleWrite("# Inliers:                            " & @TAB & _VectorOfKeyPointGetSize($inliers1) & @CRLF);
-	ConsoleWrite("# Inliers Ratio:                      " & @TAB & $inlier_ratio & @CRLF);
-	ConsoleWrite(@CRLF);
+	Local $inlier_ratio = _VectorOfKeyPointGetSize($inliers1) / _VectorOfKeyPointGetSize($matched1) ;
+	ConsoleWrite("A-KAZE Matching Results" & @CRLF) ;
+	ConsoleWrite("*******************************" & @CRLF) ;
+	ConsoleWrite("# Keypoints 1:                        " & @TAB & _VectorOfKeyPointGetSize($kpts1) & @CRLF) ;
+	ConsoleWrite("# Keypoints 2:                        " & @TAB & _VectorOfKeyPointGetSize($kpts2) & @CRLF) ;
+	ConsoleWrite("# Matches:                            " & @TAB & _VectorOfKeyPointGetSize($matched1) & @CRLF) ;
+	ConsoleWrite("# Inliers:                            " & @TAB & _VectorOfKeyPointGetSize($inliers1) & @CRLF) ;
+	ConsoleWrite("# Inliers Ratio:                      " & @TAB & $inlier_ratio & @CRLF) ;
+	ConsoleWrite(@CRLF) ;
 
 	; _cveImshowMat("result", $res);
 	; waitKey();

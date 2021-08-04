@@ -34,7 +34,7 @@ Local $BtnScene = GUICtrlCreateButton("Scene", 689, 50, 75, 25)
 
 Local $LabelAlgorithm = GUICtrlCreateLabel("Algorithm", 150, 92, 69, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
-Local $ComboAlgorithm = GUICtrlCreateCombo("", 230, 92, 169, 25, BitOR($GUI_SS_DEFAULT_COMBO,$CBS_SIMPLE))
+Local $ComboAlgorithm = GUICtrlCreateCombo("", 230, 92, 169, 25, BitOR($GUI_SS_DEFAULT_COMBO, $CBS_SIMPLE))
 GUICtrlSetData(-1, "ORB|Brisk|FAST|MSER|SimpleBlob|GFTT|KAZE|AKAZE|Agast")
 
 Local $LabelMatchType = GUICtrlCreateLabel("Match type", 414, 92, 79, 20)
@@ -184,7 +184,7 @@ Func Detect()
 			_cveGFTTDetectorCreate(1000, 0.01, 1, 3, False, 0.04, $tFeature2DPtr, $tSharedPtr)
 			$destructor = "cveGFTTDetectorRelease"
 		Case $KAZE_DETECTOR
-			_cveKAZEDetectorCreate(false, false, 0.001, 4, 4, $CV_KAZE_DIFF_PM_G2, $tFeature2DPtr, $tSharedPtr)
+			_cveKAZEDetectorCreate(False, False, 0.001, 4, 4, $CV_KAZE_DIFF_PM_G2, $tFeature2DPtr, $tSharedPtr)
 			$destructor = "_cveKAZEDetectorRelease"
 		Case $AKAZE_DETECTOR
 			$can_compute = True
