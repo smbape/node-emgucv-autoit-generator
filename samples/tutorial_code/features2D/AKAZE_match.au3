@@ -48,7 +48,7 @@ GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
 _GDIPlus_Startup()
-_OpenCV_DLLOpen(@ScriptDir & "\..\..\..\libemgucv-windesktop-4.5.3.4721\libs\x64\cvextern.dll")
+_OpenCV_DLLOpen(_OpenCV_FindDLL(@ScriptDir))
 
 Local $img1, $img2, $homography, $homography_size
 Local $nMsg, $hTimer
@@ -311,6 +311,7 @@ Func Detect()
 		ConsoleWrite("DllCall AKAZE_homograpy_check " & TimerDiff($hTimer) & "ms" & @CRLF)
 		;;: [doing the loop in a compiled code is way faster than doing it in autoit]
 	EndIf
+	ConsoleWrite(@CRLF)
 	;;! [homography check]
 
 	;;! [draw final matches]

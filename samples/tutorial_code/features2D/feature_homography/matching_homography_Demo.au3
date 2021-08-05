@@ -76,7 +76,7 @@ _GUICtrlComboBox_SetCurSel($ComboAlgorithm, 0)
 _GUICtrlComboBox_SetCurSel($ComboMatchType, 2)
 
 _GDIPlus_Startup()
-_OpenCV_DLLOpen(@ScriptDir & "\..\..\..\..\libemgucv-windesktop-4.5.3.4721\libs\x64\cvextern.dll")
+_OpenCV_DLLOpen(_OpenCV_FindDLL(@ScriptDir))
 
 Local $img_object, $img_scene
 Local $nMsg

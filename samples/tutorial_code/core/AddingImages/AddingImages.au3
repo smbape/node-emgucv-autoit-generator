@@ -68,7 +68,7 @@ GUISetState(@SW_SHOW)
 _GUICtrlSlider_SetTicFreq($SliderAlpha, 1)
 
 _GDIPlus_Startup()
-_OpenCV_DLLOpen(@ScriptDir & "\..\..\..\..\libemgucv-windesktop-4.5.3.4721\libs\x64\cvextern.dll")
+_OpenCV_DLLOpen(_OpenCV_FindDLL(@ScriptDir))
 
 Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 

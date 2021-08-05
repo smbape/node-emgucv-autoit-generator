@@ -1,4 +1,5 @@
 #include-once
+#include <File.au3>
 #include "cv_enums.au3"
 #include "cv_constants.au3"
 #include "CVEtypes_c.au3"
@@ -47,6 +48,37 @@ Func _OpenCV_LoadDLL($dll)
 	EndIf
 	Return $result
 EndFunc   ;==>_OpenCV_LoadDLL
+
+Func _OpenCV_FindDLL($sDir, $sFilter = "libemgucv-windesktop-4.*", $sDll = "cvextern.dll")
+	Local $aFileList
+	Local $s_cvextern_dll = ""
+	Local $sDrive = "", $sFileName = "", $sExtension = ""
+
+	While 1
+		$aFileList = _FileListToArray($sDir, $sFilter)
+
+		If @error <> 0 And @error <> 4 Then
+			ExitLoop
+		EndIf
+
+		For $i = 0 To UBound($aFileList) - 1
+			$s_cvextern_dll = $sDir & "\" & $aFileList[$i] & "\libs\x64\" & $sDll
+			If FileExists($s_cvextern_dll) Then
+				_cveDebugMsg("Found " & $s_cvextern_dll & @CRLF)
+				ExitLoop 2
+			EndIf
+			$s_cvextern_dll = ""
+		Next
+
+		_PathSplit($sDir, $sDrive, $sDir, $sFileName, $sExtension)
+		If $sDir == "" Then
+			ExitLoop
+		EndIf
+		$sDir = $sDrive & StringLeft($sDir, StringLen($sDir) - 1)
+	WEnd
+
+	Return $s_cvextern_dll
+EndFunc   ;==>_OpenCV_FindCvexternDLL
 
 Func _OpenCV_DLLOpen($s_cvextern_dll = "cvextern.dll")
 	$_h_cvextern_dll = _OpenCV_LoadDLL($s_cvextern_dll)

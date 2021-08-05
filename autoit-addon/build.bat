@@ -69,7 +69,6 @@ FOR /F "tokens=* USEBACKQ" %%F IN (`vswhere.exe -legacy -version [10.0^,11.0^) -
 
 ECHO Unable to find a visual studio version
 EXIT /B 1
-GOTO END
 
 :MAKE
 IF NOT EXIST %BUILD_FOLDER% mkdir %BUILD_FOLDER%
