@@ -49,17 +49,11 @@ endforeach()
 unset(__d)
 
 # Library directories
-set(__PROJECT_LIBRARY_DIRS
-  "${CMAKE_CURRENT_SOURCE_DIR}/../libemgucv-windesktop-4.5.2.4673/libs/x64"
-)
+file(GLOB __PROJECT_LIBRARY_DIRS "../libemgucv-windesktop-4.*")
 set(PROJECT_LIBRARY_DIRS "")
 foreach(f ${__PROJECT_LIBRARY_DIRS})
-  get_filename_component(__f "${f}" REALPATH)
-  if(NOT EXISTS "${__f}")
-    if(NOT OpenCV_FIND_QUIETLY)
-      message(WARNING "OpenCV: Include library doesn't exist: '${f}'. OpenCV installation may be broken. Skip...")
-    endif()
-  else()
+  get_filename_component(__f "${f}/libs/x64" REALPATH)
+  if(EXISTS "${__f}")
     list(APPEND PROJECT_LIBRARY_DIRS "${__f}")
   endif()
 endforeach()
