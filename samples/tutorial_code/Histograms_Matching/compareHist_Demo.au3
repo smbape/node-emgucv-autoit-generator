@@ -18,7 +18,7 @@ Opt("MustDeclareVars", 1)
 
 ;~ Sources:
 ;~     https://docs.opencv.org/4.5.3/d8/dc8/tutorial_histogram_comparison.html
-;~     https://github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/Histograms_Matching/compareHist_Demo.cpp
+;~     https://github.com/opencv/opencv/blob/4.5.3/samples/cpp/tutorial_code/Histograms_Matching/compareHist_Demo.cpp
 ;~     https://www.autoitscript.com/forum/topic/105814-table-udf/
 
 Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")

@@ -20,7 +20,7 @@ Opt("MustDeclareVars", 1)
 
 ;~ Sources:
 ;~     https://docs.opencv.org/4.5.3/de/da9/tutorial_template_matching.html
-;~     https://github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/Histograms_Matching/MatchTemplate_Demo.cpp
+;~     https://github.com/opencv/opencv/blob/4.5.3/samples/cpp/tutorial_code/Histograms_Matching/MatchTemplate_Demo.cpp
 
 Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")
 

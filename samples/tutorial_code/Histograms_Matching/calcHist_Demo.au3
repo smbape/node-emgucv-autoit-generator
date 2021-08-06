@@ -17,7 +17,7 @@ Opt("MustDeclareVars", 1)
 
 ;~ Sources:
 ;~     https://docs.opencv.org/4.5.3/d8/dbc/tutorial_histogram_calculation.html
-;~     https://github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/Histograms_Matching/calcHist_Demo.cpp
+;~     https://github.com/opencv/opencv/blob/4.5.3/samples/cpp/tutorial_code/Histograms_Matching/calcHist_Demo.cpp
 
 Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")
 
@@ -201,14 +201,14 @@ Func Main()
 		$cvSize = 0
 
 		For $i = 1 To $histSize[0] - 1
-			_cveLineMat($histImage, _cvPoint($bin_w * ($i - 1), $hist_h - Round(DllStructGetData($b_data_struct, 1, $i))), _
-					_cvPoint($bin_w * $i, $hist_h - Round(DllStructGetData($b_data_struct, 1, $i + 1))), _
+			_cveLineMat($histImage, _cvPoint($bin_w * ($i - 1), $hist_h - Round(DllStructGetData($b_data_struct, 1, $i + 1))), _
+					_cvPoint($bin_w * $i, $hist_h - Round(DllStructGetData($b_data_struct, 1, $i + 2))), _
 					$tBlueColor, 2, 8, 0) ;
-			_cveLineMat($histImage, _cvPoint($bin_w * ($i - 1), $hist_h - Round(DllStructGetData($g_data_struct, 1, $i))), _
-					_cvPoint($bin_w * $i, $hist_h - Round(DllStructGetData($g_data_struct, 1, $i + 1))), _
+			_cveLineMat($histImage, _cvPoint($bin_w * ($i - 1), $hist_h - Round(DllStructGetData($g_data_struct, 1, $i + 1))), _
+					_cvPoint($bin_w * $i, $hist_h - Round(DllStructGetData($g_data_struct, 1, $i + 2))), _
 					$tGreenColor, 2, 8, 0) ;
-			_cveLineMat($histImage, _cvPoint($bin_w * ($i - 1), $hist_h - Round(DllStructGetData($r_data_struct, 1, $i))), _
-					_cvPoint($bin_w * $i, $hist_h - Round(DllStructGetData($r_data_struct, 1, $i + 1))), _
+			_cveLineMat($histImage, _cvPoint($bin_w * ($i - 1), $hist_h - Round(DllStructGetData($r_data_struct, 1, $i + 1))), _
+					_cvPoint($bin_w * $i, $hist_h - Round(DllStructGetData($r_data_struct, 1, $i + 2))), _
 					$tRedColor, 2, 8, 0) ;
 		Next
 		ConsoleWrite("Optimized loop " & TimerDiff($hTimer) & "ms" & @CRLF)

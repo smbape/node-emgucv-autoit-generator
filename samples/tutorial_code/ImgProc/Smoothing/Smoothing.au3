@@ -20,7 +20,7 @@ Opt("MustDeclareVars", 1)
 
 ;~ Sources:
 ;~     https://docs.opencv.org/4.5.3/dc/dd3/tutorial_gausian_median_blur_bilateral_filter.html
-;~     https://github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/ImgProc/Smoothing/Smoothing.cpp
+;~     https://github.com/opencv/opencv/blob/4.5.3/samples/cpp/tutorial_code/ImgProc/Smoothing/Smoothing.cpp
 
 Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\..\data")
 

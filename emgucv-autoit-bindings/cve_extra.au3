@@ -553,7 +553,7 @@ Func _WinAPI_GetDesktopScreenRect()
 	Return $tRect
 EndFunc   ;==>_WinAPI_GetDesktopScreenRect
 
-Func _cveMatResizeAndCenter($matImg, $iDstWidth, $iDstHeight, $tBackgroundColor, $iCode = -1)
+Func _cveMatResizeAndCenter($matImg, $iDstWidth, $iDstHeight, $tBackgroundColor, $iCode = -1, $bFit = True)
 	Local $tDsize = _cvSize()
 
 	_cveMatGetSize($matImg, $tDsize)
@@ -565,6 +565,7 @@ Func _cveMatResizeAndCenter($matImg, $iDstWidth, $iDstHeight, $tBackgroundColor,
 	Local $iPadRows = 0
 
 	If $iWidth <= $iDstWidth And $iHeight <= $iDstHeight Then
+		$bFit = False
 		$iPadCols = Floor(($iDstHeight - $iHeight) / 2)
 		$iPadRows = Floor(($iDstWidth - $iWidth) / 2)
 	ElseIf $fRatio * $iDstHeight > $iDstWidth Then
@@ -580,29 +581,37 @@ Func _cveMatResizeAndCenter($matImg, $iDstWidth, $iDstHeight, $tBackgroundColor,
 	$tDsize.width = $iWidth
 	$tDsize.height = $iHeight
 
-	Local $matCvtImg, $matSrcResized
-
+	Local $matCvtImg
 	If $iCode <> -1 Then
 		$matCvtImg = _cveMatCreate()
 		_cveCvtColorMat($matImg, $matCvtImg, $iCode)
-
-		$matSrcResized = _cveMatCreate()
-		_cveResizeMat($matCvtImg, $matSrcResized, $tDsize)
-
-		_cveMatRelease($matCvtImg)
 	Else
-		$matSrcResized = _cveMatCreate()
-		_cveResizeMat($matImg, $matSrcResized, $tDsize)
+		$matCvtImg = $matImg
 	EndIf
 
-	$matCvtImg = _cveMatCreate()
-	_cveMatCreateData($matCvtImg, $iDstHeight, $iDstWidth, $CV_8UC4)
-	_cveCopyMakeBorderMat($matSrcResized, $matCvtImg, $iPadCols, $iPadCols, $iPadRows, $iPadRows, $CV_BORDER_CONSTANT, $tBackgroundColor)
-	_cveMatRelease($matSrcResized)
+	Local $matResized
+	If $bFit Then
+		$matResized = _cveMatCreate()
+		_cveResizeMat($matCvtImg, $matResized, $tDsize)
+	Else
+		$matResized = $matCvtImg
+	EndIf
+
+	Local $matResult = _cveMatCreate()
+	_cveMatCreateData($matResult, $iDstHeight, $iDstWidth, $CV_8UC4)
+	_cveCopyMakeBorderMat($matResized, $matResult, $iPadCols, $iPadCols, $iPadRows, $iPadRows, $CV_BORDER_CONSTANT, $tBackgroundColor)
+
+	If $matResized <> $matCvtImg Then
+		_cveMatRelease($matResized)
+	EndIf
 
 	$tDsize = 0
 
-	Return $matCvtImg
+	If $matCvtImg <> $matImg Then
+		_cveMatRelease($matCvtImg)
+	EndIf
+
+	Return $matResult
 EndFunc   ;==>_cveMatResizeAndCenter
 
 Func _cveSetControlPic($controlID, $matImg)
@@ -629,7 +638,7 @@ Func _cveSetControlPic($controlID, $matImg)
 	$tDsize = 0
 EndFunc   ;==>_cveSetControlPic
 
-Func _cveImshowControlPic($matImg, $hWnd, $controlID, $tBackgroundColor, $iCode = -1)
+Func _cveImshowControlPic($matImg, $hWnd, $controlID, $tBackgroundColor, $iCode = -1, $bFit = True)
 	Local $aPicPos = ControlGetPos($hWnd, "", $controlID)
 
 	Local $tMatImg = Null
@@ -659,7 +668,7 @@ Func _cveImshowControlPic($matImg, $hWnd, $controlID, $tBackgroundColor, $iCode 
 		EndSwitch
 	EndIf
 
-	Local $matResized = _cveMatResizeAndCenter($matImg, $aPicPos[2], $aPicPos[3], $tBackgroundColor, $iCode)
+	Local $matResized = _cveMatResizeAndCenter($matImg, $aPicPos[2], $aPicPos[3], $tBackgroundColor, $iCode, $bFit)
 	_cveSetControlPic($controlID, $matResized)
 	_cveMatRelease($matResized)
 

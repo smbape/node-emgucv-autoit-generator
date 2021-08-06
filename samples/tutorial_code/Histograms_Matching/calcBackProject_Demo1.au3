@@ -20,7 +20,7 @@ Opt("GUIOnEventMode", 1)
 
 ;~ Sources:
 ;~     https://docs.opencv.org/4.5.3/da/d7f/tutorial_back_projection.html
-;~     https://github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/Histograms_Matching/calcBackProject_Demo1.cpp
+;~     https://github.com/opencv/opencv/blob/4.5.3/samples/cpp/tutorial_code/Histograms_Matching/calcBackProject_Demo1.cpp
 
 Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")
 
@@ -150,6 +150,7 @@ Func _handleBtnSourceClick()
 	EndIf
 
 	ControlSetText($FormGUI, "", $InputSource, $sInputSource)
+	Clean()
 	Main()
 EndFunc   ;==>_handleBtnSourceClick
 

@@ -18,7 +18,7 @@ Opt("GUIOnEventMode", 1)
 
 ;~ Sources:
 ;~     https://docs.opencv.org/4.5.3/d5/dc4/tutorial_adding_images.html
-;~     https://github.com/opencv/opencv/blob/master/samples/cpp/tutorial_code/core/AddingImages/AddingImages.cpp
+;~     https://github.com/opencv/opencv/blob/4.5.3/samples/cpp/tutorial_code/core/AddingImages/AddingImages.cpp
 
 Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\..\data")
 
