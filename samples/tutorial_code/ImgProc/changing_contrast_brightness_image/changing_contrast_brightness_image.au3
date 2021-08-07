@@ -20,12 +20,13 @@ Opt("GUIOnEventMode", 1)
 #include "..\..\..\..\emgucv-autoit-bindings\cve_extra.au3"
 
 ;~ Sources:
+;~     https://docs.opencv.org/4.5.3/d3/dc1/tutorial_basic_linear_transform.html
 ;~     https://github.com/opencv/opencv/blob/4.5.3/samples/cpp/tutorial_code/ImgProc/changing_contrast_brightness_image/changing_contrast_brightness_image.cpp
 
 Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\..\data")
 
 #Region ### START Koda GUI section ### Form=
-Local $FormGUI = GUICreate("Template Matching", 1261, 671, 185, 122)
+Local $FormGUI = GUICreate("Changing the contrast and brightness of an image!", 1261, 671, 185, 122)
 
 Local $InputSource = GUICtrlCreateInput($OPENCV_SAMPLES_DATA_PATH & "\lena.jpg", 366, 16, 449, 21)
 Local $BtnSource = GUICtrlCreateButton("Source", 825, 14, 75, 25)
@@ -171,6 +172,7 @@ Func gammaCorrection()
 	_cveMatCreateData($lookUpTable, 1, 256, $CV_8U)
 	Local $ptr = _cveMatGetDataPointer2($lookUpTable, 0)
 	Local $p = DllStructCreate("byte value[256]", $ptr)
+
 	For $i = 0 To 255
 		; For elements that are an array this specifies the 1-based index to set.
 		$p.value(($i + 1)) = _Max(0, _Min(255, (($i / 255) ^ $gamma) * 255))

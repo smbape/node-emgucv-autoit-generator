@@ -80,8 +80,14 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
         const autoItArgName = `$${ argName }`;
         let dllArgName = autoItArgName;
 
-        if (defaults !== null && typeof defaults === "object" && hasProp.call(defaults, name) && hasProp.call(defaults[name], argName)) {
-            arg[2] = defaults[name][argName];
+        if (typeof defaults === "function") {
+            arg[2] = defaults(name, argName, defaultValue);
+        } else if (defaults !== null && typeof defaults === "object" && hasProp.call(defaults, name)) {
+            if (typeof defaults[name] === "function") {
+                arg[2] = defaults[name](argName, defaultValue);
+            } else if (defaults[name] !== null && typeof defaults[name] === "object" && hasProp.call(defaults[name], argName)) {
+                arg[2] = defaults[name][argName];
+            }
         }
 
         if (typeof declaration === "function") {

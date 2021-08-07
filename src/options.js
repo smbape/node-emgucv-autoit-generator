@@ -99,6 +99,8 @@ module.exports = {
     },
     cdecl: true,
 
+    exported: {},
+
     defaults: {},
 
     isbyref(argType) {
@@ -107,6 +109,8 @@ module.exports = {
 
     overrides(...args) {
         const name = args[0][1];
+        const options = args[3];
+        options.exported[name] = 1;
 
         if (hasProp.call(OVERRIDE_MAP, name)) {
             OVERRIDE_MAP[name](...args);

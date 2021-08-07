@@ -2360,7 +2360,7 @@ Func _cveFloodFillMat($matImage, $matMask, $seedPoint, $newVal, $rect = 0, $loDi
     Return $retval
 EndFunc   ;==>_cveFloodFillMat
 
-Func _cvePyrMeanShiftFiltering($src, $dst, $sp, $sr, $maxLevel, $termCrit)
+Func _cvePyrMeanShiftFiltering($src, $dst, $sp, $sr, $maxLevel = 1, $termCrit = _cvTermCriteria($CV_TERM_CRITERIA_MAX_ITER+$CV_TERM_CRITERIA_EPS,5,1))
     ; CVAPI(void) cvePyrMeanShiftFiltering(cv::_InputArray* src, cv::_OutputArray* dst, double sp, double sr, int maxLevel, CvTermCriteria* termCrit);
 
     Local $bSrcDllType
@@ -2387,7 +2387,7 @@ Func _cvePyrMeanShiftFiltering($src, $dst, $sp, $sr, $maxLevel, $termCrit)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePyrMeanShiftFiltering", $bSrcDllType, $src, $bDstDllType, $dst, "double", $sp, "double", $sr, "int", $maxLevel, $bTermCritDllType, $termCrit), "cvePyrMeanShiftFiltering", @error)
 EndFunc   ;==>_cvePyrMeanShiftFiltering
 
-Func _cvePyrMeanShiftFilteringMat($matSrc, $matDst, $sp, $sr, $maxLevel, $termCrit)
+Func _cvePyrMeanShiftFilteringMat($matSrc, $matDst, $sp, $sr, $maxLevel = 1, $termCrit = _cvTermCriteria($CV_TERM_CRITERIA_MAX_ITER+$CV_TERM_CRITERIA_EPS,5,1))
     ; cvePyrMeanShiftFiltering using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize

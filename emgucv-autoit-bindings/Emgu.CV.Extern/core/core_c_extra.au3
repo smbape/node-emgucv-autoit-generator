@@ -5630,7 +5630,7 @@ Func _cveCalcCovarMatrixMat($matSamples, $matCovar, $matMean, $flags, $ctype = $
     _cveInputArrayRelease($iArrSamples)
 EndFunc   ;==>_cveCalcCovarMatrixMat
 
-Func _cveNormalize($src, $dst, $alpha, $beta, $normType, $dType, $mask = _cveNoArray())
+Func _cveNormalize($src, $dst, $alpha, $beta, $normType, $dType = -1, $mask = _cveNoArray())
     ; CVAPI(void) cveNormalize(cv::_InputArray* src, cv::_InputOutputArray* dst, double alpha, double beta, int normType, int dType, cv::_InputArray* mask);
 
     Local $bSrcDllType
@@ -5657,7 +5657,7 @@ Func _cveNormalize($src, $dst, $alpha, $beta, $normType, $dType, $mask = _cveNoA
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveNormalize", $bSrcDllType, $src, $bDstDllType, $dst, "double", $alpha, "double", $beta, "int", $normType, "int", $dType, $bMaskDllType, $mask), "cveNormalize", @error)
 EndFunc   ;==>_cveNormalize
 
-Func _cveNormalizeMat($matSrc, $matDst, $alpha, $beta, $normType, $dType, $matMask = _cveNoArrayMat())
+Func _cveNormalizeMat($matSrc, $matDst, $alpha, $beta, $normType, $dType = -1, $matMask = _cveNoArrayMat())
     ; cveNormalize using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
@@ -6800,7 +6800,7 @@ Func _cvePSNRMat($matSrc1, $matSrc2)
     Return $retval
 EndFunc   ;==>_cvePSNRMat
 
-Func _cveEigen($src, $eigenValues, $eigenVectors)
+Func _cveEigen($src, $eigenValues, $eigenVectors = _cveNoArray())
     ; CVAPI(bool) cveEigen(cv::_InputArray* src, cv::_OutputArray* eigenValues, cv::_OutputArray* eigenVectors);
 
     Local $bSrcDllType
@@ -6826,7 +6826,7 @@ Func _cveEigen($src, $eigenValues, $eigenVectors)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveEigen", $bSrcDllType, $src, $bEigenValuesDllType, $eigenValues, $bEigenVectorsDllType, $eigenVectors), "cveEigen", @error)
 EndFunc   ;==>_cveEigen
 
-Func _cveEigenMat($matSrc, $matEigenValues, $matEigenVectors)
+Func _cveEigenMat($matSrc, $matEigenValues, $matEigenVectors = _cveNoArrayMat())
     ; cveEigen using cv::Mat instead of _*Array
 
     Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize

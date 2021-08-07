@@ -412,7 +412,7 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
                                 if (!hasProp.call(defaults, fname)) {
                                     defaults[fname] = {};
                                 }
-                                defaults[fname][argName] = defaultValue;
+                                defaults[fname][argName.toLowerCase()] = defaultValue;
                             }
                         }
                     }
@@ -532,7 +532,10 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
         });
     }, err => {
         options.additionalIncludes = additionalIncludes.sort(([a], [b]) => (a > b ? 1 : a < b ? -1 : 0));
-        options.defaults = defaults;
+        options.defaults = (fname, argName, defaultValue) => {
+            argName = argName.toLowerCase();
+            return hasProp.call(defaults, fname) && hasProp.call(defaults[fname], argName) ? defaults[fname][argName] : defaultValue;
+        };
         cb(err);
     });
 };
@@ -698,6 +701,6 @@ waterfall([
             throw err;
         }
 
-        console.log("done");
+        console.log("exported", Object.keys(options.exported).length, "functions");
     });
 });
