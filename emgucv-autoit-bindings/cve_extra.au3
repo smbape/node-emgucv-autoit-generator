@@ -633,7 +633,9 @@ Func _cveSetControlPic($controlID, $matImg)
 
 	Local $aDIB = DllCall("gdi32.dll", "ptr", "CreateDIBSection", "hwnd", 0, "struct*", $tBIHDR, "uint", $DIB_RGB_COLORS, "ptr*", 0, "ptr", 0, "dword", 0)
 	DllCall("msvcrt.dll", "ptr", "memcpy_s", "ptr", $aDIB[4], "ulong_ptr", $iSize, "ptr", _cveMatGetDataPointer($matImg), "ulong_ptr", $iSize)
-	_WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($controlID), $STM_SETIMAGE, 0, $aDIB[0]))
+	Local $hPrevImage = _SendMessage(GUICtrlGetHandle($controlID), $STM_SETIMAGE, 0, $aDIB[0])
+	_WinAPI_DeleteObject($hPrevImage); Delete Prev image if any
+	_WinAPI_DeleteObject($aDIB[0])
 
 	$tDsize = 0
 EndFunc   ;==>_cveSetControlPic

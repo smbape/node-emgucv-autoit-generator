@@ -108,6 +108,8 @@ While 1
 	Sleep(50) ; Sleep to reduce CPU usage
 WEnd
 
+Clean()
+
 _Opencv_DLLClose()
 _GDIPlus_Shutdown()
 

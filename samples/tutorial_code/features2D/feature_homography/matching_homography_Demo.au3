@@ -116,6 +116,8 @@ While 1
 	EndSwitch
 WEnd
 
+Clean()
+
 _Opencv_DLLClose()
 _GDIPlus_Shutdown()
 

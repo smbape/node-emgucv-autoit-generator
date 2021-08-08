@@ -14,6 +14,7 @@ Opt("GUIOnEventMode", 1)
 #include <GuiComboBox.au3>
 #include <GUIConstantsEx.au3>
 #include <Math.au3>
+#include <Misc.au3>
 #include <StaticConstants.au3>
 #include <WindowsConstants.au3>
 #include "..\..\..\emgucv-autoit-bindings\cve_extra.au3"
@@ -25,6 +26,9 @@ Opt("GUIOnEventMode", 1)
 
 Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")
 
+Local Const $max_value_H = 360 / 2 ;
+Local Const $max_value = 255 ;
+
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Thresholding Operations using inRange", 1066, 745, 192, 73)
 
@@ -35,32 +39,32 @@ Local $ComboCamera = GUICtrlCreateCombo("", 136, 24, 120, 25, BitOR($CBS_DROPDOW
 Local $LabelLowH = GUICtrlCreateLabel("Low H: 180", 24, 64, 78, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $SliderLowH = GUICtrlCreateSlider(128, 64, 400, 45)
-GUICtrlSetLimit(-1, 179, 0)
+GUICtrlSetLimit(-1, $max_value_H - 1, 0)
 
 Local $LabelHighH = GUICtrlCreateLabel("High H: 180", 544, 64, 83, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $SliderHighH = GUICtrlCreateSlider(648, 64, 400, 45)
-GUICtrlSetLimit(-1, 180, 1)
+GUICtrlSetLimit(-1, $max_value_H, 1)
 
 Local $LabelLowS = GUICtrlCreateLabel("Low S: 255", 24, 104, 77, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $SliderLowS = GUICtrlCreateSlider(128, 104, 400, 45)
-GUICtrlSetLimit(-1, 254, 0)
+GUICtrlSetLimit(-1, $max_value - 1, 0)
 
 Local $LabelHighS = GUICtrlCreateLabel("High S: 255", 544, 104, 82, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $SliderHighS = GUICtrlCreateSlider(648, 104, 400, 45)
-GUICtrlSetLimit(-1, 255, 1)
+GUICtrlSetLimit(-1, $max_value, 1)
 
 Local $LabelLowV = GUICtrlCreateLabel("Low V: 255", 24, 144, 77, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $SliderLowV = GUICtrlCreateSlider(128, 144, 400, 45)
-GUICtrlSetLimit(-1, 254, 0)
+GUICtrlSetLimit(-1, $max_value - 1, 0)
 
 Local $LabelHighV = GUICtrlCreateLabel("High V: 255", 544, 144, 82, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
 Local $SliderHighV = GUICtrlCreateSlider(648, 144, 400, 45)
-GUICtrlSetLimit(-1, 255, 1)
+GUICtrlSetLimit(-1, $max_value, 1)
 
 Local $LabelVideoCapture = GUICtrlCreateLabel("Video Capture", 231, 196, 103, 20)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
@@ -89,14 +93,12 @@ Local $sCameraList = ""
 
 Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 
-Local Const $max_value_H = 360 / 2 ;
-Local Const $max_value = 255 ;
-Local $low_H = 0 ;
+Local $low_H = 50 ;
 Local $low_S = 0 ;
-Local $low_V = 0 ;
-Local $high_H = $max_value_H ;
+Local $low_V = 60 ;
+Local $high_H = 140 ;
 Local $high_S = $max_value ;
-Local $high_V = $max_value ;
+Local $high_V = 150 ;
 
 GUICtrlSetData($SliderLowH, $low_H)
 GUICtrlSetData($SliderLowS, $low_S)
@@ -115,13 +117,20 @@ Local $frame_threshold
 Local $i_arr_frame_HSV
 Local $o_arr_frame_threshold
 
-Main()
-
 Local $iNewLowH, $iOldLowH, $iNewHighH, $iOldHighH
 Local $iNewLowS, $iOldLowS, $iNewSighS, $iOldHighS
 Local $iNewLowV, $iOldLowV, $iNewVighV, $iOldHighV
 
+Local $hUser32DLL = DllOpen("user32.dll")
+Local $iKey
+
 While 1
+	If $cap == Null Then
+		Main()
+		Sleep(1000) ; Sleep to reduce CPU usage
+		ContinueLoop
+	EndIf
+
 	UpdateCameraList()
 
 	$iNewLowH = GUICtrlRead($SliderLowH)
@@ -162,8 +171,16 @@ While 1
 
 	UpdateFrame()
 
+	If _IsPressed(Hex(Asc("Q")), $hUser32DLL) Then
+		ExitLoop
+	EndIf
+
 	Sleep(30) ; Sleep to reduce CPU usage
 WEnd
+
+Clean()
+
+DllClose($hUser32DLL)
 
 If $bHasAddon Then _Addon_DLLClose()
 _Opencv_DLLClose()
@@ -233,6 +250,12 @@ Func Main()
 
 	Local $iCamId = _Max(0, _GUICtrlComboBox_GetCurSel($ComboCamera))
 	$cap = _cveVideoCaptureCreateFromDevice($iCamId, $CV_CAP_ANY, 0)
+	If Not _cveVideoCaptureIsOpened($cap) Then
+		ConsoleWriteError("!>Error: can not open camera." & @CRLF)
+		_cveVideoCaptureRelease($cap)
+		$cap = 0
+		Return
+	EndIf
 
 	$frame = _cveMatCreate()
 	$frame_flipped = _cveMatCreate()
@@ -249,11 +272,12 @@ Func Clean()
 	_cveMatRelease($frame_HSV)
 	_cveMatRelease($frame_flipped)
 	_cveMatRelease($frame)
-	_cveVideoCaptureRelease($cap)
-	$cap = Null
 
 	_cveOutputArrayRelease($o_arr_frame_threshold)
 	_cveInputArrayRelease($i_arr_frame_HSV)
+
+	_cveVideoCaptureRelease($cap)
+	$cap = Null
 EndFunc   ;==>Clean
 
 Func _cleanExit()
@@ -298,12 +322,6 @@ Func UpdateFrame()
 	_cveImshowControlPic($frame_flipped, $FormGUI, $PicVideoCapture, $tBackgroundColor)
 	_cveImshowControlPic($frame_threshold, $FormGUI, $PicObjectDetection, $tBackgroundColor)
 	;;! [show]
-
-	;; Reduce the memory usage
-	;; Without this, memory will increase indefinitely
-	;; It is not because of a memory leak
-	;; but because of how autoit works
-	_WinAPI_EmptyWorkingSet()
 EndFunc   ;==>UpdateFrame
 
 Func UpdateCameraList()
