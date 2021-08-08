@@ -25,7 +25,7 @@ Opt("MustDeclareVars", 1)
 Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")
 
 #Region ### START Koda GUI section ### Form=
-Local $FormGUI = GUICreate("Template Matching", 1267, 556, 185, 122)
+Local $FormGUI = GUICreate("Scaled Template Matching", 1267, 556, 185, 122)
 
 Local $InputSource = GUICtrlCreateInput($OPENCV_SAMPLES_DATA_PATH & "\lena_tmpl.jpg", 366, 16, 449, 21)
 Local $BtnSource = GUICtrlCreateButton("Source", 825, 14, 75, 25)

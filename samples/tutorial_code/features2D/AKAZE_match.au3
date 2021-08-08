@@ -17,6 +17,7 @@ Opt("MustDeclareVars", 1)
 #include <StringConstants.au3>
 #include <WindowsConstants.au3>
 #include "..\..\..\emgucv-autoit-bindings\cve_extra.au3"
+#include "..\..\..\autoit-addon\addon.au3"
 
 ;~ Sources:
 ;~     https://docs.opencv.org/4.5.3/db/d70/tutorial_akaze_matching.html
@@ -48,20 +49,14 @@ GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
 _GDIPlus_Startup()
-_OpenCV_DLLOpen(_OpenCV_FindDLL(@ScriptDir))
+_OpenCV_DLLOpen(_OpenCV_FindDLL())
 
 Local $img1, $img2, $homography, $homography_size
 Local $nMsg, $hTimer
 Local $sImg1, $sImg2, $sHomography
 Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 
-Local $addon_dll = ""
-Local $aSearchDirs[3] = [@ScriptDir, @ScriptDir & "\..\..\..\autoit-addon\build_x64\Release", @ScriptDir & "\..\..\..\autoit-addon\build_x64\Debug"]
-For $i = 0 To UBound($aSearchDirs) - 1
-	$addon_dll = $aSearchDirs[$i] & "\autoit_addon.dll"
-	If FileExists($addon_dll) Then ExitLoop
-	$addon_dll = ""
-Next
+Local $addon_dll = _Addon_FindDLL()
 
 Main()
 

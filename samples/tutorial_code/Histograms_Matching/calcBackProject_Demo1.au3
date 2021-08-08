@@ -65,7 +65,7 @@ GUISetState(@SW_SHOW)
 _GUICtrlSlider_SetTicFreq($SliderBins, 1)
 
 _GDIPlus_Startup()
-_OpenCV_DLLOpen(_OpenCV_FindDLL(@ScriptDir))
+_OpenCV_DLLOpen(_OpenCV_FindDLL())
 
 Local $tBlueColor = _cvScalar(255, 0, 0)
 Local $tGreenColor = _cvScalar(0, 255, 0)

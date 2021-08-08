@@ -13,7 +13,7 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 add_definitions(-DAUTOIT_MODULE_NAME=${PROJECT_NAME})
-add_definitions("-DAUTOIT_EXPORTS=__declspec(dllexport)")
+add_definitions(-DAUTOITAPI_EXPORTS)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-function")

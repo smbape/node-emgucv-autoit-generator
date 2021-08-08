@@ -14,6 +14,7 @@ Opt("MustDeclareVars", 1)
 #include <StaticConstants.au3>
 #include <WindowsConstants.au3>
 #include "..\..\..\emgucv-autoit-bindings\cve_extra.au3"
+#include "..\..\..\autoit-addon\addon.au3"
 
 ;~ Sources:
 ;~     https://docs.opencv.org/4.5.3/d8/dbc/tutorial_histogram_calculation.html
@@ -44,7 +45,7 @@ GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
 _GDIPlus_Startup()
-_OpenCV_DLLOpen(_OpenCV_FindDLL(@ScriptDir))
+_OpenCV_DLLOpen(_OpenCV_FindDLL())
 
 Local $tBlueColor = _cvScalar(255, 0, 0)
 Local $tGreenColor = _cvScalar(0, 255, 0)
@@ -56,13 +57,7 @@ Local $nMsg
 
 Local $src, $brg_planes, $histImage, $b_hist, $g_hist, $r_hist
 
-Local $addon_dll = ""
-Local $aSearchDirs[3] = [@ScriptDir, @ScriptDir & "\..\..\..\autoit-addon\build_x64\Release", @ScriptDir & "\..\..\..\autoit-addon\build_x64\Debug"]
-For $i = 0 To UBound($aSearchDirs) - 1
-	$addon_dll = $aSearchDirs[$i] & "\autoit_addon.dll"
-	If FileExists($addon_dll) Then ExitLoop
-	$addon_dll = ""
-Next
+Local $addon_dll = _Addon_FindDLL()
 
 Main()
 

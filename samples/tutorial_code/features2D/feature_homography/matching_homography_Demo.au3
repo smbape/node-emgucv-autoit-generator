@@ -76,7 +76,7 @@ _GUICtrlComboBox_SetCurSel($ComboAlgorithm, 0)
 _GUICtrlComboBox_SetCurSel($ComboMatchType, 2)
 
 _GDIPlus_Startup()
-_OpenCV_DLLOpen(_OpenCV_FindDLL(@ScriptDir))
+_OpenCV_DLLOpen(_OpenCV_FindDLL())
 
 Local $img_object, $img_scene
 Local $nMsg

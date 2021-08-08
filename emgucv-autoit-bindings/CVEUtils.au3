@@ -5,7 +5,7 @@
 #include "CVEtypes_c.au3"
 
 Global $_cve_debug = 0
-Global $_h_cvextern_dll
+Global $_h_cvextern_dll = ""
 
 Local $_mat_none = Null
 Local $_io_arr_none = Null
@@ -49,7 +49,7 @@ Func _OpenCV_LoadDLL($dll)
 	Return $result
 EndFunc   ;==>_OpenCV_LoadDLL
 
-Func _OpenCV_FindDLL($sDir, $sFilter = "libemgucv-windesktop-4.*", $sDll = "cvextern.dll")
+Func _OpenCV_FindDLL($sDir = @ScriptDir, $sFilter = "libemgucv-windesktop-4.*", $sDll = "cvextern.dll")
 	Local $aFileList
 	Local $s_cvextern_dll = ""
 	Local $sDrive = "", $sFileName = "", $sExtension = ""
@@ -61,7 +61,7 @@ Func _OpenCV_FindDLL($sDir, $sFilter = "libemgucv-windesktop-4.*", $sDll = "cvex
 			ExitLoop
 		EndIf
 
-		For $i = 0 To UBound($aFileList) - 1
+		For $i = 1 To UBound($aFileList) - 1
 			$s_cvextern_dll = $sDir & "\" & $aFileList[$i] & "\libs\x64\" & $sDll
 			If FileExists($s_cvextern_dll) Then
 				_cveDebugMsg("Found " & $s_cvextern_dll & @CRLF)
@@ -82,14 +82,20 @@ EndFunc   ;==>_OpenCV_FindCvexternDLL
 
 Func _OpenCV_DLLOpen($s_cvextern_dll = "cvextern.dll")
 	$_h_cvextern_dll = _OpenCV_LoadDLL($s_cvextern_dll)
+	If $_h_cvextern_dll == -1 Then Return False
+
 	$_mat_none = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatCreate"), "cveMatCreate", @error)
 	$_io_arr_none = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputOutputArrayFromMat", "ptr", $_mat_none), "cveInputOutputArrayFromMat", @error)
 	For $i = 0 To $iOpenHook - 1
 		Call($aOpenHooks[$i])
 	Next
+
+	Return True
 EndFunc   ;==>_OpenCV_DLLOpen
 
 Func _Opencv_DLLClose()
+	If $_h_cvextern_dll == -1 Then Return False
+
 	For $i = $iCloseHook - 1 To 0 Step -1
 		Call($aCloseHooks[$i])
 	Next
@@ -97,6 +103,9 @@ Func _Opencv_DLLClose()
 	CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatRelease", "ptr*", $_mat_none), "cveMatRelease", @error)
 	$_mat_none = Null
 	DllClose($_h_cvextern_dll)
+	$_h_cvextern_dll = ""
+
+	Return True
 EndFunc   ;==>_Opencv_DLLClose
 
 Func _cveNoArray()

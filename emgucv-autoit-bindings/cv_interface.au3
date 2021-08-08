@@ -1,3 +1,5 @@
+#include-once
+
 ; @addtogroup core_hal_interface
 ; @{
 

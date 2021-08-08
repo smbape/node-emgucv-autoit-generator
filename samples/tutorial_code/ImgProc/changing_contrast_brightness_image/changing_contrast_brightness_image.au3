@@ -74,7 +74,7 @@ GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
 _GDIPlus_Startup()
-_OpenCV_DLLOpen(_OpenCV_FindDLL(@ScriptDir))
+_OpenCV_DLLOpen(_OpenCV_FindDLL())
 
 Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 Local $sInputSource, $img
