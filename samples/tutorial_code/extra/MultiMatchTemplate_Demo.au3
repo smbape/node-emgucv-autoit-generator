@@ -13,6 +13,7 @@ Opt("GUIOnEventMode", 1)
 #include <GDIPlus.au3>
 #include <GuiComboBox.au3>
 #include <GUIConstantsEx.au3>
+#include <GuiSlider.au3>
 #include <Math.au3>
 #include <StaticConstants.au3>
 #include <WindowsConstants.au3>
@@ -21,7 +22,7 @@ Opt("GUIOnEventMode", 1)
 ;~ Sources:
 ;~     https://docs.opencv.org/4.5.3/d4/dc6/tutorial_py_template_matching.html
 
-Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")
+Local Const $OPENCV_SAMPLES_DATA_PATH = _OpenCV_FindFile("samples\data")
 
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Multi-template matching", 906, 607, 183, 120)
@@ -84,13 +85,12 @@ GUICtrlSetOnEvent($ComboMethod, "MultiMatchTemplate")
 GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
+_GUICtrlSlider_SetTicFreq($SliderThreshold, 1)
+
 _GDIPlus_Startup()
 _OpenCV_DLLOpen(_OpenCV_FindDLL())
 
-Local $tBlueColor = _cvScalar(255, 0, 0)
-Local $tGreenColor = _cvScalar(0, 255, 0)
 Local $tRedColor = _cvScalar(0, 0, 255)
-Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 
 Local $sSource = "", $sTemplate = "", $sMask = ""
 Local $img, $templ, $mask, $match_method, $threshold
@@ -202,11 +202,11 @@ Func Main()
 	;;! [prepare_match_rect]
 
 	;;! [Display]
-	_cveImshowControlPic($img, $FormGUI, $PicSource, $tBackgroundColor)
-	_cveImshowControlPic($templ, $FormGUI, $PicTemplate, $tBackgroundColor)
+	_cveImshowControlPic($img, $FormGUI, $PicSource)
+	_cveImshowControlPic($templ, $FormGUI, $PicTemplate)
 
 	If $use_mask Then
-		_cveImshowControlPic($mask, $FormGUI, $PicMask, $tBackgroundColor)
+		_cveImshowControlPic($mask, $FormGUI, $PicMask)
 	EndIf
 	;;! [Display]
 
@@ -261,7 +261,7 @@ Func MultiMatchTemplate()
 	;;! [match_template]
 
 	;;! [imshow]
-	_cveImshowControlPic($img_display, $FormGUI, $PicMatchTemplate, $tBackgroundColor)
+	_cveImshowControlPic($img_display, $FormGUI, $PicMatchTemplate)
 	;;! [imshow]
 
 	_cveMatRelease($img_display)

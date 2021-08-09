@@ -13,6 +13,7 @@ Opt("GUIOnEventMode", 1)
 #include <GDIPlus.au3>
 #include <GuiComboBox.au3>
 #include <GUIConstantsEx.au3>
+#include <GuiSlider.au3>
 #include <Math.au3>
 #include <Misc.au3>
 #include <StaticConstants.au3>
@@ -24,10 +25,17 @@ Opt("GUIOnEventMode", 1)
 ;~     https://docs.opencv.org/4.5.3/da/d97/tutorial_threshold_inRange.html
 ;~     https://github.com/opencv/opencv/tree/master/samples/cpp/tutorial_code/ImgProc/Threshold_inRange.cpp
 
-Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")
+Local Const $OPENCV_SAMPLES_DATA_PATH = _OpenCV_FindFile("samples\data")
 
 Local Const $max_value_H = 360 / 2 ;
 Local Const $max_value = 255 ;
+
+Local $low_H = 50 ;
+Local $low_S = 0 ;
+Local $low_V = 60 ;
+Local $high_H = 140 ;
+Local $high_S = $max_value ;
+Local $high_V = 150 ;
 
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Thresholding Operations using inRange", 1066, 745, 192, 73)
@@ -81,8 +89,22 @@ GUICtrlCreateGroup("", -99, -99, 1, 1)
 GUISetOnEvent($GUI_EVENT_CLOSE, "_cleanExit")
 GUICtrlSetOnEvent($ComboCamera, "_handleCameraChange")
 
+GUICtrlSetData($SliderLowH, $low_H)
+GUICtrlSetData($SliderLowS, $low_S)
+GUICtrlSetData($SliderLowV, $low_V)
+GUICtrlSetData($SliderHighH, $high_H)
+GUICtrlSetData($SliderHighS, $high_S)
+GUICtrlSetData($SliderHighV, $high_V)
+
 GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
+
+_GUICtrlSlider_SetTicFreq($SliderLowH, 1)
+_GUICtrlSlider_SetTicFreq($SliderHighH, 1)
+_GUICtrlSlider_SetTicFreq($SliderLowS, 1)
+_GUICtrlSlider_SetTicFreq($SliderHighS, 1)
+_GUICtrlSlider_SetTicFreq($SliderLowV, 1)
+_GUICtrlSlider_SetTicFreq($SliderHighV, 1)
 
 _GDIPlus_Startup()
 _OpenCV_DLLOpen(_OpenCV_FindDLL())
@@ -90,22 +112,6 @@ Local $bHasAddon = _Addon_DLLOpen(_Addon_FindDLL())
 
 Local $tPtr = DllStructCreate("ptr value")
 Local $sCameraList = ""
-
-Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
-
-Local $low_H = 50 ;
-Local $low_S = 0 ;
-Local $low_V = 60 ;
-Local $high_H = 140 ;
-Local $high_S = $max_value ;
-Local $high_V = 150 ;
-
-GUICtrlSetData($SliderLowH, $low_H)
-GUICtrlSetData($SliderLowS, $low_S)
-GUICtrlSetData($SliderLowV, $low_V)
-GUICtrlSetData($SliderHighH, $high_H)
-GUICtrlSetData($SliderHighS, $high_S)
-GUICtrlSetData($SliderHighV, $high_V)
 
 Local $iCamId = 0
 Local $cap = Null
@@ -251,7 +257,7 @@ Func Main()
 	Local $iCamId = _Max(0, _GUICtrlComboBox_GetCurSel($ComboCamera))
 	$cap = _cveVideoCaptureCreateFromDevice($iCamId, $CV_CAP_ANY, 0)
 	If Not _cveVideoCaptureIsOpened($cap) Then
-		ConsoleWriteError("!>Error: can not open camera." & @CRLF)
+		ConsoleWriteError("!>Error: cannot open the camera." & @CRLF)
 		_cveVideoCaptureRelease($cap)
 		$cap = 0
 		Return
@@ -294,6 +300,7 @@ Func UpdateFrame()
 
 	_cveVideoCaptureReadMat($cap, $frame)
 	If _cveInputArrayIsEmptyMat($frame) Then
+		ConsoleWriteError("!>Error: cannot read the camera." & @CRLF)
 		Return
 	EndIf
 
@@ -319,8 +326,8 @@ Func UpdateFrame()
 
 	;;! [show]
 	;; Show the frames
-	_cveImshowControlPic($frame_flipped, $FormGUI, $PicVideoCapture, $tBackgroundColor)
-	_cveImshowControlPic($frame_threshold, $FormGUI, $PicObjectDetection, $tBackgroundColor)
+	_cveImshowControlPic($frame_flipped, $FormGUI, $PicVideoCapture)
+	_cveImshowControlPic($frame_threshold, $FormGUI, $PicObjectDetection)
 	;;! [show]
 EndFunc   ;==>UpdateFrame
 

@@ -12,7 +12,6 @@ Opt("MustDeclareVars", 1)
 #include <GDIPlus.au3>
 #include <GuiComboBox.au3>
 #include <GUIConstantsEx.au3>
-#include <GUIConstantsEx.au3>
 #include <Math.au3>
 #include <StaticConstants.au3>
 #include <WindowsConstants.au3>
@@ -22,7 +21,7 @@ Opt("MustDeclareVars", 1)
 ;~     https://docs.opencv.org/4.5.3/de/da9/tutorial_template_matching.html
 ;~     https://github.com/opencv/opencv/blob/4.5.3/samples/cpp/tutorial_code/Histograms_Matching/MatchTemplate_Demo.cpp
 
-Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")
+Local Const $OPENCV_SAMPLES_DATA_PATH = _OpenCV_FindFile("samples\data")
 
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Scaled Template Matching", 1267, 556, 185, 122)
@@ -89,12 +88,9 @@ GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
 _GDIPlus_Startup()
-_OpenCV_DLLOpen(_OpenCV_FindDLL(@ScriptDir))
+_OpenCV_DLLOpen(_OpenCV_FindDLL())
 
-Local $tBlueColor = _cvScalar(255, 0, 0)
 Local $tGreenColor = _cvScalar(0, 255, 0)
-Local $tRedColor = _cvScalar(0, 0, 255)
-Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 
 Local $sSource = "", $sTemplate = "", $sMask = ""
 Local $img, $img_gray, $img_size, $templ, $templ_gray, $templ_size, $mask, $match_method, $scale_direction, $min_scale, $max_scale, $threshold
@@ -201,11 +197,11 @@ Func Main()
 	;;! [load_image]
 
 	;;! [Display]
-	_cveImshowControlPic($img, $FormGUI, $PicSource, $tBackgroundColor)
-	_cveImshowControlPic($templ, $FormGUI, $PicTemplate, $tBackgroundColor)
+	_cveImshowControlPic($img, $FormGUI, $PicSource)
+	_cveImshowControlPic($templ, $FormGUI, $PicTemplate)
 
 	If $use_mask Then
-		_cveImshowControlPic($mask, $FormGUI, $PicMask, $tBackgroundColor)
+		_cveImshowControlPic($mask, $FormGUI, $PicMask)
 	EndIf
 	;;! [Display]
 
@@ -333,7 +329,7 @@ Func MatchingMethod()
 		;;! [match_template]
 
 		;;! [imshow]
-		_cveImshowControlPic($img_resized, $FormGUI, $PicMatchTemplate, $tBackgroundColor)
+		_cveImshowControlPic($img_resized, $FormGUI, $PicMatchTemplate)
 		;;! [imshow]
 
 		_cveMatRelease($img_resized)
@@ -345,7 +341,7 @@ Func MatchingMethod()
 	Local $img_display = _cveMatCreate()
 	_cveMatCopyToMat($img, $img_display, _cveNoArrayMat())
 	_cveRectangleMat($img_display, $tBestMatchRect, $tGreenColor, 2, $CV_LINE_8, 0)
-	_cveImshowControlPic($img_display, $FormGUI, $PicResultImage, $tBackgroundColor)
+	_cveImshowControlPic($img_display, $FormGUI, $PicResultImage)
 	_cveMatRelease($img_display)
 	;;! [imshow]
 EndFunc   ;==>MatchingMethod

@@ -23,7 +23,7 @@ Opt("MustDeclareVars", 1)
 ;~     https://docs.opencv.org/4.5.3/db/d70/tutorial_akaze_matching.html
 ;~     https://github.com/opencv/opencv/tree/master/samples/cpp/tutorial_code/features2D/AKAZE_match.cpp
 
-Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")
+Local Const $OPENCV_SAMPLES_DATA_PATH = _OpenCV_FindFile("samples\data")
 
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("AKAZE local features matching", 1000, 707, 192, 95)
@@ -54,7 +54,6 @@ _OpenCV_DLLOpen(_OpenCV_FindDLL())
 Local $img1, $img2, $homography, $homography_size
 Local $nMsg, $hTimer
 Local $sImg1, $sImg2, $sHomography
-Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 
 Local $addon_dll = _Addon_FindDLL()
 
@@ -329,7 +328,7 @@ Func Detect()
 
 	; _cveImshowMat("result", $res);
 	; waitKey();
-	_cveImshowControlPic($res, $FormGUI, $PicMatches, $tBackgroundColor)
+	_cveImshowControlPic($res, $FormGUI, $PicMatches)
 	;;! [draw final matches]
 
 	_VectorOfByteRelease($matchesMask)

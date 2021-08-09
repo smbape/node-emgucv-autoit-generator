@@ -21,7 +21,7 @@ Opt("MustDeclareVars", 1)
 ;~     https://docs.opencv.org/4.5.3/d7/dff/tutorial_feature_homography.html
 ;~     https://github.com/opencv/opencv/tree/master/samples/cpp/tutorial_code/features2D/feature_homography/SURF_FLANN_matching_homography_Demo.cpp
 
-Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\..\data")
+Local Const $OPENCV_SAMPLES_DATA_PATH = _OpenCV_FindFile("samples\data")
 
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Features2D + Homography to find a known object", 1000, 707, 192, 95)
@@ -81,7 +81,6 @@ _OpenCV_DLLOpen(_OpenCV_FindDLL())
 Local $img_object, $img_scene
 Local $nMsg
 Local $sObject, $sScene
-Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 
 Main()
 
@@ -360,7 +359,7 @@ Func Detect()
 
 	;-- Show detected matches
 	; _cveImshowMat("Good Matches & Object detection", $img_matches) ;
-	_cveImshowControlPic($img_matches, $FormGUI, $PicMatches, $tBackgroundColor)
+	_cveImshowControlPic($img_matches, $FormGUI, $PicMatches)
 
 	_VectorOfByteRelease($matchesMask)
 	_cveMatRelease($img_matches)

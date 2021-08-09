@@ -12,7 +12,6 @@ Opt("MustDeclareVars", 1)
 #include <GDIPlus.au3>
 #include <GuiComboBox.au3>
 #include <GUIConstantsEx.au3>
-#include <GUIConstantsEx.au3>
 #include <Math.au3>
 #include <StaticConstants.au3>
 #include <WindowsConstants.au3>
@@ -22,7 +21,7 @@ Opt("MustDeclareVars", 1)
 ;~     https://docs.opencv.org/4.5.3/dc/dd3/tutorial_gausian_median_blur_bilateral_filter.html
 ;~     https://github.com/opencv/opencv/blob/4.5.3/samples/cpp/tutorial_code/ImgProc/Smoothing/Smoothing.cpp
 
-Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\..\data")
+Local Const $OPENCV_SAMPLES_DATA_PATH = _OpenCV_FindFile("samples\data")
 
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Smoothing Images", 1067, 641, 192, 124)
@@ -55,11 +54,6 @@ GUISetState(@SW_SHOW)
 
 _GDIPlus_Startup()
 _OpenCV_DLLOpen(_OpenCV_FindDLL())
-
-Local $tBlueColor = _cvScalar(255, 0, 0)
-Local $tGreenColor = _cvScalar(0, 255, 0)
-Local $tRedColor = _cvScalar(0, 0, 255)
-Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 
 Local $sImage = ""
 Local $nMsg
@@ -114,7 +108,7 @@ Func Main()
 
 	;;! [Display]
 	; _cveImshowMat("Source image", $src );
-	_cveImshowControlPic($src, $FormGUI, $PicSource, $tBackgroundColor)
+	_cveImshowControlPic($src, $FormGUI, $PicSource)
 	;;! [Display]
 
 	Smooth()
@@ -131,7 +125,7 @@ Func Smooth()
 			;;![blur]
 			For $i = 1 To $MAX_KERNEL_LENGTH - 1 Step 2
 				_cveBlurMat($src, $dst, _cvSize($i, $i), _cvPoint(-1, -1))   ;
-				_cveImshowControlPic($dst, $FormGUI, $PicResult, $tBackgroundColor)
+				_cveImshowControlPic($dst, $FormGUI, $PicResult)
 				Sleep($DELAY_BLUR)
 			Next
 			;;![blur]
@@ -139,7 +133,7 @@ Func Smooth()
 			;;![gaussianblur]
 			For $i = 1 To $MAX_KERNEL_LENGTH - 1 Step 2
 				_cveGaussianBlurMat($src, $dst, _cvSize($i, $i), 0, 0)    ;
-				_cveImshowControlPic($dst, $FormGUI, $PicResult, $tBackgroundColor)
+				_cveImshowControlPic($dst, $FormGUI, $PicResult)
 				Sleep($DELAY_BLUR)
 			Next
 			;;![gaussianblur]
@@ -147,7 +141,7 @@ Func Smooth()
 			;;![medianblur]
 			For $i = 1 To $MAX_KERNEL_LENGTH - 1 Step 2
 				_cveMedianBlurMat($src, $dst, $i)  ;
-				_cveImshowControlPic($dst, $FormGUI, $PicResult, $tBackgroundColor)
+				_cveImshowControlPic($dst, $FormGUI, $PicResult)
 				Sleep($DELAY_BLUR)
 			Next
 			;;![medianblur]
@@ -155,7 +149,7 @@ Func Smooth()
 			;;![bilateralfilter]
 			For $i = 1 To $MAX_KERNEL_LENGTH - 1 Step 2
 				_cveBilateralFilterMat($src, $dst, $i, $i * 2, $i / 2)
-				_cveImshowControlPic($dst, $FormGUI, $PicResult, $tBackgroundColor)
+				_cveImshowControlPic($dst, $FormGUI, $PicResult)
 				Sleep($DELAY_BLUR)
 			Next
 			;;![bilateralfilter]

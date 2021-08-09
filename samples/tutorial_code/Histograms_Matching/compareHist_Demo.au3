@@ -21,7 +21,7 @@ Opt("MustDeclareVars", 1)
 ;~     https://github.com/opencv/opencv/blob/4.5.3/samples/cpp/tutorial_code/Histograms_Matching/compareHist_Demo.cpp
 ;~     https://www.autoitscript.com/forum/topic/105814-table-udf/
 
-Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")
+Local Const $OPENCV_SAMPLES_DATA_PATH = _OpenCV_FindFile("samples\data")
 
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Histogram Comparison", 997, 668, 192, 124)
@@ -76,11 +76,6 @@ GUISetState(@SW_UNLOCK)
 
 _GDIPlus_Startup()
 _OpenCV_DLLOpen(_OpenCV_FindDLL())
-
-Local $tBlueColor = _cvScalar(255, 0, 0)
-Local $tGreenColor = _cvScalar(0, 255, 0)
-Local $tRedColor = _cvScalar(0, 0, 255)
-Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 
 Local $sSrcBase = "", $sSrcTest1 = "", $sSrcTest2 = ""
 Local $nMsg
@@ -164,9 +159,9 @@ Func Main()
 	;;! [Load three images with different environment settings]
 
 	;;! [Display]
-	_cveImshowControlPic($src_base, $FormGUI, $PicSrcBase, $tBackgroundColor)
-	_cveImshowControlPic($src_test1, $FormGUI, $PicSrcTest1, $tBackgroundColor)
-	_cveImshowControlPic($src_test2, $FormGUI, $PicSrcTest2, $tBackgroundColor)
+	_cveImshowControlPic($src_base, $FormGUI, $PicSrcBase)
+	_cveImshowControlPic($src_test1, $FormGUI, $PicSrcTest1)
+	_cveImshowControlPic($src_test2, $FormGUI, $PicSrcTest2)
 	;;! [Display]
 
 	;;! [Convert to HSV]

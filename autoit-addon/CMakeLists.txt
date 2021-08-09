@@ -19,49 +19,52 @@ if(CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-function")
 endif()
 
-file(GLOB project_srcs "./*.cpp")
-source_group("Src" FILES ${project_srcs})
+# Source headers
 file(GLOB project_hdrs "./*.h*")
 source_group("Include" FILES ${project_hdrs})
+
+# Source files
+file(GLOB project_srcs "./*.cpp")
+source_group("Src" FILES ${project_srcs})
 
 # Build a shared library named as the project
 add_library(${PROJECT_NAME} SHARED ${project_srcs} ${project_hdrs})
 
 # Include directories
-set(__PROJECT_INCLUDE_DIRS
+set(__project_include_dirs
   "${CMAKE_CURRENT_SOURCE_DIR}/../libemgucv-includes/3rdparty"
   "${CMAKE_CURRENT_SOURCE_DIR}/../libemgucv-includes/build_x64"
   "${CMAKE_CURRENT_SOURCE_DIR}/../libemgucv-includes/Emgu.CV.Extern"
   "${CMAKE_CURRENT_SOURCE_DIR}/../libemgucv-includes/opencv"
   "${CMAKE_CURRENT_SOURCE_DIR}/../libemgucv-includes/opencv_contrib"
 )
-set(PROJECT_INCLUDE_DIRS "")
-foreach(d ${__PROJECT_INCLUDE_DIRS})
+set(project_include_dirs "")
+foreach(d ${__project_include_dirs})
   get_filename_component(__d "${d}" REALPATH)
   if(NOT EXISTS "${__d}")
     if(NOT OpenCV_FIND_QUIETLY)
       message(WARNING "OpenCV: Include directory doesn't exist: '${d}'. OpenCV installation may be broken. Skip...")
     endif()
   else()
-    list(APPEND PROJECT_INCLUDE_DIRS "${__d}")
+    list(APPEND project_include_dirs "${__d}")
   endif()
 endforeach()
 unset(__d)
 
 # Library directories
-file(GLOB __PROJECT_LIBRARY_DIRS "../libemgucv-windesktop-4.*")
-set(PROJECT_LIBRARY_DIRS "")
-foreach(f ${__PROJECT_LIBRARY_DIRS})
+file(GLOB __project_library_dirs "../libemgucv-windesktop-4.*")
+set(project_library_dirs "")
+foreach(f ${__project_library_dirs})
   get_filename_component(__f "${f}/libs/x64" REALPATH)
   if(EXISTS "${__f}")
-    list(APPEND PROJECT_LIBRARY_DIRS "${__f}")
+    list(APPEND project_library_dirs "${__f}")
   endif()
 endforeach()
 unset(__f)
 
 # Add the required include directories for compiling:
-target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PRIVATE ${project_include_dirs})
 
 # Add the required libraries for linking:
-target_link_directories(${PROJECT_NAME} PRIVATE ${PROJECT_LIBRARY_DIRS})
+target_link_directories(${PROJECT_NAME} PRIVATE ${project_library_dirs})
 target_link_libraries(${PROJECT_NAME} PRIVATE "cvextern.lib")

@@ -19,7 +19,7 @@ Opt("MustDeclareVars", 1)
 ;~     https://docs.opencv.org/4.5.3/d4/d1b/tutorial_histogram_equalization.html
 ;~     https://github.com/opencv/opencv/blob/4.5.3/samples/cpp/tutorial_code/Histograms_Matching/EqualizeHist_Demo.cpp
 
-Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")
+Local Const $OPENCV_SAMPLES_DATA_PATH = _OpenCV_FindFile("samples\data")
 
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Histogram Equalization", 1065, 617, 192, 124)
@@ -45,11 +45,6 @@ GUISetState(@SW_SHOW)
 
 _GDIPlus_Startup()
 _OpenCV_DLLOpen(_OpenCV_FindDLL())
-
-Local $tBlueColor = _cvScalar(255, 0, 0)
-Local $tGreenColor = _cvScalar(0, 255, 0)
-Local $tRedColor = _cvScalar(0, 0, 255)
-Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 
 Local $sImage = ""
 Local $nMsg
@@ -107,8 +102,8 @@ Func Main()
 	; _cveImshowMat("Source image", $src );
 	; _cveImshowMat("Equalized Image", $dst );
 
-	_cveImshowControlPic($src, $FormGUI, $PicSource, $tBackgroundColor)
-	_cveImshowControlPic($dst, $FormGUI, $PicResult, $tBackgroundColor)
+	_cveImshowControlPic($src, $FormGUI, $PicSource)
+	_cveImshowControlPic($dst, $FormGUI, $PicResult)
 	;;! [Display]
 EndFunc   ;==>Main
 

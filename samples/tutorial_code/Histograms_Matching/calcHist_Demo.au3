@@ -20,7 +20,7 @@ Opt("MustDeclareVars", 1)
 ;~     https://docs.opencv.org/4.5.3/d8/dbc/tutorial_histogram_calculation.html
 ;~     https://github.com/opencv/opencv/blob/4.5.3/samples/cpp/tutorial_code/Histograms_Matching/calcHist_Demo.cpp
 
-Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")
+Local Const $OPENCV_SAMPLES_DATA_PATH = _OpenCV_FindFile("samples\data")
 
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Histogram Calculation", 1065, 617, 192, 124)
@@ -50,7 +50,6 @@ _OpenCV_DLLOpen(_OpenCV_FindDLL())
 Local $tBlueColor = _cvScalar(255, 0, 0)
 Local $tGreenColor = _cvScalar(0, 255, 0)
 Local $tRedColor = _cvScalar(0, 0, 255)
-Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 
 Local $sImage = Null
 Local $nMsg
@@ -231,8 +230,8 @@ Func Main()
 	; _cveImshowMat("Source image", $src );
 	; _cveImshowMat("calcHist Demo", $histImage );
 
-	_cveImshowControlPic($src, $FormGUI, $PicSource, $tBackgroundColor)
-	_cveImshowControlPic($histImage, $FormGUI, $PicResult, $tBackgroundColor)
+	_cveImshowControlPic($src, $FormGUI, $PicSource)
+	_cveImshowControlPic($histImage, $FormGUI, $PicResult)
 	;;! [Display]
 EndFunc   ;==>Main
 

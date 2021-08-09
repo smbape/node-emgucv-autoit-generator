@@ -49,25 +49,36 @@ Func _OpenCV_LoadDLL($dll)
 	Return $result
 EndFunc   ;==>_OpenCV_LoadDLL
 
-Func _OpenCV_FindDLL($sDir = @ScriptDir, $sFilter = "libemgucv-windesktop-4.*", $sDll = "cvextern.dll")
-	Local $aFileList
-	Local $s_cvextern_dll = ""
+Func _OpenCV_FindFile($sFile, $sDir = @ScriptDir, $sFilter = "")
+	_cveDebugMsg("_OpenCV_FindFile('" & $sFile & "', '" & $sDir & "', '" & $sFilter & "')")
+
+	Local $aFileList[2] = [1, "."]
+	Local $sFound = ""
 	Local $sDrive = "", $sFileName = "", $sExtension = ""
 
 	While 1
-		$aFileList = _FileListToArray($sDir, $sFilter)
-
-		If @error <> 0 And @error <> 4 Then
-			ExitLoop
+		If $sFilter <> "" Then
+			$aFileList = _FileListToArray($sDir, $sFilter)
+			If @error <> 0 And @error <> 4 Then
+				ExitLoop
+			EndIf
 		EndIf
 
 		For $i = 1 To UBound($aFileList) - 1
-			$s_cvextern_dll = $sDir & "\" & $aFileList[$i] & "\libs\x64\" & $sDll
-			If FileExists($s_cvextern_dll) Then
-				_cveDebugMsg("Found " & $s_cvextern_dll & @CRLF)
+			If StringCompare($aFileList[$i], ".") == 0 Then
+				$sFound = $sDir & "\" & $sFile
+			Else
+				$sFound = $sDir & "\" & $aFileList[$i] & "\" & $sFile
+			EndIf
+
+			_cveDebugMsg("Looking for " & $sFound & @CRLF)
+
+			If FileExists($sFound) Then
+				_cveDebugMsg("Found " & $sFound & @CRLF)
 				ExitLoop 2
 			EndIf
-			$s_cvextern_dll = ""
+
+			$sFound = ""
 		Next
 
 		_PathSplit($sDir, $sDrive, $sDir, $sFileName, $sExtension)
@@ -77,8 +88,12 @@ Func _OpenCV_FindDLL($sDir = @ScriptDir, $sFilter = "libemgucv-windesktop-4.*", 
 		$sDir = $sDrive & StringLeft($sDir, StringLen($sDir) - 1)
 	WEnd
 
-	Return $s_cvextern_dll
-EndFunc   ;==>_OpenCV_FindCvexternDLL
+	Return $sFound
+EndFunc   ;==>_OpenCV_FindFile
+
+Func _OpenCV_FindDLL($sFilter = "libemgucv-windesktop-4.*", $sDll = "libs\x64\cvextern.dll", $sDir = @ScriptDir)
+	Return _OpenCV_FindFile($sDll, $sDir, $sFilter)
+EndFunc   ;==>_OpenCV_FindDLL
 
 Func _OpenCV_DLLOpen($s_cvextern_dll = "cvextern.dll")
 	$_h_cvextern_dll = _OpenCV_LoadDLL($s_cvextern_dll)

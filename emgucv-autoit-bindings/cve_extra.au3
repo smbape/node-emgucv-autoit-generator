@@ -5,6 +5,8 @@
 #include <StaticConstants.au3>
 #include "cve_world.au3"
 
+Local Const $tDefaultFormBackground = _cvRGB(0xF0, 0xF0, 0xF0)
+
 _cveRegisterOpenHook("_cveOnOpen")
 _cveRegisterCloseHook("_cveOnClose")
 
@@ -621,7 +623,7 @@ Func _cveSetControlPic($controlID, $matImg)
 	Local $iWidth = $tDsize.width
 	Local $iHeight = $tDsize.height
 
-	Local $iChannels = 4
+	Local $iChannels = _cveMatNumberOfChannels($matImg)
 	Local $iSize = $iWidth * $iHeight * $iChannels
 
 	Local $tBIHDR = DllStructCreate($tagBITMAPINFO)
@@ -640,7 +642,7 @@ Func _cveSetControlPic($controlID, $matImg)
 	$tDsize = 0
 EndFunc   ;==>_cveSetControlPic
 
-Func _cveImshowControlPic($matImg, $hWnd, $controlID, $tBackgroundColor, $iCode = -1, $bFit = True)
+Func _cveImshowControlPic($matImg, $hWnd, $controlID, $tBackgroundColor = $tDefaultFormBackground, $iCode = -1, $bFit = True)
 	Local $aPicPos = ControlGetPos($hWnd, "", $controlID)
 
 	Local $tMatImg = Null

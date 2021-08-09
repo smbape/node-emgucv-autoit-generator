@@ -13,7 +13,7 @@ Opt("GUIOnEventMode", 1)
 #include <GDIPlus.au3>
 #include <GuiComboBox.au3>
 #include <GUIConstantsEx.au3>
-#include <GUIConstantsEx.au3>
+#include <GuiSlider.au3>
 #include <Math.au3>
 #include <StaticConstants.au3>
 #include <WindowsConstants.au3>
@@ -23,7 +23,7 @@ Opt("GUIOnEventMode", 1)
 ;~     https://docs.opencv.org/4.5.3/d3/dc1/tutorial_basic_linear_transform.html
 ;~     https://github.com/opencv/opencv/blob/4.5.3/samples/cpp/tutorial_code/ImgProc/changing_contrast_brightness_image/changing_contrast_brightness_image.cpp
 
-Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\..\data")
+Local Const $OPENCV_SAMPLES_DATA_PATH = _OpenCV_FindFile("samples\data")
 
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Changing the contrast and brightness of an image!", 1261, 671, 185, 122)
@@ -73,10 +73,13 @@ GUICtrlSetOnEvent($BtnSource, "_handleBtnSourceClick")
 GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
+_GUICtrlSlider_SetTicFreq($SliderAlpha, 1)
+_GUICtrlSlider_SetTicFreq($SliderBeta, 1)
+_GUICtrlSlider_SetTicFreq($SliderGamma, 1)
+
 _GDIPlus_Startup()
 _OpenCV_DLLOpen(_OpenCV_FindDLL())
 
-Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 Local $sInputSource, $img
 
 Main()
@@ -139,7 +142,7 @@ Func Main()
 	;;! [Read the image]
 
 	;;! [Show the image]
-	_cveImshowControlPic($img, $FormGUI, $PicSource, $tBackgroundColor)
+	_cveImshowControlPic($img, $FormGUI, $PicSource)
 	;;! [Show the image]
 
 	basicLinearTransform()
@@ -158,7 +161,7 @@ Func basicLinearTransform()
 	Local $res = _cveMatCreate() ;
 	_cveMatConvertToMat($img, $res, -1, $alpha, $beta)
 
-	_cveImshowControlPic($res, $FormGUI, $PicLinearTransform, $tBackgroundColor)
+	_cveImshowControlPic($res, $FormGUI, $PicLinearTransform)
 
 	_cveMatRelease($res)
 EndFunc   ;==>basicLinearTransform
@@ -185,7 +188,7 @@ Func gammaCorrection()
 	_cveLUTMat($img, $lookUpTable, $res) ;
 	;;! [changing-contrast-brightness-gamma-correction]
 
-	_cveImshowControlPic($res, $FormGUI, $PicGammaCorrection, $tBackgroundColor)
+	_cveImshowControlPic($res, $FormGUI, $PicGammaCorrection)
 
 	_cveMatRelease($res)
 	_cveMatRelease($lookUpTable)

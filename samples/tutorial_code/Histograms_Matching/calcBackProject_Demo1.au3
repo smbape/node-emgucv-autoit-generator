@@ -22,7 +22,7 @@ Opt("GUIOnEventMode", 1)
 ;~     https://docs.opencv.org/4.5.3/da/d7f/tutorial_back_projection.html
 ;~     https://github.com/opencv/opencv/blob/4.5.3/samples/cpp/tutorial_code/Histograms_Matching/calcBackProject_Demo1.cpp
 
-Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\data")
+Local Const $OPENCV_SAMPLES_DATA_PATH = _OpenCV_FindFile("samples\data")
 
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Back Projection", 1263, 601, 187, 122)
@@ -67,10 +67,7 @@ _GUICtrlSlider_SetTicFreq($SliderBins, 1)
 _GDIPlus_Startup()
 _OpenCV_DLLOpen(_OpenCV_FindDLL())
 
-Local $tBlueColor = _cvScalar(255, 0, 0)
-Local $tGreenColor = _cvScalar(0, 255, 0)
 Local $tRedColor = _cvScalar(0, 0, 255)
-Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 
 Local $sInputSource = ""
 Local $src, $hsv, $hue
@@ -130,7 +127,7 @@ Func Main()
 	;;! [Create Trackbar to enter the number of bins]
 
 	;;! [Show the image]
-	_cveImshowControlPic($src, $FormGUI, $PicSource, $tBackgroundColor)
+	_cveImshowControlPic($src, $FormGUI, $PicSource)
 	;;! [Show the image]
 
 EndFunc   ;==>Main
@@ -184,7 +181,7 @@ Func Hist_and_Backproj()
 
 	;;! [Draw the backproj]
 	; _cveImshowMat( "BackProj", $backproj );
-	_cveImshowControlPic($backproj, $FormGUI, $PicBackProj, $tBackgroundColor)
+	_cveImshowControlPic($backproj, $FormGUI, $PicBackProj)
 	;;! [Draw the backproj]
 
 	;;! [Draw the histogram]
@@ -226,7 +223,7 @@ Func Hist_and_Backproj()
 	$cvRect = 0
 
 	; _cveImshowMat( "Histogram", $histImg );
-	_cveImshowControlPic($histImg, $FormGUI, $PicHistogram, $tBackgroundColor)
+	_cveImshowControlPic($histImg, $FormGUI, $PicHistogram)
 	;;! [Draw the histogram]
 
 	_cveMatRelease($histImg)

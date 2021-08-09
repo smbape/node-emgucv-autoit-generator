@@ -20,7 +20,7 @@ Opt("GUIOnEventMode", 1)
 ;~     https://docs.opencv.org/4.5.3/d5/dc4/tutorial_adding_images.html
 ;~     https://github.com/opencv/opencv/blob/4.5.3/samples/cpp/tutorial_code/core/AddingImages/AddingImages.cpp
 
-Local Const $OPENCV_SAMPLES_DATA_PATH = _PathFull(@ScriptDir & "\..\..\..\data")
+Local Const $OPENCV_SAMPLES_DATA_PATH = _OpenCV_FindFile("samples\data")
 
 #Region ### START Koda GUI section ### Form=
 Local $FormGUI = GUICreate("Adding (blending) two images using OpenCV", 999, 500, 192, 124)
@@ -69,8 +69,6 @@ _GUICtrlSlider_SetTicFreq($SliderAlpha, 1)
 
 _GDIPlus_Startup()
 _OpenCV_DLLOpen(_OpenCV_FindDLL())
-
-Local $tBackgroundColor = _cvRGB(0xF0, 0xF0, 0xF0)
 
 Local $sSrc1 = "", $sSrc2 = ""
 Local $src1, $src2
@@ -140,8 +138,8 @@ Func Main()
 	;;! [Load three images with different environment settings]
 
 	;;! [Display]
-	_cveImshowControlPic($src1, $FormGUI, $PicSrc1, $tBackgroundColor)
-	_cveImshowControlPic($src2, $FormGUI, $PicSrc2, $tBackgroundColor)
+	_cveImshowControlPic($src1, $FormGUI, $PicSrc1)
+	_cveImshowControlPic($src2, $FormGUI, $PicSrc2)
 	;;! [Display]
 
 	$warned = False
@@ -188,7 +186,7 @@ Func AddWeighted()
 	;;![display]
 	; _cveImshowMat( "Linear Blend", $dst );
 	; _cveWaitKey(0);
-	_cveImshowControlPic($dst, $FormGUI, $PicResult, $tBackgroundColor)
+	_cveImshowControlPic($dst, $FormGUI, $PicResult)
 	;;![display]
 
 	_cveMatRelease($dst)
