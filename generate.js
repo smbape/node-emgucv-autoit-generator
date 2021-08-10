@@ -137,7 +137,7 @@ const coerceDefaultValue = (defaultValue, {vectmap}) => {
     }
 
     if (defaultValue.startsWith("std::vector") && defaultValue.endsWith("()")) {
-        const vecttype = `${ normalizeVectType(defaultValue.slice(0, -2)) }*`;
+        const vecttype = `${ normalizeVectType(defaultValue.slice(0, -"()".length)) }*`;
 
         if (hasProp.call(vectmap, vecttype)) {
             const method = vectmap[vecttype];

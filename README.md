@@ -8,7 +8,7 @@ If yes, then this udf might be for you.
 ## Prerequisites
 
   - Download and extract [libemgucv-windesktop-4.5.3.4721.zip](https://github.com/emgucv/emgucv/releases/download/4.5.3/libemgucv-windesktop-4.5.3.4721.zip) into a folder
-  - Download the emgucv-autoit-bindings folder of this repository.
+  - Download and extract [emgucv-autoit-bindings-v1.0.0-rc.0.zip](https://github.com/smbape/node-emgucv-autoit-generator/releases/download/v1.0.0-rc.0/emgucv-autoit-bindings-v1.0.0-rc.0.zip) into a folder
 
 ## Usage
 
