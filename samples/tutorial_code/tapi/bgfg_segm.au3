@@ -12,7 +12,6 @@ Opt("MustDeclareVars", 1)
 #include <GDIPlus.au3>
 #include <GuiComboBox.au3>
 #include <GUIConstantsEx.au3>
-#include <GuiSlider.au3>
 #include <Math.au3>
 #include <Misc.au3>
 #include <StaticConstants.au3>
@@ -21,107 +20,97 @@ Opt("MustDeclareVars", 1)
 #include "..\..\..\autoit-addon\addon.au3"
 
 ;~ Sources:
-;~     https://docs.opencv.org/4.5.3/da/d97/tutorial_threshold_inRange.html
-;~     https://github.com/opencv/opencv/tree/master/samples/cpp/tutorial_code/ImgProc/Threshold_inRange.cpp
+;~     https://docs.opencv.org/4.5.3/de/da9/tutorial_template_matching.html
+;~     https://github.com/opencv/opencv/blob/4.5.3/samples/cpp/tutorial_code/Histograms_Matching/MatchTemplate_Demo.cpp
 
 Local Const $OPENCV_SAMPLES_DATA_PATH = _OpenCV_FindFile("samples\data")
 
-Local Const $max_value_H = 360 / 2 ;
-Local Const $max_value = 255 ;
-
-Local $low_H = 50 ;
-Local $low_S = 0 ;
-Local $low_V = 60 ;
-Local $high_H = 140 ;
-Local $high_S = $max_value ;
-Local $high_V = 150 ;
-
 #Region ### START Koda GUI section ### Form=
-Local $FormGUI = GUICreate("Thresholding Operations using inRange", 1066, 745, 192, 73)
+Local $FormGUI = GUICreate("Changing the contrast and brightness of an image!", 1262, 672, 185, 122)
 
-Local $LabelCamera = GUICtrlCreateLabel("Camera", 24, 24, 58, 20)
-GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
-Local $ComboCamera = GUICtrlCreateCombo("", 136, 24, 120, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+Local $InputFile = GUICtrlCreateInput($OPENCV_SAMPLES_DATA_PATH & "\vtest.avi", 366, 16, 449, 21)
+GUICtrlSetState(-1, $GUI_DISABLE)
+Local $BtnFile = GUICtrlCreateButton("Video File", 825, 14, 75, 25)
 
-Local $LabelLowH = GUICtrlCreateLabel("Low H: 180", 24, 64, 78, 20)
+Local $CheckboxUseCamera = GUICtrlCreateCheckbox("", 368, 56, 17, 17)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
-Local $SliderLowH = GUICtrlCreateSlider(128, 64, 400, 45)
-GUICtrlSetLimit(-1, $max_value_H - 1, 0)
+Local $LabelCamera = GUICtrlCreateLabel("Camera", 390, 56, 67, 20)
+GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
+Local $ComboCamera = GUICtrlCreateCombo("", 464, 56, 351, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 
-Local $LabelHighH = GUICtrlCreateLabel("High H: 180", 544, 64, 83, 20)
+Local $GroupMethod = GUICtrlCreateGroup("Method", 368, 96, 137, 89)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
-Local $SliderHighH = GUICtrlCreateSlider(648, 64, 400, 45)
-GUICtrlSetLimit(-1, $max_value_H, 1)
-
-Local $LabelLowS = GUICtrlCreateLabel("Low S: 255", 24, 104, 77, 20)
-GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
-Local $SliderLowS = GUICtrlCreateSlider(128, 104, 400, 45)
-GUICtrlSetLimit(-1, $max_value - 1, 0)
-
-Local $LabelHighS = GUICtrlCreateLabel("High S: 255", 544, 104, 82, 20)
-GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
-Local $SliderHighS = GUICtrlCreateSlider(648, 104, 400, 45)
-GUICtrlSetLimit(-1, $max_value, 1)
-
-Local $LabelLowV = GUICtrlCreateLabel("Low V: 255", 24, 144, 77, 20)
-GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
-Local $SliderLowV = GUICtrlCreateSlider(128, 144, 400, 45)
-GUICtrlSetLimit(-1, $max_value - 1, 0)
-
-Local $LabelHighV = GUICtrlCreateLabel("High V: 255", 544, 144, 82, 20)
-GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
-Local $SliderHighV = GUICtrlCreateSlider(648, 144, 400, 45)
-GUICtrlSetLimit(-1, $max_value, 1)
-
-Local $LabelVideoCapture = GUICtrlCreateLabel("Video Capture", 231, 196, 103, 20)
-GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
-Local $GroupVideoCapture = GUICtrlCreateGroup("", 20, 219, 510, 516)
-Local $PicVideoCapture = GUICtrlCreatePic("", 25, 230, 500, 500)
+Local $RadioKNN = GUICtrlCreateRadio("KNN", 392, 120, 73, 17)
+GUICtrlSetFont(-1, 8, 400, 0, "MS Sans Serif")
+Local $RadioMOG2 = GUICtrlCreateRadio("MOG2", 392, 152, 73, 17)
+GUICtrlSetFont(-1, 8, 400, 0, "MS Sans Serif")
+GUICtrlSetState(-1, $GUI_CHECKED)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-Local $LabelObjectDetection = GUICtrlCreateLabel("Object Detection", 735, 196, 119, 20)
+Local $GroupCPUMode = GUICtrlCreateGroup("CPU mode", 528, 96, 137, 89)
 GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
-Local $GroupObjectDetection = GUICtrlCreateGroup("", 532, 219, 510, 516)
-Local $PicObjectDetection = GUICtrlCreatePic("", 537, 230, 500, 500)
+Local $RadioOpenCL = GUICtrlCreateRadio("OpenCL", 552, 120, 73, 17)
+Local $RadioCPU = GUICtrlCreateRadio("CPU", 552, 152, 73, 17)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-GUICtrlSetData($SliderLowH, $low_H)
-GUICtrlSetData($SliderLowS, $low_S)
-GUICtrlSetData($SliderLowV, $low_V)
-GUICtrlSetData($SliderHighH, $high_H)
-GUICtrlSetData($SliderHighS, $high_S)
-GUICtrlSetData($SliderHighV, $high_V)
+Local $BtnStart = GUICtrlCreateButton("Start", 824, 104, 75, 25)
+Local $BtnStop = GUICtrlCreateButton("Stop", 824, 144, 75, 25)
+
+Local $LabelImage = GUICtrlCreateLabel("Image", 192, 216, 47, 20)
+GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
+Local $GroupImage = GUICtrlCreateGroup("", 16, 240, 400, 400)
+Local $PicImage = GUICtrlCreatePic("", 21, 251, 390, 384)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+Local $LabelForegroundMask = GUICtrlCreateLabel("Foreground mask", 567, 216, 125, 20)
+GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
+Local $GroupForegroundMask = GUICtrlCreateGroup("", 430, 238, 400, 400)
+Local $PicForegroundMask = GUICtrlCreatePic("", 435, 249, 390, 384)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+Local $LabelForegroundImage = GUICtrlCreateLabel("Foreground image", 975, 216, 131, 20)
+GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
+Local $GroupForegroundImage = GUICtrlCreateGroup("", 840, 238, 400, 400)
+Local $PicForegroundImage = GUICtrlCreatePic("", 845, 249, 390, 384)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
-
-_GUICtrlSlider_SetTicFreq($SliderLowH, 1)
-_GUICtrlSlider_SetTicFreq($SliderHighH, 1)
-_GUICtrlSlider_SetTicFreq($SliderLowS, 1)
-_GUICtrlSlider_SetTicFreq($SliderHighS, 1)
-_GUICtrlSlider_SetTicFreq($SliderLowV, 1)
-_GUICtrlSlider_SetTicFreq($SliderHighV, 1)
 
 _GDIPlus_Startup()
 _OpenCV_DLLOpen(_OpenCV_FindDLL())
 Local $bHasAddon = _Addon_DLLOpen(_Addon_FindDLL())
 
+If _cveUseOpenCL() Then
+	GUICtrlSetState($RadioOpenCL, $GUI_CHECKED)
+Else
+	GUICtrlSetState($RadioCPU, $GUI_CHECKED)
+EndIf
+
 Local $tPtr = DllStructCreate("ptr value")
 Local $sCameraList = ""
 
-Local $iCamId = 0
+Local Const $M_MOG2 = 2
+Local Const $M_KNN = 3
+
+Local $sInputFile = ""
+Local $useCamera = False
+Local $method
 Local $cap = Null
+Local $running = True
+Local $bInitialized = False
 
-Local $frame
-Local $frame_flipped
-Local $frame_HSV
-Local $frame_threshold
-Local $i_arr_frame_HSV
-Local $o_arr_frame_threshold
+Local $frame, $i_arr_frame
+Local $fgmask, $i_arr_fgmask, $o_arr_fgmask
+Local $fgimg, $i_arr_fgimg, $o_arr_fgimg
 
-Local $iNewLowH, $iOldLowH, $iNewHighH, $iOldHighH
-Local $iNewLowS, $iOldLowS, $iNewSighS, $iOldHighS
-Local $iNewLowV, $iOldLowV, $iNewVighV, $iOldHighV
+Local $tKNNSharedPtr
+Local $knn
+
+Local $tMOG2SharedPtr
+Local $mog2
+
+Local $mode
 
 Local $hUser32DLL = DllOpen("user32.dll")
 
@@ -133,56 +122,37 @@ While 1
 	Switch $nMsg
 		Case $GUI_EVENT_CLOSE
 			Exit
+		Case $BtnFile
+			_handleBtnFileClick()
+		Case $CheckboxUseCamera
+			Reset()
+		Case $RadioKNN
+			Reset()
+		Case $RadioMOG2
+			Reset()
+		Case $RadioOpenCL
+			UpdateState()
+		Case $RadioCPU
+			UpdateState()
 		Case $ComboCamera
-			Clean()
-			Main()
+			Reset()
+		Case $BtnStart
+			$running = True
+		Case $BtnStop
+			$running = False
 	EndSwitch
 
 	UpdateCameraList()
 
-	If $cap == Null Then
-		Main()
-		Sleep(1000) ; Sleep to reduce CPU usage
-		ContinueLoop
-	EndIf
+	If $running Then
+		If $cap == Null Then
+			Main()
+			Sleep(1000) ; Sleep to reduce CPU usage
+			ContinueLoop
+		EndIf
 
-	$iNewLowH = GUICtrlRead($SliderLowH)
-	If $iOldLowH <> $iNewLowH Then
-		on_low_H_thresh_trackbar()
-		$iOldLowH = $iNewLowH
+		UpdateFrame()
 	EndIf
-
-	$iNewHighH = GUICtrlRead($SliderHighH)
-	If $iOldHighH <> $iNewHighH Then
-		on_high_H_thresh_trackbar()
-		$iOldHighH = $iNewHighH
-	EndIf
-
-	$iNewLowS = GUICtrlRead($SliderLowS)
-	If $iOldLowS <> $iNewLowS Then
-		on_low_S_thresh_trackbar()
-		$iOldLowS = $iNewLowS
-	EndIf
-
-	$iNewSighS = GUICtrlRead($SliderHighS)
-	If $iOldHighS <> $iNewSighS Then
-		on_high_S_thresh_trackbar()
-		$iOldHighS = $iNewSighS
-	EndIf
-
-	$iNewLowV = GUICtrlRead($SliderLowV)
-	If $iOldLowV <> $iNewLowV Then
-		on_low_V_thresh_trackbar()
-		$iOldLowV = $iNewLowV
-	EndIf
-
-	$iNewVighV = GUICtrlRead($SliderHighV)
-	If $iOldHighV <> $iNewVighV Then
-		on_high_V_thresh_trackbar()
-		$iOldHighV = $iNewVighV
-	EndIf
-
-	UpdateFrame()
 
 	If _IsPressed(Hex(Asc("Q")), $hUser32DLL) Then
 		ExitLoop
@@ -199,129 +169,161 @@ If $bHasAddon Then _Addon_DLLClose()
 _Opencv_DLLClose()
 _GDIPlus_Shutdown()
 
-Func on_low_H_thresh_trackbar()
-	$low_H = GUICtrlRead($SliderLowH)
-	GUICtrlSetData($LabelLowH, "Low H: " & $low_H)
+Func _handleBtnFileClick()
+	$sInputFile = ControlGetText($FormGUI, "", $InputFile)
+	$sInputFile = FileOpenDialog("Select a video", $OPENCV_SAMPLES_DATA_PATH, "Video files (*.avi;*.mp4)", $FD_FILEMUSTEXIST, $sInputFile)
+	If @error Then
+		$sInputFile = ""
+		Return
+	EndIf
 
-	$high_H = _Max($high_H, $low_H + 1)
-	GUICtrlSetData($SliderHighH, $high_H)
-EndFunc   ;==>on_low_H_thresh_trackbar
+	ControlSetText($FormGUI, "", $InputFile, $sInputFile)
+	Reset()
+EndFunc   ;==>_handleBtnFileClick
 
-Func on_high_H_thresh_trackbar()
-	$high_H = GUICtrlRead($SliderHighH)
-	GUICtrlSetData($LabelHighH, "High H: " & $high_H)
-
-	$low_H = _Min($high_H - 1, $low_H)
-	GUICtrlSetData($SliderLowH, $low_H)
-EndFunc   ;==>on_high_H_thresh_trackbar
-
-Func on_low_S_thresh_trackbar()
-	$low_S = GUICtrlRead($SliderLowS)
-	GUICtrlSetData($LabelLowS, "Low S: " & $low_S)
-
-	$high_S = _Max($high_S, $low_S + 1)
-	GUICtrlSetData($SliderHighS, $high_S)
-EndFunc   ;==>on_low_S_thresh_trackbar
-
-Func on_high_S_thresh_trackbar()
-	$high_S = GUICtrlRead($SliderHighS)
-	GUICtrlSetData($LabelHighS, "High S: " & $high_S)
-
-	$low_S = _Min($high_S - 1, $low_S)
-	GUICtrlSetData($SliderLowS, $low_S)
-EndFunc   ;==>on_high_S_thresh_trackbar
-
-Func on_low_V_thresh_trackbar()
-	$low_V = GUICtrlRead($SliderLowV)
-	GUICtrlSetData($LabelLowV, "Low V: " & $low_V)
-
-	$high_V = _Max($high_V, $low_V + 1)
-	GUICtrlSetData($SliderHighV, $high_V)
-EndFunc   ;==>on_low_V_thresh_trackbar
-
-Func on_high_V_thresh_trackbar()
-	$high_V = GUICtrlRead($SliderHighV)
-	GUICtrlSetData($LabelHighV, "High V: " & $high_V)
-
-	$low_V = _Min($high_V - 1, $low_V)
-	GUICtrlSetData($SliderLowV, $low_V)
-EndFunc   ;==>on_high_V_thresh_trackbar
+Func Reset()
+	Clean()
+	Main()
+EndFunc   ;==>Reset
 
 Func Main()
-	UpdateCameraList()
-	on_low_H_thresh_trackbar()
-	on_high_H_thresh_trackbar()
-	on_low_S_thresh_trackbar()
-	on_high_S_thresh_trackbar()
-	on_low_V_thresh_trackbar()
-	on_high_V_thresh_trackbar()
+	UpdateState()
 
-	Local $iCamId = _Max(0, _GUICtrlComboBox_GetCurSel($ComboCamera))
-	$cap = _cveVideoCaptureCreateFromDevice($iCamId, $CV_CAP_ANY, 0)
+	If $useCamera Then
+		Local $iCamId = _Max(0, _GUICtrlComboBox_GetCurSel($ComboCamera))
+		$cap = _cveVideoCaptureCreateFromDevice($iCamId, $CV_CAP_ANY, 0)
+	Else
+		$sInputFile = ControlGetText($FormGUI, "", $InputFile)
+		$cap = _cveVideoCaptureCreateFromFile($sInputFile, $CV_CAP_ANY, 0)
+	EndIf
+
 	If Not _cveVideoCaptureIsOpened($cap) Then
-		ConsoleWriteError("!>Error: cannot open the camera." & @CRLF)
+		ConsoleWriteError("!>Error: cannot open camera or video file" & @CRLF)
 		_cveVideoCaptureRelease($cap)
 		$cap = Null
 		Return
 	EndIf
 
 	$frame = _cveMatCreate()
-	$frame_flipped = _cveMatCreate()
-	$frame_HSV = _cveMatCreate()
-	$frame_threshold = _cveMatCreate()
-
-	$i_arr_frame_HSV = _cveInputArrayFromMat($frame_HSV)
-	$o_arr_frame_threshold = _cveOutputArrayFromMat($frame_threshold)
+	$i_arr_frame = _cveInputArrayFromMat($frame)
 EndFunc   ;==>Main
 
 Func Clean()
 	If $cap == Null Then Return
-	_cveMatRelease($frame_threshold)
-	_cveMatRelease($frame_HSV)
-	_cveMatRelease($frame_flipped)
-	_cveMatRelease($frame)
 
-	_cveOutputArrayRelease($o_arr_frame_threshold)
-	_cveInputArrayRelease($i_arr_frame_HSV)
+	If $bInitialized Then
+		_cveOutputArrayRelease($o_arr_fgmask)
+		_cveInputArrayRelease($i_arr_fgmask)
+		_cveMatRelease($fgmask)
+
+		_cveOutputArrayRelease($o_arr_fgimg)
+		_cveInputArrayRelease($i_arr_fgimg)
+		_cveMatRelease($fgimg)
+
+		_cveBackgroundSubtractorMOG2Release($mog2, $tMOG2SharedPtr)
+		_cveBackgroundSubtractorKNNRelease($knn, $tKNNSharedPtr)
+
+		$bInitialized = False
+	EndIf
+
+	_cveInputArrayRelease($i_arr_frame)
+	_cveMatRelease($frame)
 
 	_cveVideoCaptureRelease($cap)
 	$cap = Null
 EndFunc   ;==>Clean
+
+Func UpdateState()
+	$useCamera = _IsChecked($CheckboxUseCamera)
+
+	If $useCamera Then
+		GUICtrlSetState($BtnFile, $GUI_DISABLE)
+		GUICtrlSetState($ComboCamera, $GUI_ENABLE)
+	Else
+		GUICtrlSetState($BtnFile, $GUI_ENABLE)
+		GUICtrlSetState($ComboCamera, $GUI_DISABLE)
+	EndIf
+
+	If _IsChecked($RadioKNN) Then
+		$method = $M_KNN
+	Else
+		$method = $M_MOG2
+	EndIf
+
+	Local $useOpenCL = _IsChecked($RadioOpenCL)
+	If _cveUseOpenCL() <> $useOpenCL Then
+		_cveSetUseOpenCL($useOpenCL)
+
+		If $useOpenCL Then
+			$mode = "OpenCL enabled"
+		Else
+			$mode = "CPU"
+		EndIf
+		ConsoleWrite("Switched to " & $mode & " mode" & @CRLF)
+	EndIf
+EndFunc   ;==>UpdateState
+
+Func InitState()
+	If $bInitialized Then Return
+
+	Local $tKNNBgSubtractorPtr = DllStructCreate("ptr value")
+	Local $tKNNAlgorithmPtr = DllStructCreate("ptr value")
+	$tKNNSharedPtr = DllStructCreate("ptr value")
+	_cveBackgroundSubtractorKNNCreate(500, 400, True, $tKNNBgSubtractorPtr, $tKNNAlgorithmPtr, $tKNNSharedPtr)
+	$knn = $tKNNBgSubtractorPtr.value
+
+	Local $tMOG2BgSubtractorPtr = DllStructCreate("ptr value")
+	Local $tMOG2AlgorithmPtr = DllStructCreate("ptr value")
+	$tMOG2SharedPtr = DllStructCreate("ptr value")
+	_cveBackgroundSubtractorMOG2Create(500, 16, True, $tMOG2BgSubtractorPtr, $tMOG2AlgorithmPtr, $tMOG2SharedPtr)
+	$mog2 = $tMOG2BgSubtractorPtr.value
+
+	Local $tMatImg = DllStructCreate($tagCvMat, $frame)
+	$fgimg = _cveMatCreate()
+	$i_arr_fgimg = _cveInputArrayFromMat($fgimg)
+	$o_arr_fgimg = _cveOutputArrayFromMat($fgimg)
+	_cveMatCreateData($fgimg, $tMatImg.rows, $tMatImg.cols, CV_MAT_TYPE($tMatImg.flags))
+
+	$fgmask = _cveMatCreate()
+	$i_arr_fgmask = _cveInputArrayFromMat($fgmask)
+	$o_arr_fgmask = _cveOutputArrayFromMat($fgmask)
+
+	$bInitialized = True
+EndFunc   ;==>InitState
 
 Func UpdateFrame()
 	If $cap == Null Then Return
 
 	_cveVideoCaptureReadMat($cap, $frame)
 	If _cveInputArrayIsEmptyMat($frame) Then
-		ConsoleWriteError("!>Error: cannot read the camera." & @CRLF)
+		If $useCamera Or Not $bInitialized Then
+			ConsoleWriteError("!>Error: cannot read camera or video file." & @CRLF)
+		Else
+			Clean()
+		EndIf
 		Return
 	EndIf
 
-	;; Flip horizontally the image to give the mirror impression
-	_cveFlipMat($frame, $frame_flipped, 1)
+	InitState()
 
-	;; Convert from BGR to HSV colorspace
-	_cveCvtColorMat($frame_flipped, $frame_HSV, $CV_COLOR_BGR2HSV) ;
+	Switch $method
+		Case $M_KNN
+			_cveBackgroundSubtractorUpdate($knn, $i_arr_frame, $o_arr_fgmask, -1)
+		Case $M_MOG2
+			_cveBackgroundSubtractorUpdate($mog2, $i_arr_frame, $o_arr_fgmask, -1)
+	EndSwitch
 
-	;; Detect the object based on HSV Range Values
-	Local $lowHSVScalar = _cveScalarCreate(_cvScalar($low_H, $low_S, $low_V))
-	Local $i_arr_lowHSVScalar = _cveInputArrayFromScalar($lowHSVScalar)
-	Local $highHSVScalar = _cveScalarCreate(_cvScalar($high_H, $high_S, $high_V))
-	Local $i_arr_highHSVScalar = _cveInputArrayFromScalar($highHSVScalar)
+	Local $scalar = _cveScalarCreate(_cvScalarAll(0))
+	Local $i_arr_scalar = _cveInputArrayFromScalar($scalar)
+	_cveMatSetTo($fgimg, $i_arr_scalar, _cveNoArray())
+	_cveInputArrayRelease($i_arr_scalar)
+	_cveScalarRelease($scalar)
 
-	_cveInRange($i_arr_frame_HSV, $i_arr_lowHSVScalar, $i_arr_highHSVScalar, $o_arr_frame_threshold) ;
+	_cveMatCopyTo($frame, $o_arr_fgimg, $i_arr_fgmask)
 
-	_cveInputArrayRelease($i_arr_highHSVScalar)
-	_cveScalarRelease($highHSVScalar)
-	_cveInputArrayRelease($i_arr_lowHSVScalar)
-	_cveScalarRelease($lowHSVScalar)
-	;;! [while]
-
-	;;! [show]
-	;; Show the frames
-	_cveImshowControlPic($frame_flipped, $FormGUI, $PicVideoCapture)
-	_cveImshowControlPic($frame_threshold, $FormGUI, $PicObjectDetection)
-	;;! [show]
+	_cveImshowControlPic($frame, $FormGUI, $PicImage)
+	_cveImshowControlPic($fgmask, $FormGUI, $PicForegroundMask)
+	_cveImshowControlPic($fgimg, $FormGUI, $PicForegroundImage)
 EndFunc   ;==>UpdateFrame
 
 Func UpdateCameraList()
@@ -332,9 +334,9 @@ Func UpdateCameraList()
 
 	Local $tDevice, $tStr
 	Local $sCamera = GUICtrlRead($ComboCamera)
+	Local $sLongestString = ""
 	Local $sOldCameraList = $sCameraList
 	$sCameraList = ""
-	Local $longestString = ""
 
 	For $i = _VectorOfDeviceInfoGetSize($videoDevices) - 1 To 0 Step -1
 		_VectorOfDeviceInfoGetItemPtr($videoDevices, $i, $tPtr)
@@ -343,8 +345,8 @@ Func UpdateCameraList()
 		$tStr = DllStructCreate("wchar value[" & $tDevice.FriendlyNameLen & "]", $tDevice.FriendlyName)
 		$sCameraList &= "|" & $tStr.value
 
-		If StringLen($longestString) < StringLen($tStr.value) Then
-			$longestString = $tStr.value
+		If StringLen($sLongestString) < StringLen($tStr.value) Then
+			$sLongestString = $tStr.value
 		EndIf
 	Next
 
@@ -359,7 +361,7 @@ Func UpdateCameraList()
 	_GUICtrlComboBox_ResetContent($ComboCamera)
 	GUICtrlSetData($ComboCamera, $sCameraList)
 
-	Local $avSize_Info = _StringSize($longestString)
+	Local $avSize_Info = _StringSize($sLongestString)
 	Local $aPos = ControlGetPos($FormGUI, "", $ComboCamera)
 	GUICtrlSetPos($ComboCamera, $aPos[0], $aPos[1], _Max(145, $avSize_Info[2] + 20))
 
@@ -367,6 +369,10 @@ Func UpdateCameraList()
 		_GUICtrlComboBox_SetCurSel($ComboCamera, 0)
 	EndIf
 EndFunc   ;==>UpdateCameraList
+
+Func _IsChecked($idControlID)
+	Return BitAND(GUICtrlRead($idControlID), $GUI_CHECKED) = $GUI_CHECKED
+EndFunc   ;==>_IsChecked
 
 ; #FUNCTION# =======================================================================================
 ;

@@ -72,7 +72,6 @@ While 1
 	$nMsg = GUIGetMsg()
 	Switch $nMsg
 		Case $GUI_EVENT_CLOSE
-			Clean()
 			Exit
 		Case $BtnSource
 			Clean()
