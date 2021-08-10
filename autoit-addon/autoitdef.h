@@ -1,6 +1,6 @@
 #pragma once
-#ifndef OPENAUTOIT_CORE_TYPES_H
-#define OPENAUTOIT_CORE_TYPES_H
+#ifndef AUTOITDEF_H
+#define AUTOITDEF_H
 
 #if defined _WIN32
 #  define AUTOIT_CDECL __cdecl

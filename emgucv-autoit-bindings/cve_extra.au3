@@ -471,7 +471,7 @@ Func _cveGetDesktopScreenBits(ByRef $tRect)
 
 	; $aDIB[4] will be unallacoted when _WinAPI_DeleteObject will be called
 	; to be able to preserve the values,
-	; keep the value in our own allocated memory
+	; keep the values in our own allocated memory
 	CVEDllCallResult(DllCall("msvcrt.dll", "ptr", "memcpy_s", "struct*", $tBits, "ulong_ptr", $iSize, "ptr", $aDIB[4], "ulong_ptr", $iSize), "memcpy_s", @error)
 
 	_WinAPI_DeleteObject($aDIB[0])

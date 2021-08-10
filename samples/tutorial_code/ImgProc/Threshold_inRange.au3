@@ -297,7 +297,7 @@ Func UpdateFrame()
 		Return
 	EndIf
 
-	;; Flip horizontally the image to give the mirror impression
+	;; Flip the image horizontally to give the mirror impression
 	_cveFlipMat($frame, $frame_flipped, 1)
 
 	;; Convert from BGR to HSV colorspace

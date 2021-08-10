@@ -24,9 +24,8 @@ Opt("MustDeclareVars", 1)
 ; Open the library
 _OpenCV_DLLOpen("libemgucv-windesktop-4.5.3.4721\libs\x64\cvextern.dll")
 
-; use any emgucv udf
-Local $img = _cveImreadAndCheck("lena.jpg")
-_cveImshowMat("Source image", $img)
+Local $img = _cveImreadAndCheck("data\lena.jpg")
+_cveImshowMat("Image", $img)
 _cveWaitKey()
 
 ; always release resources to avoid memory leaks on long running processes
