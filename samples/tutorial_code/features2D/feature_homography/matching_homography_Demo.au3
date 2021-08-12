@@ -185,6 +185,7 @@ Func Detect()
 			_cveGFTTDetectorCreate(1000, 0.01, 1, 3, False, 0.04, $tFeature2DPtr, $tSharedPtr)
 			$destructor = "cveGFTTDetectorRelease"
 		Case $KAZE_DETECTOR
+			$can_compute = $match_type <> $CV_NORM_HAMMING And $match_type <> $CV_NORM_HAMMING2
 			_cveKAZEDetectorCreate(False, False, 0.001, 4, 4, $CV_KAZE_DIFF_PM_G2, $tFeature2DPtr, $tSharedPtr)
 			$destructor = "_cveKAZEDetectorRelease"
 		Case $AKAZE_DETECTOR
@@ -264,6 +265,8 @@ Func Detect()
 		_cveMatRelease($img_object_with_keypoints)
 	EndIf
 
+	_VectorOfByteRelease($matchesMask)
+
 	;;-- Need at least 4 point correspondences to calculate Homography
 	If _VectorOfDMatchGetSize($good_matches) >= 4 Then
 		;;-- Localize the object
@@ -303,14 +306,14 @@ Func Detect()
 			_cveMatGetSize($img_object, $img_object_size)
 
 			Local $obj_corners = _VectorOfPointFCreate()
+			Local $i_arr_obj_corners = _cveInputArrayFromVectorOfPointF($obj_corners)
+
 			_VectorOfPointFPush($obj_corners, _cvPoint2f(0, 0))
 			_VectorOfPointFPush($obj_corners, _cvPoint2f($img_object_size.width, 0))
 			_VectorOfPointFPush($obj_corners, _cvPoint2f($img_object_size.width, $img_object_size.height))
 			_VectorOfPointFPush($obj_corners, _cvPoint2f(0, $img_object_size.height))
 
 			Local $scene_corners = _VectorOfPointFCreateSize(4)
-
-			Local $i_arr_obj_corners = _cveInputArrayFromVectorOfPointF($obj_corners)
 			Local $o_arr_scene_corners = _cveOutputArrayFromVectorOfPointF($scene_corners)
 
 			_cvePerspectiveTransform($i_arr_obj_corners, $o_arr_scene_corners, $i_arr_H) ;
@@ -361,7 +364,6 @@ Func Detect()
 	; _cveImshowMat("Good Matches & Object detection", $img_matches) ;
 	_cveImshowControlPic($img_matches, $FormGUI, $PicMatches)
 
-	_VectorOfByteRelease($matchesMask)
 	_cveMatRelease($img_matches)
 	_VectorOfDMatchRelease($good_matches)
 	_VectorOfVectorOfDMatchRelease($knn_matches)

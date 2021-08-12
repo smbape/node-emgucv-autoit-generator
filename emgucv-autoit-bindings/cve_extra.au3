@@ -636,7 +636,7 @@ Func _cveSetControlPic($controlID, $matImg)
 	Local $aDIB = DllCall("gdi32.dll", "ptr", "CreateDIBSection", "hwnd", 0, "struct*", $tBIHDR, "uint", $DIB_RGB_COLORS, "ptr*", 0, "ptr", 0, "dword", 0)
 	DllCall("msvcrt.dll", "ptr", "memcpy_s", "ptr", $aDIB[4], "ulong_ptr", $iSize, "ptr", _cveMatGetDataPointer($matImg), "ulong_ptr", $iSize)
 	Local $hPrevImage = _SendMessage(GUICtrlGetHandle($controlID), $STM_SETIMAGE, 0, $aDIB[0])
-	_WinAPI_DeleteObject($hPrevImage); Delete Prev image if any
+	_WinAPI_DeleteObject($hPrevImage) ; Delete Prev image if any
 	_WinAPI_DeleteObject($aDIB[0])
 
 	$tDsize = 0
@@ -680,3 +680,73 @@ Func _cveImshowControlPic($matImg, $hWnd, $controlID, $tBackgroundColor = $tDefa
 		_cveMatRelease($matTemp)
 	EndIf
 EndFunc   ;==>_cveImshowControlPic
+
+
+; #FUNCTION# ====================================================================================================================
+; Name ..........: _cveRotateBound
+; Description ...: Rotates an image around the center and put bounds around the rotated image.
+; Syntax ........: _cveRotateBound($img[, $angle = 0[, $scale = 1.0[, $rotated = _cveMatCreate()]]])
+; Parameters ....: $img                 - input image.
+;                  $angle               - [optional] angle Rotation angle in degrees. Positive values mean clockwise rotation. Default is 0.
+;                  $scale               - [optional] Isotropic scale factor. Default is 1.0.
+;                  $rotated             - [optional] output image that has the same type as input. Default is _cveMatCreate().
+; Return values .: None
+; Author ........: Stéphane MBAPE
+; Modified ......:
+; Remarks .......:
+; Related .......:
+; Link ..........: https://www.pyimagesearch.com/2017/01/02/rotate-images-correctly-with-opencv-and-python/
+; Example .......: No
+; ===============================================================================================================================
+Func _cveRotateBound($img, $angle = 0, $scale = 1.0, $rotated = _cveMatCreate())
+	Local $size = _cvSize()
+	_cveMatGetSize($img, $size)
+	Local $center = DllStructCreate($tagCvPoint2D32f)
+	$center.x = $size.width / 2
+	$center.y = $size.height / 2
+
+	Local $M = _cveMatCreate()
+	_cveGetRotationMatrix2DMat($center, -$angle, $scale, $M)
+
+	Local $M11 = _cveMatGetAt("double", $M, _cvPoint(0, 0))
+	Local $M12 = _cveMatGetAt("double", $M, _cvPoint(1, 0))
+	Local $M13 = _cveMatGetAt("double", $M, _cvPoint(2, 0))
+
+	Local $M21 = _cveMatGetAt("double", $M, _cvPoint(0, 1))
+	Local $M22 = _cveMatGetAt("double", $M, _cvPoint(1, 1))
+	Local $M23 = _cveMatGetAt("double", $M, _cvPoint(2, 1))
+
+	Local $X11 = $M13
+	Local $Y11 = $M23
+
+	Local $X21 = $M12 * $size.height + $M13
+	Local $Y21 = $M22 * $size.height + $M23
+
+	Local $X12 = $M11 * $size.width + $M13
+	Local $Y12 = $M21 * $size.width + $M23
+
+	Local $X22 = $M11 * $size.width + $M12 * $size.height + $M13
+	Local $Y22 = $M21 * $size.width + $M22 * $size.height + $M23
+
+	Local $x1 = _Min(_Min($X11, $X21), _Min($X12, $X22))
+	Local $y1 = _Min(_Min($Y11, $Y21), _Min($Y12, $Y22))
+
+	Local $x2 = _Max(_Max($X11, $X21), _Max($X12, $X22))
+	Local $y2 = _Max(_Max($Y11, $Y21), _Max($Y12, $Y22))
+
+	Local $nW = $x2 - $x1
+	Local $nH = $y2 - $y1
+
+	; adjust the rotation matrix to take into account the translation
+	_cveMatSetAt("double", $M, _cvPoint(2, 0), $M13 - $x1)
+	_cveMatSetAt("double", $M, _cvPoint(2, 1), $M23 - $y1)
+
+	$size.width = $nW
+	$size.height = $nH
+
+	_cveWarpAffineMat($img, $rotated, $M, $size, $CV_INTER_LINEAR)
+
+	_cveMatRelease($M)
+
+	Return $rotated
+EndFunc   ;==>_cveRotateBound
