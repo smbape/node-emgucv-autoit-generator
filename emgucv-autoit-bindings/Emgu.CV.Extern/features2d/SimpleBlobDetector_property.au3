@@ -135,7 +135,7 @@ Func _cveSimpleBlobDetectorParamsGetblobColor($obj)
     Else
         $bObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "uchar:cdecl", "cveSimpleBlobDetectorParamsGetblobColor", $bObjDllType, $obj), "cveSimpleBlobDetectorParamsGetblobColor", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "byte:cdecl", "cveSimpleBlobDetectorParamsGetblobColor", $bObjDllType, $obj), "cveSimpleBlobDetectorParamsGetblobColor", @error)
 EndFunc   ;==>_cveSimpleBlobDetectorParamsGetblobColor
 
 Func _cveSimpleBlobDetectorParamsSetblobColor($obj, $value)
@@ -148,7 +148,7 @@ Func _cveSimpleBlobDetectorParamsSetblobColor($obj, $value)
         $bObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSimpleBlobDetectorParamsSetblobColor", $bObjDllType, $obj, "uchar", $value), "cveSimpleBlobDetectorParamsSetblobColor", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSimpleBlobDetectorParamsSetblobColor", $bObjDllType, $obj, "byte", $value), "cveSimpleBlobDetectorParamsSetblobColor", @error)
 EndFunc   ;==>_cveSimpleBlobDetectorParamsSetblobColor
 
 Func _cveSimpleBlobDetectorParamsGetFilterByArea($obj)

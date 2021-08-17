@@ -60,7 +60,7 @@ Func _cveRLOFOpticalFlowParameterGetSolver($obj)
     Else
         $bObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "cv::optflow::SolverType:cdecl", "cveRLOFOpticalFlowParameterGetSolver", $bObjDllType, $obj), "cveRLOFOpticalFlowParameterGetSolver", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveRLOFOpticalFlowParameterGetSolver", $bObjDllType, $obj), "cveRLOFOpticalFlowParameterGetSolver", @error)
 EndFunc   ;==>_cveRLOFOpticalFlowParameterGetSolver
 
 Func _cveRLOFOpticalFlowParameterSetSolver($obj, $value)
@@ -73,7 +73,7 @@ Func _cveRLOFOpticalFlowParameterSetSolver($obj, $value)
         $bObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRLOFOpticalFlowParameterSetSolver", $bObjDllType, $obj, "cv::optflow::SolverType", $value), "cveRLOFOpticalFlowParameterSetSolver", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRLOFOpticalFlowParameterSetSolver", $bObjDllType, $obj, "int", $value), "cveRLOFOpticalFlowParameterSetSolver", @error)
 EndFunc   ;==>_cveRLOFOpticalFlowParameterSetSolver
 
 Func _cveRLOFOpticalFlowParameterGetSupportRegion($obj)
@@ -85,7 +85,7 @@ Func _cveRLOFOpticalFlowParameterGetSupportRegion($obj)
     Else
         $bObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "cv::optflow::SupportRegionType:cdecl", "cveRLOFOpticalFlowParameterGetSupportRegion", $bObjDllType, $obj), "cveRLOFOpticalFlowParameterGetSupportRegion", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveRLOFOpticalFlowParameterGetSupportRegion", $bObjDllType, $obj), "cveRLOFOpticalFlowParameterGetSupportRegion", @error)
 EndFunc   ;==>_cveRLOFOpticalFlowParameterGetSupportRegion
 
 Func _cveRLOFOpticalFlowParameterSetSupportRegion($obj, $value)
@@ -98,7 +98,7 @@ Func _cveRLOFOpticalFlowParameterSetSupportRegion($obj, $value)
         $bObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRLOFOpticalFlowParameterSetSupportRegion", $bObjDllType, $obj, "cv::optflow::SupportRegionType", $value), "cveRLOFOpticalFlowParameterSetSupportRegion", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRLOFOpticalFlowParameterSetSupportRegion", $bObjDllType, $obj, "int", $value), "cveRLOFOpticalFlowParameterSetSupportRegion", @error)
 EndFunc   ;==>_cveRLOFOpticalFlowParameterSetSupportRegion
 
 Func _cveRLOFOpticalFlowParameterGetSmallWinSize($obj)

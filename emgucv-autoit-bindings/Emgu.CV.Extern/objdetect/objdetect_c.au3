@@ -354,7 +354,7 @@ Func _cveHOGDescriptorGetDescriptorSize($descriptor)
     Else
         $bDescriptorDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "unsigned:cdecl", "cveHOGDescriptorGetDescriptorSize", $bDescriptorDllType, $descriptor), "cveHOGDescriptorGetDescriptorSize", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "uint:cdecl", "cveHOGDescriptorGetDescriptorSize", $bDescriptorDllType, $descriptor), "cveHOGDescriptorGetDescriptorSize", @error)
 EndFunc   ;==>_cveHOGDescriptorGetDescriptorSize
 
 Func _cveCascadeClassifierCreate()

@@ -10,7 +10,7 @@ Func _cveCCheckerGetTarget($obj)
     Else
         $bObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "cv::mcc::TYPECHART:cdecl", "cveCCheckerGetTarget", $bObjDllType, $obj), "cveCCheckerGetTarget", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveCCheckerGetTarget", $bObjDllType, $obj), "cveCCheckerGetTarget", @error)
 EndFunc   ;==>_cveCCheckerGetTarget
 
 Func _cveCCheckerSetTarget($obj, $value)
@@ -23,7 +23,7 @@ Func _cveCCheckerSetTarget($obj, $value)
         $bObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCCheckerSetTarget", $bObjDllType, $obj, "cv::mcc::TYPECHART", $value), "cveCCheckerSetTarget", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCCheckerSetTarget", $bObjDllType, $obj, "int", $value), "cveCCheckerSetTarget", @error)
 EndFunc   ;==>_cveCCheckerSetTarget
 
 Func _cveCCheckerGetCost($obj)

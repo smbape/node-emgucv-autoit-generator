@@ -92,6 +92,29 @@ const DECLARATION_MAP = {
     },
 };
 
+const isEnum = (argType, options) => {
+    argType = argType.replace("const ", "");
+
+    return hasProp.call(options.enums, argType) || [
+        "cv::cudacodec::SurfaceFormat",
+        "cv::stereo::PropagationParameters",
+        "tesseract::PageIteratorLevel",
+        "tesseract::PageSegMode",
+    ].indexOf(argType) !== -1;
+};
+
+const isPointer = (argType, options) => {
+    argType = argType.replace("const ", "");
+
+    return [
+        "cv::_InputArray",
+        "CvErrorCallback",
+        "CvScalar",
+        "CvSize",
+        "emgu::DataCallback",
+    ].indexOf(argType) !== -1;
+};
+
 module.exports = {
     exports: {
         start: "CVAPI(",
@@ -112,6 +135,12 @@ module.exports = {
         const options = args[3];
         options.exported[name] = 1;
 
+        if (isEnum(args[0][0], options)) {
+            args[0][0] = "int";
+        } else if (isPointer(args[0][0], options)) {;
+            args[0][0] = "ptr";
+        }
+
         if (hasProp.call(OVERRIDE_MAP, name)) {
             OVERRIDE_MAP[name](...args);
         }
@@ -124,9 +153,20 @@ module.exports = {
     },
 
     getAutoItType(autoItType, isNativeType, [argType, argName, defaultValue], [returnType, name, args], options) {
+        if (isEnum(argType, options)) {
+            argType = "int";
+            autoItType = `"${ argType }"`;
+            isNativeType = true;
+        } else if (isPointer(argType, options)) {
+            argType = "ptr";
+            autoItType = `"${ argType }"`;
+            isNativeType = false;
+        }
+
         if (!isNativeType || !/^VectorOf\w+Push$/.test(name)) {
             return autoItType;
         }
+
         return `"${ argType }"`;
     },
 

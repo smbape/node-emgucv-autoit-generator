@@ -52,7 +52,14 @@ const convertFile = (localFile, remoteFile, remotePath, remoteBaseDir, remoteSep
                 #include "${ sysPath.relative(remoteFileDir, remoteBaseDir) }\\CVEUtils.au3"
             `.replace(/^ +/mg, "").trim();
 
-            const body = convertToAutoIt(api, options);
+            let body;
+            try {
+                body = convertToAutoIt(api, options);
+            } catch(err) {
+                next(err);
+                return;
+            }
+
             const content = eol.crlf(`${ header }\n\n${ body }`);
 
             fs.writeFile(remoteFile, content, err => {
@@ -276,6 +283,7 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
     // const compiled = getSourceFiles(vcxproj, "Compile");
 
     const defaults = {};
+    options.enums = {};
 
     const hoptions = Object.assign({}, options, {
         exports: {
@@ -447,6 +455,9 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
 
                     const text = enums.map(key => {
                         const parts = key.split("::");
+
+                        const id = parts.filter(part => !!part).join("::");
+                        options.enums[id] = 1;
 
                         // enums that are outside the cv namespace will be putted in the _cv namespace
                         if (parts[0] !== "cv") {

@@ -17,7 +17,7 @@ Func _cveRedirectError($error_handler, $userdata, $prev_userdata)
     Else
         $bPrev_userdataDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "CvErrorCallback:cdecl", "cveRedirectError", "CvErrorCallback", $error_handler, $bUserdataDllType, $userdata, $bPrev_userdataDllType, $prev_userdata), "cveRedirectError", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveRedirectError", "ptr", $error_handler, $bUserdataDllType, $userdata, $bPrev_userdataDllType, $prev_userdata), "cveRedirectError", @error)
 EndFunc   ;==>_cveRedirectError
 
 Func _cveGetErrMode()
@@ -9636,7 +9636,7 @@ Func _cveRngNext($rng)
     Else
         $bRngDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "unsigned:cdecl", "cveRngNext", $bRngDllType, $rng), "cveRngNext", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "uint:cdecl", "cveRngNext", $bRngDllType, $rng), "cveRngNext", @error)
 EndFunc   ;==>_cveRngNext
 
 Func _cveRngUniformInt($rng, $a, $b)

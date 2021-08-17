@@ -8142,7 +8142,7 @@ Func _cveApplyColorMap2($src, $dst, $userColorMap)
         $bDstDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveApplyColorMap2", $bSrcDllType, $src, $bDstDllType, $dst, "cv::_InputArray", $userColorMap), "cveApplyColorMap2", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveApplyColorMap2", $bSrcDllType, $src, $bDstDllType, $dst, "ptr", $userColorMap), "cveApplyColorMap2", @error)
 EndFunc   ;==>_cveApplyColorMap2
 
 Func _cveApplyColorMap2Mat($matSrc, $matDst, $userColorMap)

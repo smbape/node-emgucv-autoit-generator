@@ -271,7 +271,7 @@ Func _cveCCheckerDetectorProcess($detector, $image, $chartType, $nc, $useNet, $p
     Else
         $bParamDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveCCheckerDetectorProcess", $bDetectorDllType, $detector, $bImageDllType, $image, "cv::mcc::TYPECHART", $chartType, "int", $nc, "boolean", $useNet, $bParamDllType, $param), "cveCCheckerDetectorProcess", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveCCheckerDetectorProcess", $bDetectorDllType, $detector, $bImageDllType, $image, "int", $chartType, "int", $nc, "boolean", $useNet, $bParamDllType, $param), "cveCCheckerDetectorProcess", @error)
 EndFunc   ;==>_cveCCheckerDetectorProcess
 
 Func _cveCCheckerDetectorProcessMat($detector, $matImage, $chartType, $nc, $useNet, $param)

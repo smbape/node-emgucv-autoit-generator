@@ -2076,7 +2076,7 @@ Func _cveWeightedMedianFilter($joint, $src, $dst, $r, $sigma = 25.5, $weightType
         $bMaskDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWeightedMedianFilter", $bJointDllType, $joint, $bSrcDllType, $src, $bDstDllType, $dst, "int", $r, "double", $sigma, "cv::ximgproc::WMFWeightType", $weightType, $bMaskDllType, $mask), "cveWeightedMedianFilter", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWeightedMedianFilter", $bJointDllType, $joint, $bSrcDllType, $src, $bDstDllType, $dst, "int", $r, "double", $sigma, "int", $weightType, $bMaskDllType, $mask), "cveWeightedMedianFilter", @error)
 EndFunc   ;==>_cveWeightedMedianFilter
 
 Func _cveWeightedMedianFilterMat($matJoint, $matSrc, $matDst, $r, $sigma = 25.5, $weightType = $CV_WMF_EXP, $mask = _cveNoArrayMat())

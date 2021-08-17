@@ -3,7 +3,7 @@
 
 Func _cveUMatCreate($flags)
     ; CVAPI(cv::UMat*) cveUMatCreate(cv::UMatUsageFlags flags);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveUMatCreate", "cv::UMatUsageFlags", $flags), "cveUMatCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveUMatCreate", "int", $flags), "cveUMatCreate", @error)
 EndFunc   ;==>_cveUMatCreate
 
 Func _cveUMatCreateData($mat, $row, $cols, $type, $flags)
@@ -16,7 +16,7 @@ Func _cveUMatCreateData($mat, $row, $cols, $type, $flags)
         $bMatDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUMatCreateData", $bMatDllType, $mat, "int", $row, "int", $cols, "int", $type, "cv::UMatUsageFlags", $flags), "cveUMatCreateData", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUMatCreateData", $bMatDllType, $mat, "int", $row, "int", $cols, "int", $type, "int", $flags), "cveUMatCreateData", @error)
 EndFunc   ;==>_cveUMatCreateData
 
 Func _cveUMatCreateFromRect($mat, $roi)

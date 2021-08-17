@@ -539,7 +539,7 @@ Func _TessBaseAPISetPageSegMode($ocr, $mode)
         $bOcrDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "TessBaseAPISetPageSegMode", $bOcrDllType, $ocr, "tesseract::PageSegMode", $mode), "TessBaseAPISetPageSegMode", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "TessBaseAPISetPageSegMode", $bOcrDllType, $ocr, "int", $mode), "TessBaseAPISetPageSegMode", @error)
 EndFunc   ;==>_TessBaseAPISetPageSegMode
 
 Func _TessBaseAPIGetPageSegMode($ocr)
@@ -551,7 +551,7 @@ Func _TessBaseAPIGetPageSegMode($ocr)
     Else
         $bOcrDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "tesseract::PageSegMode:cdecl", "TessBaseAPIGetPageSegMode", $bOcrDllType, $ocr), "TessBaseAPIGetPageSegMode", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "TessBaseAPIGetPageSegMode", $bOcrDllType, $ocr), "TessBaseAPIGetPageSegMode", @error)
 EndFunc   ;==>_TessBaseAPIGetPageSegMode
 
 Func _TessBaseAPIGetOpenCLDevice($ocr, $device)
@@ -676,7 +676,7 @@ Func _TessPageIteratorGetBaseLine($iterator, $level, $x1, $y1, $x2, $y2)
     Else
         $bY2DllType = "int*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "TessPageIteratorGetBaseLine", $bIteratorDllType, $iterator, "tesseract::PageIteratorLevel", $level, $bX1DllType, $x1, $bY1DllType, $y1, $bX2DllType, $x2, $bY2DllType, $y2), "TessPageIteratorGetBaseLine", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "TessPageIteratorGetBaseLine", $bIteratorDllType, $iterator, "int", $level, $bX1DllType, $x1, $bY1DllType, $y1, $bX2DllType, $x2, $bY2DllType, $y2), "TessPageIteratorGetBaseLine", @error)
 EndFunc   ;==>_TessPageIteratorGetBaseLine
 
 Func _TessBaseAPIIsValidWord($ocr, $word)

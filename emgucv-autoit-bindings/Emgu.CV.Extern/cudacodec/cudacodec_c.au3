@@ -30,7 +30,7 @@ Func _cudaVideoWriterCreate($fileName, $frameSize, $fps, $format, $sharedPtr)
         $bSharedPtrDllType = "ptr*"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaVideoWriterCreate", $bFileNameDllType, $fileName, $bFrameSizeDllType, $frameSize, "double", $fps, "cv::cudacodec::SurfaceFormat", $format, $bSharedPtrDllType, $sharedPtr), "cudaVideoWriterCreate", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaVideoWriterCreate", $bFileNameDllType, $fileName, $bFrameSizeDllType, $frameSize, "double", $fps, "int", $format, $bSharedPtrDllType, $sharedPtr), "cudaVideoWriterCreate", @error)
 
     If $bFileNameIsString Then
         _cveStringRelease($fileName)

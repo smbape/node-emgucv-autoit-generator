@@ -1381,7 +1381,7 @@ Func _cveOLSTrackerCreate($pts3d, $tris, $histBins, $sobelThesh, $tracker, $algo
     Else
         $bSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOLSTrackerCreate", $bPts3dDllType, $pts3d, $bTrisDllType, $tris, "int", $histBins, "uchar", $sobelThesh, $bTrackerDllType, $tracker, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveOLSTrackerCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOLSTrackerCreate", $bPts3dDllType, $pts3d, $bTrisDllType, $tris, "int", $histBins, "byte", $sobelThesh, $bTrackerDllType, $tracker, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveOLSTrackerCreate", @error)
 EndFunc   ;==>_cveOLSTrackerCreate
 
 Func _cveOLSTrackerCreateMat($matPts3d, $matTris, $histBins, $sobelThesh, $tracker, $algorithm, $sharedPtr)

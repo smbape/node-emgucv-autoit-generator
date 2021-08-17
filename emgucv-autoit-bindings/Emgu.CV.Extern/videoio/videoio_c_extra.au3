@@ -619,7 +619,7 @@ EndFunc   ;==>_cveVideoWriterWriteMat
 
 Func _cveVideoWriterFourcc($c1, $c2, $c3, $c4)
     ; CVAPI(int) cveVideoWriterFourcc(char c1, char c2, char c3, char c4);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveVideoWriterFourcc", "char", $c1, "char", $c2, "char", $c3, "char", $c4), "cveVideoWriterFourcc", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveVideoWriterFourcc", "byte", $c1, "byte", $c2, "byte", $c3, "byte", $c4), "cveVideoWriterFourcc", @error)
 EndFunc   ;==>_cveVideoWriterFourcc
 
 Func _cveGetBackendName($api, $name)

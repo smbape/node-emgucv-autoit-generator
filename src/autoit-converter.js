@@ -4,7 +4,11 @@ const AUTOIT_TYPE_MAP = {
     bool: "boolean",
     void: "none",
     size_t: "ulong_ptr",
+    "char": "byte",
+    "unsigned char": "byte",
+    "uchar": "byte",
     "unsigned short": "ushort",
+    "unsigned": "uint",
     "unsigned int": "uint",
     "unsigned long": "ulong",
 };
@@ -21,6 +25,61 @@ const NATIVE_TYPES_REG = new RegExp(`^(?:const )?(?:${ [
     "float",
     "double",
 ].join("|") })\\*?`);
+
+const AUTOIT_VALID_TYPE = [
+    "NONE",
+    "BYTE",
+    "BOOLEAN",
+    "SHORT",
+    "USHORT",
+    "WORD",
+    "INT",
+    "LONG",
+    "BOOL",
+    "UINT",
+    "ULONG",
+    "DWORD",
+    "INT64",
+    "UINT64",
+    "PTR",
+    "HWND",
+    "HANDLE",
+    "FLOAT",
+    "DOUBLE",
+    "INT_PTR",
+    "LONG_PTR",
+    "LRESULT",
+    "LPARAM",
+    "UINT_PTR",
+    "ULONG_PTR",
+    "DWORD_PTR",
+    "WPARAM",
+    "STR",
+    "WSTR",
+    "STRUCT ",
+];
+
+const assertValidDllType = otype => {
+    if (otype.startsWith("$")) {
+        return otype;
+    }
+
+    let type = otype;
+
+    if (type[0] === '"') {
+        type = type.slice(1, -1);
+    }
+
+    if (type.endsWith("*")) {
+        type = type.slice(0, -1);
+    }
+
+    if (AUTOIT_VALID_TYPE.indexOf(type.toUpperCase()) === -1) {
+        throw new Error(`${ otype } is not a valid autoit type`);
+    }
+
+    return otype;
+};
 
 const getAutoItType = (type, native = false) => {
     const byRef = type.endsWith("*");
@@ -41,22 +100,24 @@ const getAutoItType = (type, native = false) => {
 };
 
 const getAutoItFunctionDefinition = (entry, options = {}) => {
-    let returnType = entry[0];
-    const [, name, args] = entry;
     const {cdecl, defaults, isbyref, overrides, retwrap, rettype, fnwrap, declaration, getAutoItType: _getAutoItType} = options;
 
-    const isVoid = returnType === "void";
-    const autoItReturnType = getAutoItType(returnType);
-
-    const autoItArgs = [];
-    const declArgs = [];
-    const dllArgs = [cdecl ? `"${ autoItReturnType }:cdecl"` : `"${ autoItReturnType }"`, `"${ name }"`];
     const declarations = [];
     const destructors = [];
+    const oReturnType = entry[0];
 
     if (typeof overrides === "function") {
         overrides(entry, declarations, destructors, options);
     }
+
+    let returnType = entry[0];
+    const [, name, args] = entry;
+    const isVoid = returnType === "void";
+    const autoItReturnType = assertValidDllType(getAutoItType(returnType));
+
+    const autoItArgs = [];
+    const declArgs = [];
+    const dllArgs = [cdecl ? `"${ autoItReturnType }:cdecl"` : `"${ autoItReturnType }"`, `"${ name }"`];
 
     for (const arg of args) {
         const [argType, argName, defaultValue] = arg;
@@ -64,7 +125,7 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
 
         let byRef = arg[3];
         if (byRef === undefined) {
-            byRef = typeof isbyref === "function" ? isbyref(argType, arg, entry, options) : argType.endsWith("*") && !argType.startsWith("const ");
+            byRef = typeof isbyref === "function" ? isbyref(argType, arg, entry, options) : argType.endsWith("*") || argType.endsWith("&") && !argType.startsWith("const ");
             arg[3] = byRef;
         }
 
@@ -105,7 +166,7 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
 
         let autoItDllType;
 
-        if (byRef || argType.endsWith("*")) {
+        if (byRef || argType.endsWith("*") || argType.endsWith("&")) {
             if (argType.endsWith("**")) {
                 autoItDllType = "ptr*";
             } else if (isString) {
@@ -134,7 +195,7 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
             autoItDllType = _getAutoItType(autoItDllType, isNativeType, arg, entry, options);
         }
 
-        dllArgs.push(autoItDllType, dllArgName);
+        dllArgs.push(assertValidDllType(autoItDllType), dllArgName);
     }
 
 
@@ -161,7 +222,9 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
     }
 
     if (typeof rettype === "function") {
-        returnType = rettype(returnType, entry, options);
+        returnType = rettype(oReturnType, entry, options);
+    } else {
+        returnType = oReturnType;
     }
 
     const indent = " ".repeat(12);
@@ -215,7 +278,17 @@ const convertToAutoIt = (api, options = {}) => {
             continue;
         }
         seen.add(name);
-        text.push(getAutoItFunctionDefinition(entry, options));
+
+        if (options.invalid) {
+            try {
+                text.push(getAutoItFunctionDefinition(entry, options));
+            } catch (err) {
+                console.log("ignore invalid entry", entry, err.message);
+                continue;
+            }
+        } else {
+            text.push(getAutoItFunctionDefinition(entry, options));
+        }
     }
 
     return text.join("\n\n");

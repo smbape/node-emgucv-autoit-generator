@@ -122,7 +122,7 @@ Func _VectorOfKeyPointFilterByImageBorder($keypoints, $imageSize, $borderSize)
         $bKeypointsDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfKeyPointFilterByImageBorder", $bKeypointsDllType, $vecKeypoints, "CvSize", $imageSize, "int", $borderSize), "VectorOfKeyPointFilterByImageBorder", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfKeyPointFilterByImageBorder", $bKeypointsDllType, $vecKeypoints, "ptr", $imageSize, "int", $borderSize), "VectorOfKeyPointFilterByImageBorder", @error)
 
     If $bKeypointsIsArray Then
         _VectorOfKeyPointRelease($vecKeypoints)

@@ -29,7 +29,7 @@ Func _DataLoggerRegisterCallback($logger, $messageCallback)
         $bLoggerDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "DataLoggerRegisterCallback", $bLoggerDllType, $logger, "emgu::DataCallback", $messageCallback), "DataLoggerRegisterCallback", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "DataLoggerRegisterCallback", $bLoggerDllType, $logger, "ptr", $messageCallback), "DataLoggerRegisterCallback", @error)
 EndFunc   ;==>_DataLoggerRegisterCallback
 
 Func _DataLoggerLog($logger, $data, $logLevel)

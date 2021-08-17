@@ -435,7 +435,7 @@ Func _cveDetectorParametersGetMinGroupSize($obj)
     Else
         $bObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "unsigned:cdecl", "cveDetectorParametersGetMinGroupSize", $bObjDllType, $obj), "cveDetectorParametersGetMinGroupSize", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "uint:cdecl", "cveDetectorParametersGetMinGroupSize", $bObjDllType, $obj), "cveDetectorParametersGetMinGroupSize", @error)
 EndFunc   ;==>_cveDetectorParametersGetMinGroupSize
 
 Func _cveDetectorParametersSetMinGroupSize($obj, $value)
@@ -448,5 +448,5 @@ Func _cveDetectorParametersSetMinGroupSize($obj, $value)
         $bObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetectorParametersSetMinGroupSize", $bObjDllType, $obj, "unsigned", $value), "cveDetectorParametersSetMinGroupSize", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetectorParametersSetMinGroupSize", $bObjDllType, $obj, "uint", $value), "cveDetectorParametersSetMinGroupSize", @error)
 EndFunc   ;==>_cveDetectorParametersSetMinGroupSize

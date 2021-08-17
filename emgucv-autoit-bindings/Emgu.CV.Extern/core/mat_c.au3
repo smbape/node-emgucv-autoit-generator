@@ -377,7 +377,7 @@ Func _cveMatGetUMat($mat, $access, $usageFlags)
     Else
         $bMatDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatGetUMat", $bMatDllType, $mat, "int", $access, "cv::UMatUsageFlags", $usageFlags), "cveMatGetUMat", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatGetUMat", $bMatDllType, $mat, "int", $access, "int", $usageFlags), "cveMatGetUMat", @error)
 EndFunc   ;==>_cveMatGetUMat
 
 Func _cveMatConvertTo($mat, $out, $rtype, $alpha, $beta)

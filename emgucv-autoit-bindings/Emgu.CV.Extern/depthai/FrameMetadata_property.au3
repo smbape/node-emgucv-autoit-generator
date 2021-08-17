@@ -75,7 +75,7 @@ Func _cveFrameMetadataGetStride($obj)
     Else
         $bObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "unsigned:cdecl", "cveFrameMetadataGetStride", $bObjDllType, $obj), "cveFrameMetadataGetStride", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "uint:cdecl", "cveFrameMetadataGetStride", $bObjDllType, $obj), "cveFrameMetadataGetStride", @error)
 EndFunc   ;==>_cveFrameMetadataGetStride
 
 Func _cveFrameMetadataGetFrameBytesPP($obj)
@@ -87,7 +87,7 @@ Func _cveFrameMetadataGetFrameBytesPP($obj)
     Else
         $bObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "unsigned:cdecl", "cveFrameMetadataGetFrameBytesPP", $bObjDllType, $obj), "cveFrameMetadataGetFrameBytesPP", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "uint:cdecl", "cveFrameMetadataGetFrameBytesPP", $bObjDllType, $obj), "cveFrameMetadataGetFrameBytesPP", @error)
 EndFunc   ;==>_cveFrameMetadataGetFrameBytesPP
 
 Func _cveFrameMetadataGetFrameHeight($obj)
@@ -99,7 +99,7 @@ Func _cveFrameMetadataGetFrameHeight($obj)
     Else
         $bObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "unsigned:cdecl", "cveFrameMetadataGetFrameHeight", $bObjDllType, $obj), "cveFrameMetadataGetFrameHeight", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "uint:cdecl", "cveFrameMetadataGetFrameHeight", $bObjDllType, $obj), "cveFrameMetadataGetFrameHeight", @error)
 EndFunc   ;==>_cveFrameMetadataGetFrameHeight
 
 Func _cveFrameMetadataGetFrameWidth($obj)
@@ -111,7 +111,7 @@ Func _cveFrameMetadataGetFrameWidth($obj)
     Else
         $bObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "unsigned:cdecl", "cveFrameMetadataGetFrameWidth", $bObjDllType, $obj), "cveFrameMetadataGetFrameWidth", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "uint:cdecl", "cveFrameMetadataGetFrameWidth", $bObjDllType, $obj), "cveFrameMetadataGetFrameWidth", @error)
 EndFunc   ;==>_cveFrameMetadataGetFrameWidth
 
 Func _cveFrameMetadataGetFrameType($obj)

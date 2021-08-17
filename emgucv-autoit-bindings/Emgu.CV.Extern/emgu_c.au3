@@ -24,7 +24,7 @@ Func _testDrawLine($img, $startX, $startY, $endX, $endY, $c)
         $bImgDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "testDrawLine", $bImgDllType, $img, "int", $startX, "int", $startY, "int", $endX, "int", $endY, "CvScalar", $c), "testDrawLine", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "testDrawLine", $bImgDllType, $img, "int", $startX, "int", $startY, "int", $endX, "int", $endY, "ptr", $c), "testDrawLine", @error)
 EndFunc   ;==>_testDrawLine
 
 Func _cveMemcpy($dst, $src, $length)

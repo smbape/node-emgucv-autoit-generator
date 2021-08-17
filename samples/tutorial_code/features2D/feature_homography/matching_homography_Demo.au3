@@ -268,7 +268,9 @@ Func Detect()
 	_VectorOfByteRelease($matchesMask)
 
 	;;-- Need at least 4 point correspondences to calculate Homography
-	If _VectorOfDMatchGetSize($good_matches) >= 4 Then
+	If _VectorOfDMatchGetSize($good_matches) < 4 Then
+		ConsoleWriteError("!>Error: Unable to calculate homography. There is less than 4 point correspondences." & @CRLF)
+	Else
 		;;-- Localize the object
 		Local $obj = _VectorOfPointFCreate() ;
 		Local $scene = _VectorOfPointFCreate() ;
@@ -300,7 +302,9 @@ Func Detect()
 		_cveOutputArrayRelease($o_arr_resultMask)
 		_cveMatRelease($resultMask)
 
-		If Not _cveMatIsEmpty($H) Then
+		If _cveMatIsEmpty($H) Then
+			ConsoleWriteError("!>Error: No homography were found." & @CRLF)
+		Else
 			;;-- Get the corners from the image_1 ( the object to be "detected" )
 			Local $img_object_size = _cvSize()
 			_cveMatGetSize($img_object, $img_object_size)

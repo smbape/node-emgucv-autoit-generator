@@ -10,7 +10,7 @@ Func _cveQuasiDenseStereoGetParam($obj)
     Else
         $bObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "cv::stereo::PropagationParameters:cdecl", "cveQuasiDenseStereoGetParam", $bObjDllType, $obj), "cveQuasiDenseStereoGetParam", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveQuasiDenseStereoGetParam", $bObjDllType, $obj), "cveQuasiDenseStereoGetParam", @error)
 EndFunc   ;==>_cveQuasiDenseStereoGetParam
 
 Func _cveQuasiDenseStereoSetParam($obj, $value)
@@ -23,5 +23,5 @@ Func _cveQuasiDenseStereoSetParam($obj, $value)
         $bObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQuasiDenseStereoSetParam", $bObjDllType, $obj, "cv::stereo::PropagationParameters", $value), "cveQuasiDenseStereoSetParam", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQuasiDenseStereoSetParam", $bObjDllType, $obj, "int", $value), "cveQuasiDenseStereoSetParam", @error)
 EndFunc   ;==>_cveQuasiDenseStereoSetParam

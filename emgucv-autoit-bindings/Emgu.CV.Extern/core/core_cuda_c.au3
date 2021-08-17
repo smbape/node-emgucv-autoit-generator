@@ -154,7 +154,7 @@ Func _cudaDeviceInfoSupports($device, $feature)
     Else
         $bDeviceDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cudaDeviceInfoSupports", $bDeviceDllType, $device, "cv::cuda::FeatureSet", $feature), "cudaDeviceInfoSupports", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cudaDeviceInfoSupports", $bDeviceDllType, $device, "int", $feature), "cudaDeviceInfoSupports", @error)
 EndFunc   ;==>_cudaDeviceInfoSupports
 
 Func _cudaDeviceInfoIsCompatible($device)
@@ -258,7 +258,7 @@ EndFunc   ;==>_cudaConvertFp16Mat
 
 Func _targetArchsBuildWith($featureSet)
     ; CVAPI(bool) targetArchsBuildWith(cv::cuda::FeatureSet featureSet);
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "targetArchsBuildWith", "cv::cuda::FeatureSet", $featureSet), "targetArchsBuildWith", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "targetArchsBuildWith", "int", $featureSet), "targetArchsBuildWith", @error)
 EndFunc   ;==>_targetArchsBuildWith
 
 Func _targetArchsHas($major, $minor)

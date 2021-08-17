@@ -85,7 +85,7 @@ Func _cveKMeansIndexParamsCreate($ip, $branching, $iterations, $centersInit, $cb
     Else
         $bIpDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveKMeansIndexParamsCreate", $bIpDllType, $ip, "int", $branching, "int", $iterations, "cvflann::flann_centers_init_t", $centersInit, "float", $cbIndex), "cveKMeansIndexParamsCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveKMeansIndexParamsCreate", $bIpDllType, $ip, "int", $branching, "int", $iterations, "int", $centersInit, "float", $cbIndex), "cveKMeansIndexParamsCreate", @error)
 EndFunc   ;==>_cveKMeansIndexParamsCreate
 
 Func _cveKMeansIndexParamsRelease($p)
@@ -110,7 +110,7 @@ Func _cveCompositeIndexParamsCreate($ip, $trees, $branching, $iterations, $cente
     Else
         $bIpDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCompositeIndexParamsCreate", $bIpDllType, $ip, "int", $trees, "int", $branching, "int", $iterations, "cvflann::flann_centers_init_t", $centersInit, "float", $cbIndex), "cveCompositeIndexParamsCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCompositeIndexParamsCreate", $bIpDllType, $ip, "int", $trees, "int", $branching, "int", $iterations, "int", $centersInit, "float", $cbIndex), "cveCompositeIndexParamsCreate", @error)
 EndFunc   ;==>_cveCompositeIndexParamsCreate
 
 Func _cveCompositeIndexParamsRelease($p)
@@ -160,7 +160,7 @@ Func _cveHierarchicalClusteringIndexParamsCreate($ip, $branching, $centersInit, 
     Else
         $bIpDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHierarchicalClusteringIndexParamsCreate", $bIpDllType, $ip, "int", $branching, "cvflann::flann_centers_init_t", $centersInit, "int", $trees, "int", $leafSize), "cveHierarchicalClusteringIndexParamsCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHierarchicalClusteringIndexParamsCreate", $bIpDllType, $ip, "int", $branching, "int", $centersInit, "int", $trees, "int", $leafSize), "cveHierarchicalClusteringIndexParamsCreate", @error)
 EndFunc   ;==>_cveHierarchicalClusteringIndexParamsCreate
 
 Func _cveHierarchicalClusteringIndexParamsRelease($p)
