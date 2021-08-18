@@ -821,7 +821,7 @@ Func _cudaPolarToCartMat($matMagnitude, $matAngle, $matX, $matY, $angleInDegrees
 EndFunc   ;==>_cudaPolarToCartMat
 
 Func _cudaMerge($src, $dst, $stream)
-    ; CVAPI(void) cudaMerge(std::vector< cv::cuda::GpuMat >* src, cv::_OutputArray* dst, cv::cuda::Stream* stream);
+    ; CVAPI(void) cudaMerge(std::vector<cv::cuda::GpuMat>* src, cv::_OutputArray* dst, cv::cuda::Stream* stream);
 
     Local $vecSrc, $iArrSrcSize
     Local $bSrcIsArray = VarGetType($src) == "Array"
@@ -4844,7 +4844,7 @@ Func _cudaFlipMat($matSrc, $matDst, $flipcode, $stream)
 EndFunc   ;==>_cudaFlipMat
 
 Func _cudaSplit($src, $dst, $stream)
-    ; CVAPI(void) cudaSplit(cv::_InputArray* src, std::vector< cv::cuda::GpuMat >* dst, cv::cuda::Stream* stream);
+    ; CVAPI(void) cudaSplit(cv::_InputArray* src, std::vector<cv::cuda::GpuMat>* dst, cv::cuda::Stream* stream);
 
     Local $bSrcDllType
     If VarGetType($src) == "DLLStruct" Then

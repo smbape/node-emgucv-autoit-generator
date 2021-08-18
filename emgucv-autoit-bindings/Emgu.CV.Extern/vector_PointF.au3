@@ -2,17 +2,17 @@
 #include "..\CVEUtils.au3"
 
 Func _VectorOfPointFCreate()
-    ; CVAPI(std::vector< cv::Point2f >*) VectorOfPointFCreate();
+    ; CVAPI(std::vector<cv::Point2f>*) VectorOfPointFCreate();
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfPointFCreate"), "VectorOfPointFCreate", @error)
 EndFunc   ;==>_VectorOfPointFCreate
 
 Func _VectorOfPointFCreateSize($size)
-    ; CVAPI(std::vector< cv::Point2f >*) VectorOfPointFCreateSize(int size);
+    ; CVAPI(std::vector<cv::Point2f>*) VectorOfPointFCreateSize(int size);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfPointFCreateSize", "int", $size), "VectorOfPointFCreateSize", @error)
 EndFunc   ;==>_VectorOfPointFCreateSize
 
 Func _VectorOfPointFGetSize($v)
-    ; CVAPI(int) VectorOfPointFGetSize(std::vector< cv::Point2f >* v);
+    ; CVAPI(int) VectorOfPointFGetSize(std::vector<cv::Point2f>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -45,7 +45,7 @@ Func _VectorOfPointFGetSize($v)
 EndFunc   ;==>_VectorOfPointFGetSize
 
 Func _VectorOfPointFPush($v, $value)
-    ; CVAPI(void) VectorOfPointFPush(std::vector< cv::Point2f >* v, cv::Point2f* value);
+    ; CVAPI(void) VectorOfPointFPush(std::vector<cv::Point2f>* v, cv::Point2f* value);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -83,7 +83,7 @@ Func _VectorOfPointFPush($v, $value)
 EndFunc   ;==>_VectorOfPointFPush
 
 Func _VectorOfPointFPushMulti($v, $values, $count)
-    ; CVAPI(void) VectorOfPointFPushMulti(std::vector< cv::Point2f >* v, cv::Point2f* values, int count);
+    ; CVAPI(void) VectorOfPointFPushMulti(std::vector<cv::Point2f>* v, cv::Point2f* values, int count);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -121,7 +121,7 @@ Func _VectorOfPointFPushMulti($v, $values, $count)
 EndFunc   ;==>_VectorOfPointFPushMulti
 
 Func _VectorOfPointFPushVector($v, $other)
-    ; CVAPI(void) VectorOfPointFPushVector(std::vector< cv::Point2f >* v, std::vector< cv::Point2f >* other);
+    ; CVAPI(void) VectorOfPointFPushVector(std::vector<cv::Point2f>* v, std::vector<cv::Point2f>* other);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -177,7 +177,7 @@ Func _VectorOfPointFPushVector($v, $other)
 EndFunc   ;==>_VectorOfPointFPushVector
 
 Func _VectorOfPointFClear($v)
-    ; CVAPI(void) VectorOfPointFClear(std::vector< cv::Point2f >* v);
+    ; CVAPI(void) VectorOfPointFClear(std::vector<cv::Point2f>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -208,7 +208,7 @@ Func _VectorOfPointFClear($v)
 EndFunc   ;==>_VectorOfPointFClear
 
 Func _VectorOfPointFRelease($v)
-    ; CVAPI(void) VectorOfPointFRelease(std::vector< cv::Point2f >** v);
+    ; CVAPI(void) VectorOfPointFRelease(std::vector<cv::Point2f>** v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -239,7 +239,7 @@ Func _VectorOfPointFRelease($v)
 EndFunc   ;==>_VectorOfPointFRelease
 
 Func _VectorOfPointFCopyData($v, $data)
-    ; CVAPI(void) VectorOfPointFCopyData(std::vector< cv::Point2f >* v, cv::Point2f* data);
+    ; CVAPI(void) VectorOfPointFCopyData(std::vector<cv::Point2f>* v, cv::Point2f* data);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -277,7 +277,7 @@ Func _VectorOfPointFCopyData($v, $data)
 EndFunc   ;==>_VectorOfPointFCopyData
 
 Func _VectorOfPointFGetStartAddress($v)
-    ; CVAPI(cv::Point2f*) VectorOfPointFGetStartAddress(std::vector< cv::Point2f >* v);
+    ; CVAPI(cv::Point2f*) VectorOfPointFGetStartAddress(std::vector<cv::Point2f>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -310,7 +310,7 @@ Func _VectorOfPointFGetStartAddress($v)
 EndFunc   ;==>_VectorOfPointFGetStartAddress
 
 Func _VectorOfPointFGetEndAddress($v)
-    ; CVAPI(void*) VectorOfPointFGetEndAddress(std::vector< cv::Point2f >* v);
+    ; CVAPI(void*) VectorOfPointFGetEndAddress(std::vector<cv::Point2f>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -343,7 +343,7 @@ Func _VectorOfPointFGetEndAddress($v)
 EndFunc   ;==>_VectorOfPointFGetEndAddress
 
 Func _VectorOfPointFGetItem($vec, $index, $element)
-    ; CVAPI(void) VectorOfPointFGetItem(std::vector<  cv::Point2f >* vec, int index, cv::Point2f* element);
+    ; CVAPI(void) VectorOfPointFGetItem(std::vector<cv::Point2f>* vec, int index, cv::Point2f* element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -381,7 +381,7 @@ Func _VectorOfPointFGetItem($vec, $index, $element)
 EndFunc   ;==>_VectorOfPointFGetItem
 
 Func _VectorOfPointFGetItemPtr($vec, $index, $element)
-    ; CVAPI(void) VectorOfPointFGetItemPtr(std::vector<  cv::Point2f >* vec, int index, cv::Point2f** element);
+    ; CVAPI(void) VectorOfPointFGetItemPtr(std::vector<cv::Point2f>* vec, int index, cv::Point2f** element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -419,7 +419,7 @@ Func _VectorOfPointFGetItemPtr($vec, $index, $element)
 EndFunc   ;==>_VectorOfPointFGetItemPtr
 
 Func _cveInputArrayFromVectorOfPointF($vec)
-    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfPointF(std::vector< cv::Point2f >* vec);
+    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfPointF(std::vector<cv::Point2f>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -452,7 +452,7 @@ Func _cveInputArrayFromVectorOfPointF($vec)
 EndFunc   ;==>_cveInputArrayFromVectorOfPointF
 
 Func _cveOutputArrayFromVectorOfPointF($vec)
-    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfPointF(std::vector< cv::Point2f >* vec);
+    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfPointF(std::vector<cv::Point2f>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -485,7 +485,7 @@ Func _cveOutputArrayFromVectorOfPointF($vec)
 EndFunc   ;==>_cveOutputArrayFromVectorOfPointF
 
 Func _cveInputOutputArrayFromVectorOfPointF($vec)
-    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfPointF(std::vector< cv::Point2f >* vec);
+    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfPointF(std::vector<cv::Point2f>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"

@@ -895,7 +895,7 @@ Func _cveHarrisLaplaceFeatureDetectorRelease($sharedPtr)
 EndFunc   ;==>_cveHarrisLaplaceFeatureDetectorRelease
 
 Func _cveMatchGMS($size1, $size2, $keypoints1, $keypoints2, $matches1to2, $matchesGMS, $withRotation = false, $withScale = false, $thresholdFactor = 6.0)
-    ; CVAPI(void) cveMatchGMS(CvSize* size1, CvSize* size2, std::vector< cv::KeyPoint >* keypoints1, std::vector< cv::KeyPoint >* keypoints2, std::vector< cv::DMatch >* matches1to2, std::vector< cv::DMatch >* matchesGMS, bool withRotation, bool withScale, double thresholdFactor);
+    ; CVAPI(void) cveMatchGMS(CvSize* size1, CvSize* size2, std::vector<cv::KeyPoint>* keypoints1, std::vector<cv::KeyPoint>* keypoints2, std::vector<cv::DMatch>* matches1to2, std::vector<cv::DMatch>* matchesGMS, bool withRotation, bool withScale, double thresholdFactor);
 
     Local $bSize1DllType
     If VarGetType($size1) == "DLLStruct" Then
@@ -1015,7 +1015,7 @@ Func _cveMatchGMS($size1, $size2, $keypoints1, $keypoints2, $matches1to2, $match
 EndFunc   ;==>_cveMatchGMS
 
 Func _cveMatchLOGOS($keypoints1, $keypoints2, $nn1, $nn2, $matches1to2)
-    ; CVAPI(void) cveMatchLOGOS(std::vector< cv::KeyPoint >* keypoints1, std::vector< cv::KeyPoint >* keypoints2, std::vector< int >* nn1, std::vector< int >* nn2, std::vector< cv::DMatch >* matches1to2);
+    ; CVAPI(void) cveMatchLOGOS(std::vector<cv::KeyPoint>* keypoints1, std::vector<cv::KeyPoint>* keypoints2, std::vector<int>* nn1, std::vector<int>* nn2, std::vector<cv::DMatch>* matches1to2);
 
     Local $vecKeypoints1, $iArrKeypoints1Size
     Local $bKeypoints1IsArray = VarGetType($keypoints1) == "Array"

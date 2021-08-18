@@ -54,7 +54,7 @@ Func _VectorOfDMatchPushMatrix($matches, $trainIdx, $distance = 0, $mask = 0)
 EndFunc   ;==>_VectorOfDMatchPushMatrix
 
 Func _VectorOfDMatchToMat($matches, $trainIdx, $distance)
-    ; CVAPI(void) VectorOfDMatchToMat(std::vector< std::vector<cv::DMatch> >* matches, CvMat* trainIdx, CvMat* distance);
+    ; CVAPI(void) VectorOfDMatchToMat(std::vector<std::vector<cv::DMatch>>* matches, CvMat* trainIdx, CvMat* distance);
 
     Local $vecMatches, $iArrMatchesSize
     Local $bMatchesIsArray = VarGetType($matches) == "Array"

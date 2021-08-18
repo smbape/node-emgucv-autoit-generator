@@ -7095,7 +7095,7 @@ Func _cveSubdiv2DGetTriangleList($subdiv, $triangleList)
 EndFunc   ;==>_cveSubdiv2DGetTriangleList
 
 Func _cveSubdiv2DGetVoronoiFacetList($subdiv, $idx, $facetList, $facetCenters)
-    ; CVAPI(void) cveSubdiv2DGetVoronoiFacetList(cv::Subdiv2D* subdiv, std::vector<int>* idx, std::vector< std::vector< cv::Point2f> >* facetList, std::vector< cv::Point2f >* facetCenters);
+    ; CVAPI(void) cveSubdiv2DGetVoronoiFacetList(cv::Subdiv2D* subdiv, std::vector<int>* idx, std::vector<std::vector<cv::Point2f>>* facetList, std::vector<cv::Point2f>* facetCenters);
 
     Local $bSubdivDllType
     If VarGetType($subdiv) == "DLLStruct" Then

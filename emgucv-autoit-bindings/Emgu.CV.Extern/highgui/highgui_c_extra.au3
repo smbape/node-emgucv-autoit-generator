@@ -266,7 +266,7 @@ Func _cveSelectROIMat($windowName, $matImg, $showCrosshair, $fromCenter, $roi)
 EndFunc   ;==>_cveSelectROIMat
 
 Func _cveSelectROIs($windowName, $img, $boundingBoxs, $showCrosshair = true, $fromCenter = false)
-    ; CVAPI(void) cveSelectROIs(cv::String* windowName, cv::_InputArray* img, std::vector< cv::Rect >* boundingBoxs, bool showCrosshair, bool fromCenter);
+    ; CVAPI(void) cveSelectROIs(cv::String* windowName, cv::_InputArray* img, std::vector<cv::Rect>* boundingBoxs, bool showCrosshair, bool fromCenter);
 
     Local $bWindowNameIsString = VarGetType($windowName) == "String"
     If $bWindowNameIsString Then

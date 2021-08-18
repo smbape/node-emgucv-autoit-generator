@@ -2,17 +2,17 @@
 #include "..\CVEUtils.au3"
 
 Func _VectorOfDoubleCreate()
-    ; CVAPI(std::vector< double >*) VectorOfDoubleCreate();
+    ; CVAPI(std::vector<double>*) VectorOfDoubleCreate();
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfDoubleCreate"), "VectorOfDoubleCreate", @error)
 EndFunc   ;==>_VectorOfDoubleCreate
 
 Func _VectorOfDoubleCreateSize($size)
-    ; CVAPI(std::vector< double >*) VectorOfDoubleCreateSize(int size);
+    ; CVAPI(std::vector<double>*) VectorOfDoubleCreateSize(int size);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfDoubleCreateSize", "int", $size), "VectorOfDoubleCreateSize", @error)
 EndFunc   ;==>_VectorOfDoubleCreateSize
 
 Func _VectorOfDoubleGetSize($v)
-    ; CVAPI(int) VectorOfDoubleGetSize(std::vector< double >* v);
+    ; CVAPI(int) VectorOfDoubleGetSize(std::vector<double>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -45,7 +45,7 @@ Func _VectorOfDoubleGetSize($v)
 EndFunc   ;==>_VectorOfDoubleGetSize
 
 Func _VectorOfDoublePush($v, $value)
-    ; CVAPI(void) VectorOfDoublePush(std::vector< double >* v, double* value);
+    ; CVAPI(void) VectorOfDoublePush(std::vector<double>* v, double* value);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -83,7 +83,7 @@ Func _VectorOfDoublePush($v, $value)
 EndFunc   ;==>_VectorOfDoublePush
 
 Func _VectorOfDoublePushMulti($v, $values, $count)
-    ; CVAPI(void) VectorOfDoublePushMulti(std::vector< double >* v, double* values, int count);
+    ; CVAPI(void) VectorOfDoublePushMulti(std::vector<double>* v, double* values, int count);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -121,7 +121,7 @@ Func _VectorOfDoublePushMulti($v, $values, $count)
 EndFunc   ;==>_VectorOfDoublePushMulti
 
 Func _VectorOfDoublePushVector($v, $other)
-    ; CVAPI(void) VectorOfDoublePushVector(std::vector< double >* v, std::vector< double >* other);
+    ; CVAPI(void) VectorOfDoublePushVector(std::vector<double>* v, std::vector<double>* other);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -177,7 +177,7 @@ Func _VectorOfDoublePushVector($v, $other)
 EndFunc   ;==>_VectorOfDoublePushVector
 
 Func _VectorOfDoubleClear($v)
-    ; CVAPI(void) VectorOfDoubleClear(std::vector< double >* v);
+    ; CVAPI(void) VectorOfDoubleClear(std::vector<double>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -208,7 +208,7 @@ Func _VectorOfDoubleClear($v)
 EndFunc   ;==>_VectorOfDoubleClear
 
 Func _VectorOfDoubleRelease($v)
-    ; CVAPI(void) VectorOfDoubleRelease(std::vector< double >** v);
+    ; CVAPI(void) VectorOfDoubleRelease(std::vector<double>** v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -239,7 +239,7 @@ Func _VectorOfDoubleRelease($v)
 EndFunc   ;==>_VectorOfDoubleRelease
 
 Func _VectorOfDoubleCopyData($v, $data)
-    ; CVAPI(void) VectorOfDoubleCopyData(std::vector< double >* v, double* data);
+    ; CVAPI(void) VectorOfDoubleCopyData(std::vector<double>* v, double* data);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -277,7 +277,7 @@ Func _VectorOfDoubleCopyData($v, $data)
 EndFunc   ;==>_VectorOfDoubleCopyData
 
 Func _VectorOfDoubleGetStartAddress($v)
-    ; CVAPI(double*) VectorOfDoubleGetStartAddress(std::vector< double >* v);
+    ; CVAPI(double*) VectorOfDoubleGetStartAddress(std::vector<double>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -310,7 +310,7 @@ Func _VectorOfDoubleGetStartAddress($v)
 EndFunc   ;==>_VectorOfDoubleGetStartAddress
 
 Func _VectorOfDoubleGetEndAddress($v)
-    ; CVAPI(void*) VectorOfDoubleGetEndAddress(std::vector< double >* v);
+    ; CVAPI(void*) VectorOfDoubleGetEndAddress(std::vector<double>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -343,7 +343,7 @@ Func _VectorOfDoubleGetEndAddress($v)
 EndFunc   ;==>_VectorOfDoubleGetEndAddress
 
 Func _VectorOfDoubleGetItem($vec, $index, $element)
-    ; CVAPI(void) VectorOfDoubleGetItem(std::vector<  double >* vec, int index, double* element);
+    ; CVAPI(void) VectorOfDoubleGetItem(std::vector<double>* vec, int index, double* element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -381,7 +381,7 @@ Func _VectorOfDoubleGetItem($vec, $index, $element)
 EndFunc   ;==>_VectorOfDoubleGetItem
 
 Func _VectorOfDoubleGetItemPtr($vec, $index, $element)
-    ; CVAPI(void) VectorOfDoubleGetItemPtr(std::vector<  double >* vec, int index, double** element);
+    ; CVAPI(void) VectorOfDoubleGetItemPtr(std::vector<double>* vec, int index, double** element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -419,7 +419,7 @@ Func _VectorOfDoubleGetItemPtr($vec, $index, $element)
 EndFunc   ;==>_VectorOfDoubleGetItemPtr
 
 Func _cveInputArrayFromVectorOfDouble($vec)
-    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfDouble(std::vector< double >* vec);
+    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfDouble(std::vector<double>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -452,7 +452,7 @@ Func _cveInputArrayFromVectorOfDouble($vec)
 EndFunc   ;==>_cveInputArrayFromVectorOfDouble
 
 Func _cveOutputArrayFromVectorOfDouble($vec)
-    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfDouble(std::vector< double >* vec);
+    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfDouble(std::vector<double>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -485,7 +485,7 @@ Func _cveOutputArrayFromVectorOfDouble($vec)
 EndFunc   ;==>_cveOutputArrayFromVectorOfDouble
 
 Func _cveInputOutputArrayFromVectorOfDouble($vec)
-    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfDouble(std::vector< double >* vec);
+    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfDouble(std::vector<double>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"

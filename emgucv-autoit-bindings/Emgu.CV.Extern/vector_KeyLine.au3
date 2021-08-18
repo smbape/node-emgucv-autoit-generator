@@ -2,17 +2,17 @@
 #include "..\CVEUtils.au3"
 
 Func _VectorOfKeyLineCreate()
-    ; CVAPI(std::vector< cv::line_descriptor::KeyLine >*) VectorOfKeyLineCreate();
+    ; CVAPI(std::vector<cv::line_descriptor::KeyLine>*) VectorOfKeyLineCreate();
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfKeyLineCreate"), "VectorOfKeyLineCreate", @error)
 EndFunc   ;==>_VectorOfKeyLineCreate
 
 Func _VectorOfKeyLineCreateSize($size)
-    ; CVAPI(std::vector< cv::line_descriptor::KeyLine >*) VectorOfKeyLineCreateSize(int size);
+    ; CVAPI(std::vector<cv::line_descriptor::KeyLine>*) VectorOfKeyLineCreateSize(int size);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfKeyLineCreateSize", "int", $size), "VectorOfKeyLineCreateSize", @error)
 EndFunc   ;==>_VectorOfKeyLineCreateSize
 
 Func _VectorOfKeyLineGetSize($v)
-    ; CVAPI(int) VectorOfKeyLineGetSize(std::vector< cv::line_descriptor::KeyLine >* v);
+    ; CVAPI(int) VectorOfKeyLineGetSize(std::vector<cv::line_descriptor::KeyLine>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -45,7 +45,7 @@ Func _VectorOfKeyLineGetSize($v)
 EndFunc   ;==>_VectorOfKeyLineGetSize
 
 Func _VectorOfKeyLinePush($v, $value)
-    ; CVAPI(void) VectorOfKeyLinePush(std::vector< cv::line_descriptor::KeyLine >* v, cv::line_descriptor::KeyLine* value);
+    ; CVAPI(void) VectorOfKeyLinePush(std::vector<cv::line_descriptor::KeyLine>* v, cv::line_descriptor::KeyLine* value);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -83,7 +83,7 @@ Func _VectorOfKeyLinePush($v, $value)
 EndFunc   ;==>_VectorOfKeyLinePush
 
 Func _VectorOfKeyLinePushMulti($v, $values, $count)
-    ; CVAPI(void) VectorOfKeyLinePushMulti(std::vector< cv::line_descriptor::KeyLine >* v, cv::line_descriptor::KeyLine* values, int count);
+    ; CVAPI(void) VectorOfKeyLinePushMulti(std::vector<cv::line_descriptor::KeyLine>* v, cv::line_descriptor::KeyLine* values, int count);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -121,7 +121,7 @@ Func _VectorOfKeyLinePushMulti($v, $values, $count)
 EndFunc   ;==>_VectorOfKeyLinePushMulti
 
 Func _VectorOfKeyLinePushVector($v, $other)
-    ; CVAPI(void) VectorOfKeyLinePushVector(std::vector< cv::line_descriptor::KeyLine >* v, std::vector< cv::line_descriptor::KeyLine >* other);
+    ; CVAPI(void) VectorOfKeyLinePushVector(std::vector<cv::line_descriptor::KeyLine>* v, std::vector<cv::line_descriptor::KeyLine>* other);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -177,7 +177,7 @@ Func _VectorOfKeyLinePushVector($v, $other)
 EndFunc   ;==>_VectorOfKeyLinePushVector
 
 Func _VectorOfKeyLineClear($v)
-    ; CVAPI(void) VectorOfKeyLineClear(std::vector< cv::line_descriptor::KeyLine >* v);
+    ; CVAPI(void) VectorOfKeyLineClear(std::vector<cv::line_descriptor::KeyLine>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -208,7 +208,7 @@ Func _VectorOfKeyLineClear($v)
 EndFunc   ;==>_VectorOfKeyLineClear
 
 Func _VectorOfKeyLineRelease($v)
-    ; CVAPI(void) VectorOfKeyLineRelease(std::vector< cv::line_descriptor::KeyLine >** v);
+    ; CVAPI(void) VectorOfKeyLineRelease(std::vector<cv::line_descriptor::KeyLine>** v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -239,7 +239,7 @@ Func _VectorOfKeyLineRelease($v)
 EndFunc   ;==>_VectorOfKeyLineRelease
 
 Func _VectorOfKeyLineCopyData($v, $data)
-    ; CVAPI(void) VectorOfKeyLineCopyData(std::vector< cv::line_descriptor::KeyLine >* v, cv::line_descriptor::KeyLine* data);
+    ; CVAPI(void) VectorOfKeyLineCopyData(std::vector<cv::line_descriptor::KeyLine>* v, cv::line_descriptor::KeyLine* data);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -277,7 +277,7 @@ Func _VectorOfKeyLineCopyData($v, $data)
 EndFunc   ;==>_VectorOfKeyLineCopyData
 
 Func _VectorOfKeyLineGetStartAddress($v)
-    ; CVAPI(cv::line_descriptor::KeyLine*) VectorOfKeyLineGetStartAddress(std::vector< cv::line_descriptor::KeyLine >* v);
+    ; CVAPI(cv::line_descriptor::KeyLine*) VectorOfKeyLineGetStartAddress(std::vector<cv::line_descriptor::KeyLine>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -310,7 +310,7 @@ Func _VectorOfKeyLineGetStartAddress($v)
 EndFunc   ;==>_VectorOfKeyLineGetStartAddress
 
 Func _VectorOfKeyLineGetEndAddress($v)
-    ; CVAPI(void*) VectorOfKeyLineGetEndAddress(std::vector< cv::line_descriptor::KeyLine >* v);
+    ; CVAPI(void*) VectorOfKeyLineGetEndAddress(std::vector<cv::line_descriptor::KeyLine>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -343,7 +343,7 @@ Func _VectorOfKeyLineGetEndAddress($v)
 EndFunc   ;==>_VectorOfKeyLineGetEndAddress
 
 Func _VectorOfKeyLineGetItem($vec, $index, $element)
-    ; CVAPI(void) VectorOfKeyLineGetItem(std::vector<  cv::line_descriptor::KeyLine >* vec, int index, cv::line_descriptor::KeyLine* element);
+    ; CVAPI(void) VectorOfKeyLineGetItem(std::vector<cv::line_descriptor::KeyLine>* vec, int index, cv::line_descriptor::KeyLine* element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -381,7 +381,7 @@ Func _VectorOfKeyLineGetItem($vec, $index, $element)
 EndFunc   ;==>_VectorOfKeyLineGetItem
 
 Func _VectorOfKeyLineGetItemPtr($vec, $index, $element)
-    ; CVAPI(void) VectorOfKeyLineGetItemPtr(std::vector<  cv::line_descriptor::KeyLine >* vec, int index, cv::line_descriptor::KeyLine** element);
+    ; CVAPI(void) VectorOfKeyLineGetItemPtr(std::vector<cv::line_descriptor::KeyLine>* vec, int index, cv::line_descriptor::KeyLine** element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -419,7 +419,7 @@ Func _VectorOfKeyLineGetItemPtr($vec, $index, $element)
 EndFunc   ;==>_VectorOfKeyLineGetItemPtr
 
 Func _cveInputArrayFromVectorOfKeyLine($vec)
-    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfKeyLine(std::vector< cv::line_descriptor::KeyLine >* vec);
+    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfKeyLine(std::vector<cv::line_descriptor::KeyLine>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -452,7 +452,7 @@ Func _cveInputArrayFromVectorOfKeyLine($vec)
 EndFunc   ;==>_cveInputArrayFromVectorOfKeyLine
 
 Func _cveOutputArrayFromVectorOfKeyLine($vec)
-    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfKeyLine(std::vector< cv::line_descriptor::KeyLine >* vec);
+    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfKeyLine(std::vector<cv::line_descriptor::KeyLine>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -485,7 +485,7 @@ Func _cveOutputArrayFromVectorOfKeyLine($vec)
 EndFunc   ;==>_cveOutputArrayFromVectorOfKeyLine
 
 Func _cveInputOutputArrayFromVectorOfKeyLine($vec)
-    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfKeyLine(std::vector< cv::line_descriptor::KeyLine >* vec);
+    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfKeyLine(std::vector<cv::line_descriptor::KeyLine>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"

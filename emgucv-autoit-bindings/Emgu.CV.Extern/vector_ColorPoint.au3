@@ -2,17 +2,17 @@
 #include "..\CVEUtils.au3"
 
 Func _VectorOfColorPointCreate()
-    ; CVAPI(std::vector< ColorPoint >*) VectorOfColorPointCreate();
+    ; CVAPI(std::vector<ColorPoint>*) VectorOfColorPointCreate();
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfColorPointCreate"), "VectorOfColorPointCreate", @error)
 EndFunc   ;==>_VectorOfColorPointCreate
 
 Func _VectorOfColorPointCreateSize($size)
-    ; CVAPI(std::vector< ColorPoint >*) VectorOfColorPointCreateSize(int size);
+    ; CVAPI(std::vector<ColorPoint>*) VectorOfColorPointCreateSize(int size);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfColorPointCreateSize", "int", $size), "VectorOfColorPointCreateSize", @error)
 EndFunc   ;==>_VectorOfColorPointCreateSize
 
 Func _VectorOfColorPointGetSize($v)
-    ; CVAPI(int) VectorOfColorPointGetSize(std::vector< ColorPoint >* v);
+    ; CVAPI(int) VectorOfColorPointGetSize(std::vector<ColorPoint>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -45,7 +45,7 @@ Func _VectorOfColorPointGetSize($v)
 EndFunc   ;==>_VectorOfColorPointGetSize
 
 Func _VectorOfColorPointPush($v, $value)
-    ; CVAPI(void) VectorOfColorPointPush(std::vector< ColorPoint >* v, ColorPoint* value);
+    ; CVAPI(void) VectorOfColorPointPush(std::vector<ColorPoint>* v, ColorPoint* value);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -83,7 +83,7 @@ Func _VectorOfColorPointPush($v, $value)
 EndFunc   ;==>_VectorOfColorPointPush
 
 Func _VectorOfColorPointPushMulti($v, $values, $count)
-    ; CVAPI(void) VectorOfColorPointPushMulti(std::vector< ColorPoint >* v, ColorPoint* values, int count);
+    ; CVAPI(void) VectorOfColorPointPushMulti(std::vector<ColorPoint>* v, ColorPoint* values, int count);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -121,7 +121,7 @@ Func _VectorOfColorPointPushMulti($v, $values, $count)
 EndFunc   ;==>_VectorOfColorPointPushMulti
 
 Func _VectorOfColorPointPushVector($v, $other)
-    ; CVAPI(void) VectorOfColorPointPushVector(std::vector< ColorPoint >* v, std::vector< ColorPoint >* other);
+    ; CVAPI(void) VectorOfColorPointPushVector(std::vector<ColorPoint>* v, std::vector<ColorPoint>* other);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -177,7 +177,7 @@ Func _VectorOfColorPointPushVector($v, $other)
 EndFunc   ;==>_VectorOfColorPointPushVector
 
 Func _VectorOfColorPointClear($v)
-    ; CVAPI(void) VectorOfColorPointClear(std::vector< ColorPoint >* v);
+    ; CVAPI(void) VectorOfColorPointClear(std::vector<ColorPoint>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -208,7 +208,7 @@ Func _VectorOfColorPointClear($v)
 EndFunc   ;==>_VectorOfColorPointClear
 
 Func _VectorOfColorPointRelease($v)
-    ; CVAPI(void) VectorOfColorPointRelease(std::vector< ColorPoint >** v);
+    ; CVAPI(void) VectorOfColorPointRelease(std::vector<ColorPoint>** v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -239,7 +239,7 @@ Func _VectorOfColorPointRelease($v)
 EndFunc   ;==>_VectorOfColorPointRelease
 
 Func _VectorOfColorPointCopyData($v, $data)
-    ; CVAPI(void) VectorOfColorPointCopyData(std::vector< ColorPoint >* v, ColorPoint* data);
+    ; CVAPI(void) VectorOfColorPointCopyData(std::vector<ColorPoint>* v, ColorPoint* data);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -277,7 +277,7 @@ Func _VectorOfColorPointCopyData($v, $data)
 EndFunc   ;==>_VectorOfColorPointCopyData
 
 Func _VectorOfColorPointGetStartAddress($v)
-    ; CVAPI(ColorPoint*) VectorOfColorPointGetStartAddress(std::vector< ColorPoint >* v);
+    ; CVAPI(ColorPoint*) VectorOfColorPointGetStartAddress(std::vector<ColorPoint>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -310,7 +310,7 @@ Func _VectorOfColorPointGetStartAddress($v)
 EndFunc   ;==>_VectorOfColorPointGetStartAddress
 
 Func _VectorOfColorPointGetEndAddress($v)
-    ; CVAPI(void*) VectorOfColorPointGetEndAddress(std::vector< ColorPoint >* v);
+    ; CVAPI(void*) VectorOfColorPointGetEndAddress(std::vector<ColorPoint>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -343,7 +343,7 @@ Func _VectorOfColorPointGetEndAddress($v)
 EndFunc   ;==>_VectorOfColorPointGetEndAddress
 
 Func _VectorOfColorPointGetItem($vec, $index, $element)
-    ; CVAPI(void) VectorOfColorPointGetItem(std::vector<  ColorPoint >* vec, int index, ColorPoint* element);
+    ; CVAPI(void) VectorOfColorPointGetItem(std::vector<ColorPoint>* vec, int index, ColorPoint* element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -381,7 +381,7 @@ Func _VectorOfColorPointGetItem($vec, $index, $element)
 EndFunc   ;==>_VectorOfColorPointGetItem
 
 Func _VectorOfColorPointGetItemPtr($vec, $index, $element)
-    ; CVAPI(void) VectorOfColorPointGetItemPtr(std::vector<  ColorPoint >* vec, int index, ColorPoint** element);
+    ; CVAPI(void) VectorOfColorPointGetItemPtr(std::vector<ColorPoint>* vec, int index, ColorPoint** element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -419,7 +419,7 @@ Func _VectorOfColorPointGetItemPtr($vec, $index, $element)
 EndFunc   ;==>_VectorOfColorPointGetItemPtr
 
 Func _cveInputArrayFromVectorOfColorPoint($vec)
-    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfColorPoint(std::vector< ColorPoint >* vec);
+    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfColorPoint(std::vector<ColorPoint>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -452,7 +452,7 @@ Func _cveInputArrayFromVectorOfColorPoint($vec)
 EndFunc   ;==>_cveInputArrayFromVectorOfColorPoint
 
 Func _cveOutputArrayFromVectorOfColorPoint($vec)
-    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfColorPoint(std::vector< ColorPoint >* vec);
+    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfColorPoint(std::vector<ColorPoint>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -485,7 +485,7 @@ Func _cveOutputArrayFromVectorOfColorPoint($vec)
 EndFunc   ;==>_cveOutputArrayFromVectorOfColorPoint
 
 Func _cveInputOutputArrayFromVectorOfColorPoint($vec)
-    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfColorPoint(std::vector< ColorPoint >* vec);
+    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfColorPoint(std::vector<ColorPoint>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"

@@ -2,17 +2,17 @@
 #include "..\CVEUtils.au3"
 
 Func _VectorOfPoint3D32FCreate()
-    ; CVAPI(std::vector< cv::Point3f >*) VectorOfPoint3D32FCreate();
+    ; CVAPI(std::vector<cv::Point3f>*) VectorOfPoint3D32FCreate();
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfPoint3D32FCreate"), "VectorOfPoint3D32FCreate", @error)
 EndFunc   ;==>_VectorOfPoint3D32FCreate
 
 Func _VectorOfPoint3D32FCreateSize($size)
-    ; CVAPI(std::vector< cv::Point3f >*) VectorOfPoint3D32FCreateSize(int size);
+    ; CVAPI(std::vector<cv::Point3f>*) VectorOfPoint3D32FCreateSize(int size);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfPoint3D32FCreateSize", "int", $size), "VectorOfPoint3D32FCreateSize", @error)
 EndFunc   ;==>_VectorOfPoint3D32FCreateSize
 
 Func _VectorOfPoint3D32FGetSize($v)
-    ; CVAPI(int) VectorOfPoint3D32FGetSize(std::vector< cv::Point3f >* v);
+    ; CVAPI(int) VectorOfPoint3D32FGetSize(std::vector<cv::Point3f>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -45,7 +45,7 @@ Func _VectorOfPoint3D32FGetSize($v)
 EndFunc   ;==>_VectorOfPoint3D32FGetSize
 
 Func _VectorOfPoint3D32FPush($v, $value)
-    ; CVAPI(void) VectorOfPoint3D32FPush(std::vector< cv::Point3f >* v, cv::Point3f* value);
+    ; CVAPI(void) VectorOfPoint3D32FPush(std::vector<cv::Point3f>* v, cv::Point3f* value);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -83,7 +83,7 @@ Func _VectorOfPoint3D32FPush($v, $value)
 EndFunc   ;==>_VectorOfPoint3D32FPush
 
 Func _VectorOfPoint3D32FPushMulti($v, $values, $count)
-    ; CVAPI(void) VectorOfPoint3D32FPushMulti(std::vector< cv::Point3f >* v, cv::Point3f* values, int count);
+    ; CVAPI(void) VectorOfPoint3D32FPushMulti(std::vector<cv::Point3f>* v, cv::Point3f* values, int count);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -121,7 +121,7 @@ Func _VectorOfPoint3D32FPushMulti($v, $values, $count)
 EndFunc   ;==>_VectorOfPoint3D32FPushMulti
 
 Func _VectorOfPoint3D32FPushVector($v, $other)
-    ; CVAPI(void) VectorOfPoint3D32FPushVector(std::vector< cv::Point3f >* v, std::vector< cv::Point3f >* other);
+    ; CVAPI(void) VectorOfPoint3D32FPushVector(std::vector<cv::Point3f>* v, std::vector<cv::Point3f>* other);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -177,7 +177,7 @@ Func _VectorOfPoint3D32FPushVector($v, $other)
 EndFunc   ;==>_VectorOfPoint3D32FPushVector
 
 Func _VectorOfPoint3D32FClear($v)
-    ; CVAPI(void) VectorOfPoint3D32FClear(std::vector< cv::Point3f >* v);
+    ; CVAPI(void) VectorOfPoint3D32FClear(std::vector<cv::Point3f>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -208,7 +208,7 @@ Func _VectorOfPoint3D32FClear($v)
 EndFunc   ;==>_VectorOfPoint3D32FClear
 
 Func _VectorOfPoint3D32FRelease($v)
-    ; CVAPI(void) VectorOfPoint3D32FRelease(std::vector< cv::Point3f >** v);
+    ; CVAPI(void) VectorOfPoint3D32FRelease(std::vector<cv::Point3f>** v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -239,7 +239,7 @@ Func _VectorOfPoint3D32FRelease($v)
 EndFunc   ;==>_VectorOfPoint3D32FRelease
 
 Func _VectorOfPoint3D32FCopyData($v, $data)
-    ; CVAPI(void) VectorOfPoint3D32FCopyData(std::vector< cv::Point3f >* v, cv::Point3f* data);
+    ; CVAPI(void) VectorOfPoint3D32FCopyData(std::vector<cv::Point3f>* v, cv::Point3f* data);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -277,7 +277,7 @@ Func _VectorOfPoint3D32FCopyData($v, $data)
 EndFunc   ;==>_VectorOfPoint3D32FCopyData
 
 Func _VectorOfPoint3D32FGetStartAddress($v)
-    ; CVAPI(cv::Point3f*) VectorOfPoint3D32FGetStartAddress(std::vector< cv::Point3f >* v);
+    ; CVAPI(cv::Point3f*) VectorOfPoint3D32FGetStartAddress(std::vector<cv::Point3f>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -310,7 +310,7 @@ Func _VectorOfPoint3D32FGetStartAddress($v)
 EndFunc   ;==>_VectorOfPoint3D32FGetStartAddress
 
 Func _VectorOfPoint3D32FGetEndAddress($v)
-    ; CVAPI(void*) VectorOfPoint3D32FGetEndAddress(std::vector< cv::Point3f >* v);
+    ; CVAPI(void*) VectorOfPoint3D32FGetEndAddress(std::vector<cv::Point3f>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -343,7 +343,7 @@ Func _VectorOfPoint3D32FGetEndAddress($v)
 EndFunc   ;==>_VectorOfPoint3D32FGetEndAddress
 
 Func _VectorOfPoint3D32FGetItem($vec, $index, $element)
-    ; CVAPI(void) VectorOfPoint3D32FGetItem(std::vector<  cv::Point3f >* vec, int index, cv::Point3f* element);
+    ; CVAPI(void) VectorOfPoint3D32FGetItem(std::vector<cv::Point3f>* vec, int index, cv::Point3f* element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -381,7 +381,7 @@ Func _VectorOfPoint3D32FGetItem($vec, $index, $element)
 EndFunc   ;==>_VectorOfPoint3D32FGetItem
 
 Func _VectorOfPoint3D32FGetItemPtr($vec, $index, $element)
-    ; CVAPI(void) VectorOfPoint3D32FGetItemPtr(std::vector<  cv::Point3f >* vec, int index, cv::Point3f** element);
+    ; CVAPI(void) VectorOfPoint3D32FGetItemPtr(std::vector<cv::Point3f>* vec, int index, cv::Point3f** element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -419,7 +419,7 @@ Func _VectorOfPoint3D32FGetItemPtr($vec, $index, $element)
 EndFunc   ;==>_VectorOfPoint3D32FGetItemPtr
 
 Func _cveInputArrayFromVectorOfPoint3D32F($vec)
-    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfPoint3D32F(std::vector< cv::Point3f >* vec);
+    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfPoint3D32F(std::vector<cv::Point3f>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -452,7 +452,7 @@ Func _cveInputArrayFromVectorOfPoint3D32F($vec)
 EndFunc   ;==>_cveInputArrayFromVectorOfPoint3D32F
 
 Func _cveOutputArrayFromVectorOfPoint3D32F($vec)
-    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfPoint3D32F(std::vector< cv::Point3f >* vec);
+    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfPoint3D32F(std::vector<cv::Point3f>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -485,7 +485,7 @@ Func _cveOutputArrayFromVectorOfPoint3D32F($vec)
 EndFunc   ;==>_cveOutputArrayFromVectorOfPoint3D32F
 
 Func _cveInputOutputArrayFromVectorOfPoint3D32F($vec)
-    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfPoint3D32F(std::vector< cv::Point3f >* vec);
+    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfPoint3D32F(std::vector<cv::Point3f>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"

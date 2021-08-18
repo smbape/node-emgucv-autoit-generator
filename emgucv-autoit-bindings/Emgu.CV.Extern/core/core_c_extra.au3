@@ -100,7 +100,7 @@ Func _cveSetParallelForBackend($backendName, $propagateNumThreads = true)
 EndFunc   ;==>_cveSetParallelForBackend
 
 Func _cveGetParallelBackends($backendNames)
-    ; CVAPI(void) cveGetParallelBackends(std::vector< cv::String >* backendNames);
+    ; CVAPI(void) cveGetParallelBackends(std::vector<cv::String>* backendNames);
 
     Local $vecBackendNames, $iArrBackendNamesSize
     Local $bBackendNamesIsArray = VarGetType($backendNames) == "Array"
@@ -5252,7 +5252,7 @@ Func _cveDctMat($matSrc, $matDst, $flags = 0)
 EndFunc   ;==>_cveDctMat
 
 Func _cveMulSpectrums($a, $b, $c, $flags, $conjB = false)
-    ; CVAPI(void) cveMulSpectrums(cv::_InputArray * a, cv::_InputArray* b, cv::_OutputArray* c, int flags, bool conjB);
+    ; CVAPI(void) cveMulSpectrums(cv::_InputArray* a, cv::_InputArray* b, cv::_OutputArray* c, int flags, bool conjB);
 
     Local $bADllType
     If VarGetType($a) == "DLLStruct" Then
@@ -5278,8 +5278,24 @@ Func _cveMulSpectrums($a, $b, $c, $flags, $conjB = false)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMulSpectrums", $bADllType, $a, $bBDllType, $b, $bCDllType, $c, "int", $flags, "boolean", $conjB), "cveMulSpectrums", @error)
 EndFunc   ;==>_cveMulSpectrums
 
-Func _cveMulSpectrumsMat($a, $matB, $matC, $flags, $conjB = false)
+Func _cveMulSpectrumsMat($matA, $matB, $matC, $flags, $conjB = false)
     ; cveMulSpectrums using cv::Mat instead of _*Array
+
+    Local $iArrA, $vectorOfMatA, $iArrASize
+    Local $bAIsArray = VarGetType($matA) == "Array"
+
+    If $bAIsArray Then
+        $vectorOfMatA = _VectorOfMatCreate()
+
+        $iArrASize = UBound($matA)
+        For $i = 0 To $iArrASize - 1
+            _VectorOfMatPush($vectorOfMatA, $matA[$i])
+        Next
+
+        $iArrA = _cveInputArrayFromVectorOfMat($vectorOfMatA)
+    Else
+        $iArrA = _cveInputArrayFromMat($matA)
+    EndIf
 
     Local $iArrB, $vectorOfMatB, $iArrBSize
     Local $bBIsArray = VarGetType($matB) == "Array"
@@ -5313,7 +5329,7 @@ Func _cveMulSpectrumsMat($a, $matB, $matC, $flags, $conjB = false)
         $oArrC = _cveOutputArrayFromMat($matC)
     EndIf
 
-    _cveMulSpectrums($a, $iArrB, $oArrC, $flags, $conjB)
+    _cveMulSpectrums($iArrA, $iArrB, $oArrC, $flags, $conjB)
 
     If $bCIsArray Then
         _VectorOfMatRelease($vectorOfMatC)
@@ -5326,6 +5342,12 @@ Func _cveMulSpectrumsMat($a, $matB, $matC, $flags, $conjB = false)
     EndIf
 
     _cveInputArrayRelease($iArrB)
+
+    If $bAIsArray Then
+        _VectorOfMatRelease($vectorOfMatA)
+    EndIf
+
+    _cveInputArrayRelease($iArrA)
 EndFunc   ;==>_cveMulSpectrumsMat
 
 Func _cveGetOptimalDFTSize($vecsize)
@@ -7671,7 +7693,7 @@ Func _cveFileNodeGetName($node, $name)
 EndFunc   ;==>_cveFileNodeGetName
 
 Func _cveFileNodeGetKeys($node, $keys)
-    ; CVAPI(void) cveFileNodeGetKeys(cv::FileNode* node, std::vector< cv::String >* keys);
+    ; CVAPI(void) cveFileNodeGetKeys(cv::FileNode* node, std::vector<cv::String>* keys);
 
     Local $bNodeDllType
     If VarGetType($node) == "DLLStruct" Then

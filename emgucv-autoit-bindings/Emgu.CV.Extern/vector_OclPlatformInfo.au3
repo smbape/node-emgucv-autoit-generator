@@ -2,17 +2,17 @@
 #include "..\CVEUtils.au3"
 
 Func _VectorOfOclPlatformInfoCreate()
-    ; CVAPI(std::vector< cv::ocl::PlatformInfo >*) VectorOfOclPlatformInfoCreate();
+    ; CVAPI(std::vector<cv::ocl::PlatformInfo>*) VectorOfOclPlatformInfoCreate();
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfOclPlatformInfoCreate"), "VectorOfOclPlatformInfoCreate", @error)
 EndFunc   ;==>_VectorOfOclPlatformInfoCreate
 
 Func _VectorOfOclPlatformInfoCreateSize($size)
-    ; CVAPI(std::vector< cv::ocl::PlatformInfo >*) VectorOfOclPlatformInfoCreateSize(int size);
+    ; CVAPI(std::vector<cv::ocl::PlatformInfo>*) VectorOfOclPlatformInfoCreateSize(int size);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfOclPlatformInfoCreateSize", "int", $size), "VectorOfOclPlatformInfoCreateSize", @error)
 EndFunc   ;==>_VectorOfOclPlatformInfoCreateSize
 
 Func _VectorOfOclPlatformInfoGetSize($v)
-    ; CVAPI(int) VectorOfOclPlatformInfoGetSize(std::vector< cv::ocl::PlatformInfo >* v);
+    ; CVAPI(int) VectorOfOclPlatformInfoGetSize(std::vector<cv::ocl::PlatformInfo>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -45,7 +45,7 @@ Func _VectorOfOclPlatformInfoGetSize($v)
 EndFunc   ;==>_VectorOfOclPlatformInfoGetSize
 
 Func _VectorOfOclPlatformInfoPush($v, $value)
-    ; CVAPI(void) VectorOfOclPlatformInfoPush(std::vector< cv::ocl::PlatformInfo >* v, cv::ocl::PlatformInfo* value);
+    ; CVAPI(void) VectorOfOclPlatformInfoPush(std::vector<cv::ocl::PlatformInfo>* v, cv::ocl::PlatformInfo* value);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -83,7 +83,7 @@ Func _VectorOfOclPlatformInfoPush($v, $value)
 EndFunc   ;==>_VectorOfOclPlatformInfoPush
 
 Func _VectorOfOclPlatformInfoPushVector($v, $other)
-    ; CVAPI(void) VectorOfOclPlatformInfoPushVector(std::vector< cv::ocl::PlatformInfo >* v, std::vector< cv::ocl::PlatformInfo >* other);
+    ; CVAPI(void) VectorOfOclPlatformInfoPushVector(std::vector<cv::ocl::PlatformInfo>* v, std::vector<cv::ocl::PlatformInfo>* other);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -139,7 +139,7 @@ Func _VectorOfOclPlatformInfoPushVector($v, $other)
 EndFunc   ;==>_VectorOfOclPlatformInfoPushVector
 
 Func _VectorOfOclPlatformInfoGetStartAddress($v)
-    ; CVAPI(cv::ocl::PlatformInfo*) VectorOfOclPlatformInfoGetStartAddress(std::vector< cv::ocl::PlatformInfo >* v);
+    ; CVAPI(cv::ocl::PlatformInfo*) VectorOfOclPlatformInfoGetStartAddress(std::vector<cv::ocl::PlatformInfo>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -172,7 +172,7 @@ Func _VectorOfOclPlatformInfoGetStartAddress($v)
 EndFunc   ;==>_VectorOfOclPlatformInfoGetStartAddress
 
 Func _VectorOfOclPlatformInfoGetEndAddress($v)
-    ; CVAPI(void*) VectorOfOclPlatformInfoGetEndAddress(std::vector< cv::ocl::PlatformInfo >* v);
+    ; CVAPI(void*) VectorOfOclPlatformInfoGetEndAddress(std::vector<cv::ocl::PlatformInfo>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -205,7 +205,7 @@ Func _VectorOfOclPlatformInfoGetEndAddress($v)
 EndFunc   ;==>_VectorOfOclPlatformInfoGetEndAddress
 
 Func _VectorOfOclPlatformInfoClear($v)
-    ; CVAPI(void) VectorOfOclPlatformInfoClear(std::vector< cv::ocl::PlatformInfo >* v);
+    ; CVAPI(void) VectorOfOclPlatformInfoClear(std::vector<cv::ocl::PlatformInfo>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -236,7 +236,7 @@ Func _VectorOfOclPlatformInfoClear($v)
 EndFunc   ;==>_VectorOfOclPlatformInfoClear
 
 Func _VectorOfOclPlatformInfoRelease($v)
-    ; CVAPI(void) VectorOfOclPlatformInfoRelease(std::vector< cv::ocl::PlatformInfo >** v);
+    ; CVAPI(void) VectorOfOclPlatformInfoRelease(std::vector<cv::ocl::PlatformInfo>** v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -267,7 +267,7 @@ Func _VectorOfOclPlatformInfoRelease($v)
 EndFunc   ;==>_VectorOfOclPlatformInfoRelease
 
 Func _VectorOfOclPlatformInfoCopyData($v, $data)
-    ; CVAPI(void) VectorOfOclPlatformInfoCopyData(std::vector< cv::ocl::PlatformInfo >* v, cv::ocl::PlatformInfo* data);
+    ; CVAPI(void) VectorOfOclPlatformInfoCopyData(std::vector<cv::ocl::PlatformInfo>* v, cv::ocl::PlatformInfo* data);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -305,7 +305,7 @@ Func _VectorOfOclPlatformInfoCopyData($v, $data)
 EndFunc   ;==>_VectorOfOclPlatformInfoCopyData
 
 Func _VectorOfOclPlatformInfoGetItemPtr($vec, $index, $element)
-    ; CVAPI(void) VectorOfOclPlatformInfoGetItemPtr(std::vector<  cv::ocl::PlatformInfo >* vec, int index, cv::ocl::PlatformInfo** element);
+    ; CVAPI(void) VectorOfOclPlatformInfoGetItemPtr(std::vector<cv::ocl::PlatformInfo>* vec, int index, cv::ocl::PlatformInfo** element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -343,7 +343,7 @@ Func _VectorOfOclPlatformInfoGetItemPtr($vec, $index, $element)
 EndFunc   ;==>_VectorOfOclPlatformInfoGetItemPtr
 
 Func _cveInputArrayFromVectorOfOclPlatformInfo($vec)
-    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfOclPlatformInfo(std::vector< cv::ocl::PlatformInfo >* vec);
+    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfOclPlatformInfo(std::vector<cv::ocl::PlatformInfo>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -376,7 +376,7 @@ Func _cveInputArrayFromVectorOfOclPlatformInfo($vec)
 EndFunc   ;==>_cveInputArrayFromVectorOfOclPlatformInfo
 
 Func _cveOutputArrayFromVectorOfOclPlatformInfo($vec)
-    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfOclPlatformInfo(std::vector< cv::ocl::PlatformInfo >* vec);
+    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfOclPlatformInfo(std::vector<cv::ocl::PlatformInfo>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -409,7 +409,7 @@ Func _cveOutputArrayFromVectorOfOclPlatformInfo($vec)
 EndFunc   ;==>_cveOutputArrayFromVectorOfOclPlatformInfo
 
 Func _cveInputOutputArrayFromVectorOfOclPlatformInfo($vec)
-    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfOclPlatformInfo(std::vector< cv::ocl::PlatformInfo >* vec);
+    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfOclPlatformInfo(std::vector<cv::ocl::PlatformInfo>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"

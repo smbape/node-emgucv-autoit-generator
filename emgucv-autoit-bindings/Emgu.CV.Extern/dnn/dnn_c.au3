@@ -42,20 +42,20 @@ Func _cveReadNetFromDarknet($cfgFile, $darknetModel)
 EndFunc   ;==>_cveReadNetFromDarknet
 
 Func _cveReadNetFromDarknet2($bufferCfg, $lenCfg, $bufferModel, $lenModel)
-    ; CVAPI(cv::dnn::Net*) cveReadNetFromDarknet2(const char * bufferCfg, int lenCfg, const char * bufferModel, int lenModel);
+    ; CVAPI(cv::dnn::Net*) cveReadNetFromDarknet2(const char* bufferCfg, int lenCfg, const char* bufferModel, int lenModel);
 
     Local $bBufferCfgDllType
     If VarGetType($bufferCfg) == "DLLStruct" Then
         $bBufferCfgDllType = "struct*"
     Else
-        $bBufferCfgDllType = "ptr"
+        $bBufferCfgDllType = "str"
     EndIf
 
     Local $bBufferModelDllType
     If VarGetType($bufferModel) == "DLLStruct" Then
         $bBufferModelDllType = "struct*"
     Else
-        $bBufferModelDllType = "ptr"
+        $bBufferModelDllType = "str"
     EndIf
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveReadNetFromDarknet2", $bBufferCfgDllType, $bufferCfg, "int", $lenCfg, $bBufferModelDllType, $bufferModel, "int", $lenModel), "cveReadNetFromDarknet2", @error)
 EndFunc   ;==>_cveReadNetFromDarknet2
@@ -101,20 +101,20 @@ Func _cveReadNetFromCaffe($prototxt, $caffeModel)
 EndFunc   ;==>_cveReadNetFromCaffe
 
 Func _cveReadNetFromCaffe2($bufferProto, $lenProto, $bufferModel, $lenModel)
-    ; CVAPI(cv::dnn::Net*) cveReadNetFromCaffe2(const char * bufferProto, int lenProto, const char * bufferModel, int lenModel);
+    ; CVAPI(cv::dnn::Net*) cveReadNetFromCaffe2(const char* bufferProto, int lenProto, const char* bufferModel, int lenModel);
 
     Local $bBufferProtoDllType
     If VarGetType($bufferProto) == "DLLStruct" Then
         $bBufferProtoDllType = "struct*"
     Else
-        $bBufferProtoDllType = "ptr"
+        $bBufferProtoDllType = "str"
     EndIf
 
     Local $bBufferModelDllType
     If VarGetType($bufferModel) == "DLLStruct" Then
         $bBufferModelDllType = "struct*"
     Else
-        $bBufferModelDllType = "ptr"
+        $bBufferModelDllType = "str"
     EndIf
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveReadNetFromCaffe2", $bBufferProtoDllType, $bufferProto, "int", $lenProto, $bBufferModelDllType, $bufferModel, "int", $lenModel), "cveReadNetFromCaffe2", @error)
 EndFunc   ;==>_cveReadNetFromCaffe2
@@ -160,20 +160,20 @@ Func _cveReadNetFromTensorflow($model, $config)
 EndFunc   ;==>_cveReadNetFromTensorflow
 
 Func _cveReadNetFromTensorflow2($bufferModel, $lenModel, $bufferConfig, $lenConfig)
-    ; CVAPI(cv::dnn::Net*) cveReadNetFromTensorflow2(const char * bufferModel, int lenModel, const char * bufferConfig, int lenConfig);
+    ; CVAPI(cv::dnn::Net*) cveReadNetFromTensorflow2(const char* bufferModel, int lenModel, const char* bufferConfig, int lenConfig);
 
     Local $bBufferModelDllType
     If VarGetType($bufferModel) == "DLLStruct" Then
         $bBufferModelDllType = "struct*"
     Else
-        $bBufferModelDllType = "ptr"
+        $bBufferModelDllType = "str"
     EndIf
 
     Local $bBufferConfigDllType
     If VarGetType($bufferConfig) == "DLLStruct" Then
         $bBufferConfigDllType = "struct*"
     Else
-        $bBufferConfigDllType = "ptr"
+        $bBufferConfigDllType = "str"
     EndIf
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveReadNetFromTensorflow2", $bBufferModelDllType, $bufferModel, "int", $lenModel, $bBufferConfigDllType, $bufferConfig, "int", $lenConfig), "cveReadNetFromTensorflow2", @error)
 EndFunc   ;==>_cveReadNetFromTensorflow2
@@ -1585,7 +1585,7 @@ Func _cveDnnTextDetectionModelEastRelease($textDetectionModel)
 EndFunc   ;==>_cveDnnTextDetectionModelEastRelease
 
 Func _cveDnnTextDetectionModelDetect($textDetectionModel, $frame, $detections, $confidences)
-    ; CVAPI(void) cveDnnTextDetectionModelDetect(cv::dnn::TextDetectionModel* textDetectionModel, cv::_InputArray* frame, std::vector< std::vector< cv::Point > >* detections, std::vector<float>* confidences);
+    ; CVAPI(void) cveDnnTextDetectionModelDetect(cv::dnn::TextDetectionModel* textDetectionModel, cv::_InputArray* frame, std::vector<std::vector<cv::Point>>* detections, std::vector<float>* confidences);
 
     Local $bTextDetectionModelDllType
     If VarGetType($textDetectionModel) == "DLLStruct" Then
@@ -1683,7 +1683,7 @@ Func _cveDnnTextDetectionModelDetectMat($textDetectionModel, $matFrame, $detecti
 EndFunc   ;==>_cveDnnTextDetectionModelDetectMat
 
 Func _cveDnnTextDetectionModelDetectTextRectangles($textDetectionModel, $frame, $detections, $confidences)
-    ; CVAPI(void) cveDnnTextDetectionModelDetectTextRectangles(cv::dnn::TextDetectionModel* textDetectionModel, cv::_InputArray* frame, std::vector< cv::RotatedRect >* detections, std::vector< float >* confidences);
+    ; CVAPI(void) cveDnnTextDetectionModelDetectTextRectangles(cv::dnn::TextDetectionModel* textDetectionModel, cv::_InputArray* frame, std::vector<cv::RotatedRect>* detections, std::vector<float>* confidences);
 
     Local $bTextDetectionModelDllType
     If VarGetType($textDetectionModel) == "DLLStruct" Then
@@ -1860,7 +1860,7 @@ Func _cveDnnTextRecognitionModelRelease($textRecognitionModel)
 EndFunc   ;==>_cveDnnTextRecognitionModelRelease
 
 Func _cveDnnTextRecognitionModelSetVocabulary($textRecognitionModel, $vocabulary)
-    ; CVAPI(void) cveDnnTextRecognitionModelSetVocabulary(cv::dnn::TextRecognitionModel* textRecognitionModel, std::vector< std::string >* vocabulary);
+    ; CVAPI(void) cveDnnTextRecognitionModelSetVocabulary(cv::dnn::TextRecognitionModel* textRecognitionModel, std::vector<std::string>* vocabulary);
 
     Local $bTextRecognitionModelDllType
     If VarGetType($textRecognitionModel) == "DLLStruct" Then
@@ -1880,7 +1880,7 @@ Func _cveDnnTextRecognitionModelSetVocabulary($textRecognitionModel, $vocabulary
 EndFunc   ;==>_cveDnnTextRecognitionModelSetVocabulary
 
 Func _cveDnnTextRecognitionModelGetVocabulary($textRecognitionModel, $vocabulary)
-    ; CVAPI(void) cveDnnTextRecognitionModelGetVocabulary(cv::dnn::TextRecognitionModel* textRecognitionModel, std::vector< std::string >* vocabulary);
+    ; CVAPI(void) cveDnnTextRecognitionModelGetVocabulary(cv::dnn::TextRecognitionModel* textRecognitionModel, std::vector<std::string>* vocabulary);
 
     Local $bTextRecognitionModelDllType
     If VarGetType($textRecognitionModel) == "DLLStruct" Then
@@ -1964,7 +1964,7 @@ Func _cveDnnTextRecognitionModelRecognize1Mat($textRecognitionModel, $matFrame, 
 EndFunc   ;==>_cveDnnTextRecognitionModelRecognize1Mat
 
 Func _cveDnnTextRecognitionModelRecognize2($textRecognitionModel, $frame, $roiRects, $results)
-    ; CVAPI(void) cveDnnTextRecognitionModelRecognize2(cv::dnn::TextRecognitionModel* textRecognitionModel, cv::_InputArray* frame, cv::_InputArray* roiRects, std::vector< std::string >* results);
+    ; CVAPI(void) cveDnnTextRecognitionModelRecognize2(cv::dnn::TextRecognitionModel* textRecognitionModel, cv::_InputArray* frame, cv::_InputArray* roiRects, std::vector<std::string>* results);
 
     Local $bTextRecognitionModelDllType
     If VarGetType($textRecognitionModel) == "DLLStruct" Then
@@ -2374,7 +2374,7 @@ Func _cveDnnDetectionModelRelease($detectionModel)
 EndFunc   ;==>_cveDnnDetectionModelRelease
 
 Func _cveDnnDetectionModelDetect($detectionModel, $frame, $classIds, $confidences, $boxes, $confThreshold, $nmsThreshold)
-    ; CVAPI(void) cveDnnDetectionModelDetect(cv::dnn::DetectionModel* detectionModel, cv::_InputArray* frame, std::vector< int >* classIds, std::vector< float >* confidences, std::vector< cv::Rect >* boxes, float confThreshold, float nmsThreshold);
+    ; CVAPI(void) cveDnnDetectionModelDetect(cv::dnn::DetectionModel* detectionModel, cv::_InputArray* frame, std::vector<int>* classIds, std::vector<float>* confidences, std::vector<cv::Rect>* boxes, float confThreshold, float nmsThreshold);
 
     Local $bDetectionModelDllType
     If VarGetType($detectionModel) == "DLLStruct" Then
@@ -2717,7 +2717,7 @@ Func _cveDnnKeypointsModelRelease($keypointsModel)
 EndFunc   ;==>_cveDnnKeypointsModelRelease
 
 Func _cveDnnKeypointsModelEstimate($keypointsModel, $frame, $keypoints, $thresh)
-    ; CVAPI(void) cveDnnKeypointsModelEstimate(cv::dnn::KeypointsModel* keypointsModel, cv::_InputArray* frame, std::vector< cv::Point2f >* keypoints, float thresh);
+    ; CVAPI(void) cveDnnKeypointsModelEstimate(cv::dnn::KeypointsModel* keypointsModel, cv::_InputArray* frame, std::vector<cv::Point2f>* keypoints, float thresh);
 
     Local $bKeypointsModelDllType
     If VarGetType($keypointsModel) == "DLLStruct" Then

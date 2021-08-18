@@ -122,6 +122,10 @@ module.exports = {
     },
     cdecl: true,
 
+    ifeval(input, pos) {
+        return !input.startsWith("#if WINAPI_FAMILY", pos);
+    },
+
     exported: {},
 
     defaults: {},

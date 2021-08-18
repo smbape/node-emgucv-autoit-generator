@@ -13,7 +13,7 @@ const AUTOIT_TYPE_MAP = {
     "unsigned long": "ulong",
 };
 
-const NATIVE_TYPES_REG = new RegExp(`^(?:const )?(?:${ [
+const NATIVE_TYPES_REG = new RegExp(`^(?:const\\s+|volatile\\s+)*(?:${ [
     "boolean",
     "bool",
     "short",
@@ -24,7 +24,7 @@ const NATIVE_TYPES_REG = new RegExp(`^(?:const )?(?:${ [
     "ulong",
     "float",
     "double",
-].join("|") })\\*?`);
+].join("|") })\\s*\\*?`);
 
 const AUTOIT_VALID_TYPE = [
     "NONE",
@@ -96,7 +96,7 @@ const getAutoItType = (type, native = false) => {
         return `${ AUTOIT_TYPE_MAP[type] }*`;
     }
 
-    return type.replace(/^const /, "");
+    return type.replace(/\b(?:const|volatile)\s+/g, "");
 };
 
 const getAutoItFunctionDefinition = (entry, options = {}) => {
@@ -118,19 +118,41 @@ const getAutoItFunctionDefinition = (entry, options = {}) => {
     const autoItArgs = [];
     const declArgs = [];
     const dllArgs = [cdecl ? `"${ autoItReturnType }:cdecl"` : `"${ autoItReturnType }"`, `"${ name }"`];
+    let hasNoArgs = false;
 
     for (const arg of args) {
         const [argType, argName, defaultValue] = arg;
-        const capitalCasedName = argName[0].toUpperCase() + argName.slice(1);
-
-        let byRef = arg[3];
-        if (byRef === undefined) {
-            byRef = typeof isbyref === "function" ? isbyref(argType, arg, entry, options) : argType.endsWith("*") || argType.endsWith("&") && !argType.startsWith("const ");
-            arg[3] = byRef;
+        if (argType === "void") {
+            if (hasNoArgs || argName !== undefined) {
+                throw new Error(`${ name } is supposed to have no arguments but found one`);
+            }
+            hasNoArgs = true
+            continue;
         }
 
         const isString = /^const char\*\*?$/.test(argType);
         const isNativeType = NATIVE_TYPES_REG.test(argType);
+
+        if (name === "cveMixChannels" && argName === "fromTo") {
+            debugger;
+        }
+
+        const capitalCasedName = argName[0].toUpperCase() + argName.slice(1);
+
+        let byRef = arg[3];
+        if (byRef === undefined) {
+            byRef = argType.endsWith("*") || argType.endsWith("&");
+
+            if (byRef && isNativeType && argType.startsWith("const ")) {
+                byRef = false;
+            }
+
+            if (typeof isbyref === "function") {
+                byRef = isbyref(argType, arg, entry, options, byRef);
+            }
+
+            arg[3] = byRef;
+        }
 
         declArgs.push(`${ argType } ${ argName }`);
 

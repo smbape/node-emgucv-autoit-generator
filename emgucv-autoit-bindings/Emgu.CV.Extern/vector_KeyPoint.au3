@@ -2,17 +2,17 @@
 #include "..\CVEUtils.au3"
 
 Func _VectorOfKeyPointCreate()
-    ; CVAPI(std::vector< cv::KeyPoint >*) VectorOfKeyPointCreate();
+    ; CVAPI(std::vector<cv::KeyPoint>*) VectorOfKeyPointCreate();
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfKeyPointCreate"), "VectorOfKeyPointCreate", @error)
 EndFunc   ;==>_VectorOfKeyPointCreate
 
 Func _VectorOfKeyPointCreateSize($size)
-    ; CVAPI(std::vector< cv::KeyPoint >*) VectorOfKeyPointCreateSize(int size);
+    ; CVAPI(std::vector<cv::KeyPoint>*) VectorOfKeyPointCreateSize(int size);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfKeyPointCreateSize", "int", $size), "VectorOfKeyPointCreateSize", @error)
 EndFunc   ;==>_VectorOfKeyPointCreateSize
 
 Func _VectorOfKeyPointGetSize($v)
-    ; CVAPI(int) VectorOfKeyPointGetSize(std::vector< cv::KeyPoint >* v);
+    ; CVAPI(int) VectorOfKeyPointGetSize(std::vector<cv::KeyPoint>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -45,7 +45,7 @@ Func _VectorOfKeyPointGetSize($v)
 EndFunc   ;==>_VectorOfKeyPointGetSize
 
 Func _VectorOfKeyPointPush($v, $value)
-    ; CVAPI(void) VectorOfKeyPointPush(std::vector< cv::KeyPoint >* v, cv::KeyPoint* value);
+    ; CVAPI(void) VectorOfKeyPointPush(std::vector<cv::KeyPoint>* v, cv::KeyPoint* value);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -83,7 +83,7 @@ Func _VectorOfKeyPointPush($v, $value)
 EndFunc   ;==>_VectorOfKeyPointPush
 
 Func _VectorOfKeyPointPushMulti($v, $values, $count)
-    ; CVAPI(void) VectorOfKeyPointPushMulti(std::vector< cv::KeyPoint >* v, cv::KeyPoint* values, int count);
+    ; CVAPI(void) VectorOfKeyPointPushMulti(std::vector<cv::KeyPoint>* v, cv::KeyPoint* values, int count);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -121,7 +121,7 @@ Func _VectorOfKeyPointPushMulti($v, $values, $count)
 EndFunc   ;==>_VectorOfKeyPointPushMulti
 
 Func _VectorOfKeyPointPushVector($v, $other)
-    ; CVAPI(void) VectorOfKeyPointPushVector(std::vector< cv::KeyPoint >* v, std::vector< cv::KeyPoint >* other);
+    ; CVAPI(void) VectorOfKeyPointPushVector(std::vector<cv::KeyPoint>* v, std::vector<cv::KeyPoint>* other);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -177,7 +177,7 @@ Func _VectorOfKeyPointPushVector($v, $other)
 EndFunc   ;==>_VectorOfKeyPointPushVector
 
 Func _VectorOfKeyPointClear($v)
-    ; CVAPI(void) VectorOfKeyPointClear(std::vector< cv::KeyPoint >* v);
+    ; CVAPI(void) VectorOfKeyPointClear(std::vector<cv::KeyPoint>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -208,7 +208,7 @@ Func _VectorOfKeyPointClear($v)
 EndFunc   ;==>_VectorOfKeyPointClear
 
 Func _VectorOfKeyPointRelease($v)
-    ; CVAPI(void) VectorOfKeyPointRelease(std::vector< cv::KeyPoint >** v);
+    ; CVAPI(void) VectorOfKeyPointRelease(std::vector<cv::KeyPoint>** v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -239,7 +239,7 @@ Func _VectorOfKeyPointRelease($v)
 EndFunc   ;==>_VectorOfKeyPointRelease
 
 Func _VectorOfKeyPointCopyData($v, $data)
-    ; CVAPI(void) VectorOfKeyPointCopyData(std::vector< cv::KeyPoint >* v, cv::KeyPoint* data);
+    ; CVAPI(void) VectorOfKeyPointCopyData(std::vector<cv::KeyPoint>* v, cv::KeyPoint* data);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -277,7 +277,7 @@ Func _VectorOfKeyPointCopyData($v, $data)
 EndFunc   ;==>_VectorOfKeyPointCopyData
 
 Func _VectorOfKeyPointGetStartAddress($v)
-    ; CVAPI(cv::KeyPoint*) VectorOfKeyPointGetStartAddress(std::vector< cv::KeyPoint >* v);
+    ; CVAPI(cv::KeyPoint*) VectorOfKeyPointGetStartAddress(std::vector<cv::KeyPoint>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -310,7 +310,7 @@ Func _VectorOfKeyPointGetStartAddress($v)
 EndFunc   ;==>_VectorOfKeyPointGetStartAddress
 
 Func _VectorOfKeyPointGetEndAddress($v)
-    ; CVAPI(void*) VectorOfKeyPointGetEndAddress(std::vector< cv::KeyPoint >* v);
+    ; CVAPI(void*) VectorOfKeyPointGetEndAddress(std::vector<cv::KeyPoint>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -343,7 +343,7 @@ Func _VectorOfKeyPointGetEndAddress($v)
 EndFunc   ;==>_VectorOfKeyPointGetEndAddress
 
 Func _VectorOfKeyPointGetItem($vec, $index, $element)
-    ; CVAPI(void) VectorOfKeyPointGetItem(std::vector<  cv::KeyPoint >* vec, int index, cv::KeyPoint* element);
+    ; CVAPI(void) VectorOfKeyPointGetItem(std::vector<cv::KeyPoint>* vec, int index, cv::KeyPoint* element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -381,7 +381,7 @@ Func _VectorOfKeyPointGetItem($vec, $index, $element)
 EndFunc   ;==>_VectorOfKeyPointGetItem
 
 Func _VectorOfKeyPointGetItemPtr($vec, $index, $element)
-    ; CVAPI(void) VectorOfKeyPointGetItemPtr(std::vector<  cv::KeyPoint >* vec, int index, cv::KeyPoint** element);
+    ; CVAPI(void) VectorOfKeyPointGetItemPtr(std::vector<cv::KeyPoint>* vec, int index, cv::KeyPoint** element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -419,7 +419,7 @@ Func _VectorOfKeyPointGetItemPtr($vec, $index, $element)
 EndFunc   ;==>_VectorOfKeyPointGetItemPtr
 
 Func _cveInputArrayFromVectorOfKeyPoint($vec)
-    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfKeyPoint(std::vector< cv::KeyPoint >* vec);
+    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfKeyPoint(std::vector<cv::KeyPoint>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -452,7 +452,7 @@ Func _cveInputArrayFromVectorOfKeyPoint($vec)
 EndFunc   ;==>_cveInputArrayFromVectorOfKeyPoint
 
 Func _cveOutputArrayFromVectorOfKeyPoint($vec)
-    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfKeyPoint(std::vector< cv::KeyPoint >* vec);
+    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfKeyPoint(std::vector<cv::KeyPoint>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -485,7 +485,7 @@ Func _cveOutputArrayFromVectorOfKeyPoint($vec)
 EndFunc   ;==>_cveOutputArrayFromVectorOfKeyPoint
 
 Func _cveInputOutputArrayFromVectorOfKeyPoint($vec)
-    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfKeyPoint(std::vector< cv::KeyPoint >* vec);
+    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfKeyPoint(std::vector<cv::KeyPoint>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"

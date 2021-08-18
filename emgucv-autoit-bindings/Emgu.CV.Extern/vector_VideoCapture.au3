@@ -2,17 +2,17 @@
 #include "..\CVEUtils.au3"
 
 Func _VectorOfVideoCaptureCreate()
-    ; CVAPI(std::vector< cv::VideoCapture >*) VectorOfVideoCaptureCreate();
+    ; CVAPI(std::vector<cv::VideoCapture>*) VectorOfVideoCaptureCreate();
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfVideoCaptureCreate"), "VectorOfVideoCaptureCreate", @error)
 EndFunc   ;==>_VectorOfVideoCaptureCreate
 
 Func _VectorOfVideoCaptureCreateSize($size)
-    ; CVAPI(std::vector< cv::VideoCapture >*) VectorOfVideoCaptureCreateSize(int size);
+    ; CVAPI(std::vector<cv::VideoCapture>*) VectorOfVideoCaptureCreateSize(int size);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfVideoCaptureCreateSize", "int", $size), "VectorOfVideoCaptureCreateSize", @error)
 EndFunc   ;==>_VectorOfVideoCaptureCreateSize
 
 Func _VectorOfVideoCaptureGetSize($v)
-    ; CVAPI(int) VectorOfVideoCaptureGetSize(std::vector< cv::VideoCapture >* v);
+    ; CVAPI(int) VectorOfVideoCaptureGetSize(std::vector<cv::VideoCapture>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -45,7 +45,7 @@ Func _VectorOfVideoCaptureGetSize($v)
 EndFunc   ;==>_VectorOfVideoCaptureGetSize
 
 Func _VectorOfVideoCapturePush($v, $value)
-    ; CVAPI(void) VectorOfVideoCapturePush(std::vector< cv::VideoCapture >* v, cv::VideoCapture* value);
+    ; CVAPI(void) VectorOfVideoCapturePush(std::vector<cv::VideoCapture>* v, cv::VideoCapture* value);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -83,7 +83,7 @@ Func _VectorOfVideoCapturePush($v, $value)
 EndFunc   ;==>_VectorOfVideoCapturePush
 
 Func _VectorOfVideoCapturePushVector($v, $other)
-    ; CVAPI(void) VectorOfVideoCapturePushVector(std::vector< cv::VideoCapture >* v, std::vector< cv::VideoCapture >* other);
+    ; CVAPI(void) VectorOfVideoCapturePushVector(std::vector<cv::VideoCapture>* v, std::vector<cv::VideoCapture>* other);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -139,7 +139,7 @@ Func _VectorOfVideoCapturePushVector($v, $other)
 EndFunc   ;==>_VectorOfVideoCapturePushVector
 
 Func _VectorOfVideoCaptureGetStartAddress($v)
-    ; CVAPI(cv::VideoCapture*) VectorOfVideoCaptureGetStartAddress(std::vector< cv::VideoCapture >* v);
+    ; CVAPI(cv::VideoCapture*) VectorOfVideoCaptureGetStartAddress(std::vector<cv::VideoCapture>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -172,7 +172,7 @@ Func _VectorOfVideoCaptureGetStartAddress($v)
 EndFunc   ;==>_VectorOfVideoCaptureGetStartAddress
 
 Func _VectorOfVideoCaptureGetEndAddress($v)
-    ; CVAPI(void*) VectorOfVideoCaptureGetEndAddress(std::vector< cv::VideoCapture >* v);
+    ; CVAPI(void*) VectorOfVideoCaptureGetEndAddress(std::vector<cv::VideoCapture>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -205,7 +205,7 @@ Func _VectorOfVideoCaptureGetEndAddress($v)
 EndFunc   ;==>_VectorOfVideoCaptureGetEndAddress
 
 Func _VectorOfVideoCaptureClear($v)
-    ; CVAPI(void) VectorOfVideoCaptureClear(std::vector< cv::VideoCapture >* v);
+    ; CVAPI(void) VectorOfVideoCaptureClear(std::vector<cv::VideoCapture>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -236,7 +236,7 @@ Func _VectorOfVideoCaptureClear($v)
 EndFunc   ;==>_VectorOfVideoCaptureClear
 
 Func _VectorOfVideoCaptureRelease($v)
-    ; CVAPI(void) VectorOfVideoCaptureRelease(std::vector< cv::VideoCapture >** v);
+    ; CVAPI(void) VectorOfVideoCaptureRelease(std::vector<cv::VideoCapture>** v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -267,7 +267,7 @@ Func _VectorOfVideoCaptureRelease($v)
 EndFunc   ;==>_VectorOfVideoCaptureRelease
 
 Func _VectorOfVideoCaptureCopyData($v, $data)
-    ; CVAPI(void) VectorOfVideoCaptureCopyData(std::vector< cv::VideoCapture >* v, cv::VideoCapture* data);
+    ; CVAPI(void) VectorOfVideoCaptureCopyData(std::vector<cv::VideoCapture>* v, cv::VideoCapture* data);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -305,7 +305,7 @@ Func _VectorOfVideoCaptureCopyData($v, $data)
 EndFunc   ;==>_VectorOfVideoCaptureCopyData
 
 Func _VectorOfVideoCaptureGetItemPtr($vec, $index, $element)
-    ; CVAPI(void) VectorOfVideoCaptureGetItemPtr(std::vector<  cv::VideoCapture >* vec, int index, cv::VideoCapture** element);
+    ; CVAPI(void) VectorOfVideoCaptureGetItemPtr(std::vector<cv::VideoCapture>* vec, int index, cv::VideoCapture** element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -343,7 +343,7 @@ Func _VectorOfVideoCaptureGetItemPtr($vec, $index, $element)
 EndFunc   ;==>_VectorOfVideoCaptureGetItemPtr
 
 Func _cveInputArrayFromVectorOfVideoCapture($vec)
-    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfVideoCapture(std::vector< cv::VideoCapture >* vec);
+    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfVideoCapture(std::vector<cv::VideoCapture>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -376,7 +376,7 @@ Func _cveInputArrayFromVectorOfVideoCapture($vec)
 EndFunc   ;==>_cveInputArrayFromVectorOfVideoCapture
 
 Func _cveOutputArrayFromVectorOfVideoCapture($vec)
-    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfVideoCapture(std::vector< cv::VideoCapture >* vec);
+    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfVideoCapture(std::vector<cv::VideoCapture>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -409,7 +409,7 @@ Func _cveOutputArrayFromVectorOfVideoCapture($vec)
 EndFunc   ;==>_cveOutputArrayFromVectorOfVideoCapture
 
 Func _cveInputOutputArrayFromVectorOfVideoCapture($vec)
-    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfVideoCapture(std::vector< cv::VideoCapture >* vec);
+    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfVideoCapture(std::vector<cv::VideoCapture>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"

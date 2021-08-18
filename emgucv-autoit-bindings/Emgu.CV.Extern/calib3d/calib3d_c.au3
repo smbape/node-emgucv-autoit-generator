@@ -294,7 +294,7 @@ Func _cveStereoMatcherRelease($sharedPtr)
 EndFunc   ;==>_cveStereoMatcherRelease
 
 Func _getHomographyMatrixFromMatchedFeatures($model, $observed, $matches, $mask, $randsacThreshold, $homography)
-    ; CVAPI(bool) getHomographyMatrixFromMatchedFeatures(std::vector<cv::KeyPoint>* model, std::vector<cv::KeyPoint>* observed, std::vector< std::vector< cv::DMatch > >* matches, cv::Mat* mask, double randsacThreshold, cv::Mat* homography);
+    ; CVAPI(bool) getHomographyMatrixFromMatchedFeatures(std::vector<cv::KeyPoint>* model, std::vector<cv::KeyPoint>* observed, std::vector<std::vector<cv::DMatch>>* matches, cv::Mat* mask, double randsacThreshold, cv::Mat* homography);
 
     Local $vecModel, $iArrModelSize
     Local $bModelIsArray = VarGetType($model) == "Array"

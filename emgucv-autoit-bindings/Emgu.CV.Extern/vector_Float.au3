@@ -2,17 +2,17 @@
 #include "..\CVEUtils.au3"
 
 Func _VectorOfFloatCreate()
-    ; CVAPI(std::vector< float >*) VectorOfFloatCreate();
+    ; CVAPI(std::vector<float>*) VectorOfFloatCreate();
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfFloatCreate"), "VectorOfFloatCreate", @error)
 EndFunc   ;==>_VectorOfFloatCreate
 
 Func _VectorOfFloatCreateSize($size)
-    ; CVAPI(std::vector< float >*) VectorOfFloatCreateSize(int size);
+    ; CVAPI(std::vector<float>*) VectorOfFloatCreateSize(int size);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfFloatCreateSize", "int", $size), "VectorOfFloatCreateSize", @error)
 EndFunc   ;==>_VectorOfFloatCreateSize
 
 Func _VectorOfFloatGetSize($v)
-    ; CVAPI(int) VectorOfFloatGetSize(std::vector< float >* v);
+    ; CVAPI(int) VectorOfFloatGetSize(std::vector<float>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -45,7 +45,7 @@ Func _VectorOfFloatGetSize($v)
 EndFunc   ;==>_VectorOfFloatGetSize
 
 Func _VectorOfFloatPush($v, $value)
-    ; CVAPI(void) VectorOfFloatPush(std::vector< float >* v, float* value);
+    ; CVAPI(void) VectorOfFloatPush(std::vector<float>* v, float* value);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -83,7 +83,7 @@ Func _VectorOfFloatPush($v, $value)
 EndFunc   ;==>_VectorOfFloatPush
 
 Func _VectorOfFloatPushMulti($v, $values, $count)
-    ; CVAPI(void) VectorOfFloatPushMulti(std::vector< float >* v, float* values, int count);
+    ; CVAPI(void) VectorOfFloatPushMulti(std::vector<float>* v, float* values, int count);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -121,7 +121,7 @@ Func _VectorOfFloatPushMulti($v, $values, $count)
 EndFunc   ;==>_VectorOfFloatPushMulti
 
 Func _VectorOfFloatPushVector($v, $other)
-    ; CVAPI(void) VectorOfFloatPushVector(std::vector< float >* v, std::vector< float >* other);
+    ; CVAPI(void) VectorOfFloatPushVector(std::vector<float>* v, std::vector<float>* other);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -177,7 +177,7 @@ Func _VectorOfFloatPushVector($v, $other)
 EndFunc   ;==>_VectorOfFloatPushVector
 
 Func _VectorOfFloatClear($v)
-    ; CVAPI(void) VectorOfFloatClear(std::vector< float >* v);
+    ; CVAPI(void) VectorOfFloatClear(std::vector<float>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -208,7 +208,7 @@ Func _VectorOfFloatClear($v)
 EndFunc   ;==>_VectorOfFloatClear
 
 Func _VectorOfFloatRelease($v)
-    ; CVAPI(void) VectorOfFloatRelease(std::vector< float >** v);
+    ; CVAPI(void) VectorOfFloatRelease(std::vector<float>** v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -239,7 +239,7 @@ Func _VectorOfFloatRelease($v)
 EndFunc   ;==>_VectorOfFloatRelease
 
 Func _VectorOfFloatCopyData($v, $data)
-    ; CVAPI(void) VectorOfFloatCopyData(std::vector< float >* v, float* data);
+    ; CVAPI(void) VectorOfFloatCopyData(std::vector<float>* v, float* data);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -277,7 +277,7 @@ Func _VectorOfFloatCopyData($v, $data)
 EndFunc   ;==>_VectorOfFloatCopyData
 
 Func _VectorOfFloatGetStartAddress($v)
-    ; CVAPI(float*) VectorOfFloatGetStartAddress(std::vector< float >* v);
+    ; CVAPI(float*) VectorOfFloatGetStartAddress(std::vector<float>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -310,7 +310,7 @@ Func _VectorOfFloatGetStartAddress($v)
 EndFunc   ;==>_VectorOfFloatGetStartAddress
 
 Func _VectorOfFloatGetEndAddress($v)
-    ; CVAPI(void*) VectorOfFloatGetEndAddress(std::vector< float >* v);
+    ; CVAPI(void*) VectorOfFloatGetEndAddress(std::vector<float>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -343,7 +343,7 @@ Func _VectorOfFloatGetEndAddress($v)
 EndFunc   ;==>_VectorOfFloatGetEndAddress
 
 Func _VectorOfFloatGetItem($vec, $index, $element)
-    ; CVAPI(void) VectorOfFloatGetItem(std::vector<  float >* vec, int index, float* element);
+    ; CVAPI(void) VectorOfFloatGetItem(std::vector<float>* vec, int index, float* element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -381,7 +381,7 @@ Func _VectorOfFloatGetItem($vec, $index, $element)
 EndFunc   ;==>_VectorOfFloatGetItem
 
 Func _VectorOfFloatGetItemPtr($vec, $index, $element)
-    ; CVAPI(void) VectorOfFloatGetItemPtr(std::vector<  float >* vec, int index, float** element);
+    ; CVAPI(void) VectorOfFloatGetItemPtr(std::vector<float>* vec, int index, float** element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -419,7 +419,7 @@ Func _VectorOfFloatGetItemPtr($vec, $index, $element)
 EndFunc   ;==>_VectorOfFloatGetItemPtr
 
 Func _cveInputArrayFromVectorOfFloat($vec)
-    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfFloat(std::vector< float >* vec);
+    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfFloat(std::vector<float>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -452,7 +452,7 @@ Func _cveInputArrayFromVectorOfFloat($vec)
 EndFunc   ;==>_cveInputArrayFromVectorOfFloat
 
 Func _cveOutputArrayFromVectorOfFloat($vec)
-    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfFloat(std::vector< float >* vec);
+    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfFloat(std::vector<float>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -485,7 +485,7 @@ Func _cveOutputArrayFromVectorOfFloat($vec)
 EndFunc   ;==>_cveOutputArrayFromVectorOfFloat
 
 Func _cveInputOutputArrayFromVectorOfFloat($vec)
-    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfFloat(std::vector< float >* vec);
+    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfFloat(std::vector<float>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"

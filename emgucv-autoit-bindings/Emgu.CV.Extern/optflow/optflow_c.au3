@@ -270,7 +270,7 @@ Func _cveCalcGlobalOrientationMat($matOrientation, $matMask, $matMhi, $timestamp
 EndFunc   ;==>_cveCalcGlobalOrientationMat
 
 Func _cveSegmentMotion($mhi, $segmask, $boundingRects, $timestamp, $segThresh)
-    ; CVAPI(void) cveSegmentMotion(cv::_InputArray* mhi, cv::_OutputArray* segmask, std::vector< cv::Rect >* boundingRects, double timestamp, double segThresh);
+    ; CVAPI(void) cveSegmentMotion(cv::_InputArray* mhi, cv::_OutputArray* segmask, std::vector<cv::Rect>* boundingRects, double timestamp, double segThresh);
 
     Local $bMhiDllType
     If VarGetType($mhi) == "DLLStruct" Then

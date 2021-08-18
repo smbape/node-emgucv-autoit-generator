@@ -56,6 +56,7 @@ const convertFile = (localFile, remoteFile, remotePath, remoteBaseDir, remoteSep
             try {
                 body = convertToAutoIt(api, options);
             } catch(err) {
+                console.log("converting", localFile, "error");
                 next(err);
                 return;
             }
@@ -474,6 +475,14 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
                         const name = parts.pop() || "anonymous";
                         const prefix = parts.join("_").replace(/[a-z][A-Z]/g, match => `${ match[0] }_${ match[1] }`).toUpperCase();
                         const values = ast_enum[key];
+
+                        // enums without values take the value of their index
+                        Object.keys(values).forEach((vkey, i) => {
+                            if (values[vkey] === "") {
+                                values[vkey] = String(i);
+                            }
+                        });
+
                         const variables = Object.keys(values).filter(vkey => !!values[vkey] && !/^[a-z_]+$/.test(vkey));
 
                         if (variables.length === 0) {

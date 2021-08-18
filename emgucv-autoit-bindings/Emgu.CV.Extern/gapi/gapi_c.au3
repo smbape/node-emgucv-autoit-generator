@@ -1178,7 +1178,7 @@ Func _cveGapiConcatHor($src1, $src2)
 EndFunc   ;==>_cveGapiConcatHor
 
 Func _cveGapiConcatHorV($v)
-    ; CVAPI(cv::GMat*) cveGapiConcatHorV(std::vector< cv::GMat >* v);
+    ; CVAPI(cv::GMat*) cveGapiConcatHorV(std::vector<cv::GMat>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -1230,7 +1230,7 @@ Func _cveGapiConcatVert($src1, $src2)
 EndFunc   ;==>_cveGapiConcatVert
 
 Func _cveGapiConcatVertV($v)
-    ; CVAPI(cv::GMat*) cveGapiConcatVertV(std::vector< cv::GMat >* v);
+    ; CVAPI(cv::GMat*) cveGapiConcatVertV(std::vector<cv::GMat>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -1474,7 +1474,7 @@ Func _cveGComputationCreate4($input1, $input2, $output)
 EndFunc   ;==>_cveGComputationCreate4
 
 Func _cveGComputationCreate5($ins, $outs)
-    ; CVAPI(cv::GComputation*) cveGComputationCreate5(std::vector< cv::GMat >* ins, std::vector< cv::GMat >* outs);
+    ; CVAPI(cv::GComputation*) cveGComputationCreate5(std::vector<cv::GMat>* ins, std::vector<cv::GMat>* outs);
 
     Local $vecIns, $iArrInsSize
     Local $bInsIsArray = VarGetType($ins) == "Array"
@@ -1667,7 +1667,7 @@ Func _cveGComputationApply4($computation, $input1, $input2, $output)
 EndFunc   ;==>_cveGComputationApply4
 
 Func _cveGComputationApply5($computation, $inputs, $outputs)
-    ; CVAPI(void) cveGComputationApply5(cv::GComputation* computation, std::vector< cv::Mat >* inputs, std::vector< cv::Mat >* outputs);
+    ; CVAPI(void) cveGComputationApply5(cv::GComputation* computation, std::vector<cv::Mat>* inputs, std::vector<cv::Mat>* outputs);
 
     Local $bComputationDllType
     If VarGetType($computation) == "DLLStruct" Then

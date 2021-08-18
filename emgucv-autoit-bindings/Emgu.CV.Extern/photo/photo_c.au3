@@ -1108,7 +1108,7 @@ Func _cveSeamlessCloneMat($matSrc, $matDst, $matMask, $p, $matBlend, $flags)
 EndFunc   ;==>_cveSeamlessCloneMat
 
 Func _cveDenoiseTVL1($observations, $result, $lambda, $niters)
-    ; CVAPI(void) cveDenoiseTVL1(const std::vector< cv::Mat >* observations, cv::Mat* result, double lambda, int niters);
+    ; CVAPI(void) cveDenoiseTVL1(const std::vector<cv::Mat>* observations, cv::Mat* result, double lambda, int niters);
 
     Local $vecObservations, $iArrObservationsSize
     Local $bObservationsIsArray = VarGetType($observations) == "Array"

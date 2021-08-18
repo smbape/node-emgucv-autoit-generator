@@ -2,17 +2,17 @@
 #include "..\CVEUtils.au3"
 
 Func _VectorOfERStatCreate()
-    ; CVAPI(std::vector< cv::text::ERStat >*) VectorOfERStatCreate();
+    ; CVAPI(std::vector<cv::text::ERStat>*) VectorOfERStatCreate();
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfERStatCreate"), "VectorOfERStatCreate", @error)
 EndFunc   ;==>_VectorOfERStatCreate
 
 Func _VectorOfERStatCreateSize($size)
-    ; CVAPI(std::vector< cv::text::ERStat >*) VectorOfERStatCreateSize(int size);
+    ; CVAPI(std::vector<cv::text::ERStat>*) VectorOfERStatCreateSize(int size);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfERStatCreateSize", "int", $size), "VectorOfERStatCreateSize", @error)
 EndFunc   ;==>_VectorOfERStatCreateSize
 
 Func _VectorOfERStatGetSize($v)
-    ; CVAPI(int) VectorOfERStatGetSize(std::vector< cv::text::ERStat >* v);
+    ; CVAPI(int) VectorOfERStatGetSize(std::vector<cv::text::ERStat>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -45,7 +45,7 @@ Func _VectorOfERStatGetSize($v)
 EndFunc   ;==>_VectorOfERStatGetSize
 
 Func _VectorOfERStatPush($v, $value)
-    ; CVAPI(void) VectorOfERStatPush(std::vector< cv::text::ERStat >* v, cv::text::ERStat* value);
+    ; CVAPI(void) VectorOfERStatPush(std::vector<cv::text::ERStat>* v, cv::text::ERStat* value);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -83,7 +83,7 @@ Func _VectorOfERStatPush($v, $value)
 EndFunc   ;==>_VectorOfERStatPush
 
 Func _VectorOfERStatPushMulti($v, $values, $count)
-    ; CVAPI(void) VectorOfERStatPushMulti(std::vector< cv::text::ERStat >* v, cv::text::ERStat* values, int count);
+    ; CVAPI(void) VectorOfERStatPushMulti(std::vector<cv::text::ERStat>* v, cv::text::ERStat* values, int count);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -121,7 +121,7 @@ Func _VectorOfERStatPushMulti($v, $values, $count)
 EndFunc   ;==>_VectorOfERStatPushMulti
 
 Func _VectorOfERStatPushVector($v, $other)
-    ; CVAPI(void) VectorOfERStatPushVector(std::vector< cv::text::ERStat >* v, std::vector< cv::text::ERStat >* other);
+    ; CVAPI(void) VectorOfERStatPushVector(std::vector<cv::text::ERStat>* v, std::vector<cv::text::ERStat>* other);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -177,7 +177,7 @@ Func _VectorOfERStatPushVector($v, $other)
 EndFunc   ;==>_VectorOfERStatPushVector
 
 Func _VectorOfERStatClear($v)
-    ; CVAPI(void) VectorOfERStatClear(std::vector< cv::text::ERStat >* v);
+    ; CVAPI(void) VectorOfERStatClear(std::vector<cv::text::ERStat>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -208,7 +208,7 @@ Func _VectorOfERStatClear($v)
 EndFunc   ;==>_VectorOfERStatClear
 
 Func _VectorOfERStatRelease($v)
-    ; CVAPI(void) VectorOfERStatRelease(std::vector< cv::text::ERStat >** v);
+    ; CVAPI(void) VectorOfERStatRelease(std::vector<cv::text::ERStat>** v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -239,7 +239,7 @@ Func _VectorOfERStatRelease($v)
 EndFunc   ;==>_VectorOfERStatRelease
 
 Func _VectorOfERStatCopyData($v, $data)
-    ; CVAPI(void) VectorOfERStatCopyData(std::vector< cv::text::ERStat >* v, cv::text::ERStat* data);
+    ; CVAPI(void) VectorOfERStatCopyData(std::vector<cv::text::ERStat>* v, cv::text::ERStat* data);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -277,7 +277,7 @@ Func _VectorOfERStatCopyData($v, $data)
 EndFunc   ;==>_VectorOfERStatCopyData
 
 Func _VectorOfERStatGetStartAddress($v)
-    ; CVAPI(cv::text::ERStat*) VectorOfERStatGetStartAddress(std::vector< cv::text::ERStat >* v);
+    ; CVAPI(cv::text::ERStat*) VectorOfERStatGetStartAddress(std::vector<cv::text::ERStat>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -310,7 +310,7 @@ Func _VectorOfERStatGetStartAddress($v)
 EndFunc   ;==>_VectorOfERStatGetStartAddress
 
 Func _VectorOfERStatGetEndAddress($v)
-    ; CVAPI(void*) VectorOfERStatGetEndAddress(std::vector< cv::text::ERStat >* v);
+    ; CVAPI(void*) VectorOfERStatGetEndAddress(std::vector<cv::text::ERStat>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -343,7 +343,7 @@ Func _VectorOfERStatGetEndAddress($v)
 EndFunc   ;==>_VectorOfERStatGetEndAddress
 
 Func _VectorOfERStatGetItem($vec, $index, $element)
-    ; CVAPI(void) VectorOfERStatGetItem(std::vector<  cv::text::ERStat >* vec, int index, cv::text::ERStat* element);
+    ; CVAPI(void) VectorOfERStatGetItem(std::vector<cv::text::ERStat>* vec, int index, cv::text::ERStat* element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -381,7 +381,7 @@ Func _VectorOfERStatGetItem($vec, $index, $element)
 EndFunc   ;==>_VectorOfERStatGetItem
 
 Func _VectorOfERStatGetItemPtr($vec, $index, $element)
-    ; CVAPI(void) VectorOfERStatGetItemPtr(std::vector<  cv::text::ERStat >* vec, int index, cv::text::ERStat** element);
+    ; CVAPI(void) VectorOfERStatGetItemPtr(std::vector<cv::text::ERStat>* vec, int index, cv::text::ERStat** element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -419,7 +419,7 @@ Func _VectorOfERStatGetItemPtr($vec, $index, $element)
 EndFunc   ;==>_VectorOfERStatGetItemPtr
 
 Func _cveInputArrayFromVectorOfERStat($vec)
-    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfERStat(std::vector< cv::text::ERStat >* vec);
+    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfERStat(std::vector<cv::text::ERStat>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -452,7 +452,7 @@ Func _cveInputArrayFromVectorOfERStat($vec)
 EndFunc   ;==>_cveInputArrayFromVectorOfERStat
 
 Func _cveOutputArrayFromVectorOfERStat($vec)
-    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfERStat(std::vector< cv::text::ERStat >* vec);
+    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfERStat(std::vector<cv::text::ERStat>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -485,7 +485,7 @@ Func _cveOutputArrayFromVectorOfERStat($vec)
 EndFunc   ;==>_cveOutputArrayFromVectorOfERStat
 
 Func _cveInputOutputArrayFromVectorOfERStat($vec)
-    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfERStat(std::vector< cv::text::ERStat >* vec);
+    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfERStat(std::vector<cv::text::ERStat>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"

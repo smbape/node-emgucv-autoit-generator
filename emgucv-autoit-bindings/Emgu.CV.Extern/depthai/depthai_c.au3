@@ -39,7 +39,7 @@ Func _depthaiDeviceRelease($usb_device)
 EndFunc   ;==>_depthaiDeviceRelease
 
 Func _depthaiDeviceGetAvailableStreams($usb_device, $availableStreams)
-    ; CVAPI(void) depthaiDeviceGetAvailableStreams(Device* usb_device, std::vector< cv::String >* availableStreams);
+    ; CVAPI(void) depthaiDeviceGetAvailableStreams(Device* usb_device, std::vector<cv::String>* availableStreams);
 
     Local $bUsb_deviceDllType
     If VarGetType($usb_device) == "DLLStruct" Then
@@ -217,7 +217,7 @@ Func _depthaiNNetAndDataPacketsRelease($nnetAndDataPackets)
 EndFunc   ;==>_depthaiNNetAndDataPacketsRelease
 
 Func _depthaiHostDataPacketGetDimensions($packet, $dimensions)
-    ; CVAPI(void) depthaiHostDataPacketGetDimensions(HostDataPacket* packet, std::vector< int >* dimensions);
+    ; CVAPI(void) depthaiHostDataPacketGetDimensions(HostDataPacket* packet, std::vector<int>* dimensions);
 
     Local $bPacketDllType
     If VarGetType($packet) == "DLLStruct" Then

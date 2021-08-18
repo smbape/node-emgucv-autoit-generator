@@ -9,6 +9,7 @@ const CLOSE_PARENTHESIS = ")";
 const NAMESPACE = "namespace";
 const CLASS = "class";
 const TEMPLATE = "template";
+const TYPEDEF_ENUM = "typedef enum";
 const ENUM = "enum";
 const ENUM_CLASS = "enum class";
 const ENUM_STRUCT = "enum struct";
@@ -42,6 +43,7 @@ class EnumParser {
             NAMESPACE,
             CLASS,
             TEMPLATE,
+            TYPEDEF_ENUM,
             ENUM_CLASS,
             ENUM_STRUCT,
             ENUM,
@@ -68,7 +70,7 @@ class EnumParser {
 
         let blocks = 0;
         let parenthesis = 0;
-        let match, name, pos;
+        let match, name, pos, tmp;
         let preprocessed = false;
         let assignment = null;
         let topened = 0;
@@ -117,6 +119,7 @@ class EnumParser {
 
                 case NAMESPACE:
                 case CLASS:
+                case TYPEDEF_ENUM:
                 case ENUM:
                 case ENUM_CLASS:
                 case ENUM_STRUCT:
@@ -124,8 +127,8 @@ class EnumParser {
                     if (parenthesis === 0) {
                         ([name, pos] = this.parseBlockName(input, tokenizer.lastIndex));
                         if (pos !== input.length && input[pos] !== ";") {
-                            state.blocks.push(match[0]);
-                            state.path.push(name);
+                            state.blocks.push(match[0] === TYPEDEF_ENUM ? ENUM : match[0]);
+                            state.path.push(match[0] === TYPEDEF_ENUM ? "" : name);
                             state.level.push(blocks);
                         }
                         tokenizer.lastIndex = pos;
@@ -145,12 +148,14 @@ class EnumParser {
                     break;
 
                 case BLOCK_END:
-                    // if (blocks === 0) {
-                    //     debugger;
-                    // }
                     blocks--;
                     if (state.blocks.length !== 0 && state.level[state.level.length - 1] === blocks) {
                         name = state.blocks.pop();
+                        if (state.path[state.path.length - 1] === "") {
+                            ([tmp, pos] = this.parseBlockName(input, tokenizer.lastIndex));
+                            tokenizer.lastIndex = pos;
+                            state.path[state.path.length - 1] = tmp;
+                        }
                         if (assignment !== null) {
                             ast[name][state.path.join("::")] = Object.assign({}, ast[name][state.path.join("::")], assignment);
                             assignment = null;
@@ -185,10 +190,14 @@ class EnumParser {
         let match;
         let opened = 0;
 
-        const blockNameTokenizer = /(?:[{:;]|\s+|[^{:\s;]+)/mg;
+        const blockNameTokenizer = /(?:[{:;]|\/[/*]|\s+|[^{:\s;]+)/mg;
         blockNameTokenizer.lastIndex = offset;
 
         while ((match = blockNameTokenizer.exec(input)) !== null) {
+            if (this.mayBeLineComment(input, blockNameTokenizer, match.index) || this.mayBeBlockComment(input, blockNameTokenizer, match.index)) {
+                continue;
+            }
+
             if (match[0] === "{" || match[0] === ":" || match[0] === ";") {
                 blockNameTokenizer.lastIndex = match.index;
                 break;

@@ -75,13 +75,29 @@ Global Const $CV_CALIB_HAND_EYE_DANIILIDIS = 4
 Global Const $CV_CALIB_ROBOT_WORLD_HAND_EYE_SHAH = 0
 Global Const $CV_CALIB_ROBOT_WORLD_HAND_EYE_LI = 1
 
+; SamplingMethod
+Global Const $CV_SAMPLING_UNIFORM = 0
+Global Const $CV_SAMPLING_PROGRESSIVE_NAPSAC = 1
+Global Const $CV_SAMPLING_NAPSAC = 2
+Global Const $CV_SAMPLING_PROSAC = 3
 
+; LocalOptimMethod
+Global Const $CV_LOCAL_OPTIM_NULL = 0
+Global Const $CV_LOCAL_OPTIM_INNER_LO = 1
+Global Const $CV_LOCAL_OPTIM_INNER_AND_ITER_LO = 2
+Global Const $CV_LOCAL_OPTIM_GC = 3
+Global Const $CV_LOCAL_OPTIM_SIGMA = 4
 
+; ScoreMethod
+Global Const $CV_SCORE_METHOD_RANSAC = 0
+Global Const $CV_SCORE_METHOD_MSAC = 1
+Global Const $CV_SCORE_METHOD_MAGSAC = 2
+Global Const $CV_SCORE_METHOD_LMEDS = 3
 
-
-
-
-
+; NeighborSearchMethod
+Global Const $CV_NEIGH_FLANN_KNN = 0
+Global Const $CV_NEIGH_GRID = 1
+Global Const $CV_NEIGH_FLANN_RADIUS = 2
 
 ; anonymous
 Global Const $CV_STEREO_MATCHER_DISP_SHIFT = 4
@@ -336,15 +352,21 @@ Global Const $CV_SHARED_ATOMICS = $CV_FEATURE_SET_COMPUTE_12
 Global Const $CV_NATIVE_DOUBLE = $CV_FEATURE_SET_COMPUTE_13
 Global Const $CV_WARP_SHUFFLE_FUNCTIONS = $CV_FEATURE_SET_COMPUTE_30
 Global Const $CV_DYNAMIC_PARALLELISM = $CV_FEATURE_SET_COMPUTE_35
+
+; ComputeMode
+Global Const $CV_DEVICE_INFO_ComputeModeDefault = 0
+Global Const $CV_DEVICE_INFO_ComputeModeExclusive = 1
+Global Const $CV_DEVICE_INFO_ComputeModeProhibited = 2
+Global Const $CV_DEVICE_INFO_ComputeModeExclusiveProcess = 3
 #EndRegion ..\opencv\modules\core\include\opencv2\core\cuda.hpp
 
 
 
 #Region ..\opencv\modules\core\include\opencv2\core\hal\intrin.hpp
 ; StoreMode
-Global Const $CV_STORE_UNALIGNED = 0
-Global Const $CV_STORE_ALIGNED = 1
-Global Const $CV_STORE_ALIGNED_NOCACHE = 2
+Global Const $_CV_STORE_UNALIGNED = 0
+Global Const $_CV_STORE_ALIGNED = 1
+Global Const $_CV_STORE_ALIGNED_NOCACHE = 2
 #EndRegion ..\opencv\modules\core\include\opencv2\core\hal\intrin.hpp
 
 
@@ -553,6 +575,40 @@ Global Const $CV_FILE_NODE_NAMED = 32
 
 
 
+#Region ..\opencv\modules\core\include\opencv2\core\quaternion.hpp
+; QuatAssumeType
+Global Const $CV_QUAT_ASSUME_NOT_UNIT = 0
+Global Const $CV_QUAT_ASSUME_UNIT = 1
+
+; EulerAnglesType
+Global Const $CV_QUAT_ENUM_INT_XYZ = 0
+Global Const $CV_QUAT_ENUM_INT_XZY = 1
+Global Const $CV_QUAT_ENUM_INT_YXZ = 2
+Global Const $CV_QUAT_ENUM_INT_YZX = 3
+Global Const $CV_QUAT_ENUM_INT_ZXY = 4
+Global Const $CV_QUAT_ENUM_INT_ZYX = 5
+Global Const $CV_QUAT_ENUM_INT_XYX = 6
+Global Const $CV_QUAT_ENUM_INT_XZX = 7
+Global Const $CV_QUAT_ENUM_INT_YXY = 8
+Global Const $CV_QUAT_ENUM_INT_YZY = 9
+Global Const $CV_QUAT_ENUM_INT_ZXZ = 10
+Global Const $CV_QUAT_ENUM_INT_ZYZ = 11
+Global Const $CV_QUAT_ENUM_EXT_XYZ = 12
+Global Const $CV_QUAT_ENUM_EXT_XZY = 13
+Global Const $CV_QUAT_ENUM_EXT_YXZ = 14
+Global Const $CV_QUAT_ENUM_EXT_YZX = 15
+Global Const $CV_QUAT_ENUM_EXT_ZXY = 16
+Global Const $CV_QUAT_ENUM_EXT_ZYX = 17
+Global Const $CV_QUAT_ENUM_EXT_XYX = 18
+Global Const $CV_QUAT_ENUM_EXT_XZX = 19
+Global Const $CV_QUAT_ENUM_EXT_YXY = 20
+Global Const $CV_QUAT_ENUM_EXT_YZY = 21
+Global Const $CV_QUAT_ENUM_EXT_ZXZ = 22
+Global Const $CV_QUAT_ENUM_EXT_ZYZ = 23
+#EndRegion ..\opencv\modules\core\include\opencv2\core\quaternion.hpp
+
+
+
 #Region ..\opencv\modules\core\include\opencv2\core\types.hpp
 ; Type
 Global Const $CV_TERM_CRITERIA_COUNT = 1
@@ -565,9 +621,22 @@ Global Const $CV_TERM_CRITERIA_EPS = 2
 #Region ..\opencv\modules\dnn\include\opencv2\dnn\dnn.hpp
 ; Backend
 Global Const $CV_DNN_BACKEND_DEFAULT = 0
+Global Const $CV_DNN_BACKEND_HALIDE = 1
+Global Const $CV_DNN_BACKEND_INFERENCE_ENGINE = 2
+Global Const $CV_DNN_BACKEND_OPENCV = 3
+Global Const $CV_DNN_BACKEND_VKCOM = 4
+Global Const $CV_DNN_BACKEND_CUDA = 5
 
 ; Target
 Global Const $CV_DNN_TARGET_CPU = 0
+Global Const $CV_DNN_TARGET_OPENCL = 1
+Global Const $CV_DNN_TARGET_OPENCL_FP16 = 2
+Global Const $CV_DNN_TARGET_MYRIAD = 3
+Global Const $CV_DNN_TARGET_VULKAN = 4
+Global Const $CV_DNN_TARGET_FPGA = 5
+Global Const $CV_DNN_TARGET_CUDA = 6
+Global Const $CV_DNN_TARGET_CUDA_FP16 = 7
+Global Const $CV_DNN_TARGET_HDDL = 8
 #EndRegion ..\opencv\modules\dnn\include\opencv2\dnn\dnn.hpp
 
 
@@ -710,6 +779,23 @@ Global Const $_CV_FLANN_CHECKS_AUTOTUNED = -2
 Global Const $_CV_KDTREE_INDEX_SAMPLE_MEAN = 100
 Global Const $_CV_KDTREE_INDEX_RAND_DIM = 5
 #EndRegion ..\opencv\modules\flann\include\opencv2\flann\kdtree_index.h
+
+
+
+#Region ..\opencv\modules\flann\include\opencv2\flann\lsh_table.h
+; SpeedLevel
+Global Const $_CV_LSH_TABLE_kArray = 0
+Global Const $_CV_LSH_TABLE_kBitsetHash = 1
+Global Const $_CV_LSH_TABLE_kHash = 2
+#EndRegion ..\opencv\modules\flann\include\opencv2\flann\lsh_table.h
+
+
+
+#Region ..\opencv\modules\gapi\include\opencv2\gapi\video.hpp
+; BackgroundSubtractorType
+Global Const $CV_TYPE_BS_MOG2 = 0
+Global Const $CV_TYPE_BS_KNN = 1
+#EndRegion ..\opencv\modules\gapi\include\opencv2\gapi\video.hpp
 
 
 
@@ -1379,6 +1465,14 @@ Global Const $CV_LOGISTIC_REGRESSION_REG_L2 = 1
 ; Methods
 Global Const $CV_LOGISTIC_REGRESSION_BATCH = 0
 Global Const $CV_LOGISTIC_REGRESSION_MINI_BATCH = 1
+
+; SvmsgdType
+Global Const $CV_SVMSGD_SGD = 0
+Global Const $CV_SVMSGD_ASGD = 1
+
+; MarginType
+Global Const $CV_SVMSGD_SOFT_MARGIN = 0
+Global Const $CV_SVMSGD_HARD_MARGIN = 1
 #EndRegion ..\opencv\modules\ml\include\opencv2\ml.hpp
 
 
@@ -1390,6 +1484,16 @@ Global Const $CV_CASCADE_SCALE_IMAGE = 2
 Global Const $CV_CASCADE_FIND_BIGGEST_OBJECT = 4
 Global Const $CV_CASCADE_DO_ROUGH_SEARCH = 8
 #EndRegion ..\opencv\modules\objdetect\include\opencv2\objdetect.hpp
+
+
+
+#Region ..\opencv\modules\objdetect\include\opencv2\objdetect\detection_based_tracker.hpp
+; ObjectStatus
+Global Const $CV_DETECTION_BASED_TRACKER_DETECTED_NOT_SHOWN_YET = 0
+Global Const $CV_DETECTION_BASED_TRACKER_DETECTED = 1
+Global Const $CV_DETECTION_BASED_TRACKER_DETECTED_TEMPORARY_LOST = 2
+Global Const $CV_DETECTION_BASED_TRACKER_WRONG_OBJECT = 3
+#EndRegion ..\opencv\modules\objdetect\include\opencv2\objdetect\detection_based_tracker.hpp
 
 
 
@@ -1421,14 +1525,64 @@ Global Const $CV_STITCHER_SCANS = 1
 
 
 
+#Region ..\opencv\modules\stitching\include\opencv2\stitching\detail\blenders.hpp
+; anonymous
+Global Const $CV_BLENDER_NO = 0
+Global Const $CV_BLENDER_FEATHER = 1
+Global Const $CV_BLENDER_MULTI_BAND = 2
+#EndRegion ..\opencv\modules\stitching\include\opencv2\stitching\detail\blenders.hpp
+
+
+
+#Region ..\opencv\modules\stitching\include\opencv2\stitching\detail\exposure_compensate.hpp
+; anonymous
+Global Const $CV_EXPOSURE_COMPENSATOR_NO = 0
+Global Const $CV_EXPOSURE_COMPENSATOR_GAIN = 1
+Global Const $CV_EXPOSURE_COMPENSATOR_GAIN_BLOCKS = 2
+Global Const $CV_EXPOSURE_COMPENSATOR_CHANNELS = 3
+Global Const $CV_EXPOSURE_COMPENSATOR_CHANNELS_BLOCKS = 4
+#EndRegion ..\opencv\modules\stitching\include\opencv2\stitching\detail\exposure_compensate.hpp
+
+
+
+#Region ..\opencv\modules\stitching\include\opencv2\stitching\detail\motion_estimators.hpp
+; WaveCorrectKind
+Global Const $CV_WAVE_CORRECT_HORIZ = 0
+Global Const $CV_WAVE_CORRECT_VERT = 1
+Global Const $CV_WAVE_CORRECT_AUTO = 2
+#EndRegion ..\opencv\modules\stitching\include\opencv2\stitching\detail\motion_estimators.hpp
+
+
+
 #Region ..\opencv\modules\stitching\include\opencv2\stitching\detail\seam_finders.hpp
+; anonymous
+Global Const $CV_SEAM_FINDER_NO = 0
+Global Const $CV_SEAM_FINDER_VORONOI_SEAM = 1
+Global Const $CV_SEAM_FINDER_DP_SEAM = 2
+
+; CostFunction
+Global Const $CV_DP_SEAM_FINDER_COLOR = 0
+Global Const $CV_DP_SEAM_FINDER_COLOR_GRAD = 1
+
 ; ComponentState
 Global Const $CV_DP_SEAM_FINDER_FIRST = 1
 Global Const $CV_DP_SEAM_FINDER_SECOND = 2
 Global Const $CV_DP_SEAM_FINDER_INTERS = 4
 Global Const $CV_DP_SEAM_FINDER_INTERS_FIRST = (BitOR($CV_DP_SEAM_FINDER_INTERS, $CV_DP_SEAM_FINDER_FIRST))
 Global Const $CV_DP_SEAM_FINDER_INTERS_SECOND = (BitOR($CV_DP_SEAM_FINDER_INTERS, $CV_DP_SEAM_FINDER_SECOND))
+
+; CostType
+Global Const $CV_GRAPH_CUT_SEAM_FINDER_BASE_COST_COLOR = 0
+Global Const $CV_GRAPH_CUT_SEAM_FINDER_BASE_COST_COLOR_GRAD = 1
 #EndRegion ..\opencv\modules\stitching\include\opencv2\stitching\detail\seam_finders.hpp
+
+
+
+#Region ..\opencv\modules\stitching\include\opencv2\stitching\detail\timelapsers.hpp
+; anonymous
+Global Const $CV_TIMELAPSER_AS_IS = 0
+Global Const $CV_TIMELAPSER_CROP = 1
+#EndRegion ..\opencv\modules\stitching\include\opencv2\stitching\detail\timelapsers.hpp
 
 
 
@@ -1835,11 +1989,17 @@ Global Const $CV_CAP_PROP_IMAGES_LAST = 19000
 #Region ..\opencv\modules\videoio\include\opencv2\videoio\cap_winrt.hpp
 ; anonymous
 Global Const $CV_OPEN_CAMERA = 300
+Global Const $CV_CLOSE_CAMERA = 1
+Global Const $CV_UPDATE_IMAGE_ELEMENT = 2
+Global Const $CV_SHOW_TRACKBAR = 3
 #EndRegion ..\opencv\modules\videoio\include\opencv2\videoio\cap_winrt.hpp
 
 
 
 #Region ..\opencv\modules\videoio\include\opencv2\videoio\container_avi.private.hpp
+; Codecs
+Global Const $CV_MJPEG = 0
+
 ; anonymous
 Global Const $CV_COLORSPACE_GRAY = 0
 Global Const $CV_COLORSPACE_RGBA = 1
@@ -1849,17 +2009,69 @@ Global Const $CV_COLORSPACE_YUV444P = 3
 
 
 
+#Region ..\opencv_contrib\modules\aruco\include\opencv2\aruco.hpp
+; CornerRefineMethod
+Global Const $CV_CORNER_REFINE_NONE = 0
+Global Const $CV_CORNER_REFINE_SUBPIX = 1
+Global Const $CV_CORNER_REFINE_CONTOUR = 2
+Global Const $CV_CORNER_REFINE_APRILTAG = 3
+#EndRegion ..\opencv_contrib\modules\aruco\include\opencv2\aruco.hpp
+
+
+
 #Region ..\opencv_contrib\modules\aruco\include\opencv2\aruco\dictionary.hpp
 ; PREDEFINED_DICTIONARY_NAME
 Global Const $CV_DICT_4X4_50 = 0
+Global Const $CV_DICT_4X4_100 = 1
+Global Const $CV_DICT_4X4_250 = 2
+Global Const $CV_DICT_4X4_1000 = 3
+Global Const $CV_DICT_5X5_50 = 4
+Global Const $CV_DICT_5X5_100 = 5
+Global Const $CV_DICT_5X5_250 = 6
+Global Const $CV_DICT_5X5_1000 = 7
+Global Const $CV_DICT_6X6_50 = 8
+Global Const $CV_DICT_6X6_100 = 9
+Global Const $CV_DICT_6X6_250 = 10
+Global Const $CV_DICT_6X6_1000 = 11
+Global Const $CV_DICT_7X7_50 = 12
+Global Const $CV_DICT_7X7_100 = 13
+Global Const $CV_DICT_7X7_250 = 14
+Global Const $CV_DICT_7X7_1000 = 15
+Global Const $CV_DICT_ARUCO_ORIGINAL = 16
+Global Const $CV_DICT_APRILTAG_16h5 = 17
+Global Const $CV_DICT_APRILTAG_25h9 = 18
+Global Const $CV_DICT_APRILTAG_36h10 = 19
+Global Const $CV_DICT_APRILTAG_36h11 = 20
 #EndRegion ..\opencv_contrib\modules\aruco\include\opencv2\aruco\dictionary.hpp
+
+
+
+#Region ..\opencv_contrib\modules\barcode\include\opencv2\barcode.hpp
+; BarcodeType
+Global Const $CV_NONE = 0
+Global Const $CV_EAN_8 = 1
+Global Const $CV_EAN_13 = 2
+Global Const $CV_UPC_A = 3
+Global Const $CV_UPC_E = 4
+Global Const $CV_UPC_EAN_EXTENSION = 5
+#EndRegion ..\opencv_contrib\modules\barcode\include\opencv2\barcode.hpp
 
 
 
 #Region ..\opencv_contrib\modules\bgsegm\include\opencv2\bgsegm.hpp
 ; LSBPCameraMotionCompensation
 Global Const $CV_LSBP_CAMERA_MOTION_COMPENSATION_NONE = 0
+Global Const $CV_LSBP_CAMERA_MOTION_COMPENSATION_LK = 1
 #EndRegion ..\opencv_contrib\modules\bgsegm\include\opencv2\bgsegm.hpp
+
+
+
+#Region ..\opencv_contrib\modules\bioinspired\include\opencv2\bioinspired\retina.hpp
+; anonymous
+Global Const $CV_RETINA_COLOR_RANDOM = 0
+Global Const $CV_RETINA_COLOR_DIAGONAL = 1
+Global Const $CV_RETINA_COLOR_BAYER = 2
+#EndRegion ..\opencv_contrib\modules\bioinspired\include\opencv2\bioinspired\retina.hpp
 
 
 
@@ -1893,9 +2105,88 @@ Global Const $CV_IMG_HASH_BLOCK_MEAN_HASH_MODE_1 = 1
 
 
 
+#Region ..\opencv_contrib\modules\mcc\include\opencv2\mcc\ccm.hpp
+; CCM_TYPE
+Global Const $CV_CCM_3x3 = 0
+Global Const $CV_CCM_4x3 = 1
+
+; INITIAL_METHOD_TYPE
+Global Const $CV_INITIAL_METHOD_WHITE_BALANCE = 0
+Global Const $CV_INITIAL_METHOD_LEAST_SQUARE = 1
+
+; CONST_COLOR
+Global Const $CV_COLORCHECKER_Macbeth = 0
+Global Const $CV_COLORCHECKER_Vinyl = 1
+Global Const $CV_COLORCHECKER_DigitalSG = 2
+
+; COLOR_SPACE
+Global Const $CV_COLOR_SPACE_sRGB = 0
+Global Const $CV_COLOR_SPACE_sRGBL = 1
+Global Const $CV_COLOR_SPACE_AdobeRGB = 2
+Global Const $CV_COLOR_SPACE_AdobeRGBL = 3
+Global Const $CV_COLOR_SPACE_WideGamutRGB = 4
+Global Const $CV_COLOR_SPACE_WideGamutRGBL = 5
+Global Const $CV_COLOR_SPACE_ProPhotoRGB = 6
+Global Const $CV_COLOR_SPACE_ProPhotoRGBL = 7
+Global Const $CV_COLOR_SPACE_DCI_P3_RGB = 8
+Global Const $CV_COLOR_SPACE_DCI_P3_RGBL = 9
+Global Const $CV_COLOR_SPACE_AppleRGB = 10
+Global Const $CV_COLOR_SPACE_AppleRGBL = 11
+Global Const $CV_COLOR_SPACE_REC_709_RGB = 12
+Global Const $CV_COLOR_SPACE_REC_709_RGBL = 13
+Global Const $CV_COLOR_SPACE_REC_2020_RGB = 14
+Global Const $CV_COLOR_SPACE_REC_2020_RGBL = 15
+Global Const $CV_COLOR_SPACE_XYZ_D65_2 = 16
+Global Const $CV_COLOR_SPACE_XYZ_D65_10 = 17
+Global Const $CV_COLOR_SPACE_XYZ_D50_2 = 18
+Global Const $CV_COLOR_SPACE_XYZ_D50_10 = 19
+Global Const $CV_COLOR_SPACE_XYZ_A_2 = 20
+Global Const $CV_COLOR_SPACE_XYZ_A_10 = 21
+Global Const $CV_COLOR_SPACE_XYZ_D55_2 = 22
+Global Const $CV_COLOR_SPACE_XYZ_D55_10 = 23
+Global Const $CV_COLOR_SPACE_XYZ_D75_2 = 24
+Global Const $CV_COLOR_SPACE_XYZ_D75_10 = 25
+Global Const $CV_COLOR_SPACE_XYZ_E_2 = 26
+Global Const $CV_COLOR_SPACE_XYZ_E_10 = 27
+Global Const $CV_COLOR_SPACE_Lab_D65_2 = 28
+Global Const $CV_COLOR_SPACE_Lab_D65_10 = 29
+Global Const $CV_COLOR_SPACE_Lab_D50_2 = 30
+Global Const $CV_COLOR_SPACE_Lab_D50_10 = 31
+Global Const $CV_COLOR_SPACE_Lab_A_2 = 32
+Global Const $CV_COLOR_SPACE_Lab_A_10 = 33
+Global Const $CV_COLOR_SPACE_Lab_D55_2 = 34
+Global Const $CV_COLOR_SPACE_Lab_D55_10 = 35
+Global Const $CV_COLOR_SPACE_Lab_D75_2 = 36
+Global Const $CV_COLOR_SPACE_Lab_D75_10 = 37
+Global Const $CV_COLOR_SPACE_Lab_E_2 = 38
+Global Const $CV_COLOR_SPACE_Lab_E_10 = 39
+
+; LINEAR_TYPE
+Global Const $CV_LINEARIZATION_IDENTITY = 0
+Global Const $CV_LINEARIZATION_GAMMA = 1
+Global Const $CV_LINEARIZATION_COLORPOLYFIT = 2
+Global Const $CV_LINEARIZATION_COLORLOGPOLYFIT = 3
+Global Const $CV_LINEARIZATION_GRAYPOLYFIT = 4
+Global Const $CV_LINEARIZATION_GRAYLOGPOLYFIT = 5
+
+; DISTANCE_TYPE
+Global Const $CV_DISTANCE_CIE76 = 0
+Global Const $CV_DISTANCE_CIE94_GRAPHIC_ARTS = 1
+Global Const $CV_DISTANCE_CIE94_TEXTILES = 2
+Global Const $CV_DISTANCE_CIE2000 = 3
+Global Const $CV_DISTANCE_CMC_1TO1 = 4
+Global Const $CV_DISTANCE_CMC_2TO1 = 5
+Global Const $CV_DISTANCE_RGB = 6
+Global Const $CV_DISTANCE_RGBL = 7
+#EndRegion ..\opencv_contrib\modules\mcc\include\opencv2\mcc\ccm.hpp
+
+
+
 #Region ..\opencv_contrib\modules\mcc\include\opencv2\mcc\checker_model.hpp
 ; TYPECHART
 Global Const $CV_MCC24 = 0
+Global Const $CV_SG140 = 1
+Global Const $CV_VINYL18 = 2
 #EndRegion ..\opencv_contrib\modules\mcc\include\opencv2\mcc\checker_model.hpp
 
 
@@ -1920,7 +2211,17 @@ Global Const $CV_INTERP_RIC = 2
 #Region ..\opencv_contrib\modules\optflow\include\opencv2\optflow\sparse_matching_gpc.hpp
 ; GPCDescType
 Global Const $CV_GPC_DESCRIPTOR_DCT = 0
+Global Const $CV_GPC_DESCRIPTOR_WHT = 1
 #EndRegion ..\opencv_contrib\modules\optflow\include\opencv2\optflow\sparse_matching_gpc.hpp
+
+
+
+#Region ..\opencv_contrib\modules\saliency\include\opencv2\saliency\saliencySpecializedClasses.hpp
+; anonymous
+Global Const $CV_OBJECTNESS_BING_MAXBGR = 0
+Global Const $CV_OBJECTNESS_BING_HSV = 1
+Global Const $CV_OBJECTNESS_BING_G = 2
+#EndRegion ..\opencv_contrib\modules\saliency\include\opencv2\saliency\saliencySpecializedClasses.hpp
 
 
 
@@ -1929,7 +2230,11 @@ Global Const $CV_GPC_DESCRIPTOR_DCT = 0
 
 
 
-
+; anonymous
+Global Const $CV_CV_SPECKLE_REMOVAL_ALGORITHM = 0
+Global Const $CV_CV_SPECKLE_REMOVAL_AVG_ALGORITHM = 1
+Global Const $CV_CV_QUADRATIC_INTERPOLATION = 2
+Global Const $CV_CV_SIMETRICV_INTERPOLATION = 3
 
 ; anonymous
 Global Const $CV_STEREO_BINARY_BM_PREFILTER_NORMALIZED_RESPONSE = 0
@@ -1942,6 +2247,19 @@ Global Const $CV_STEREO_BINARY_SGBM_MODE_HH = 1
 
 
 
+#Region ..\opencv_contrib\modules\stereo\include\opencv2\stereo\descriptor.hpp
+; anonymous
+Global Const $CV_CV_DENSE_CENSUS = 0
+Global Const $CV_CV_SPARSE_CENSUS = 1
+Global Const $CV_CV_CS_CENSUS = 2
+Global Const $CV_CV_MODIFIED_CS_CENSUS = 3
+Global Const $CV_CV_MODIFIED_CENSUS_TRANSFORM = 4
+Global Const $CV_CV_MEAN_VARIATION = 5
+Global Const $CV_CV_STAR_KERNEL = 6
+#EndRegion ..\opencv_contrib\modules\stereo\include\opencv2\stereo\descriptor.hpp
+
+
+
 #Region ..\opencv_contrib\modules\surface_matching\include\opencv2\surface_matching\icp.hpp
 ; anonymous
 Global Const $CV_PPF_MATCH_3D_ICP_ICP_SAMPLING_TYPE_UNIFORM = 0
@@ -1950,7 +2268,42 @@ Global Const $CV_PPF_MATCH_3D_ICP_ICP_SAMPLING_TYPE_GELFAND = 1
 
 
 
+#Region ..\opencv_contrib\modules\text\include\opencv2\text\erfilter.hpp
+; anonymous
+Global Const $CV_ERFILTER_NM_RGBLGrad = 0
+Global Const $CV_ERFILTER_NM_IHSGrad = 1
+
+; erGrouping_Modes
+Global Const $CV_ERGROUPING_ORIENTATION_HORIZ = 0
+Global Const $CV_ERGROUPING_ORIENTATION_ANY = 1
+#EndRegion ..\opencv_contrib\modules\text\include\opencv2\text\erfilter.hpp
+
+
+
 #Region ..\opencv_contrib\modules\text\include\opencv2\text\ocr.hpp
+; anonymous
+Global Const $CV_OCR_LEVEL_WORD = 0
+Global Const $CV_OCR_LEVEL_TEXTLINE = 1
+
+; page_seg_mode
+Global Const $CV_PSM_OSD_ONLY = 0
+Global Const $CV_PSM_AUTO_OSD = 1
+Global Const $CV_PSM_AUTO_ONLY = 2
+Global Const $CV_PSM_AUTO = 3
+Global Const $CV_PSM_SINGLE_COLUMN = 4
+Global Const $CV_PSM_SINGLE_BLOCK_VERT_TEXT = 5
+Global Const $CV_PSM_SINGLE_BLOCK = 6
+Global Const $CV_PSM_SINGLE_LINE = 7
+Global Const $CV_PSM_SINGLE_WORD = 8
+Global Const $CV_PSM_CIRCLE_WORD = 9
+Global Const $CV_PSM_SINGLE_CHAR = 10
+
+; ocr_engine_mode
+Global Const $CV_OEM_TESSERACT_ONLY = 0
+Global Const $CV_OEM_CUBE_ONLY = 1
+Global Const $CV_OEM_TESSERACT_CUBE_COMBINED = 2
+Global Const $CV_OEM_DEFAULT = 3
+
 ; decoder_mode
 Global Const $CV_OCR_DECODER_VITERBI = 0
 
@@ -2036,14 +2389,44 @@ Global Const $CV_KEYBOARD_EVENT_KEY_DOWN = 1
 
 ; Type
 Global Const $CV_MOUSE_EVENT_MouseMove = 1
+Global Const $CV_MOUSE_EVENT_MouseButtonPress = 1
+Global Const $CV_MOUSE_EVENT_MouseButtonRelease = 2
+Global Const $CV_MOUSE_EVENT_MouseScrollDown = 3
+Global Const $CV_MOUSE_EVENT_MouseScrollUp = 4
+Global Const $CV_MOUSE_EVENT_MouseDblClick = 5
 
 ; MouseButton
 Global Const $CV_MOUSE_EVENT_NoButton = 0
+Global Const $CV_MOUSE_EVENT_LeftButton = 1
+Global Const $CV_MOUSE_EVENT_MiddleButton = 2
+Global Const $CV_MOUSE_EVENT_RightButton = 3
+Global Const $CV_MOUSE_EVENT_VScroll = 4
 #EndRegion ..\opencv_contrib\modules\viz\include\opencv2\viz\types.hpp
 
 
 
 #Region ..\opencv_contrib\modules\viz\include\opencv2\viz\widgets.hpp
+; RenderingProperties
+Global Const $CV_POINT_SIZE = 0
+Global Const $CV_OPACITY = 1
+Global Const $CV_LINE_WIDTH = 2
+Global Const $CV_FONT_SIZE = 3
+Global Const $CV_REPRESENTATION = 4
+Global Const $CV_IMMEDIATE_RENDERING = 5
+Global Const $CV_SHADING = 6
+Global Const $CV_AMBIENT = 7
+Global Const $CV_LIGHTING = 8
+
+; RepresentationValues
+Global Const $CV_REPRESENTATION_POINTS = 0
+Global Const $CV_REPRESENTATION_WIREFRAME = 1
+Global Const $CV_REPRESENTATION_SURFACE = 2
+
+; ShadingValues
+Global Const $CV_SHADING_FLAT = 0
+Global Const $CV_SHADING_GOURAUD = 1
+Global Const $CV_SHADING_PHONG = 2
+
 ; anonymous
 Global Const $CV_WTRAJECTORY_FRAMES = 1
 Global Const $CV_WTRAJECTORY_PATH = 2
@@ -2077,6 +2460,25 @@ Global Const $CV_XFEATURES2D_BOOST_DESC_LBGM = 200
 Global Const $CV_XFEATURES2D_BOOST_DESC_BINBOOST_64 = 300
 Global Const $CV_XFEATURES2D_BOOST_DESC_BINBOOST_128 = 301
 Global Const $CV_XFEATURES2D_BOOST_DESC_BINBOOST_256 = 302
+
+; DistanceFunction
+Global Const $CV_XFEATURES2D_PCTSIGNATURES_L0_25 = 0
+Global Const $CV_XFEATURES2D_PCTSIGNATURES_L0_5 = 1
+Global Const $CV_XFEATURES2D_PCTSIGNATURES_L1 = 2
+Global Const $CV_XFEATURES2D_PCTSIGNATURES_L2 = 3
+Global Const $CV_XFEATURES2D_PCTSIGNATURES_L2SQUARED = 4
+Global Const $CV_XFEATURES2D_PCTSIGNATURES_L5 = 5
+Global Const $CV_XFEATURES2D_PCTSIGNATURES_L_INFINITY = 6
+
+; PointDistribution
+Global Const $CV_XFEATURES2D_PCTSIGNATURES_UNIFORM = 0
+Global Const $CV_XFEATURES2D_PCTSIGNATURES_REGULAR = 1
+Global Const $CV_XFEATURES2D_PCTSIGNATURES_NORMAL = 2
+
+; SimilarityFunction
+Global Const $CV_XFEATURES2D_PCTSIGNATURES_MINUS = 0
+Global Const $CV_XFEATURES2D_PCTSIGNATURES_GAUSSIAN = 1
+Global Const $CV_XFEATURES2D_PCTSIGNATURES_HEURISTIC = 2
 #EndRegion ..\opencv_contrib\modules\xfeatures2d\include\opencv2\xfeatures2d.hpp
 
 
@@ -2084,6 +2486,13 @@ Global Const $CV_XFEATURES2D_BOOST_DESC_BINBOOST_256 = 302
 #Region ..\opencv_contrib\modules\xfeatures2d\include\opencv2\xfeatures2d\cuda.hpp
 ; KeypointLayout
 Global Const $CV_SURF_CUDA_X_ROW = 0
+Global Const $CV_SURF_CUDA_Y_ROW = 1
+Global Const $CV_SURF_CUDA_LAPLACIAN_ROW = 2
+Global Const $CV_SURF_CUDA_OCTAVE_ROW = 3
+Global Const $CV_SURF_CUDA_SIZE_ROW = 4
+Global Const $CV_SURF_CUDA_ANGLE_ROW = 5
+Global Const $CV_SURF_CUDA_HESSIAN_ROW = 6
+Global Const $CV_SURF_CUDA_ROWS_COUNT = 7
 #EndRegion ..\opencv_contrib\modules\xfeatures2d\include\opencv2\xfeatures2d\cuda.hpp
 
 
@@ -2112,6 +2521,17 @@ Global Const $CV_EDGE_DRAWING_LSD = 3
 
 
 
+#Region ..\opencv_contrib\modules\ximgproc\include\opencv2\ximgproc\edge_filter.hpp
+; EdgeAwareFiltersList
+Global Const $CV_DTF_NC = 0
+Global Const $CV_DTF_IC = 1
+Global Const $CV_DTF_RF = 2
+Global Const $CV_GUIDED_FILTER = 3
+Global Const $CV_AM_FILTER = 4
+#EndRegion ..\opencv_contrib\modules\ximgproc\include\opencv2\ximgproc\edge_filter.hpp
+
+
+
 #Region ..\opencv_contrib\modules\ximgproc\include\opencv2\ximgproc\fast_hough_transform.hpp
 ; AngleRangeOption
 Global Const $CV_ARO_0_45 = 0
@@ -2134,7 +2554,7 @@ Global Const $CV_FHT_AVE = 3
 Global Const $CV_HDO_RAW = 0
 Global Const $CV_HDO_DESKEW = 1
 
-; anonymous
+; RulesOption
 Global Const $CV_RO_STRICT = 0x00
 Global Const $CV_RO_IGNORE_BORDERS = 0x01
 #EndRegion ..\opencv_contrib\modules\ximgproc\include\opencv2\ximgproc\fast_hough_transform.hpp

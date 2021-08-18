@@ -234,7 +234,7 @@ Func _cveHOGDescriptorDetectMultiScaleMat($descriptor, $matImg, $foundLocations,
 EndFunc   ;==>_cveHOGDescriptorDetectMultiScaleMat
 
 Func _cveHOGDescriptorCompute($descriptor, $img, $descriptors, $winStride, $padding, $locations)
-    ; CVAPI(void) cveHOGDescriptorCompute(cv::HOGDescriptor * descriptor, cv::_InputArray* img, std::vector<float> * descriptors, CvSize* winStride, CvSize* padding, std::vector< cv::Point >* locations);
+    ; CVAPI(void) cveHOGDescriptorCompute(cv::HOGDescriptor* descriptor, cv::_InputArray* img, std::vector<float>* descriptors, CvSize* winStride, CvSize* padding, std::vector<cv::Point>* locations);
 
     Local $bDescriptorDllType
     If VarGetType($descriptor) == "DLLStruct" Then
@@ -346,7 +346,7 @@ Func _cveHOGDescriptorComputeMat($descriptor, $matImg, $descriptors, $winStride,
 EndFunc   ;==>_cveHOGDescriptorComputeMat
 
 Func _cveHOGDescriptorGetDescriptorSize($descriptor)
-    ; CVAPI(unsigned) cveHOGDescriptorGetDescriptorSize(cv::HOGDescriptor* descriptor);
+    ; CVAPI(unsigned int) cveHOGDescriptorGetDescriptorSize(cv::HOGDescriptor* descriptor);
 
     Local $bDescriptorDllType
     If VarGetType($descriptor) == "DLLStruct" Then
@@ -538,7 +538,7 @@ Func _cveCascadeClassifierGetOriginalWindowSize($classifier, $size)
 EndFunc   ;==>_cveCascadeClassifierGetOriginalWindowSize
 
 Func _cveGroupRectangles1($rectList, $groupThreshold, $eps)
-    ; CVAPI(void) cveGroupRectangles1(std::vector< cv::Rect >* rectList, int groupThreshold, double eps);
+    ; CVAPI(void) cveGroupRectangles1(std::vector<cv::Rect>* rectList, int groupThreshold, double eps);
 
     Local $vecRectList, $iArrRectListSize
     Local $bRectListIsArray = VarGetType($rectList) == "Array"
@@ -1293,7 +1293,7 @@ Func _cveQRCodeDetectorDecodeCurvedMat($detector, $matImg, $matPoints, $decodedI
 EndFunc   ;==>_cveQRCodeDetectorDecodeCurvedMat
 
 Func _cveQRCodeDetectorDecodeMulti($detector, $img, $points, $decodedInfo, $straightQrcode)
-    ; CVAPI(bool) cveQRCodeDetectorDecodeMulti(cv::QRCodeDetector* detector, cv::_InputArray* img, cv::_InputArray* points, std::vector< std::string >* decodedInfo, cv::_OutputArray* straightQrcode);
+    ; CVAPI(bool) cveQRCodeDetectorDecodeMulti(cv::QRCodeDetector* detector, cv::_InputArray* img, cv::_InputArray* points, std::vector<std::string>* decodedInfo, cv::_OutputArray* straightQrcode);
 
     Local $bDetectorDllType
     If VarGetType($detector) == "DLLStruct" Then

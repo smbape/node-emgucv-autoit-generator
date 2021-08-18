@@ -354,7 +354,7 @@ Func _cveImdecodeMat($matBuf, $flags, $dst)
 EndFunc   ;==>_cveImdecodeMat
 
 Func _cveImencode($ext, $img, $buf, $params = _VectorOfIntCreate())
-    ; CVAPI(bool) cveImencode(cv::String* ext, cv::_InputArray* img, std::vector< unsigned char >* buf, std::vector< int >* params);
+    ; CVAPI(bool) cveImencode(cv::String* ext, cv::_InputArray* img, std::vector<unsigned char>* buf, std::vector<int>* params);
 
     Local $bExtIsString = VarGetType($ext) == "String"
     If $bExtIsString Then

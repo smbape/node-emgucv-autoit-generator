@@ -14,7 +14,7 @@ Func _cveCCheckerCreate($sharedPtr)
 EndFunc   ;==>_cveCCheckerCreate
 
 Func _cveCCheckerGetBox($checker, $box)
-    ; CVAPI(void) cveCCheckerGetBox(cv::mcc::CChecker* checker, std::vector< cv::Point2f >* box);
+    ; CVAPI(void) cveCCheckerGetBox(cv::mcc::CChecker* checker, std::vector<cv::Point2f>* box);
 
     Local $bCheckerDllType
     If VarGetType($checker) == "DLLStruct" Then
@@ -52,7 +52,7 @@ Func _cveCCheckerGetBox($checker, $box)
 EndFunc   ;==>_cveCCheckerGetBox
 
 Func _cveCCheckerSetBox($checker, $box)
-    ; CVAPI(void) cveCCheckerSetBox(cv::mcc::CChecker* checker, std::vector< cv::Point2f >* box);
+    ; CVAPI(void) cveCCheckerSetBox(cv::mcc::CChecker* checker, std::vector<cv::Point2f>* box);
 
     Local $bCheckerDllType
     If VarGetType($checker) == "DLLStruct" Then

@@ -354,7 +354,7 @@ Func _cudaBroxOpticalFlowRelease($flow)
 EndFunc   ;==>_cudaBroxOpticalFlowRelease
 
 Func _cudaDensePyrLKOpticalFlowCreate($winSize, $maxLevel, $iters, $useInitialFlow, $denseFlow, $algorithm, $sharedPtr)
-    ; CVAPI(cv::cuda::DensePyrLKOpticalFlow *) cudaDensePyrLKOpticalFlowCreate(CvSize* winSize, int maxLevel, int iters, bool useInitialFlow, cv::cuda::DenseOpticalFlow** denseFlow, cv::Algorithm** algorithm, cv::Ptr<cv::cuda::DensePyrLKOpticalFlow>** sharedPtr);
+    ; CVAPI(cv::cuda::DensePyrLKOpticalFlow*) cudaDensePyrLKOpticalFlowCreate(CvSize* winSize, int maxLevel, int iters, bool useInitialFlow, cv::cuda::DenseOpticalFlow** denseFlow, cv::Algorithm** algorithm, cv::Ptr<cv::cuda::DensePyrLKOpticalFlow>** sharedPtr);
 
     Local $bWinSizeDllType
     If VarGetType($winSize) == "DLLStruct" Then
@@ -400,7 +400,7 @@ Func _cudaDensePyrLKOpticalFlowRelease($flow)
 EndFunc   ;==>_cudaDensePyrLKOpticalFlowRelease
 
 Func _cudaSparsePyrLKOpticalFlowCreate($winSize, $maxLevel, $iters, $useInitialFlow, $sparseFlow, $algorithm, $sharedPtr)
-    ; CVAPI(cv::cuda::SparsePyrLKOpticalFlow *) cudaSparsePyrLKOpticalFlowCreate(CvSize* winSize, int maxLevel, int iters, bool useInitialFlow, cv::cuda::SparseOpticalFlow** sparseFlow, cv::Algorithm** algorithm, cv::Ptr<cv::cuda::SparsePyrLKOpticalFlow>** sharedPtr);
+    ; CVAPI(cv::cuda::SparsePyrLKOpticalFlow*) cudaSparsePyrLKOpticalFlowCreate(CvSize* winSize, int maxLevel, int iters, bool useInitialFlow, cv::cuda::SparseOpticalFlow** sparseFlow, cv::Algorithm** algorithm, cv::Ptr<cv::cuda::SparsePyrLKOpticalFlow>** sharedPtr);
 
     Local $bWinSizeDllType
     If VarGetType($winSize) == "DLLStruct" Then

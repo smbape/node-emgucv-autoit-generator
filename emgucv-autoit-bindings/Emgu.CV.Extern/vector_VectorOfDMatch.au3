@@ -2,17 +2,17 @@
 #include "..\CVEUtils.au3"
 
 Func _VectorOfVectorOfDMatchCreate()
-    ; CVAPI(std::vector< std::vector< cv::DMatch > >*) VectorOfVectorOfDMatchCreate();
+    ; CVAPI(std::vector<std::vector<cv::DMatch>>*) VectorOfVectorOfDMatchCreate();
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfVectorOfDMatchCreate"), "VectorOfVectorOfDMatchCreate", @error)
 EndFunc   ;==>_VectorOfVectorOfDMatchCreate
 
 Func _VectorOfVectorOfDMatchCreateSize($size)
-    ; CVAPI(std::vector< std::vector< cv::DMatch > >*) VectorOfVectorOfDMatchCreateSize(int size);
+    ; CVAPI(std::vector<std::vector<cv::DMatch>>*) VectorOfVectorOfDMatchCreateSize(int size);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfVectorOfDMatchCreateSize", "int", $size), "VectorOfVectorOfDMatchCreateSize", @error)
 EndFunc   ;==>_VectorOfVectorOfDMatchCreateSize
 
 Func _VectorOfVectorOfDMatchGetSize($v)
-    ; CVAPI(int) VectorOfVectorOfDMatchGetSize(std::vector< std::vector< cv::DMatch > >* v);
+    ; CVAPI(int) VectorOfVectorOfDMatchGetSize(std::vector<std::vector<cv::DMatch>>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -45,7 +45,7 @@ Func _VectorOfVectorOfDMatchGetSize($v)
 EndFunc   ;==>_VectorOfVectorOfDMatchGetSize
 
 Func _VectorOfVectorOfDMatchPush($v, $value)
-    ; CVAPI(void) VectorOfVectorOfDMatchPush(std::vector< std::vector< cv::DMatch > >* v, std::vector< cv::DMatch >* value);
+    ; CVAPI(void) VectorOfVectorOfDMatchPush(std::vector<std::vector<cv::DMatch>>* v, std::vector<cv::DMatch>* value);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -101,7 +101,7 @@ Func _VectorOfVectorOfDMatchPush($v, $value)
 EndFunc   ;==>_VectorOfVectorOfDMatchPush
 
 Func _VectorOfVectorOfDMatchPushVector($v, $other)
-    ; CVAPI(void) VectorOfVectorOfDMatchPushVector(std::vector< std::vector< cv::DMatch > >* v, std::vector< std::vector< cv::DMatch > >* other);
+    ; CVAPI(void) VectorOfVectorOfDMatchPushVector(std::vector<std::vector<cv::DMatch>>* v, std::vector<std::vector<cv::DMatch>>* other);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -157,7 +157,7 @@ Func _VectorOfVectorOfDMatchPushVector($v, $other)
 EndFunc   ;==>_VectorOfVectorOfDMatchPushVector
 
 Func _VectorOfVectorOfDMatchGetStartAddress($v)
-    ; CVAPI(std::vector< cv::DMatch >*) VectorOfVectorOfDMatchGetStartAddress(std::vector< std::vector< cv::DMatch > >* v);
+    ; CVAPI(std::vector<cv::DMatch>*) VectorOfVectorOfDMatchGetStartAddress(std::vector<std::vector<cv::DMatch>>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -190,7 +190,7 @@ Func _VectorOfVectorOfDMatchGetStartAddress($v)
 EndFunc   ;==>_VectorOfVectorOfDMatchGetStartAddress
 
 Func _VectorOfVectorOfDMatchGetEndAddress($v)
-    ; CVAPI(void*) VectorOfVectorOfDMatchGetEndAddress(std::vector< std::vector< cv::DMatch > >* v);
+    ; CVAPI(void*) VectorOfVectorOfDMatchGetEndAddress(std::vector<std::vector<cv::DMatch>>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -223,7 +223,7 @@ Func _VectorOfVectorOfDMatchGetEndAddress($v)
 EndFunc   ;==>_VectorOfVectorOfDMatchGetEndAddress
 
 Func _VectorOfVectorOfDMatchClear($v)
-    ; CVAPI(void) VectorOfVectorOfDMatchClear(std::vector< std::vector< cv::DMatch > >* v);
+    ; CVAPI(void) VectorOfVectorOfDMatchClear(std::vector<std::vector<cv::DMatch>>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -254,7 +254,7 @@ Func _VectorOfVectorOfDMatchClear($v)
 EndFunc   ;==>_VectorOfVectorOfDMatchClear
 
 Func _VectorOfVectorOfDMatchRelease($v)
-    ; CVAPI(void) VectorOfVectorOfDMatchRelease(std::vector< std::vector< cv::DMatch > >** v);
+    ; CVAPI(void) VectorOfVectorOfDMatchRelease(std::vector<std::vector<cv::DMatch>>** v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -285,7 +285,7 @@ Func _VectorOfVectorOfDMatchRelease($v)
 EndFunc   ;==>_VectorOfVectorOfDMatchRelease
 
 Func _VectorOfVectorOfDMatchCopyData($v, $data)
-    ; CVAPI(void) VectorOfVectorOfDMatchCopyData(std::vector< std::vector< cv::DMatch > >* v, std::vector< cv::DMatch >* data);
+    ; CVAPI(void) VectorOfVectorOfDMatchCopyData(std::vector<std::vector<cv::DMatch>>* v, std::vector<cv::DMatch>* data);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -341,7 +341,7 @@ Func _VectorOfVectorOfDMatchCopyData($v, $data)
 EndFunc   ;==>_VectorOfVectorOfDMatchCopyData
 
 Func _VectorOfVectorOfDMatchGetItemPtr($vec, $index, $element)
-    ; CVAPI(void) VectorOfVectorOfDMatchGetItemPtr(std::vector<  std::vector< cv::DMatch > >* vec, int index, std::vector< cv::DMatch >** element);
+    ; CVAPI(void) VectorOfVectorOfDMatchGetItemPtr(std::vector<std::vector<cv::DMatch>>* vec, int index, std::vector<cv::DMatch>** element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -397,7 +397,7 @@ Func _VectorOfVectorOfDMatchGetItemPtr($vec, $index, $element)
 EndFunc   ;==>_VectorOfVectorOfDMatchGetItemPtr
 
 Func _cveInputArrayFromVectorOfVectorOfDMatch($vec)
-    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfVectorOfDMatch(std::vector< std::vector< cv::DMatch > >* vec);
+    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfVectorOfDMatch(std::vector<std::vector<cv::DMatch>>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -430,7 +430,7 @@ Func _cveInputArrayFromVectorOfVectorOfDMatch($vec)
 EndFunc   ;==>_cveInputArrayFromVectorOfVectorOfDMatch
 
 Func _cveOutputArrayFromVectorOfVectorOfDMatch($vec)
-    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfVectorOfDMatch(std::vector< std::vector< cv::DMatch > >* vec);
+    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfVectorOfDMatch(std::vector<std::vector<cv::DMatch>>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -463,7 +463,7 @@ Func _cveOutputArrayFromVectorOfVectorOfDMatch($vec)
 EndFunc   ;==>_cveOutputArrayFromVectorOfVectorOfDMatch
 
 Func _cveInputOutputArrayFromVectorOfVectorOfDMatch($vec)
-    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfVectorOfDMatch(std::vector< std::vector< cv::DMatch > >* vec);
+    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfVectorOfDMatch(std::vector<std::vector<cv::DMatch>>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"

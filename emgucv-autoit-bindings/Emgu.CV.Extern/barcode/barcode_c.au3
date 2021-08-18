@@ -133,7 +133,7 @@ Func _cveBarcodeDetectorDetectMat($detector, $matImg, $matPoints)
 EndFunc   ;==>_cveBarcodeDetectorDetectMat
 
 Func _cveBarcodeDetectorDecode($detector, $img, $points, $decoded_info, $decoded_type)
-    ; CVAPI(bool) cveBarcodeDetectorDecode(cv::barcode::BarcodeDetector* detector, cv::_InputArray* img, cv::_InputArray* points, std::vector< cv::String >* decoded_info, std::vector< int >* decoded_type);
+    ; CVAPI(bool) cveBarcodeDetectorDecode(cv::barcode::BarcodeDetector* detector, cv::_InputArray* img, cv::_InputArray* points, std::vector<cv::String>* decoded_info, std::vector<int>* decoded_type);
 
     Local $bDetectorDllType
     If VarGetType($detector) == "DLLStruct" Then
@@ -264,7 +264,7 @@ Func _cveBarcodeDetectorDecodeMat($detector, $matImg, $matPoints, $decoded_info,
 EndFunc   ;==>_cveBarcodeDetectorDecodeMat
 
 Func _cveBarcodeDetectorDetectAndDecode($detector, $img, $decoded_info, $decoded_type, $points)
-    ; CVAPI(bool) cveBarcodeDetectorDetectAndDecode(cv::barcode::BarcodeDetector* detector, cv::_InputArray* img, std::vector< cv::String >* decoded_info, std::vector< int >* decoded_type, cv::_OutputArray* points);
+    ; CVAPI(bool) cveBarcodeDetectorDetectAndDecode(cv::barcode::BarcodeDetector* detector, cv::_InputArray* img, std::vector<cv::String>* decoded_info, std::vector<int>* decoded_type, cv::_OutputArray* points);
 
     Local $bDetectorDllType
     If VarGetType($detector) == "DLLStruct" Then

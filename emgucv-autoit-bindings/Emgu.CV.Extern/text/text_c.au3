@@ -150,7 +150,7 @@ Func _cveERFilterRunMat($filter, $matImage, $regions)
 EndFunc   ;==>_cveERFilterRunMat
 
 Func _cveERGrouping($image, $channels, $regions, $count, $groups, $group_rects, $method, $fileName, $minProbability)
-    ; CVAPI(void) cveERGrouping(cv::_InputArray* image, cv::_InputArray* channels, std::vector<cv::text::ERStat>** regions, int count, std::vector< std::vector<cv::Vec2i> >* groups, std::vector<cv::Rect>* group_rects, int method, cv::String* fileName, float minProbability);
+    ; CVAPI(void) cveERGrouping(cv::_InputArray* image, cv::_InputArray* channels, std::vector<cv::text::ERStat>** regions, int count, std::vector<std::vector<cv::Vec2i>>* groups, std::vector<cv::Rect>* group_rects, int method, cv::String* fileName, float minProbability);
 
     Local $bImageDllType
     If VarGetType($image) == "DLLStruct" Then
@@ -293,7 +293,7 @@ Func _cveERGroupingMat($matImage, $matChannels, $regions, $count, $groups, $grou
 EndFunc   ;==>_cveERGroupingMat
 
 Func _cveMSERsToERStats($image, $contours, $regions)
-    ; CVAPI(void) cveMSERsToERStats(cv::_InputArray* image, std::vector< std::vector< cv::Point > >* contours, std::vector< std::vector< cv::text::ERStat> >* regions);
+    ; CVAPI(void) cveMSERsToERStats(cv::_InputArray* image, std::vector<std::vector<cv::Point>>* contours, std::vector<std::vector<cv::text::ERStat>>* regions);
 
     Local $bImageDllType
     If VarGetType($image) == "DLLStruct" Then

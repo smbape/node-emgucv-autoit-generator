@@ -67,7 +67,7 @@ Func _cveFrameMetadataGetCategory($obj)
 EndFunc   ;==>_cveFrameMetadataGetCategory
 
 Func _cveFrameMetadataGetStride($obj)
-    ; CVAPI(unsigned) cveFrameMetadataGetStride(FrameMetadata* obj);
+    ; CVAPI(unsigned int) cveFrameMetadataGetStride(FrameMetadata* obj);
 
     Local $bObjDllType
     If VarGetType($obj) == "DLLStruct" Then
@@ -79,7 +79,7 @@ Func _cveFrameMetadataGetStride($obj)
 EndFunc   ;==>_cveFrameMetadataGetStride
 
 Func _cveFrameMetadataGetFrameBytesPP($obj)
-    ; CVAPI(unsigned) cveFrameMetadataGetFrameBytesPP(FrameMetadata* obj);
+    ; CVAPI(unsigned int) cveFrameMetadataGetFrameBytesPP(FrameMetadata* obj);
 
     Local $bObjDllType
     If VarGetType($obj) == "DLLStruct" Then
@@ -91,7 +91,7 @@ Func _cveFrameMetadataGetFrameBytesPP($obj)
 EndFunc   ;==>_cveFrameMetadataGetFrameBytesPP
 
 Func _cveFrameMetadataGetFrameHeight($obj)
-    ; CVAPI(unsigned) cveFrameMetadataGetFrameHeight(FrameMetadata* obj);
+    ; CVAPI(unsigned int) cveFrameMetadataGetFrameHeight(FrameMetadata* obj);
 
     Local $bObjDllType
     If VarGetType($obj) == "DLLStruct" Then
@@ -103,7 +103,7 @@ Func _cveFrameMetadataGetFrameHeight($obj)
 EndFunc   ;==>_cveFrameMetadataGetFrameHeight
 
 Func _cveFrameMetadataGetFrameWidth($obj)
-    ; CVAPI(unsigned) cveFrameMetadataGetFrameWidth(FrameMetadata* obj);
+    ; CVAPI(unsigned int) cveFrameMetadataGetFrameWidth(FrameMetadata* obj);
 
     Local $bObjDllType
     If VarGetType($obj) == "DLLStruct" Then

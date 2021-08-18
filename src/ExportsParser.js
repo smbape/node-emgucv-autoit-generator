@@ -1,5 +1,5 @@
 const LF = "\n";
-const IF_DEF_WINAPI_FAMILY = "#if WINAPI_FAMILY";
+const IF_DEF = "#if";
 const ENDIF = "#endif";
 const BLOC_COMMENT_START = "/*";
 const BLOC_COMMENT_END = "*/";
@@ -15,7 +15,7 @@ const EQUALS = "=";
 const SLASH = "/";
 const AMPERS_AND = "&";
 // const MINUS = "-";
-// const DOT = ".";
+const VARIADIC = "...";
 
 const crlfRe = /[\r\n]/mg;
 const notSpaceRe = /\S/mg;
@@ -46,7 +46,7 @@ class ExportsParser {
         this.export_start = export_start;
         this.export_end = export_end;
         this.export_end_is_space = /\s/.test(export_end);
-        this.tokenizer = new RegExp(`(?:^/[/*]|^${ export_start.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&") }|#if WINAPI_FAMILY)`, "mg");
+        this.tokenizer = new RegExp(`(?:^/[/*]|^${ export_start instanceof RegExp ? export_start.source : export_start.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&") }|#if)`, "mg");
     }
 
     parseFile(input, offset = 0) {
@@ -54,9 +54,9 @@ class ExportsParser {
             input = input.toString();
         }
 
-        const {tokenizer} = this;
+        const {tokenizer, options: {ifeval}} = this;
 
-        let match;
+        let match, tmp;
 
         tokenizer.lastIndex = offset;
 
@@ -79,10 +79,17 @@ class ExportsParser {
                 continue;
             }
 
-            if (match[0] === IF_DEF_WINAPI_FAMILY) {
-                tokenizer.lastIndex = input.indexOf(ENDIF, match.index) + ENDIF.length;
-                if (tokenizer.lastIndex - ENDIF.length === -1) {
-                    tokenizer.lastIndex = input.length;
+            if (match[0] === IF_DEF) {
+                if (typeof ifeval === "function" ? ifeval(input, match.index) : true) {
+                    tokenizer.lastIndex = input.indexOf(this.lf, match.index) + this.lf.length;
+                    if (tokenizer.lastIndex - this.lf.length === -1) {
+                        tokenizer.lastIndex = input.length;
+                    }
+                } else {
+                    tokenizer.lastIndex = input.indexOf(ENDIF, match.index) + ENDIF.length;
+                    if (tokenizer.lastIndex - ENDIF.length === -1) {
+                        tokenizer.lastIndex = input.length;
+                    }
                 }
                 continue;
             }
@@ -94,6 +101,8 @@ class ExportsParser {
             }
 
             api.push([this.returnType, this.name, this.args]);
+
+            tokenizer.lastIndex = this.pos;
         }
 
         return api;
@@ -105,7 +114,13 @@ class ExportsParser {
         }
 
         this.start = pos;
-        pos += this.export_start.length;
+        if (this.export_start instanceof RegExp) {
+            this.export_start.lastIndex = pos;
+            const match = this.export_start.exec(input);
+            pos += match[0].length;
+        } else {
+            pos += this.export_start.length;
+        }
 
         this.input = input;
         this.length = this.input.length;
@@ -124,7 +139,7 @@ class ExportsParser {
             return;
         }
 
-        this.returnType = this._lastType;
+        this.returnType = this._lastReturnType;
         pos = this.pos;
 
         // VectorOfDoublePushVector
@@ -162,9 +177,9 @@ class ExportsParser {
         }
     }
 
-    isEndOfExports() {
+    isEndOfExports(space) {
         if (this.export_end_is_space) {
-            return this.pos - 1 !== -1 && /\s/.test(this.input[this.pos - 1]);
+            return this.pos !== 0 && (space || /[\s*]/.test(this.input[this.pos - 1]));
         }
 
         if (!this.input.startsWith(this.export_end, this.pos)) {
@@ -176,6 +191,7 @@ class ExportsParser {
     }
 
     mayBeReturnType() {
+        this._lastReturnType = undefined;
         if (this.pos === this.length) {
             return false;
         }
@@ -183,9 +199,17 @@ class ExportsParser {
         const {pos} = this;
 
         this.mayBeType();
-        this.mayBeSpace();
 
-        if (this.pos < this.length && this.isEndOfExports()) {
+        if (!this.export_end_is_space || this._lastTypeRef) {
+            this._lastReturnType = this._lastType;
+        } else {
+            this._lastReturnType = this._lastTypeParts.slice(0, -1).join(" ");
+            this.pos = this._lastTypeStart;
+        }
+
+        const space = this.mayBeSpace();
+
+        if (this.pos < this.length && this.isEndOfExports(space)) {
             return true;
         }
 
@@ -319,15 +343,29 @@ class ExportsParser {
 
         this.mayBeSpace();
         let hasMore = this.input[this.pos] !== CLOSE_PARENTHESIS;
+        let variadic = false;
 
         while (hasMore) {
-            if (!this.mayBeType() || !this.mayBeIdentifier()) {
+            if (!this.mayBeType() || this._lastTypeRef && this._lastType !== "void") {
+                this.mayBeSpace();
+                if (variadic || !this.input.startsWith(VARIADIC, this.pos)) {
+                    break;
+                }
+
+                this.pos += VARIADIC.length;
+                variadic = true;
+            }
+
+            // last type must end with an identifier
+            if (!variadic && this._lastTypeRef) {
                 break;
             }
 
             hasMore = false;
 
-            const arg = [this._lastType, this._lastIdentifier];
+            const arg = variadic ? this.args.pop() : [this._lastTypeParts.slice(0, -1).join(" "), this._lastTypeParts[this._lastTypeParts.length - 1]];
+            arg.variadic = variadic;
+
             this.args.push(arg);
 
             this.mayBeSpace();
@@ -344,6 +382,9 @@ class ExportsParser {
             if (this.pos < this.length && this.input[this.pos] === COMMA) {
                 this.pos++;
                 hasMore = true;
+                if (this._lastType === "void") {
+                    break;
+                }
             }
         }
 
@@ -363,6 +404,10 @@ class ExportsParser {
     }
 
     mayBeEnd() {
+        if (this.options.mayBeEnd) {
+            this.options.mayBeEnd.call(this);
+        }
+
         this.mayBeSpace();
 
         if (this.pos === this.length || this.input[this.pos] !== SEMICOLON) {
@@ -375,6 +420,8 @@ class ExportsParser {
 
     mayBeType() {
         this._lastType = undefined;
+        this._lastTypeRef = false;
+        this._lastTypeStart = this.pos;
 
         if (this.pos === this.length) {
             return false;
@@ -382,78 +429,106 @@ class ExportsParser {
 
         const {pos} = this;
 
+        const parts = [];
+
+        let isReference = false;
+        let hasType = false;
+
+        while (true) {
+            const _lastTypeStart = this._lastTypeStart;
+            this._lastTypeStart = this.pos;
+
+            if (!this.mayBeIdentifier()) {
+                if (hasType) {
+                    this._lastTypeStart = _lastTypeStart;
+                    break;
+                }
+
+                this.pos = pos;
+                return false;
+            }
+
+            hasType = true;
+            isReference = false;
+
+            parts.push(this._lastIdentifier);
+
+            if (this._lastIdentifier === "const" || this._lastIdentifier === "volatile") {
+                this.mayBeReference(parts);
+                continue;
+            }
+
+            if (this.input[this.pos] === COLON) {
+                this.pos++;
+
+                if (this.pos === this.length || this.input[this.pos++] !== COLON || !this.mayBeType()) {
+                    this.pos = pos;
+                    return false;
+                }
+
+                isReference = this._lastTypeRef;
+                const namespace = parts.pop() + "::" + this._lastTypeParts.shift();
+                parts.push([namespace].concat(this._lastTypeParts.slice(0, -1)).join(" "));
+                if (this._lastTypeParts.length !== 0) {
+                    parts.push(this._lastTypeParts[this._lastTypeParts.length - 1]);
+                }
+                break;
+            }
+
+            if (this.input[this.pos] === AMPERS_LT) {
+                this.pos++;
+                if (!this.mayBeType()) {
+                    this.pos = pos;
+                    return false;
+                }
+
+                this.mayBeSpace();
+
+                if (this.pos === this.length || this.input[this.pos++] !== AMPERS_GT) {
+                    this.pos = pos;
+                    return false;
+                }
+
+                parts[parts.length - 1] += `<${ this._lastType }>`;
+
+                isReference = this.mayBeReference(parts);
+                continue;
+            }
+
+            isReference = this.mayBeReference(parts);
+        }
+
+        this._lastType = parts.join(" ");
+        this._lastTypeParts = parts;
+        this._lastTypeRef = isReference;
+        return true;
+    }
+
+    mayBeReference(parts) {
+        if (this.pos === this.length) {
+            return false;
+        }
+
+        const {pos} = this;
         this.mayBeSpace();
 
-        const start = this.pos;
+        let stars = "";
 
-        if (!this.mayBeIdentifier()) {
+        while (this.pos < this.length && (this.input[this.pos] === STAR || this.input[this.pos] === AMPERS_AND)) {
+            stars += this.input[this.pos];
+            this.pos++;
+            this.mayBeSpace();
+        }
+
+        if (stars === "") {
             this.pos = pos;
             return false;
         }
 
-        if (this._lastIdentifier === "const") {
-            this.mayBeSpace();
-
-            if (!this.mayBeIdentifier()) {
-                this.pos = pos;
-                return false;
-            }
-        }
-
-        let end = this.pos;
-        this.mayBeSpace();
-
-        if (this.pos < this.length && this._lastIdentifier === "unsigned") {
-            for (const type of UNSINED_TYPES) {
-                if (this.input.startsWith(type, this.pos)) {
-                    this.pos += type.length;
-                    break;
-                }
-            }
-        }
-
-        if (this.input[this.pos] === COLON) {
-            this.pos++;
-            if (this.pos === this.length || this.input[this.pos++] !== COLON || !this.mayBeType()) {
-                this.pos = pos;
-                return false;
-            }
-
-            end = this.pos;
-        } else if (this.input[this.pos] === AMPERS_LT) {
-            this.pos++;
-            if (!this.mayBeType()) {
-                this.pos = pos;
-                return false;
-            }
-
-            this.mayBeSpace();
-
-            if (this.pos === this.length || this.input[this.pos++] !== AMPERS_GT) {
-                this.pos = pos;
-                return false;
-            }
-
-            end = this.pos;
-        }
-
-        this.mayBeSpace();
-
-        if (this.pos < this.length && this.input[this.pos] === STAR) {
-            end = ++this.pos;
-            this.mayBeSpace();
-
-            if (this.pos < this.length && this.input[this.pos] === STAR) {
-                end = ++this.pos;
-            }
-        } else if (this.pos < this.length && this.input[this.pos] === AMPERS_AND) {
-            end = ++this.pos;
-            this.mayBeSpace();
-        }
-
-        this._lastType = this.input.slice(start, end).trim();
+        parts[parts.length - 1] += stars;
         return true;
     }
+
 }
 
 module.exports = ExportsParser;

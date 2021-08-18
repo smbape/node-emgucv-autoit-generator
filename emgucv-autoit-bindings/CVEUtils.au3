@@ -15,22 +15,6 @@ Local $aCloseHooks[8]
 Local $iOpenHook = 0
 Local $iCloseHook = 0
 
-Func _cveRegisterOpenHook($sCallback)
-	If $iOpenHook == UBound($aOpenHooks) Then
-		ReDim $aOpenHooks[$iOpenHook * 2]
-	EndIf
-	$aOpenHooks[$iOpenHook] = $sCallback
-	$iOpenHook += 1
-EndFunc   ;==>_cveRegisterOpenHook
-
-Func _cveRegisterCloseHook($sCallback)
-	If $iCloseHook == UBound($aCloseHooks) Then
-		ReDim $aCloseHooks[$iCloseHook * 2]
-	EndIf
-	$aCloseHooks[$iCloseHook] = $sCallback
-	$iCloseHook += 1
-EndFunc   ;==>_cveRegisterCloseHook
-
 Func _cveDebugMsg($msg)
 	If BitAND($_cve_debug, 1) Then
 		ConsoleWrite($msg & @CRLF)
@@ -39,6 +23,24 @@ Func _cveDebugMsg($msg)
 		DllCall("kernel32.dll", "none", "OutputDebugString", "str", $msg)
 	EndIf
 EndFunc   ;==>_cveDebugMsg
+
+Func _cveRegisterOpenHook($sCallback)
+	_cveDebugMsg("Register Open Hook " & $sCallback)
+	If $iOpenHook == UBound($aOpenHooks) Then
+		ReDim $aOpenHooks[$iOpenHook * 2]
+	EndIf
+	$aOpenHooks[$iOpenHook] = $sCallback
+	$iOpenHook += 1
+EndFunc   ;==>_cveRegisterOpenHook
+
+Func _cveRegisterCloseHook($sCallback)
+	_cveDebugMsg("Register Close Hook " & $sCallback)
+	If $iCloseHook == UBound($aCloseHooks) Then
+		ReDim $aCloseHooks[$iCloseHook * 2]
+	EndIf
+	$aCloseHooks[$iCloseHook] = $sCallback
+	$iCloseHook += 1
+EndFunc   ;==>_cveRegisterCloseHook
 
 Func _OpenCV_LoadDLL($dll)
 	_cveDebugMsg('Loading ' & $dll)

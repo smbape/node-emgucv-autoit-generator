@@ -47,7 +47,7 @@ Func _OpenniGetColorPoints($capture, $points, $mask)
 EndFunc   ;==>_OpenniGetColorPoints
 
 Func _cveVideoCaptureCreateFromDevice($device, $apiPreference, $params)
-    ; CVAPI(cv::VideoCapture*) cveVideoCaptureCreateFromDevice(int device, int apiPreference, std::vector< int >* params);
+    ; CVAPI(cv::VideoCapture*) cveVideoCaptureCreateFromDevice(int device, int apiPreference, std::vector<int>* params);
 
     Local $vecParams, $iArrParamsSize
     Local $bParamsIsArray = VarGetType($params) == "Array"
@@ -80,7 +80,7 @@ Func _cveVideoCaptureCreateFromDevice($device, $apiPreference, $params)
 EndFunc   ;==>_cveVideoCaptureCreateFromDevice
 
 Func _cveVideoCaptureCreateFromFile($fileName, $apiPreference, $params)
-    ; CVAPI(cv::VideoCapture*) cveVideoCaptureCreateFromFile(cv::String* fileName, int apiPreference, std::vector< int >* params);
+    ; CVAPI(cv::VideoCapture*) cveVideoCaptureCreateFromFile(cv::String* fileName, int apiPreference, std::vector<int>* params);
 
     Local $bFileNameIsString = VarGetType($fileName) == "String"
     If $bFileNameIsString Then
@@ -465,7 +465,7 @@ Func _cveVideoWriterCreate2($filename, $apiPreference, $fourcc, $fps, $frameSize
 EndFunc   ;==>_cveVideoWriterCreate2
 
 Func _cveVideoWriterCreate3($filename, $apiPreference, $fourcc, $fps, $frameSize, $params)
-    ; CVAPI(cv::VideoWriter*) cveVideoWriterCreate3(cv::String* filename, int apiPreference, int fourcc, double fps, CvSize* frameSize, std::vector< int >* params);
+    ; CVAPI(cv::VideoWriter*) cveVideoWriterCreate3(cv::String* filename, int apiPreference, int fourcc, double fps, CvSize* frameSize, std::vector<int>* params);
 
     Local $bFilenameIsString = VarGetType($filename) == "String"
     If $bFilenameIsString Then

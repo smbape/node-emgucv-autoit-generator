@@ -2,17 +2,17 @@
 #include "..\CVEUtils.au3"
 
 Func _VectorOfRectCreate()
-    ; CVAPI(std::vector< cv::Rect >*) VectorOfRectCreate();
+    ; CVAPI(std::vector<cv::Rect>*) VectorOfRectCreate();
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfRectCreate"), "VectorOfRectCreate", @error)
 EndFunc   ;==>_VectorOfRectCreate
 
 Func _VectorOfRectCreateSize($size)
-    ; CVAPI(std::vector< cv::Rect >*) VectorOfRectCreateSize(int size);
+    ; CVAPI(std::vector<cv::Rect>*) VectorOfRectCreateSize(int size);
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfRectCreateSize", "int", $size), "VectorOfRectCreateSize", @error)
 EndFunc   ;==>_VectorOfRectCreateSize
 
 Func _VectorOfRectGetSize($v)
-    ; CVAPI(int) VectorOfRectGetSize(std::vector< cv::Rect >* v);
+    ; CVAPI(int) VectorOfRectGetSize(std::vector<cv::Rect>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -45,7 +45,7 @@ Func _VectorOfRectGetSize($v)
 EndFunc   ;==>_VectorOfRectGetSize
 
 Func _VectorOfRectPush($v, $value)
-    ; CVAPI(void) VectorOfRectPush(std::vector< cv::Rect >* v, cv::Rect* value);
+    ; CVAPI(void) VectorOfRectPush(std::vector<cv::Rect>* v, cv::Rect* value);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -83,7 +83,7 @@ Func _VectorOfRectPush($v, $value)
 EndFunc   ;==>_VectorOfRectPush
 
 Func _VectorOfRectPushMulti($v, $values, $count)
-    ; CVAPI(void) VectorOfRectPushMulti(std::vector< cv::Rect >* v, cv::Rect* values, int count);
+    ; CVAPI(void) VectorOfRectPushMulti(std::vector<cv::Rect>* v, cv::Rect* values, int count);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -121,7 +121,7 @@ Func _VectorOfRectPushMulti($v, $values, $count)
 EndFunc   ;==>_VectorOfRectPushMulti
 
 Func _VectorOfRectPushVector($v, $other)
-    ; CVAPI(void) VectorOfRectPushVector(std::vector< cv::Rect >* v, std::vector< cv::Rect >* other);
+    ; CVAPI(void) VectorOfRectPushVector(std::vector<cv::Rect>* v, std::vector<cv::Rect>* other);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -177,7 +177,7 @@ Func _VectorOfRectPushVector($v, $other)
 EndFunc   ;==>_VectorOfRectPushVector
 
 Func _VectorOfRectClear($v)
-    ; CVAPI(void) VectorOfRectClear(std::vector< cv::Rect >* v);
+    ; CVAPI(void) VectorOfRectClear(std::vector<cv::Rect>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -208,7 +208,7 @@ Func _VectorOfRectClear($v)
 EndFunc   ;==>_VectorOfRectClear
 
 Func _VectorOfRectRelease($v)
-    ; CVAPI(void) VectorOfRectRelease(std::vector< cv::Rect >** v);
+    ; CVAPI(void) VectorOfRectRelease(std::vector<cv::Rect>** v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -239,7 +239,7 @@ Func _VectorOfRectRelease($v)
 EndFunc   ;==>_VectorOfRectRelease
 
 Func _VectorOfRectCopyData($v, $data)
-    ; CVAPI(void) VectorOfRectCopyData(std::vector< cv::Rect >* v, cv::Rect* data);
+    ; CVAPI(void) VectorOfRectCopyData(std::vector<cv::Rect>* v, cv::Rect* data);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -277,7 +277,7 @@ Func _VectorOfRectCopyData($v, $data)
 EndFunc   ;==>_VectorOfRectCopyData
 
 Func _VectorOfRectGetStartAddress($v)
-    ; CVAPI(cv::Rect*) VectorOfRectGetStartAddress(std::vector< cv::Rect >* v);
+    ; CVAPI(cv::Rect*) VectorOfRectGetStartAddress(std::vector<cv::Rect>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -310,7 +310,7 @@ Func _VectorOfRectGetStartAddress($v)
 EndFunc   ;==>_VectorOfRectGetStartAddress
 
 Func _VectorOfRectGetEndAddress($v)
-    ; CVAPI(void*) VectorOfRectGetEndAddress(std::vector< cv::Rect >* v);
+    ; CVAPI(void*) VectorOfRectGetEndAddress(std::vector<cv::Rect>* v);
 
     Local $vecV, $iArrVSize
     Local $bVIsArray = VarGetType($v) == "Array"
@@ -343,7 +343,7 @@ Func _VectorOfRectGetEndAddress($v)
 EndFunc   ;==>_VectorOfRectGetEndAddress
 
 Func _VectorOfRectGetItem($vec, $index, $element)
-    ; CVAPI(void) VectorOfRectGetItem(std::vector<  cv::Rect >* vec, int index, cv::Rect* element);
+    ; CVAPI(void) VectorOfRectGetItem(std::vector<cv::Rect>* vec, int index, cv::Rect* element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -381,7 +381,7 @@ Func _VectorOfRectGetItem($vec, $index, $element)
 EndFunc   ;==>_VectorOfRectGetItem
 
 Func _VectorOfRectGetItemPtr($vec, $index, $element)
-    ; CVAPI(void) VectorOfRectGetItemPtr(std::vector<  cv::Rect >* vec, int index, cv::Rect** element);
+    ; CVAPI(void) VectorOfRectGetItemPtr(std::vector<cv::Rect>* vec, int index, cv::Rect** element);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -419,7 +419,7 @@ Func _VectorOfRectGetItemPtr($vec, $index, $element)
 EndFunc   ;==>_VectorOfRectGetItemPtr
 
 Func _cveInputArrayFromVectorOfRect($vec)
-    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfRect(std::vector< cv::Rect >* vec);
+    ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfRect(std::vector<cv::Rect>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -452,7 +452,7 @@ Func _cveInputArrayFromVectorOfRect($vec)
 EndFunc   ;==>_cveInputArrayFromVectorOfRect
 
 Func _cveOutputArrayFromVectorOfRect($vec)
-    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfRect(std::vector< cv::Rect >* vec);
+    ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfRect(std::vector<cv::Rect>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"
@@ -485,7 +485,7 @@ Func _cveOutputArrayFromVectorOfRect($vec)
 EndFunc   ;==>_cveOutputArrayFromVectorOfRect
 
 Func _cveInputOutputArrayFromVectorOfRect($vec)
-    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfRect(std::vector< cv::Rect >* vec);
+    ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfRect(std::vector<cv::Rect>* vec);
 
     Local $vecVec, $iArrVecSize
     Local $bVecIsArray = VarGetType($vec) == "Array"

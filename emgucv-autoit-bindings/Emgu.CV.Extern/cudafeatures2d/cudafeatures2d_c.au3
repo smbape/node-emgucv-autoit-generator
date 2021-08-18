@@ -122,7 +122,7 @@ Func _cveCudaDescriptorMatcherTrain($matcher)
 EndFunc   ;==>_cveCudaDescriptorMatcherTrain
 
 Func _cveCudaDescriptorMatcherMatch1($matcher, $queryDescriptors, $trainDescriptors, $matches, $mask)
-    ; CVAPI(void) cveCudaDescriptorMatcherMatch1(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, std::vector< cv::DMatch >* matches, cv::_InputArray* mask);
+    ; CVAPI(void) cveCudaDescriptorMatcherMatch1(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, std::vector<cv::DMatch>* matches, cv::_InputArray* mask);
 
     Local $bMatcherDllType
     If VarGetType($matcher) == "DLLStruct" Then
@@ -253,7 +253,7 @@ Func _cveCudaDescriptorMatcherMatch1Mat($matcher, $matQueryDescriptors, $matTrai
 EndFunc   ;==>_cveCudaDescriptorMatcherMatch1Mat
 
 Func _cveCudaDescriptorMatcherMatch2($matcher, $queryDescriptors, $matches, $masks)
-    ; CVAPI(void) cveCudaDescriptorMatcherMatch2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, std::vector< cv::DMatch >* matches, std::vector< cv::cuda::GpuMat >* masks);
+    ; CVAPI(void) cveCudaDescriptorMatcherMatch2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, std::vector<cv::DMatch>* matches, std::vector<cv::cuda::GpuMat>* masks);
 
     Local $bMatcherDllType
     If VarGetType($matcher) == "DLLStruct" Then
@@ -493,7 +493,7 @@ Func _cveCudaDescriptorMatcherMatchAsync1Mat($matcher, $matQueryDescriptors, $ma
 EndFunc   ;==>_cveCudaDescriptorMatcherMatchAsync1Mat
 
 Func _cveCudaDescriptorMatcherMatchAsync2($matcher, $queryDescriptors, $matches, $masks, $stream)
-    ; CVAPI(void) cveCudaDescriptorMatcherMatchAsync2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_OutputArray* matches, std::vector< cv::cuda::GpuMat >* masks, cv::cuda::Stream* stream);
+    ; CVAPI(void) cveCudaDescriptorMatcherMatchAsync2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_OutputArray* matches, std::vector<cv::cuda::GpuMat>* masks, cv::cuda::Stream* stream);
 
     Local $bMatcherDllType
     If VarGetType($matcher) == "DLLStruct" Then
@@ -602,7 +602,7 @@ Func _cveCudaDescriptorMatcherMatchAsync2Mat($matcher, $matQueryDescriptors, $ma
 EndFunc   ;==>_cveCudaDescriptorMatcherMatchAsync2Mat
 
 Func _cveCudaDescriptorMatcherMatchConvert($matcher, $gpuMatches, $matches)
-    ; CVAPI(void) cveCudaDescriptorMatcherMatchConvert(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* gpuMatches, std::vector< cv::DMatch >* matches);
+    ; CVAPI(void) cveCudaDescriptorMatcherMatchConvert(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* gpuMatches, std::vector<cv::DMatch>* matches);
 
     Local $bMatcherDllType
     If VarGetType($matcher) == "DLLStruct" Then
@@ -675,7 +675,7 @@ Func _cveCudaDescriptorMatcherMatchConvertMat($matcher, $matGpuMatches, $matches
 EndFunc   ;==>_cveCudaDescriptorMatcherMatchConvertMat
 
 Func _cveCudaDescriptorMatcherKnnMatch1($matcher, $queryDescs, $trainDescs, $matches, $k, $masks, $compactResult)
-    ; CVAPI(void) cveCudaDescriptorMatcherKnnMatch1(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescs, cv::_InputArray* trainDescs, std::vector< std::vector< cv::DMatch > >* matches, int k, cv::_InputArray* masks, bool compactResult);
+    ; CVAPI(void) cveCudaDescriptorMatcherKnnMatch1(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescs, cv::_InputArray* trainDescs, std::vector<std::vector<cv::DMatch>>* matches, int k, cv::_InputArray* masks, bool compactResult);
 
     Local $bMatcherDllType
     If VarGetType($matcher) == "DLLStruct" Then
@@ -806,7 +806,7 @@ Func _cveCudaDescriptorMatcherKnnMatch1Mat($matcher, $matQueryDescs, $matTrainDe
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatch1Mat
 
 Func _cveCudaDescriptorMatcherKnnMatch2($matcher, $queryDescriptors, $matches, $k, $masks, $compactResult)
-    ; CVAPI(void) cveCudaDescriptorMatcherKnnMatch2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, std::vector< std::vector< cv::DMatch > >* matches, int k, std::vector< cv::cuda::GpuMat >* masks, bool compactResult);
+    ; CVAPI(void) cveCudaDescriptorMatcherKnnMatch2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, std::vector<std::vector<cv::DMatch>>* matches, int k, std::vector<cv::cuda::GpuMat>* masks, bool compactResult);
 
     Local $bMatcherDllType
     If VarGetType($matcher) == "DLLStruct" Then
@@ -1046,7 +1046,7 @@ Func _cveCudaDescriptorMatcherKnnMatchAsync1Mat($matcher, $matQueryDescriptors, 
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchAsync1Mat
 
 Func _cveCudaDescriptorMatcherKnnMatchAsync2($matcher, $queryDescriptors, $matches, $k, $masks, $stream)
-    ; CVAPI(void) cveCudaDescriptorMatcherKnnMatchAsync2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_OutputArray* matches, int k, std::vector< cv::cuda::GpuMat >* masks, cv::cuda::Stream* stream);
+    ; CVAPI(void) cveCudaDescriptorMatcherKnnMatchAsync2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_OutputArray* matches, int k, std::vector<cv::cuda::GpuMat>* masks, cv::cuda::Stream* stream);
 
     Local $bMatcherDllType
     If VarGetType($matcher) == "DLLStruct" Then
@@ -1155,7 +1155,7 @@ Func _cveCudaDescriptorMatcherKnnMatchAsync2Mat($matcher, $matQueryDescriptors, 
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchAsync2Mat
 
 Func _cveCudaDescriptorMatcherKnnMatchConvert($matcher, $gpuMatches, $matches, $compactResult)
-    ; CVAPI(void) cveCudaDescriptorMatcherKnnMatchConvert(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* gpuMatches, std::vector< std::vector< cv::DMatch > >* matches, bool compactResult);
+    ; CVAPI(void) cveCudaDescriptorMatcherKnnMatchConvert(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* gpuMatches, std::vector<std::vector<cv::DMatch>>* matches, bool compactResult);
 
     Local $bMatcherDllType
     If VarGetType($matcher) == "DLLStruct" Then
@@ -1228,7 +1228,7 @@ Func _cveCudaDescriptorMatcherKnnMatchConvertMat($matcher, $matGpuMatches, $matc
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchConvertMat
 
 Func _cveCudaDescriptorMatcherRadiusMatch1($matcher, $queryDescriptors, $trainDescriptors, $matches, $maxDistance, $mask, $compactResult)
-    ; CVAPI(void) cveCudaDescriptorMatcherRadiusMatch1(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, std::vector< std::vector< cv::DMatch > >* matches, float maxDistance, cv::_InputArray* mask, bool compactResult);
+    ; CVAPI(void) cveCudaDescriptorMatcherRadiusMatch1(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, std::vector<std::vector<cv::DMatch>>* matches, float maxDistance, cv::_InputArray* mask, bool compactResult);
 
     Local $bMatcherDllType
     If VarGetType($matcher) == "DLLStruct" Then
@@ -1359,7 +1359,7 @@ Func _cveCudaDescriptorMatcherRadiusMatch1Mat($matcher, $matQueryDescriptors, $m
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatch1Mat
 
 Func _cveCudaDescriptorMatcherRadiusMatch2($matcher, $queryDescriptors, $matches, $maxDistance, $masks, $compactResult)
-    ; CVAPI(void) cveCudaDescriptorMatcherRadiusMatch2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, std::vector< std::vector< cv::DMatch > >* matches, float maxDistance, std::vector< cv::cuda::GpuMat >* masks, bool compactResult);
+    ; CVAPI(void) cveCudaDescriptorMatcherRadiusMatch2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, std::vector<std::vector<cv::DMatch>>* matches, float maxDistance, std::vector<cv::cuda::GpuMat>* masks, bool compactResult);
 
     Local $bMatcherDllType
     If VarGetType($matcher) == "DLLStruct" Then
@@ -1599,7 +1599,7 @@ Func _cveCudaDescriptorMatcherRadiusMatchAsync1Mat($matcher, $matQueryDescriptor
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchAsync1Mat
 
 Func _cveCudaDescriptorMatcherRadiusMatchAsync2($matcher, $queryDescriptors, $matches, $maxDistance, $masks, $stream)
-    ; CVAPI(void) cveCudaDescriptorMatcherRadiusMatchAsync2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_OutputArray* matches, float maxDistance, std::vector< cv::cuda::GpuMat >* masks, cv::cuda::Stream* stream);
+    ; CVAPI(void) cveCudaDescriptorMatcherRadiusMatchAsync2(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_OutputArray* matches, float maxDistance, std::vector<cv::cuda::GpuMat>* masks, cv::cuda::Stream* stream);
 
     Local $bMatcherDllType
     If VarGetType($matcher) == "DLLStruct" Then
@@ -1708,7 +1708,7 @@ Func _cveCudaDescriptorMatcherRadiusMatchAsync2Mat($matcher, $matQueryDescriptor
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchAsync2Mat
 
 Func _cveCudaDescriptorMatcherRadiusMatchConvert($matcher, $gpu_matches, $matches, $compactResult)
-    ; CVAPI(void) cveCudaDescriptorMatcherRadiusMatchConvert(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* gpu_matches, std::vector< std::vector< cv::DMatch > >* matches, bool compactResult);
+    ; CVAPI(void) cveCudaDescriptorMatcherRadiusMatchConvert(cv::cuda::DescriptorMatcher* matcher, cv::_InputArray* gpu_matches, std::vector<std::vector<cv::DMatch>>* matches, bool compactResult);
 
     Local $bMatcherDllType
     If VarGetType($matcher) == "DLLStruct" Then

@@ -555,7 +555,7 @@ Func _TessBaseAPIGetPageSegMode($ocr)
 EndFunc   ;==>_TessBaseAPIGetPageSegMode
 
 Func _TessBaseAPIGetOpenCLDevice($ocr, $device)
-    ; CVAPI(int) TessBaseAPIGetOpenCLDevice(EmguTesseract* ocr, void ** device);
+    ; CVAPI(int) TessBaseAPIGetOpenCLDevice(EmguTesseract* ocr, void** device);
 
     Local $bOcrDllType
     If VarGetType($ocr) == "DLLStruct" Then

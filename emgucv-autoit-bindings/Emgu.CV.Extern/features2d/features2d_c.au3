@@ -149,7 +149,7 @@ Func _cveMserCreate($delta, $minArea, $maxArea, $maxVariation, $minDiversity, $m
 EndFunc   ;==>_cveMserCreate
 
 Func _cveMserDetectRegions($mserPtr, $image, $msers, $bboxes)
-    ; CVAPI(void) cveMserDetectRegions(cv::MSER* mserPtr, cv::_InputArray* image, std::vector< std::vector<cv::Point> >* msers, std::vector< cv::Rect >* bboxes);
+    ; CVAPI(void) cveMserDetectRegions(cv::MSER* mserPtr, cv::_InputArray* image, std::vector<std::vector<cv::Point>>* msers, std::vector<cv::Rect>* bboxes);
 
     Local $bMserPtrDllType
     If VarGetType($mserPtr) == "DLLStruct" Then
@@ -438,7 +438,7 @@ Func _drawKeypointsMat($matImage, $keypoints, $matOutImage, $color = _cvScalarAl
 EndFunc   ;==>_drawKeypointsMat
 
 Func _drawMatchedFeatures1($img1, $keypoints1, $img2, $keypoints2, $matches, $outImg, $matchColor, $singlePointColor, $matchesMask, $flags)
-    ; CVAPI(void) drawMatchedFeatures1(cv::_InputArray* img1, const std::vector<cv::KeyPoint>* keypoints1, cv::_InputArray* img2, const std::vector<cv::KeyPoint>* keypoints2, std::vector< cv::DMatch >* matches, cv::_InputOutputArray* outImg, const CvScalar* matchColor, const CvScalar* singlePointColor, std::vector< unsigned char >* matchesMask, int flags);
+    ; CVAPI(void) drawMatchedFeatures1(cv::_InputArray* img1, const std::vector<cv::KeyPoint>* keypoints1, cv::_InputArray* img2, const std::vector<cv::KeyPoint>* keypoints2, std::vector<cv::DMatch>* matches, cv::_InputOutputArray* outImg, const CvScalar* matchColor, const CvScalar* singlePointColor, std::vector<unsigned char>* matchesMask, int flags);
 
     Local $bImg1DllType
     If VarGetType($img1) == "DLLStruct" Then
@@ -651,7 +651,7 @@ Func _drawMatchedFeatures1Mat($matImg1, $keypoints1, $matImg2, $keypoints2, $mat
 EndFunc   ;==>_drawMatchedFeatures1Mat
 
 Func _drawMatchedFeatures2($img1, $keypoints1, $img2, $keypoints2, $matches, $outImg, $matchColor, $singlePointColor, $matchesMask, $flags)
-    ; CVAPI(void) drawMatchedFeatures2(cv::_InputArray* img1, const std::vector<cv::KeyPoint>* keypoints1, cv::_InputArray* img2, const std::vector<cv::KeyPoint>* keypoints2, std::vector< std::vector< cv::DMatch > >* matches, cv::_InputOutputArray* outImg, const CvScalar* matchColor, const CvScalar* singlePointColor, std::vector< std::vector< unsigned char > >* matchesMask, int flags);
+    ; CVAPI(void) drawMatchedFeatures2(cv::_InputArray* img1, const std::vector<cv::KeyPoint>* keypoints1, cv::_InputArray* img2, const std::vector<cv::KeyPoint>* keypoints2, std::vector<std::vector<cv::DMatch>>* matches, cv::_InputOutputArray* outImg, const CvScalar* matchColor, const CvScalar* singlePointColor, std::vector<std::vector<unsigned char>>* matchesMask, int flags);
 
     Local $bImg1DllType
     If VarGetType($img1) == "DLLStruct" Then
@@ -864,7 +864,7 @@ Func _drawMatchedFeatures2Mat($matImg1, $keypoints1, $matImg2, $keypoints2, $mat
 EndFunc   ;==>_drawMatchedFeatures2Mat
 
 Func _drawMatchedFeatures3($img1, $keypoints1, $img2, $keypoints2, $matches, $outImg, $matchColor, $singlePointColor, $matchesMask, $flags)
-    ; CVAPI(void) drawMatchedFeatures3(cv::_InputArray* img1, const std::vector<cv::KeyPoint>* keypoints1, cv::_InputArray* img2, const std::vector<cv::KeyPoint>* keypoints2, std::vector< std::vector< cv::DMatch > >* matches, cv::_InputOutputArray* outImg, const CvScalar* matchColor, const CvScalar* singlePointColor, cv::_InputArray* matchesMask, int flags);
+    ; CVAPI(void) drawMatchedFeatures3(cv::_InputArray* img1, const std::vector<cv::KeyPoint>* keypoints1, cv::_InputArray* img2, const std::vector<cv::KeyPoint>* keypoints2, std::vector<std::vector<cv::DMatch>>* matches, cv::_InputOutputArray* outImg, const CvScalar* matchColor, const CvScalar* singlePointColor, cv::_InputArray* matchesMask, int flags);
 
     Local $bImg1DllType
     If VarGetType($img1) == "DLLStruct" Then
@@ -1129,7 +1129,7 @@ Func _cveDescriptorMatcherAddMat($matcher, $matTrainDescriptors)
 EndFunc   ;==>_cveDescriptorMatcherAddMat
 
 Func _cveDescriptorMatcherKnnMatch1($matcher, $queryDescriptors, $trainDescriptors, $matches, $k, $mask, $compactResult)
-    ; CVAPI(void) cveDescriptorMatcherKnnMatch1(cv::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, std::vector< std::vector< cv::DMatch > >* matches, int k, cv::_InputArray* mask, bool compactResult);
+    ; CVAPI(void) cveDescriptorMatcherKnnMatch1(cv::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, std::vector<std::vector<cv::DMatch>>* matches, int k, cv::_InputArray* mask, bool compactResult);
 
     Local $bMatcherDllType
     If VarGetType($matcher) == "DLLStruct" Then
@@ -1260,7 +1260,7 @@ Func _cveDescriptorMatcherKnnMatch1Mat($matcher, $matQueryDescriptors, $matTrain
 EndFunc   ;==>_cveDescriptorMatcherKnnMatch1Mat
 
 Func _cveDescriptorMatcherKnnMatch2($matcher, $queryDescriptors, $matches, $k, $mask, $compactResult)
-    ; CVAPI(void) cveDescriptorMatcherKnnMatch2(cv::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, std::vector< std::vector< cv::DMatch > >* matches, int k, cv::_InputArray* mask, bool compactResult);
+    ; CVAPI(void) cveDescriptorMatcherKnnMatch2(cv::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, std::vector<std::vector<cv::DMatch>>* matches, int k, cv::_InputArray* mask, bool compactResult);
 
     Local $bMatcherDllType
     If VarGetType($matcher) == "DLLStruct" Then
@@ -1424,7 +1424,7 @@ Func _cveDescriptorMatcherTrain($matcher)
 EndFunc   ;==>_cveDescriptorMatcherTrain
 
 Func _cveDescriptorMatcherMatch1($matcher, $queryDescriptors, $trainDescriptors, $matches, $mask)
-    ; CVAPI(void) cveDescriptorMatcherMatch1(cv::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, std::vector< cv::DMatch >* matches, cv::_InputArray* mask);
+    ; CVAPI(void) cveDescriptorMatcherMatch1(cv::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, std::vector<cv::DMatch>* matches, cv::_InputArray* mask);
 
     Local $bMatcherDllType
     If VarGetType($matcher) == "DLLStruct" Then
@@ -1555,7 +1555,7 @@ Func _cveDescriptorMatcherMatch1Mat($matcher, $matQueryDescriptors, $matTrainDes
 EndFunc   ;==>_cveDescriptorMatcherMatch1Mat
 
 Func _cveDescriptorMatcherMatch2($matcher, $queryDescriptors, $matches, $masks)
-    ; CVAPI(void) cveDescriptorMatcherMatch2(cv::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, std::vector< cv::DMatch >* matches, cv::_InputArray* masks);
+    ; CVAPI(void) cveDescriptorMatcherMatch2(cv::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, std::vector<cv::DMatch>* matches, cv::_InputArray* masks);
 
     Local $bMatcherDllType
     If VarGetType($matcher) == "DLLStruct" Then
@@ -1657,7 +1657,7 @@ Func _cveDescriptorMatcherMatch2Mat($matcher, $matQueryDescriptors, $matches, $m
 EndFunc   ;==>_cveDescriptorMatcherMatch2Mat
 
 Func _cveDescriptorMatcherRadiusMatch1($matcher, $queryDescriptors, $trainDescriptors, $matches, $maxDistance, $mask, $compactResult)
-    ; CVAPI(void) cveDescriptorMatcherRadiusMatch1(cv::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, std::vector< std::vector<cv::DMatch> >* matches, float maxDistance, cv::_InputArray* mask, bool compactResult);
+    ; CVAPI(void) cveDescriptorMatcherRadiusMatch1(cv::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, cv::_InputArray* trainDescriptors, std::vector<std::vector<cv::DMatch>>* matches, float maxDistance, cv::_InputArray* mask, bool compactResult);
 
     Local $bMatcherDllType
     If VarGetType($matcher) == "DLLStruct" Then
@@ -1788,7 +1788,7 @@ Func _cveDescriptorMatcherRadiusMatch1Mat($matcher, $matQueryDescriptors, $matTr
 EndFunc   ;==>_cveDescriptorMatcherRadiusMatch1Mat
 
 Func _cveDescriptorMatcherRadiusMatch2($matcher, $queryDescriptors, $matches, $maxDistance, $masks, $compactResult)
-    ; CVAPI(void) cveDescriptorMatcherRadiusMatch2(cv::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, std::vector< std::vector<cv::DMatch> >* matches, float maxDistance, cv::_InputArray* masks, bool compactResult);
+    ; CVAPI(void) cveDescriptorMatcherRadiusMatch2(cv::DescriptorMatcher* matcher, cv::_InputArray* queryDescriptors, std::vector<std::vector<cv::DMatch>>* matches, float maxDistance, cv::_InputArray* masks, bool compactResult);
 
     Local $bMatcherDllType
     If VarGetType($matcher) == "DLLStruct" Then
@@ -1954,7 +1954,7 @@ Func _cveFlannBasedMatcherRelease($matcher)
 EndFunc   ;==>_cveFlannBasedMatcherRelease
 
 Func _voteForSizeAndOrientation($modelKeyPoints, $observedKeyPoints, $matches, $mask, $scaleIncrement, $rotationBins)
-    ; CVAPI(int) voteForSizeAndOrientation(std::vector<cv::KeyPoint>* modelKeyPoints, std::vector<cv::KeyPoint>* observedKeyPoints, std::vector< std::vector< cv::DMatch > >* matches, cv::Mat* mask, double scaleIncrement, int rotationBins);
+    ; CVAPI(int) voteForSizeAndOrientation(std::vector<cv::KeyPoint>* modelKeyPoints, std::vector<cv::KeyPoint>* observedKeyPoints, std::vector<std::vector<cv::DMatch>>* matches, cv::Mat* mask, double scaleIncrement, int rotationBins);
 
     Local $vecModelKeyPoints, $iArrModelKeyPointsSize
     Local $bModelKeyPointsIsArray = VarGetType($modelKeyPoints) == "Array"

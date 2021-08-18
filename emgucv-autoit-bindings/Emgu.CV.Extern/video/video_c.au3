@@ -1547,7 +1547,7 @@ Func _cveTrackerGOTURNRelease($tracker, $sharedPtr)
 EndFunc   ;==>_cveTrackerGOTURNRelease
 
 Func _cveTrackerDaSiamRPNCreate($model, $kernel_cls1, $kernel_r1, $backend, $target, $tracker, $sharedPtr)
-    ; CVAPI(cv::TrackerDaSiamRPN*) cveTrackerDaSiamRPNCreate(cv::String* model, cv::String* kernel_cls1, cv::String* kernel_r1, int backend, int target, cv::Tracker** tracker, cv::Ptr< cv::TrackerDaSiamRPN >** sharedPtr);
+    ; CVAPI(cv::TrackerDaSiamRPN*) cveTrackerDaSiamRPNCreate(cv::String* model, cv::String* kernel_cls1, cv::String* kernel_r1, int backend, int target, cv::Tracker** tracker, cv::Ptr<cv::TrackerDaSiamRPN>** sharedPtr);
 
     Local $bModelIsString = VarGetType($model) == "String"
     If $bModelIsString Then
@@ -1617,7 +1617,7 @@ Func _cveTrackerDaSiamRPNCreate($model, $kernel_cls1, $kernel_r1, $backend, $tar
 EndFunc   ;==>_cveTrackerDaSiamRPNCreate
 
 Func _cveTrackerDaSiamRPNRelease($tracker, $sharedPtr)
-    ; CVAPI(void) cveTrackerDaSiamRPNRelease(cv::TrackerDaSiamRPN** tracker, cv::Ptr< cv::TrackerDaSiamRPN >** sharedPtr);
+    ; CVAPI(void) cveTrackerDaSiamRPNRelease(cv::TrackerDaSiamRPN** tracker, cv::Ptr<cv::TrackerDaSiamRPN>** sharedPtr);
 
     Local $bTrackerDllType
     If VarGetType($tracker) == "DLLStruct" Then
