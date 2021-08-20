@@ -119,9 +119,9 @@ Global Const $CV_PROJ_SPHERICAL_EQRECT = 1
 
 ; anonymous
 
-Global Const $CV_CALIB_RECOMPUTE_EXTRINSIC = (BitShift(1, -1))
-Global Const $CV_CALIB_CHECK_COND = (BitShift(1, -2))
-Global Const $CV_CALIB_FIX_SKEW = (BitShift(1, -3))
+Global Const $CV_CALIB_RECOMPUTE_EXTRINSIC = BitShift(1, -1)
+Global Const $CV_CALIB_CHECK_COND = BitShift(1, -2)
+Global Const $CV_CALIB_FIX_SKEW = BitShift(1, -3)
 #EndRegion ..\opencv\modules\calib3d\include\opencv2\calib3d.hpp
 
 
@@ -373,51 +373,51 @@ Global Const $_CV_STORE_ALIGNED_NOCACHE = 2
 
 #Region ..\opencv\modules\core\include\opencv2\core\mat.hpp
 ; AccessFlag
-Global Const $CV_ACCESS_READ = (BitShift(1, -24))
-Global Const $CV_ACCESS_WRITE = (BitShift(1, -25))
-Global Const $CV_ACCESS_RW = (BitShift(3, -24))
+Global Const $CV_ACCESS_READ = BitShift(1, -24)
+Global Const $CV_ACCESS_WRITE = BitShift(1, -25)
+Global Const $CV_ACCESS_RW = BitShift(3, -24)
 Global Const $CV_ACCESS_MASK = $CV_ACCESS_RW
-Global Const $CV_ACCESS_FAST = (BitShift(1, -26))
+Global Const $CV_ACCESS_FAST = BitShift(1, -26)
 
 ; KindFlag
 Global Const $CV__INPUT_ARRAY_KIND_SHIFT = 16
-Global Const $CV__INPUT_ARRAY_FIXED_TYPE = (BitShift(0x8000, -$CV__INPUT_ARRAY_KIND_SHIFT))
-Global Const $CV__INPUT_ARRAY_FIXED_SIZE = (BitShift(0x4000, -$CV__INPUT_ARRAY_KIND_SHIFT))
-Global Const $CV__INPUT_ARRAY_KIND_MASK = (BitShift(31, -$CV__INPUT_ARRAY_KIND_SHIFT))
-Global Const $CV__INPUT_ARRAY_NONE = (BitShift(0, -$CV__INPUT_ARRAY_KIND_SHIFT))
-Global Const $CV__INPUT_ARRAY_MAT = (BitShift(1, -$CV__INPUT_ARRAY_KIND_SHIFT))
-Global Const $CV__INPUT_ARRAY_MATX = (BitShift(2, -$CV__INPUT_ARRAY_KIND_SHIFT))
-Global Const $CV__INPUT_ARRAY_STD_VECTOR = (BitShift(3, -$CV__INPUT_ARRAY_KIND_SHIFT))
-Global Const $CV__INPUT_ARRAY_STD_VECTOR_VECTOR = (BitShift(4, -$CV__INPUT_ARRAY_KIND_SHIFT))
-Global Const $CV__INPUT_ARRAY_STD_VECTOR_MAT = (BitShift(5, -$CV__INPUT_ARRAY_KIND_SHIFT))
-Global Const $CV__INPUT_ARRAY_OPENGL_BUFFER = (BitShift(7, -$CV__INPUT_ARRAY_KIND_SHIFT))
-Global Const $CV__INPUT_ARRAY_CUDA_HOST_MEM = (BitShift(8, -$CV__INPUT_ARRAY_KIND_SHIFT))
-Global Const $CV__INPUT_ARRAY_CUDA_GPU_MAT = (BitShift(9, -$CV__INPUT_ARRAY_KIND_SHIFT))
-Global Const $CV__INPUT_ARRAY_UMAT = (BitShift(10, -$CV__INPUT_ARRAY_KIND_SHIFT))
-Global Const $CV__INPUT_ARRAY_STD_VECTOR_UMAT = (BitShift(11, -$CV__INPUT_ARRAY_KIND_SHIFT))
-Global Const $CV__INPUT_ARRAY_STD_BOOL_VECTOR = (BitShift(12, -$CV__INPUT_ARRAY_KIND_SHIFT))
-Global Const $CV__INPUT_ARRAY_STD_VECTOR_CUDA_GPU_MAT = (BitShift(13, -$CV__INPUT_ARRAY_KIND_SHIFT))
-Global Const $CV__INPUT_ARRAY_STD_ARRAY_MAT = (BitShift(15, -$CV__INPUT_ARRAY_KIND_SHIFT))
+Global Const $CV__INPUT_ARRAY_FIXED_TYPE = BitShift(0x8000, -$CV__INPUT_ARRAY_KIND_SHIFT)
+Global Const $CV__INPUT_ARRAY_FIXED_SIZE = BitShift(0x4000, -$CV__INPUT_ARRAY_KIND_SHIFT)
+Global Const $CV__INPUT_ARRAY_KIND_MASK = BitShift(31, -$CV__INPUT_ARRAY_KIND_SHIFT)
+Global Const $CV__INPUT_ARRAY_NONE = BitShift(0, -$CV__INPUT_ARRAY_KIND_SHIFT)
+Global Const $CV__INPUT_ARRAY_MAT = BitShift(1, -$CV__INPUT_ARRAY_KIND_SHIFT)
+Global Const $CV__INPUT_ARRAY_MATX = BitShift(2, -$CV__INPUT_ARRAY_KIND_SHIFT)
+Global Const $CV__INPUT_ARRAY_STD_VECTOR = BitShift(3, -$CV__INPUT_ARRAY_KIND_SHIFT)
+Global Const $CV__INPUT_ARRAY_STD_VECTOR_VECTOR = BitShift(4, -$CV__INPUT_ARRAY_KIND_SHIFT)
+Global Const $CV__INPUT_ARRAY_STD_VECTOR_MAT = BitShift(5, -$CV__INPUT_ARRAY_KIND_SHIFT)
+Global Const $CV__INPUT_ARRAY_OPENGL_BUFFER = BitShift(7, -$CV__INPUT_ARRAY_KIND_SHIFT)
+Global Const $CV__INPUT_ARRAY_CUDA_HOST_MEM = BitShift(8, -$CV__INPUT_ARRAY_KIND_SHIFT)
+Global Const $CV__INPUT_ARRAY_CUDA_GPU_MAT = BitShift(9, -$CV__INPUT_ARRAY_KIND_SHIFT)
+Global Const $CV__INPUT_ARRAY_UMAT = BitShift(10, -$CV__INPUT_ARRAY_KIND_SHIFT)
+Global Const $CV__INPUT_ARRAY_STD_VECTOR_UMAT = BitShift(11, -$CV__INPUT_ARRAY_KIND_SHIFT)
+Global Const $CV__INPUT_ARRAY_STD_BOOL_VECTOR = BitShift(12, -$CV__INPUT_ARRAY_KIND_SHIFT)
+Global Const $CV__INPUT_ARRAY_STD_VECTOR_CUDA_GPU_MAT = BitShift(13, -$CV__INPUT_ARRAY_KIND_SHIFT)
+Global Const $CV__INPUT_ARRAY_STD_ARRAY_MAT = BitShift(15, -$CV__INPUT_ARRAY_KIND_SHIFT)
 
 ; DepthMask
-Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_8U = (BitShift(1, -$CV_8U))
-Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_8S = (BitShift(1, -$CV_8S))
-Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_16U = (BitShift(1, -$CV_16U))
-Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_16S = (BitShift(1, -$CV_16S))
-Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_32S = (BitShift(1, -$CV_32S))
-Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_32F = (BitShift(1, -$CV_32F))
-Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_64F = (BitShift(1, -$CV_64F))
-Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_16F = (BitShift(1, -$CV_16F))
+Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_8U = BitShift(1, -$CV_8U)
+Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_8S = BitShift(1, -$CV_8S)
+Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_16U = BitShift(1, -$CV_16U)
+Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_16S = BitShift(1, -$CV_16S)
+Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_32S = BitShift(1, -$CV_32S)
+Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_32F = BitShift(1, -$CV_32F)
+Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_64F = BitShift(1, -$CV_64F)
+Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_16F = BitShift(1, -$CV_16F)
 Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_ALL = (BitShift($CV__OUTPUT_ARRAY_DEPTH_MASK_64F, -1))-1
-Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_ALL_BUT_8S = (BitAND($CV__OUTPUT_ARRAY_DEPTH_MASK_ALL, (BitNOT($CV__OUTPUT_ARRAY_DEPTH_MASK_8S))))
+Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_ALL_BUT_8S = BitAND($CV__OUTPUT_ARRAY_DEPTH_MASK_ALL, BitNOT($CV__OUTPUT_ARRAY_DEPTH_MASK_8S))
 Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_ALL_16F = (BitShift($CV__OUTPUT_ARRAY_DEPTH_MASK_16F, -1))-1
 Global Const $CV__OUTPUT_ARRAY_DEPTH_MASK_FLT = $CV__OUTPUT_ARRAY_DEPTH_MASK_32F + $CV__OUTPUT_ARRAY_DEPTH_MASK_64F
 
 ; UMatUsageFlags
 Global Const $CV_USAGE_DEFAULT = 0
-Global Const $CV_USAGE_ALLOCATE_HOST_MEMORY = (BitShift(1, -0))
-Global Const $CV_USAGE_ALLOCATE_DEVICE_MEMORY = (BitShift(1, -1))
-Global Const $CV_USAGE_ALLOCATE_SHARED_MEMORY = (BitShift(1, -2))
+Global Const $CV_USAGE_ALLOCATE_HOST_MEMORY = BitShift(1, -0)
+Global Const $CV_USAGE_ALLOCATE_DEVICE_MEMORY = BitShift(1, -1)
+Global Const $CV_USAGE_ALLOCATE_SHARED_MEMORY = BitShift(1, -2)
 Global Const $CV___UMAT_USAGE_FLAGS_32BIT = 0x7fffffff
 
 ; anonymous
@@ -549,7 +549,7 @@ Global Const $CV_FILE_STORAGE_FORMAT_XML = (BitShift(1, -3))
 Global Const $CV_FILE_STORAGE_FORMAT_YAML = (BitShift(2, -3))
 Global Const $CV_FILE_STORAGE_FORMAT_JSON = (BitShift(3, -3))
 Global Const $CV_FILE_STORAGE_BASE64 = 64
-Global Const $CV_FILE_STORAGE_WRITE_BASE64 = (BitOR($CV_FILE_STORAGE_BASE64, $CV_FILE_STORAGE_WRITE))
+Global Const $CV_FILE_STORAGE_WRITE_BASE64 = BitOR($CV_FILE_STORAGE_BASE64, $CV_FILE_STORAGE_WRITE)
 
 ; State
 Global Const $CV_FILE_STORAGE_UNDEFINED = 0
@@ -971,7 +971,7 @@ Global Const $CV_WARP_POLAR_LOG = 256
 ; InterpolationMasks
 Global Const $CV_INTER_BITS = 5
 Global Const $CV_INTER_BITS2 = $CV_INTER_BITS * 2
-Global Const $CV_INTER_TAB_SIZE = (BitShift(1, -$CV_INTER_BITS))
+Global Const $CV_INTER_TAB_SIZE = BitShift(1, -$CV_INTER_BITS)
 Global Const $CV_INTER_TAB_SIZE2 = $CV_INTER_TAB_SIZE * $CV_INTER_TAB_SIZE
 
 ; DistanceTypes
@@ -1020,8 +1020,8 @@ Global Const $CV_DIST_LABEL_CCOMP = 0
 Global Const $CV_DIST_LABEL_PIXEL = 1
 
 ; FloodFillFlags
-Global Const $CV_FLOODFILL_FIXED_RANGE = (BitShift(1, -16))
-Global Const $CV_FLOODFILL_MASK_ONLY = (BitShift(1, -17))
+Global Const $CV_FLOODFILL_FIXED_RANGE = BitShift(1, -16)
+Global Const $CV_FLOODFILL_MASK_ONLY = BitShift(1, -17)
 
 ; ConnectedComponentsTypes
 Global Const $CV_CC_STAT_LEFT = 0
@@ -1568,8 +1568,8 @@ Global Const $CV_DP_SEAM_FINDER_COLOR_GRAD = 1
 Global Const $CV_DP_SEAM_FINDER_FIRST = 1
 Global Const $CV_DP_SEAM_FINDER_SECOND = 2
 Global Const $CV_DP_SEAM_FINDER_INTERS = 4
-Global Const $CV_DP_SEAM_FINDER_INTERS_FIRST = (BitOR($CV_DP_SEAM_FINDER_INTERS, $CV_DP_SEAM_FINDER_FIRST))
-Global Const $CV_DP_SEAM_FINDER_INTERS_SECOND = (BitOR($CV_DP_SEAM_FINDER_INTERS, $CV_DP_SEAM_FINDER_SECOND))
+Global Const $CV_DP_SEAM_FINDER_INTERS_FIRST = BitOR($CV_DP_SEAM_FINDER_INTERS, $CV_DP_SEAM_FINDER_FIRST)
+Global Const $CV_DP_SEAM_FINDER_INTERS_SECOND = BitOR($CV_DP_SEAM_FINDER_INTERS, $CV_DP_SEAM_FINDER_SECOND)
 
 ; CostType
 Global Const $CV_GRAPH_CUT_SEAM_FINDER_BASE_COST_COLOR = 0
@@ -1730,9 +1730,9 @@ Global Const $CV_CAP_PROP_DC1394_MODE_MANUAL = -3
 Global Const $CV_CAP_PROP_DC1394_MODE_AUTO = -2
 Global Const $CV_CAP_PROP_DC1394_MODE_ONE_PUSH_AUTO = -1
 Global Const $CV_CAP_PROP_DC1394_MAX = 31
-Global Const $CV_CAP_OPENNI_DEPTH_GENERATOR = (BitShift(1, -31))
-Global Const $CV_CAP_OPENNI_IMAGE_GENERATOR = (BitShift(1, -30))
-Global Const $CV_CAP_OPENNI_IR_GENERATOR = (BitShift(1, -29))
+Global Const $CV_CAP_OPENNI_DEPTH_GENERATOR = BitShift(1, -31)
+Global Const $CV_CAP_OPENNI_IMAGE_GENERATOR = BitShift(1, -30)
+Global Const $CV_CAP_OPENNI_IR_GENERATOR = BitShift(1, -29)
 Global Const $CV_CAP_OPENNI_GENERATORS_MASK = $CV_CAP_OPENNI_DEPTH_GENERATOR + $CV_CAP_OPENNI_IMAGE_GENERATOR + $CV_CAP_OPENNI_IR_GENERATOR
 Global Const $CV_CAP_PROP_OPENNI_OUTPUT_MODE = 100
 Global Const $CV_CAP_PROP_OPENNI_FRAME_MAX_DEPTH = 101
@@ -1962,9 +1962,9 @@ Global Const $CV_CAP_PROP_INTELPERC_DEPTH_SATURATION_VALUE = 11004
 Global Const $CV_CAP_PROP_INTELPERC_DEPTH_CONFIDENCE_THRESHOLD = 11005
 Global Const $CV_CAP_PROP_INTELPERC_DEPTH_FOCAL_LENGTH_HORZ = 11006
 Global Const $CV_CAP_PROP_INTELPERC_DEPTH_FOCAL_LENGTH_VERT = 11007
-Global Const $CV_CAP_INTELPERC_DEPTH_GENERATOR = (BitShift(1, -29))
-Global Const $CV_CAP_INTELPERC_IMAGE_GENERATOR = (BitShift(1, -28))
-Global Const $CV_CAP_INTELPERC_IR_GENERATOR = (BitShift(1, -27))
+Global Const $CV_CAP_INTELPERC_DEPTH_GENERATOR = BitShift(1, -29)
+Global Const $CV_CAP_INTELPERC_IMAGE_GENERATOR = BitShift(1, -28)
+Global Const $CV_CAP_INTELPERC_IR_GENERATOR = BitShift(1, -27)
 Global Const $CV_CAP_INTELPERC_GENERATORS_MASK = $CV_CAP_INTELPERC_DEPTH_GENERATOR + $CV_CAP_INTELPERC_IMAGE_GENERATOR + $CV_CAP_INTELPERC_IR_GENERATOR
 Global Const $CV_CAP_INTELPERC_DEPTH_MAP = 0
 Global Const $CV_CAP_INTELPERC_UVDEPTH_MAP = 1
@@ -2573,11 +2573,11 @@ Global Const $CV_MSLIC = 102
 #Region ..\opencv_contrib\modules\ximgproc\include\opencv2\ximgproc\weighted_median_filter.hpp
 ; WMFWeightType
 Global Const $CV_WMF_EXP = 1
-Global Const $CV_WMF_IV1 = (BitShift(1, -1))
-Global Const $CV_WMF_IV2 = (BitShift(1, -2))
-Global Const $CV_WMF_COS = (BitShift(1, -3))
-Global Const $CV_WMF_JAC = (BitShift(1, -4))
-Global Const $CV_WMF_OFF = (BitShift(1, -5))
+Global Const $CV_WMF_IV1 = BitShift(1, -1)
+Global Const $CV_WMF_IV2 = BitShift(1, -2)
+Global Const $CV_WMF_COS = BitShift(1, -3)
+Global Const $CV_WMF_JAC = BitShift(1, -4)
+Global Const $CV_WMF_OFF = BitShift(1, -5)
 #EndRegion ..\opencv_contrib\modules\ximgproc\include\opencv2\ximgproc\weighted_median_filter.hpp
 
 

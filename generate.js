@@ -6,9 +6,10 @@ const waterfall = require("async/waterfall");
 const mkdirp = require("mkdirp");
 const eol = require("eol");
 
-const ExportsParser = require("./src/ExportsParser");
-const EnumParser = require("./src/EnumParser");
-const { convertToAutoIt } = require("./src/autoit-converter");
+const ExportsParser = require("node-autoit-binding-utils/src/ExportsParser");
+const EnumParser = require("node-autoit-binding-utils/src/EnumParser");
+const { convertToAutoIt } = require("node-autoit-binding-utils/src/autoit-converter");
+const { convertExpression } = require("node-autoit-binding-utils/src/autoit-expression-converter");
 
 const {hasOwnProperty: hasProp} = Object.prototype;
 
@@ -55,7 +56,7 @@ const convertFile = (localFile, remoteFile, remotePath, remoteBaseDir, remoteSep
             let body;
             try {
                 body = convertToAutoIt(api, options);
-            } catch(err) {
+            } catch (err) {
                 console.log("converting", localFile, "error");
                 next(err);
                 return;
@@ -170,93 +171,6 @@ const coerceDefaultValue = (defaultValue, {vectmap}) => {
     }
 
     return defaultValue;
-};
-
-const coerceExpression = (value, options) => {
-    let pos = value.indexOf("<<");
-    if (pos !== -1) {
-        let start = pos - 1;
-        while (start >= 0 && value[start] !== "(") {
-            start--;
-        }
-
-        let end = pos + "<<".length;
-        while (end < value.length && value[end] !== ")") {
-            end++;
-        }
-
-        const sstart = value.slice(0, start === -1 ? 0 : start);
-        const left = value.slice(start + 1, pos).trim();
-        const right = value.slice(pos + "<<".length, end).trim();
-        const ssend = value.slice(end + 1);
-        value = `${ sstart }(BitShift(${ left }, -${ right }))${ ssend }`;
-    }
-
-    pos = value.indexOf("|");
-    if (pos !== -1) {
-        let start = pos - 1;
-        while (start >= 0 && value[start] !== "(") {
-            start--;
-        }
-
-        let end = pos + "|".length;
-        while (end < value.length && value[end] !== ")") {
-            end++;
-        }
-
-        const sstart = value.slice(0, start === -1 ? 0 : start);
-        const left = value.slice(start + 1, pos).trim();
-        const right = value.slice(pos + "|".length, end).trim();
-        const ssend = value.slice(end + 1);
-        value = `${ sstart }(BitOR(${ left }, ${ right }))${ ssend }`;
-    }
-
-    pos = value.indexOf("&");
-    if (pos !== -1) {
-        let start = pos - 1;
-        while (start >= 0 && value[start] !== "(") {
-            start--;
-        }
-
-        let end = pos + "&".length;
-        while (end < value.length && value[end] !== ")") {
-            end++;
-        }
-
-        const sstart = value.slice(0, start === -1 ? 0 : start);
-        const left = value.slice(start + 1, pos).trim();
-        const right = value.slice(pos + "&".length, end).trim();
-        const ssend = value.slice(end + 1);
-        value = `${ sstart }(BitAND(${ left }, ${ right }))${ ssend }`;
-    }
-
-    pos = value.indexOf("~");
-    if (pos !== -1) {
-        const start = pos++;
-        if (pos !== value.length && value[pos] === "(") {
-            let opened = 1;
-            pos++;
-            while (opened !== 0 && pos !== value.length) {
-                if (value[pos] === "(") {
-                    opened++;
-                } else if (value[pos] === ")") {
-                    opened--;
-                }
-                pos++;
-            }
-        } else {
-            while (pos !== value.length && /\w/.test(value[pos])) {
-                pos++;
-            }
-        }
-
-        const sstart = value.slice(0, start);
-        const left = value.slice(start + 1, pos).trim();
-        const ssend = value.slice(pos);
-        value = `${ sstart }(BitNOT(${ left }))${ ssend }`;
-    }
-
-    return value.replace(/\b(?<!\$)(?=CV_)/g, "$");
 };
 
 const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, options, cb) => {
@@ -492,7 +406,7 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
                         const expansionRe = new RegExp(`\\b(?:${ variables.join("|") })\\b`, "g");
 
                         const getVariableName = vname => {
-                            return hasProp.call(values, vname) ? `$${ prefix }_${ vname }` : vname;
+                            return hasProp.call(values, vname) ? (prefix ? `$${ prefix }_${ vname }` : `$${ vname }`) : vname;
                         };
 
                         return `; ${ name }\n${ variables.map(vkey => {
@@ -503,7 +417,8 @@ const readAdditionalIncludeDirectories = (localPath, remotePath, vcxproj, option
                             }
 
                             globals.add(vname);
-                            const value = coerceExpression(values[vkey], options).replace(expansionRe, getVariableName);
+
+                            const value = convertExpression(values[vkey], options).replace(expansionRe, getVariableName).replace(/\b(?<!\$)(?=CV_)/g, "$");
                             return `Global Const ${ vname } = ${ value }`;
                         }).join("\n") }`;
                     }).join("\n\n").trim();

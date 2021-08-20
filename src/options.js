@@ -141,7 +141,7 @@ module.exports = {
 
         if (isEnum(args[0][0], options)) {
             args[0][0] = "int";
-        } else if (isPointer(args[0][0], options)) {;
+        } else if (isPointer(args[0][0], options)) {
             args[0][0] = "ptr";
         }
 
@@ -156,7 +156,7 @@ module.exports = {
         return `CVEDllCallResult(${ retval }, "${ name }", @error)`;
     },
 
-    getAutoItType(autoItType, isNativeType, [argType, argName, defaultValue], [returnType, name, args], options) {
+    getAutoItDllType(autoItType, isNativeType, [argType, argName, defaultValue], [returnType, name, args], options) {
         if (isEnum(argType, options)) {
             argType = "int";
             autoItType = `"${ argType }"`;
