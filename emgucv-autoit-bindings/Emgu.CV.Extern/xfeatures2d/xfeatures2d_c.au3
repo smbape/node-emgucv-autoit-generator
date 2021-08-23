@@ -4,251 +4,297 @@
 Func _cveBEBLIDCreate($scaleFactor, $nBits, $feature2D, $sharedPtr)
     ; CVAPI(cv::xfeatures2d::BEBLID*) cveBEBLIDCreate(float scaleFactor, int nBits, cv::Feature2D** feature2D, cv::Ptr<cv::xfeatures2d::BEBLID>** sharedPtr);
 
-    Local $bFeature2DDllType
-    If VarGetType($feature2D) == "DLLStruct" Then
-        $bFeature2DDllType = "struct*"
+    Local $sFeature2DDllType
+    If IsDllStruct($feature2D) Then
+        $sFeature2DDllType = "struct*"
+    ElseIf $feature2D == Null Then
+        $sFeature2DDllType = "ptr"
     Else
-        $bFeature2DDllType = "ptr*"
+        $sFeature2DDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBEBLIDCreate", "float", $scaleFactor, "int", $nBits, $bFeature2DDllType, $feature2D, $bSharedPtrDllType, $sharedPtr), "cveBEBLIDCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBEBLIDCreate", "float", $scaleFactor, "int", $nBits, $sFeature2DDllType, $feature2D, $sSharedPtrDllType, $sharedPtr), "cveBEBLIDCreate", @error)
 EndFunc   ;==>_cveBEBLIDCreate
 
 Func _cveBEBLIDRelease($sharedPtr)
     ; CVAPI(void) cveBEBLIDRelease(cv::Ptr<cv::xfeatures2d::BEBLID>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBEBLIDRelease", $bSharedPtrDllType, $sharedPtr), "cveBEBLIDRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBEBLIDRelease", $sSharedPtrDllType, $sharedPtr), "cveBEBLIDRelease", @error)
 EndFunc   ;==>_cveBEBLIDRelease
 
 Func _cveTBMRCreate($minArea, $maxAreaRelative, $scaleFactor, $nScales, $feature2D, $sharedPtr)
     ; CVAPI(cv::xfeatures2d::TBMR*) cveTBMRCreate(int minArea, float maxAreaRelative, float scaleFactor, int nScales, cv::Feature2D** feature2D, cv::Ptr<cv::xfeatures2d::TBMR>** sharedPtr);
 
-    Local $bFeature2DDllType
-    If VarGetType($feature2D) == "DLLStruct" Then
-        $bFeature2DDllType = "struct*"
+    Local $sFeature2DDllType
+    If IsDllStruct($feature2D) Then
+        $sFeature2DDllType = "struct*"
+    ElseIf $feature2D == Null Then
+        $sFeature2DDllType = "ptr"
     Else
-        $bFeature2DDllType = "ptr*"
+        $sFeature2DDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTBMRCreate", "int", $minArea, "float", $maxAreaRelative, "float", $scaleFactor, "int", $nScales, $bFeature2DDllType, $feature2D, $bSharedPtrDllType, $sharedPtr), "cveTBMRCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTBMRCreate", "int", $minArea, "float", $maxAreaRelative, "float", $scaleFactor, "int", $nScales, $sFeature2DDllType, $feature2D, $sSharedPtrDllType, $sharedPtr), "cveTBMRCreate", @error)
 EndFunc   ;==>_cveTBMRCreate
 
 Func _cveTBMRRelease($sharedPtr)
     ; CVAPI(void) cveTBMRRelease(cv::Ptr<cv::xfeatures2d::TBMR>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTBMRRelease", $bSharedPtrDllType, $sharedPtr), "cveTBMRRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTBMRRelease", $sSharedPtrDllType, $sharedPtr), "cveTBMRRelease", @error)
 EndFunc   ;==>_cveTBMRRelease
 
 Func _cveStarDetectorCreate($maxSize, $responseThreshold, $lineThresholdProjected, $lineThresholdBinarized, $suppressNonmaxSize, $feature2D, $sharedPtr)
     ; CVAPI(cv::xfeatures2d::StarDetector*) cveStarDetectorCreate(int maxSize, int responseThreshold, int lineThresholdProjected, int lineThresholdBinarized, int suppressNonmaxSize, cv::Feature2D** feature2D, cv::Ptr<cv::xfeatures2d::StarDetector>** sharedPtr);
 
-    Local $bFeature2DDllType
-    If VarGetType($feature2D) == "DLLStruct" Then
-        $bFeature2DDllType = "struct*"
+    Local $sFeature2DDllType
+    If IsDllStruct($feature2D) Then
+        $sFeature2DDllType = "struct*"
+    ElseIf $feature2D == Null Then
+        $sFeature2DDllType = "ptr"
     Else
-        $bFeature2DDllType = "ptr*"
+        $sFeature2DDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveStarDetectorCreate", "int", $maxSize, "int", $responseThreshold, "int", $lineThresholdProjected, "int", $lineThresholdBinarized, "int", $suppressNonmaxSize, $bFeature2DDllType, $feature2D, $bSharedPtrDllType, $sharedPtr), "cveStarDetectorCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveStarDetectorCreate", "int", $maxSize, "int", $responseThreshold, "int", $lineThresholdProjected, "int", $lineThresholdBinarized, "int", $suppressNonmaxSize, $sFeature2DDllType, $feature2D, $sSharedPtrDllType, $sharedPtr), "cveStarDetectorCreate", @error)
 EndFunc   ;==>_cveStarDetectorCreate
 
 Func _cveStarDetectorRelease($sharedPtr)
     ; CVAPI(void) cveStarDetectorRelease(cv::Ptr<cv::xfeatures2d::StarDetector>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStarDetectorRelease", $bSharedPtrDllType, $sharedPtr), "cveStarDetectorRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStarDetectorRelease", $sSharedPtrDllType, $sharedPtr), "cveStarDetectorRelease", @error)
 EndFunc   ;==>_cveStarDetectorRelease
 
 Func _cveFreakCreate($orientationNormalized, $scaleNormalized, $patternScale, $nOctaves, $descriptorExtractor, $sharedPtr)
     ; CVAPI(cv::xfeatures2d::FREAK*) cveFreakCreate(bool orientationNormalized, bool scaleNormalized, float patternScale, int nOctaves, cv::Feature2D** descriptorExtractor, cv::Ptr<cv::xfeatures2d::FREAK>** sharedPtr);
 
-    Local $bDescriptorExtractorDllType
-    If VarGetType($descriptorExtractor) == "DLLStruct" Then
-        $bDescriptorExtractorDllType = "struct*"
+    Local $sDescriptorExtractorDllType
+    If IsDllStruct($descriptorExtractor) Then
+        $sDescriptorExtractorDllType = "struct*"
+    ElseIf $descriptorExtractor == Null Then
+        $sDescriptorExtractorDllType = "ptr"
     Else
-        $bDescriptorExtractorDllType = "ptr*"
+        $sDescriptorExtractorDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFreakCreate", "boolean", $orientationNormalized, "boolean", $scaleNormalized, "float", $patternScale, "int", $nOctaves, $bDescriptorExtractorDllType, $descriptorExtractor, $bSharedPtrDllType, $sharedPtr), "cveFreakCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFreakCreate", "boolean", $orientationNormalized, "boolean", $scaleNormalized, "float", $patternScale, "int", $nOctaves, $sDescriptorExtractorDllType, $descriptorExtractor, $sSharedPtrDllType, $sharedPtr), "cveFreakCreate", @error)
 EndFunc   ;==>_cveFreakCreate
 
 Func _cveFreakRelease($sharedPtr)
     ; CVAPI(void) cveFreakRelease(cv::Ptr<cv::xfeatures2d::FREAK>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFreakRelease", $bSharedPtrDllType, $sharedPtr), "cveFreakRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFreakRelease", $sSharedPtrDllType, $sharedPtr), "cveFreakRelease", @error)
 EndFunc   ;==>_cveFreakRelease
 
 Func _cveBriefDescriptorExtractorCreate($descriptorSize, $feature2D, $sharedPtr)
     ; CVAPI(cv::xfeatures2d::BriefDescriptorExtractor*) cveBriefDescriptorExtractorCreate(int descriptorSize, cv::Feature2D** feature2D, cv::Ptr<cv::xfeatures2d::BriefDescriptorExtractor>** sharedPtr);
 
-    Local $bFeature2DDllType
-    If VarGetType($feature2D) == "DLLStruct" Then
-        $bFeature2DDllType = "struct*"
+    Local $sFeature2DDllType
+    If IsDllStruct($feature2D) Then
+        $sFeature2DDllType = "struct*"
+    ElseIf $feature2D == Null Then
+        $sFeature2DDllType = "ptr"
     Else
-        $bFeature2DDllType = "ptr*"
+        $sFeature2DDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBriefDescriptorExtractorCreate", "int", $descriptorSize, $bFeature2DDllType, $feature2D, $bSharedPtrDllType, $sharedPtr), "cveBriefDescriptorExtractorCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBriefDescriptorExtractorCreate", "int", $descriptorSize, $sFeature2DDllType, $feature2D, $sSharedPtrDllType, $sharedPtr), "cveBriefDescriptorExtractorCreate", @error)
 EndFunc   ;==>_cveBriefDescriptorExtractorCreate
 
 Func _cveBriefDescriptorExtractorRelease($sharedPtr)
     ; CVAPI(void) cveBriefDescriptorExtractorRelease(cv::Ptr<cv::xfeatures2d::BriefDescriptorExtractor>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBriefDescriptorExtractorRelease", $bSharedPtrDllType, $sharedPtr), "cveBriefDescriptorExtractorRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBriefDescriptorExtractorRelease", $sSharedPtrDllType, $sharedPtr), "cveBriefDescriptorExtractorRelease", @error)
 EndFunc   ;==>_cveBriefDescriptorExtractorRelease
 
 Func _cveLUCIDCreate($lucidKernel, $blurKernel, $feature2D, $sharedPtr)
     ; CVAPI(cv::xfeatures2d::LUCID*) cveLUCIDCreate(int lucidKernel, int blurKernel, cv::Feature2D** feature2D, cv::Ptr<cv::xfeatures2d::LUCID>** sharedPtr);
 
-    Local $bFeature2DDllType
-    If VarGetType($feature2D) == "DLLStruct" Then
-        $bFeature2DDllType = "struct*"
+    Local $sFeature2DDllType
+    If IsDllStruct($feature2D) Then
+        $sFeature2DDllType = "struct*"
+    ElseIf $feature2D == Null Then
+        $sFeature2DDllType = "ptr"
     Else
-        $bFeature2DDllType = "ptr*"
+        $sFeature2DDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveLUCIDCreate", "int", $lucidKernel, "int", $blurKernel, $bFeature2DDllType, $feature2D, $bSharedPtrDllType, $sharedPtr), "cveLUCIDCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveLUCIDCreate", "int", $lucidKernel, "int", $blurKernel, $sFeature2DDllType, $feature2D, $sSharedPtrDllType, $sharedPtr), "cveLUCIDCreate", @error)
 EndFunc   ;==>_cveLUCIDCreate
 
 Func _cveLUCIDRelease($sharedPtr)
     ; CVAPI(void) cveLUCIDRelease(cv::Ptr<cv::xfeatures2d::LUCID>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLUCIDRelease", $bSharedPtrDllType, $sharedPtr), "cveLUCIDRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLUCIDRelease", $sSharedPtrDllType, $sharedPtr), "cveLUCIDRelease", @error)
 EndFunc   ;==>_cveLUCIDRelease
 
 Func _cveLATCHCreate($bytes, $rotationInvariance, $halfSsdSize, $extractor, $sharedPtr)
     ; CVAPI(cv::xfeatures2d::LATCH*) cveLATCHCreate(int bytes, bool rotationInvariance, int halfSsdSize, cv::Feature2D** extractor, cv::Ptr<cv::xfeatures2d::LATCH>** sharedPtr);
 
-    Local $bExtractorDllType
-    If VarGetType($extractor) == "DLLStruct" Then
-        $bExtractorDllType = "struct*"
+    Local $sExtractorDllType
+    If IsDllStruct($extractor) Then
+        $sExtractorDllType = "struct*"
+    ElseIf $extractor == Null Then
+        $sExtractorDllType = "ptr"
     Else
-        $bExtractorDllType = "ptr*"
+        $sExtractorDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveLATCHCreate", "int", $bytes, "boolean", $rotationInvariance, "int", $halfSsdSize, $bExtractorDllType, $extractor, $bSharedPtrDllType, $sharedPtr), "cveLATCHCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveLATCHCreate", "int", $bytes, "boolean", $rotationInvariance, "int", $halfSsdSize, $sExtractorDllType, $extractor, $sSharedPtrDllType, $sharedPtr), "cveLATCHCreate", @error)
 EndFunc   ;==>_cveLATCHCreate
 
 Func _cveLATCHRelease($sharedPtr)
     ; CVAPI(void) cveLATCHRelease(cv::Ptr<cv::xfeatures2d::LATCH>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLATCHRelease", $bSharedPtrDllType, $sharedPtr), "cveLATCHRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLATCHRelease", $sSharedPtrDllType, $sharedPtr), "cveLATCHRelease", @error)
 EndFunc   ;==>_cveLATCHRelease
 
 Func _cveDAISYCreate($radius, $qRadius, $qTheta, $qHist, $norm, $H, $interpolation, $useOrientation, $extractor, $sharedPtr)
     ; CVAPI(cv::xfeatures2d::DAISY*) cveDAISYCreate(float radius, int qRadius, int qTheta, int qHist, int norm, cv::_InputArray* H, bool interpolation, bool useOrientation, cv::Feature2D** extractor, cv::Ptr<cv::xfeatures2d::DAISY>** sharedPtr);
 
-    Local $bHDllType
-    If VarGetType($H) == "DLLStruct" Then
-        $bHDllType = "struct*"
+    Local $sHDllType
+    If IsDllStruct($H) Then
+        $sHDllType = "struct*"
     Else
-        $bHDllType = "ptr"
+        $sHDllType = "ptr"
     EndIf
 
-    Local $bExtractorDllType
-    If VarGetType($extractor) == "DLLStruct" Then
-        $bExtractorDllType = "struct*"
+    Local $sExtractorDllType
+    If IsDllStruct($extractor) Then
+        $sExtractorDllType = "struct*"
+    ElseIf $extractor == Null Then
+        $sExtractorDllType = "ptr"
     Else
-        $bExtractorDllType = "ptr*"
+        $sExtractorDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDAISYCreate", "float", $radius, "int", $qRadius, "int", $qTheta, "int", $qHist, "int", $norm, $bHDllType, $H, "boolean", $interpolation, "boolean", $useOrientation, $bExtractorDllType, $extractor, $bSharedPtrDllType, $sharedPtr), "cveDAISYCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDAISYCreate", "float", $radius, "int", $qRadius, "int", $qTheta, "int", $qHist, "int", $norm, $sHDllType, $H, "boolean", $interpolation, "boolean", $useOrientation, $sExtractorDllType, $extractor, $sSharedPtrDllType, $sharedPtr), "cveDAISYCreate", @error)
 EndFunc   ;==>_cveDAISYCreate
 
 Func _cveDAISYCreateMat($radius, $qRadius, $qTheta, $qHist, $norm, $matH, $interpolation, $useOrientation, $extractor, $sharedPtr)
@@ -284,122 +330,144 @@ EndFunc   ;==>_cveDAISYCreateMat
 Func _cveDAISYRelease($sharedPtr)
     ; CVAPI(void) cveDAISYRelease(cv::Ptr<cv::xfeatures2d::DAISY>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDAISYRelease", $bSharedPtrDllType, $sharedPtr), "cveDAISYRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDAISYRelease", $sSharedPtrDllType, $sharedPtr), "cveDAISYRelease", @error)
 EndFunc   ;==>_cveDAISYRelease
 
 Func _cveBoostDescCreate($desc, $useScaleOrientation, $scalefactor, $feature2D, $sharedPtr)
     ; CVAPI(cv::xfeatures2d::BoostDesc*) cveBoostDescCreate(int desc, bool useScaleOrientation, float scalefactor, cv::Feature2D** feature2D, cv::Ptr<cv::xfeatures2d::BoostDesc>** sharedPtr);
 
-    Local $bFeature2DDllType
-    If VarGetType($feature2D) == "DLLStruct" Then
-        $bFeature2DDllType = "struct*"
+    Local $sFeature2DDllType
+    If IsDllStruct($feature2D) Then
+        $sFeature2DDllType = "struct*"
+    ElseIf $feature2D == Null Then
+        $sFeature2DDllType = "ptr"
     Else
-        $bFeature2DDllType = "ptr*"
+        $sFeature2DDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBoostDescCreate", "int", $desc, "boolean", $useScaleOrientation, "float", $scalefactor, $bFeature2DDllType, $feature2D, $bSharedPtrDllType, $sharedPtr), "cveBoostDescCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBoostDescCreate", "int", $desc, "boolean", $useScaleOrientation, "float", $scalefactor, $sFeature2DDllType, $feature2D, $sSharedPtrDllType, $sharedPtr), "cveBoostDescCreate", @error)
 EndFunc   ;==>_cveBoostDescCreate
 
 Func _cveBoostDescRelease($sharedPtr)
     ; CVAPI(void) cveBoostDescRelease(cv::Ptr<cv::xfeatures2d::BoostDesc>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBoostDescRelease", $bSharedPtrDllType, $sharedPtr), "cveBoostDescRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBoostDescRelease", $sSharedPtrDllType, $sharedPtr), "cveBoostDescRelease", @error)
 EndFunc   ;==>_cveBoostDescRelease
 
 Func _cveMSDDetectorCreate($m_patch_radius, $m_search_area_radius, $m_nms_radius, $m_nms_scale_radius, $m_th_saliency, $m_kNN, $m_scale_factor, $m_n_scales, $m_compute_orientation, $feature2D, $sharedPtr)
     ; CVAPI(cv::xfeatures2d::MSDDetector*) cveMSDDetectorCreate(int m_patch_radius, int m_search_area_radius, int m_nms_radius, int m_nms_scale_radius, float m_th_saliency, int m_kNN, float m_scale_factor, int m_n_scales, bool m_compute_orientation, cv::Feature2D** feature2D, cv::Ptr<cv::xfeatures2d::MSDDetector>** sharedPtr);
 
-    Local $bFeature2DDllType
-    If VarGetType($feature2D) == "DLLStruct" Then
-        $bFeature2DDllType = "struct*"
+    Local $sFeature2DDllType
+    If IsDllStruct($feature2D) Then
+        $sFeature2DDllType = "struct*"
+    ElseIf $feature2D == Null Then
+        $sFeature2DDllType = "ptr"
     Else
-        $bFeature2DDllType = "ptr*"
+        $sFeature2DDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMSDDetectorCreate", "int", $m_patch_radius, "int", $m_search_area_radius, "int", $m_nms_radius, "int", $m_nms_scale_radius, "float", $m_th_saliency, "int", $m_kNN, "float", $m_scale_factor, "int", $m_n_scales, "boolean", $m_compute_orientation, $bFeature2DDllType, $feature2D, $bSharedPtrDllType, $sharedPtr), "cveMSDDetectorCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMSDDetectorCreate", "int", $m_patch_radius, "int", $m_search_area_radius, "int", $m_nms_radius, "int", $m_nms_scale_radius, "float", $m_th_saliency, "int", $m_kNN, "float", $m_scale_factor, "int", $m_n_scales, "boolean", $m_compute_orientation, $sFeature2DDllType, $feature2D, $sSharedPtrDllType, $sharedPtr), "cveMSDDetectorCreate", @error)
 EndFunc   ;==>_cveMSDDetectorCreate
 
 Func _cveMSDDetectorRelease($sharedPtr)
     ; CVAPI(void) cveMSDDetectorRelease(cv::Ptr<cv::xfeatures2d::MSDDetector>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMSDDetectorRelease", $bSharedPtrDllType, $sharedPtr), "cveMSDDetectorRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMSDDetectorRelease", $sSharedPtrDllType, $sharedPtr), "cveMSDDetectorRelease", @error)
 EndFunc   ;==>_cveMSDDetectorRelease
 
 Func _cveVGGCreate($desc, $isigma, $imgNormalize, $useScaleOrientation, $scaleFactor, $dscNormalize, $feature2D, $sharedPtr)
     ; CVAPI(cv::xfeatures2d::VGG*) cveVGGCreate(int desc, float isigma, bool imgNormalize, bool useScaleOrientation, float scaleFactor, bool dscNormalize, cv::Feature2D** feature2D, cv::Ptr<cv::xfeatures2d::VGG>** sharedPtr);
 
-    Local $bFeature2DDllType
-    If VarGetType($feature2D) == "DLLStruct" Then
-        $bFeature2DDllType = "struct*"
+    Local $sFeature2DDllType
+    If IsDllStruct($feature2D) Then
+        $sFeature2DDllType = "struct*"
+    ElseIf $feature2D == Null Then
+        $sFeature2DDllType = "ptr"
     Else
-        $bFeature2DDllType = "ptr*"
+        $sFeature2DDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveVGGCreate", "int", $desc, "float", $isigma, "boolean", $imgNormalize, "boolean", $useScaleOrientation, "float", $scaleFactor, "boolean", $dscNormalize, $bFeature2DDllType, $feature2D, $bSharedPtrDllType, $sharedPtr), "cveVGGCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveVGGCreate", "int", $desc, "float", $isigma, "boolean", $imgNormalize, "boolean", $useScaleOrientation, "float", $scaleFactor, "boolean", $dscNormalize, $sFeature2DDllType, $feature2D, $sSharedPtrDllType, $sharedPtr), "cveVGGCreate", @error)
 EndFunc   ;==>_cveVGGCreate
 
 Func _cveVGGRelease($sharedPtr)
     ; CVAPI(void) cveVGGRelease(cv::Ptr<cv::xfeatures2d::VGG>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVGGRelease", $bSharedPtrDllType, $sharedPtr), "cveVGGRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVGGRelease", $sSharedPtrDllType, $sharedPtr), "cveVGGRelease", @error)
 EndFunc   ;==>_cveVGGRelease
 
 Func _cvePCTSignaturesCreate($initSampleCount, $initSeedCount, $pointDistribution, $sharedPtr)
     ; CVAPI(cv::xfeatures2d::PCTSignatures*) cvePCTSignaturesCreate(int initSampleCount, int initSeedCount, int pointDistribution, cv::Ptr<cv::xfeatures2d::PCTSignatures>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePCTSignaturesCreate", "int", $initSampleCount, "int", $initSeedCount, "int", $pointDistribution, $bSharedPtrDllType, $sharedPtr), "cvePCTSignaturesCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePCTSignaturesCreate", "int", $initSampleCount, "int", $initSeedCount, "int", $pointDistribution, $sSharedPtrDllType, $sharedPtr), "cvePCTSignaturesCreate", @error)
 EndFunc   ;==>_cvePCTSignaturesCreate
 
 Func _cvePCTSignaturesCreate2($initSamplingPoints, $initSeedCount, $sharedPtr)
@@ -419,21 +487,23 @@ Func _cvePCTSignaturesCreate2($initSamplingPoints, $initSeedCount, $sharedPtr)
         $vecInitSamplingPoints = $initSamplingPoints
     EndIf
 
-    Local $bInitSamplingPointsDllType
-    If VarGetType($initSamplingPoints) == "DLLStruct" Then
-        $bInitSamplingPointsDllType = "struct*"
+    Local $sInitSamplingPointsDllType
+    If IsDllStruct($initSamplingPoints) Then
+        $sInitSamplingPointsDllType = "struct*"
     Else
-        $bInitSamplingPointsDllType = "ptr"
+        $sInitSamplingPointsDllType = "ptr"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePCTSignaturesCreate2", $bInitSamplingPointsDllType, $vecInitSamplingPoints, "int", $initSeedCount, $bSharedPtrDllType, $sharedPtr), "cvePCTSignaturesCreate2", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePCTSignaturesCreate2", $sInitSamplingPointsDllType, $vecInitSamplingPoints, "int", $initSeedCount, $sSharedPtrDllType, $sharedPtr), "cvePCTSignaturesCreate2", @error)
 
     If $bInitSamplingPointsIsArray Then
         _VectorOfPointFRelease($vecInitSamplingPoints)
@@ -459,11 +529,11 @@ Func _cvePCTSignaturesCreate3($initSamplingPoints, $initClusterSeedIndexes, $sha
         $vecInitSamplingPoints = $initSamplingPoints
     EndIf
 
-    Local $bInitSamplingPointsDllType
-    If VarGetType($initSamplingPoints) == "DLLStruct" Then
-        $bInitSamplingPointsDllType = "struct*"
+    Local $sInitSamplingPointsDllType
+    If IsDllStruct($initSamplingPoints) Then
+        $sInitSamplingPointsDllType = "struct*"
     Else
-        $bInitSamplingPointsDllType = "ptr"
+        $sInitSamplingPointsDllType = "ptr"
     EndIf
 
     Local $vecInitClusterSeedIndexes, $iArrInitClusterSeedIndexesSize
@@ -480,21 +550,23 @@ Func _cvePCTSignaturesCreate3($initSamplingPoints, $initClusterSeedIndexes, $sha
         $vecInitClusterSeedIndexes = $initClusterSeedIndexes
     EndIf
 
-    Local $bInitClusterSeedIndexesDllType
-    If VarGetType($initClusterSeedIndexes) == "DLLStruct" Then
-        $bInitClusterSeedIndexesDllType = "struct*"
+    Local $sInitClusterSeedIndexesDllType
+    If IsDllStruct($initClusterSeedIndexes) Then
+        $sInitClusterSeedIndexesDllType = "struct*"
     Else
-        $bInitClusterSeedIndexesDllType = "ptr"
+        $sInitClusterSeedIndexesDllType = "ptr"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePCTSignaturesCreate3", $bInitSamplingPointsDllType, $vecInitSamplingPoints, $bInitClusterSeedIndexesDllType, $vecInitClusterSeedIndexes, $bSharedPtrDllType, $sharedPtr), "cvePCTSignaturesCreate3", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePCTSignaturesCreate3", $sInitSamplingPointsDllType, $vecInitSamplingPoints, $sInitClusterSeedIndexesDllType, $vecInitClusterSeedIndexes, $sSharedPtrDllType, $sharedPtr), "cvePCTSignaturesCreate3", @error)
 
     If $bInitClusterSeedIndexesIsArray Then
         _VectorOfIntRelease($vecInitClusterSeedIndexes)
@@ -510,41 +582,43 @@ EndFunc   ;==>_cvePCTSignaturesCreate3
 Func _cvePCTSignaturesRelease($sharedPtr)
     ; CVAPI(void) cvePCTSignaturesRelease(cv::Ptr<cv::xfeatures2d::PCTSignatures>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePCTSignaturesRelease", $bSharedPtrDllType, $sharedPtr), "cvePCTSignaturesRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePCTSignaturesRelease", $sSharedPtrDllType, $sharedPtr), "cvePCTSignaturesRelease", @error)
 EndFunc   ;==>_cvePCTSignaturesRelease
 
 Func _cvePCTSignaturesComputeSignature($pct, $image, $signature)
     ; CVAPI(void) cvePCTSignaturesComputeSignature(cv::xfeatures2d::PCTSignatures* pct, cv::_InputArray* image, cv::_OutputArray* signature);
 
-    Local $bPctDllType
-    If VarGetType($pct) == "DLLStruct" Then
-        $bPctDllType = "struct*"
+    Local $sPctDllType
+    If IsDllStruct($pct) Then
+        $sPctDllType = "struct*"
     Else
-        $bPctDllType = "ptr"
+        $sPctDllType = "ptr"
     EndIf
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bSignatureDllType
-    If VarGetType($signature) == "DLLStruct" Then
-        $bSignatureDllType = "struct*"
+    Local $sSignatureDllType
+    If IsDllStruct($signature) Then
+        $sSignatureDllType = "struct*"
     Else
-        $bSignatureDllType = "ptr"
+        $sSignatureDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePCTSignaturesComputeSignature", $bPctDllType, $pct, $bImageDllType, $image, $bSignatureDllType, $signature), "cvePCTSignaturesComputeSignature", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePCTSignaturesComputeSignature", $sPctDllType, $pct, $sImageDllType, $image, $sSignatureDllType, $signature), "cvePCTSignaturesComputeSignature", @error)
 EndFunc   ;==>_cvePCTSignaturesComputeSignature
 
 Func _cvePCTSignaturesComputeSignatureMat($pct, $matImage, $matSignature)
@@ -600,28 +674,28 @@ EndFunc   ;==>_cvePCTSignaturesComputeSignatureMat
 Func _cvePCTSignaturesDrawSignature($source, $signature, $result, $radiusToShorterSideRatio, $borderThickness)
     ; CVAPI(void) cvePCTSignaturesDrawSignature(cv::_InputArray* source, cv::_InputArray* signature, cv::_OutputArray* result, float radiusToShorterSideRatio, int borderThickness);
 
-    Local $bSourceDllType
-    If VarGetType($source) == "DLLStruct" Then
-        $bSourceDllType = "struct*"
+    Local $sSourceDllType
+    If IsDllStruct($source) Then
+        $sSourceDllType = "struct*"
     Else
-        $bSourceDllType = "ptr"
+        $sSourceDllType = "ptr"
     EndIf
 
-    Local $bSignatureDllType
-    If VarGetType($signature) == "DLLStruct" Then
-        $bSignatureDllType = "struct*"
+    Local $sSignatureDllType
+    If IsDllStruct($signature) Then
+        $sSignatureDllType = "struct*"
     Else
-        $bSignatureDllType = "ptr"
+        $sSignatureDllType = "ptr"
     EndIf
 
-    Local $bResultDllType
-    If VarGetType($result) == "DLLStruct" Then
-        $bResultDllType = "struct*"
+    Local $sResultDllType
+    If IsDllStruct($result) Then
+        $sResultDllType = "struct*"
     Else
-        $bResultDllType = "ptr"
+        $sResultDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePCTSignaturesDrawSignature", $bSourceDllType, $source, $bSignatureDllType, $signature, $bResultDllType, $result, "float", $radiusToShorterSideRatio, "int", $borderThickness), "cvePCTSignaturesDrawSignature", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePCTSignaturesDrawSignature", $sSourceDllType, $source, $sSignatureDllType, $signature, $sResultDllType, $result, "float", $radiusToShorterSideRatio, "int", $borderThickness), "cvePCTSignaturesDrawSignature", @error)
 EndFunc   ;==>_cvePCTSignaturesDrawSignature
 
 Func _cvePCTSignaturesDrawSignatureMat($matSource, $matSignature, $matResult, $radiusToShorterSideRatio, $borderThickness)
@@ -699,39 +773,41 @@ EndFunc   ;==>_cvePCTSignaturesDrawSignatureMat
 Func _cvePCTSignaturesSQFDCreate($distanceFunction, $similarityFunction, $similarityParameter, $sharedPtr)
     ; CVAPI(cv::xfeatures2d::PCTSignaturesSQFD*) cvePCTSignaturesSQFDCreate(int distanceFunction, int similarityFunction, float similarityParameter, cv::Ptr<cv::xfeatures2d::PCTSignaturesSQFD>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePCTSignaturesSQFDCreate", "int", $distanceFunction, "int", $similarityFunction, "float", $similarityParameter, $bSharedPtrDllType, $sharedPtr), "cvePCTSignaturesSQFDCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePCTSignaturesSQFDCreate", "int", $distanceFunction, "int", $similarityFunction, "float", $similarityParameter, $sSharedPtrDllType, $sharedPtr), "cvePCTSignaturesSQFDCreate", @error)
 EndFunc   ;==>_cvePCTSignaturesSQFDCreate
 
 Func _cvePCTSignaturesSQFDComputeQuadraticFormDistance($sqfd, $signature0, $signature1)
     ; CVAPI(float) cvePCTSignaturesSQFDComputeQuadraticFormDistance(cv::xfeatures2d::PCTSignaturesSQFD* sqfd, cv::_InputArray* signature0, cv::_InputArray* signature1);
 
-    Local $bSqfdDllType
-    If VarGetType($sqfd) == "DLLStruct" Then
-        $bSqfdDllType = "struct*"
+    Local $sSqfdDllType
+    If IsDllStruct($sqfd) Then
+        $sSqfdDllType = "struct*"
     Else
-        $bSqfdDllType = "ptr"
+        $sSqfdDllType = "ptr"
     EndIf
 
-    Local $bSignature0DllType
-    If VarGetType($signature0) == "DLLStruct" Then
-        $bSignature0DllType = "struct*"
+    Local $sSignature0DllType
+    If IsDllStruct($signature0) Then
+        $sSignature0DllType = "struct*"
     Else
-        $bSignature0DllType = "ptr"
+        $sSignature0DllType = "ptr"
     EndIf
 
-    Local $bSignature1DllType
-    If VarGetType($signature1) == "DLLStruct" Then
-        $bSignature1DllType = "struct*"
+    Local $sSignature1DllType
+    If IsDllStruct($signature1) Then
+        $sSignature1DllType = "struct*"
     Else
-        $bSignature1DllType = "ptr"
+        $sSignature1DllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cvePCTSignaturesSQFDComputeQuadraticFormDistance", $bSqfdDllType, $sqfd, $bSignature0DllType, $signature0, $bSignature1DllType, $signature1), "cvePCTSignaturesSQFDComputeQuadraticFormDistance", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cvePCTSignaturesSQFDComputeQuadraticFormDistance", $sSqfdDllType, $sqfd, $sSignature0DllType, $signature0, $sSignature1DllType, $signature1), "cvePCTSignaturesSQFDComputeQuadraticFormDistance", @error)
 EndFunc   ;==>_cvePCTSignaturesSQFDComputeQuadraticFormDistance
 
 Func _cvePCTSignaturesSQFDComputeQuadraticFormDistanceMat($sqfd, $matSignature0, $matSignature1)
@@ -789,18 +865,18 @@ EndFunc   ;==>_cvePCTSignaturesSQFDComputeQuadraticFormDistanceMat
 Func _cvePCTSignaturesSQFDComputeQuadraticFormDistances($sqfd, $sourceSignature, $imageSignatures, $distances)
     ; CVAPI(void) cvePCTSignaturesSQFDComputeQuadraticFormDistances(cv::xfeatures2d::PCTSignaturesSQFD* sqfd, cv::Mat* sourceSignature, std::vector<cv::Mat>* imageSignatures, std::vector<float>* distances);
 
-    Local $bSqfdDllType
-    If VarGetType($sqfd) == "DLLStruct" Then
-        $bSqfdDllType = "struct*"
+    Local $sSqfdDllType
+    If IsDllStruct($sqfd) Then
+        $sSqfdDllType = "struct*"
     Else
-        $bSqfdDllType = "ptr"
+        $sSqfdDllType = "ptr"
     EndIf
 
-    Local $bSourceSignatureDllType
-    If VarGetType($sourceSignature) == "DLLStruct" Then
-        $bSourceSignatureDllType = "struct*"
+    Local $sSourceSignatureDllType
+    If IsDllStruct($sourceSignature) Then
+        $sSourceSignatureDllType = "struct*"
     Else
-        $bSourceSignatureDllType = "ptr"
+        $sSourceSignatureDllType = "ptr"
     EndIf
 
     Local $vecImageSignatures, $iArrImageSignaturesSize
@@ -817,11 +893,11 @@ Func _cvePCTSignaturesSQFDComputeQuadraticFormDistances($sqfd, $sourceSignature,
         $vecImageSignatures = $imageSignatures
     EndIf
 
-    Local $bImageSignaturesDllType
-    If VarGetType($imageSignatures) == "DLLStruct" Then
-        $bImageSignaturesDllType = "struct*"
+    Local $sImageSignaturesDllType
+    If IsDllStruct($imageSignatures) Then
+        $sImageSignaturesDllType = "struct*"
     Else
-        $bImageSignaturesDllType = "ptr"
+        $sImageSignaturesDllType = "ptr"
     EndIf
 
     Local $vecDistances, $iArrDistancesSize
@@ -838,14 +914,14 @@ Func _cvePCTSignaturesSQFDComputeQuadraticFormDistances($sqfd, $sourceSignature,
         $vecDistances = $distances
     EndIf
 
-    Local $bDistancesDllType
-    If VarGetType($distances) == "DLLStruct" Then
-        $bDistancesDllType = "struct*"
+    Local $sDistancesDllType
+    If IsDllStruct($distances) Then
+        $sDistancesDllType = "struct*"
     Else
-        $bDistancesDllType = "ptr"
+        $sDistancesDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePCTSignaturesSQFDComputeQuadraticFormDistances", $bSqfdDllType, $sqfd, $bSourceSignatureDllType, $sourceSignature, $bImageSignaturesDllType, $vecImageSignatures, $bDistancesDllType, $vecDistances), "cvePCTSignaturesSQFDComputeQuadraticFormDistances", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePCTSignaturesSQFDComputeQuadraticFormDistances", $sSqfdDllType, $sqfd, $sSourceSignatureDllType, $sourceSignature, $sImageSignaturesDllType, $vecImageSignatures, $sDistancesDllType, $vecDistances), "cvePCTSignaturesSQFDComputeQuadraticFormDistances", @error)
 
     If $bDistancesIsArray Then
         _VectorOfFloatRelease($vecDistances)
@@ -859,56 +935,62 @@ EndFunc   ;==>_cvePCTSignaturesSQFDComputeQuadraticFormDistances
 Func _cvePCTSignaturesSQFDRelease($sharedPtr)
     ; CVAPI(void) cvePCTSignaturesSQFDRelease(cv::Ptr<cv::xfeatures2d::PCTSignaturesSQFD>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePCTSignaturesSQFDRelease", $bSharedPtrDllType, $sharedPtr), "cvePCTSignaturesSQFDRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePCTSignaturesSQFDRelease", $sSharedPtrDllType, $sharedPtr), "cvePCTSignaturesSQFDRelease", @error)
 EndFunc   ;==>_cvePCTSignaturesSQFDRelease
 
 Func _cveHarrisLaplaceFeatureDetectorCreate($numOctaves, $corn_thresh, $DOG_thresh, $maxCorners, $num_layers, $sharedPtr)
     ; CVAPI(cv::xfeatures2d::HarrisLaplaceFeatureDetector*) cveHarrisLaplaceFeatureDetectorCreate(int numOctaves, float corn_thresh, float DOG_thresh, int maxCorners, int num_layers, cv::Ptr<cv::xfeatures2d::HarrisLaplaceFeatureDetector>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHarrisLaplaceFeatureDetectorCreate", "int", $numOctaves, "float", $corn_thresh, "float", $DOG_thresh, "int", $maxCorners, "int", $num_layers, $bSharedPtrDllType, $sharedPtr), "cveHarrisLaplaceFeatureDetectorCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHarrisLaplaceFeatureDetectorCreate", "int", $numOctaves, "float", $corn_thresh, "float", $DOG_thresh, "int", $maxCorners, "int", $num_layers, $sSharedPtrDllType, $sharedPtr), "cveHarrisLaplaceFeatureDetectorCreate", @error)
 EndFunc   ;==>_cveHarrisLaplaceFeatureDetectorCreate
 
 Func _cveHarrisLaplaceFeatureDetectorRelease($sharedPtr)
     ; CVAPI(void) cveHarrisLaplaceFeatureDetectorRelease(cv::Ptr<cv::xfeatures2d::HarrisLaplaceFeatureDetector>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHarrisLaplaceFeatureDetectorRelease", $bSharedPtrDllType, $sharedPtr), "cveHarrisLaplaceFeatureDetectorRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHarrisLaplaceFeatureDetectorRelease", $sSharedPtrDllType, $sharedPtr), "cveHarrisLaplaceFeatureDetectorRelease", @error)
 EndFunc   ;==>_cveHarrisLaplaceFeatureDetectorRelease
 
 Func _cveMatchGMS($size1, $size2, $keypoints1, $keypoints2, $matches1to2, $matchesGMS, $withRotation = false, $withScale = false, $thresholdFactor = 6.0)
     ; CVAPI(void) cveMatchGMS(CvSize* size1, CvSize* size2, std::vector<cv::KeyPoint>* keypoints1, std::vector<cv::KeyPoint>* keypoints2, std::vector<cv::DMatch>* matches1to2, std::vector<cv::DMatch>* matchesGMS, bool withRotation, bool withScale, double thresholdFactor);
 
-    Local $bSize1DllType
-    If VarGetType($size1) == "DLLStruct" Then
-        $bSize1DllType = "struct*"
+    Local $sSize1DllType
+    If IsDllStruct($size1) Then
+        $sSize1DllType = "struct*"
     Else
-        $bSize1DllType = "ptr"
+        $sSize1DllType = "ptr"
     EndIf
 
-    Local $bSize2DllType
-    If VarGetType($size2) == "DLLStruct" Then
-        $bSize2DllType = "struct*"
+    Local $sSize2DllType
+    If IsDllStruct($size2) Then
+        $sSize2DllType = "struct*"
     Else
-        $bSize2DllType = "ptr"
+        $sSize2DllType = "ptr"
     EndIf
 
     Local $vecKeypoints1, $iArrKeypoints1Size
@@ -925,11 +1007,11 @@ Func _cveMatchGMS($size1, $size2, $keypoints1, $keypoints2, $matches1to2, $match
         $vecKeypoints1 = $keypoints1
     EndIf
 
-    Local $bKeypoints1DllType
-    If VarGetType($keypoints1) == "DLLStruct" Then
-        $bKeypoints1DllType = "struct*"
+    Local $sKeypoints1DllType
+    If IsDllStruct($keypoints1) Then
+        $sKeypoints1DllType = "struct*"
     Else
-        $bKeypoints1DllType = "ptr"
+        $sKeypoints1DllType = "ptr"
     EndIf
 
     Local $vecKeypoints2, $iArrKeypoints2Size
@@ -946,11 +1028,11 @@ Func _cveMatchGMS($size1, $size2, $keypoints1, $keypoints2, $matches1to2, $match
         $vecKeypoints2 = $keypoints2
     EndIf
 
-    Local $bKeypoints2DllType
-    If VarGetType($keypoints2) == "DLLStruct" Then
-        $bKeypoints2DllType = "struct*"
+    Local $sKeypoints2DllType
+    If IsDllStruct($keypoints2) Then
+        $sKeypoints2DllType = "struct*"
     Else
-        $bKeypoints2DllType = "ptr"
+        $sKeypoints2DllType = "ptr"
     EndIf
 
     Local $vecMatches1to2, $iArrMatches1to2Size
@@ -967,11 +1049,11 @@ Func _cveMatchGMS($size1, $size2, $keypoints1, $keypoints2, $matches1to2, $match
         $vecMatches1to2 = $matches1to2
     EndIf
 
-    Local $bMatches1to2DllType
-    If VarGetType($matches1to2) == "DLLStruct" Then
-        $bMatches1to2DllType = "struct*"
+    Local $sMatches1to2DllType
+    If IsDllStruct($matches1to2) Then
+        $sMatches1to2DllType = "struct*"
     Else
-        $bMatches1to2DllType = "ptr"
+        $sMatches1to2DllType = "ptr"
     EndIf
 
     Local $vecMatchesGMS, $iArrMatchesGMSSize
@@ -988,14 +1070,14 @@ Func _cveMatchGMS($size1, $size2, $keypoints1, $keypoints2, $matches1to2, $match
         $vecMatchesGMS = $matchesGMS
     EndIf
 
-    Local $bMatchesGMSDllType
-    If VarGetType($matchesGMS) == "DLLStruct" Then
-        $bMatchesGMSDllType = "struct*"
+    Local $sMatchesGMSDllType
+    If IsDllStruct($matchesGMS) Then
+        $sMatchesGMSDllType = "struct*"
     Else
-        $bMatchesGMSDllType = "ptr"
+        $sMatchesGMSDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatchGMS", $bSize1DllType, $size1, $bSize2DllType, $size2, $bKeypoints1DllType, $vecKeypoints1, $bKeypoints2DllType, $vecKeypoints2, $bMatches1to2DllType, $vecMatches1to2, $bMatchesGMSDllType, $vecMatchesGMS, "boolean", $withRotation, "boolean", $withScale, "double", $thresholdFactor), "cveMatchGMS", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatchGMS", $sSize1DllType, $size1, $sSize2DllType, $size2, $sKeypoints1DllType, $vecKeypoints1, $sKeypoints2DllType, $vecKeypoints2, $sMatches1to2DllType, $vecMatches1to2, $sMatchesGMSDllType, $vecMatchesGMS, "boolean", $withRotation, "boolean", $withScale, "double", $thresholdFactor), "cveMatchGMS", @error)
 
     If $bMatchesGMSIsArray Then
         _VectorOfDMatchRelease($vecMatchesGMS)
@@ -1031,11 +1113,11 @@ Func _cveMatchLOGOS($keypoints1, $keypoints2, $nn1, $nn2, $matches1to2)
         $vecKeypoints1 = $keypoints1
     EndIf
 
-    Local $bKeypoints1DllType
-    If VarGetType($keypoints1) == "DLLStruct" Then
-        $bKeypoints1DllType = "struct*"
+    Local $sKeypoints1DllType
+    If IsDllStruct($keypoints1) Then
+        $sKeypoints1DllType = "struct*"
     Else
-        $bKeypoints1DllType = "ptr"
+        $sKeypoints1DllType = "ptr"
     EndIf
 
     Local $vecKeypoints2, $iArrKeypoints2Size
@@ -1052,11 +1134,11 @@ Func _cveMatchLOGOS($keypoints1, $keypoints2, $nn1, $nn2, $matches1to2)
         $vecKeypoints2 = $keypoints2
     EndIf
 
-    Local $bKeypoints2DllType
-    If VarGetType($keypoints2) == "DLLStruct" Then
-        $bKeypoints2DllType = "struct*"
+    Local $sKeypoints2DllType
+    If IsDllStruct($keypoints2) Then
+        $sKeypoints2DllType = "struct*"
     Else
-        $bKeypoints2DllType = "ptr"
+        $sKeypoints2DllType = "ptr"
     EndIf
 
     Local $vecNn1, $iArrNn1Size
@@ -1073,11 +1155,11 @@ Func _cveMatchLOGOS($keypoints1, $keypoints2, $nn1, $nn2, $matches1to2)
         $vecNn1 = $nn1
     EndIf
 
-    Local $bNn1DllType
-    If VarGetType($nn1) == "DLLStruct" Then
-        $bNn1DllType = "struct*"
+    Local $sNn1DllType
+    If IsDllStruct($nn1) Then
+        $sNn1DllType = "struct*"
     Else
-        $bNn1DllType = "ptr"
+        $sNn1DllType = "ptr"
     EndIf
 
     Local $vecNn2, $iArrNn2Size
@@ -1094,11 +1176,11 @@ Func _cveMatchLOGOS($keypoints1, $keypoints2, $nn1, $nn2, $matches1to2)
         $vecNn2 = $nn2
     EndIf
 
-    Local $bNn2DllType
-    If VarGetType($nn2) == "DLLStruct" Then
-        $bNn2DllType = "struct*"
+    Local $sNn2DllType
+    If IsDllStruct($nn2) Then
+        $sNn2DllType = "struct*"
     Else
-        $bNn2DllType = "ptr"
+        $sNn2DllType = "ptr"
     EndIf
 
     Local $vecMatches1to2, $iArrMatches1to2Size
@@ -1115,14 +1197,14 @@ Func _cveMatchLOGOS($keypoints1, $keypoints2, $nn1, $nn2, $matches1to2)
         $vecMatches1to2 = $matches1to2
     EndIf
 
-    Local $bMatches1to2DllType
-    If VarGetType($matches1to2) == "DLLStruct" Then
-        $bMatches1to2DllType = "struct*"
+    Local $sMatches1to2DllType
+    If IsDllStruct($matches1to2) Then
+        $sMatches1to2DllType = "struct*"
     Else
-        $bMatches1to2DllType = "ptr"
+        $sMatches1to2DllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatchLOGOS", $bKeypoints1DllType, $vecKeypoints1, $bKeypoints2DllType, $vecKeypoints2, $bNn1DllType, $vecNn1, $bNn2DllType, $vecNn2, $bMatches1to2DllType, $vecMatches1to2), "cveMatchLOGOS", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatchLOGOS", $sKeypoints1DllType, $vecKeypoints1, $sKeypoints2DllType, $vecKeypoints2, $sNn1DllType, $vecNn1, $sNn2DllType, $vecNn2, $sMatches1to2DllType, $vecMatches1to2), "cveMatchLOGOS", @error)
 
     If $bMatches1to2IsArray Then
         _VectorOfDMatchRelease($vecMatches1to2)

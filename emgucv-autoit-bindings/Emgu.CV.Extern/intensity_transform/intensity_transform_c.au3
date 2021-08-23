@@ -4,101 +4,101 @@
 Func _cveLogTransform($input, $output)
     ; CVAPI(void) cveLogTransform(cv::Mat* input, cv::Mat* output);
 
-    Local $bInputDllType
-    If VarGetType($input) == "DLLStruct" Then
-        $bInputDllType = "struct*"
+    Local $sInputDllType
+    If IsDllStruct($input) Then
+        $sInputDllType = "struct*"
     Else
-        $bInputDllType = "ptr"
+        $sInputDllType = "ptr"
     EndIf
 
-    Local $bOutputDllType
-    If VarGetType($output) == "DLLStruct" Then
-        $bOutputDllType = "struct*"
+    Local $sOutputDllType
+    If IsDllStruct($output) Then
+        $sOutputDllType = "struct*"
     Else
-        $bOutputDllType = "ptr"
+        $sOutputDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLogTransform", $bInputDllType, $input, $bOutputDllType, $output), "cveLogTransform", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLogTransform", $sInputDllType, $input, $sOutputDllType, $output), "cveLogTransform", @error)
 EndFunc   ;==>_cveLogTransform
 
 Func _cveGammaCorrection($input, $output, $gamma)
     ; CVAPI(void) cveGammaCorrection(cv::Mat* input, cv::Mat* output, float gamma);
 
-    Local $bInputDllType
-    If VarGetType($input) == "DLLStruct" Then
-        $bInputDllType = "struct*"
+    Local $sInputDllType
+    If IsDllStruct($input) Then
+        $sInputDllType = "struct*"
     Else
-        $bInputDllType = "ptr"
+        $sInputDllType = "ptr"
     EndIf
 
-    Local $bOutputDllType
-    If VarGetType($output) == "DLLStruct" Then
-        $bOutputDllType = "struct*"
+    Local $sOutputDllType
+    If IsDllStruct($output) Then
+        $sOutputDllType = "struct*"
     Else
-        $bOutputDllType = "ptr"
+        $sOutputDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGammaCorrection", $bInputDllType, $input, $bOutputDllType, $output, "float", $gamma), "cveGammaCorrection", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGammaCorrection", $sInputDllType, $input, $sOutputDllType, $output, "float", $gamma), "cveGammaCorrection", @error)
 EndFunc   ;==>_cveGammaCorrection
 
 Func _cveAutoscaling($input, $output)
     ; CVAPI(void) cveAutoscaling(cv::Mat* input, cv::Mat* output);
 
-    Local $bInputDllType
-    If VarGetType($input) == "DLLStruct" Then
-        $bInputDllType = "struct*"
+    Local $sInputDllType
+    If IsDllStruct($input) Then
+        $sInputDllType = "struct*"
     Else
-        $bInputDllType = "ptr"
+        $sInputDllType = "ptr"
     EndIf
 
-    Local $bOutputDllType
-    If VarGetType($output) == "DLLStruct" Then
-        $bOutputDllType = "struct*"
+    Local $sOutputDllType
+    If IsDllStruct($output) Then
+        $sOutputDllType = "struct*"
     Else
-        $bOutputDllType = "ptr"
+        $sOutputDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAutoscaling", $bInputDllType, $input, $bOutputDllType, $output), "cveAutoscaling", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAutoscaling", $sInputDllType, $input, $sOutputDllType, $output), "cveAutoscaling", @error)
 EndFunc   ;==>_cveAutoscaling
 
 Func _cveContrastStretching($input, $output, $r1, $s1, $r2, $s2)
     ; CVAPI(void) cveContrastStretching(cv::Mat* input, cv::Mat* output, int r1, int s1, int r2, int s2);
 
-    Local $bInputDllType
-    If VarGetType($input) == "DLLStruct" Then
-        $bInputDllType = "struct*"
+    Local $sInputDllType
+    If IsDllStruct($input) Then
+        $sInputDllType = "struct*"
     Else
-        $bInputDllType = "ptr"
+        $sInputDllType = "ptr"
     EndIf
 
-    Local $bOutputDllType
-    If VarGetType($output) == "DLLStruct" Then
-        $bOutputDllType = "struct*"
+    Local $sOutputDllType
+    If IsDllStruct($output) Then
+        $sOutputDllType = "struct*"
     Else
-        $bOutputDllType = "ptr"
+        $sOutputDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveContrastStretching", $bInputDllType, $input, $bOutputDllType, $output, "int", $r1, "int", $s1, "int", $r2, "int", $s2), "cveContrastStretching", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveContrastStretching", $sInputDllType, $input, $sOutputDllType, $output, "int", $r1, "int", $s1, "int", $r2, "int", $s2), "cveContrastStretching", @error)
 EndFunc   ;==>_cveContrastStretching
 
 Func _cveBIMEF($input, $output, $mu = 0.5, $a = -0.3293, $b = 1.1258)
     ; CVAPI(void) cveBIMEF(cv::_InputArray* input, cv::_OutputArray* output, float mu, float a, float b);
 
-    Local $bInputDllType
-    If VarGetType($input) == "DLLStruct" Then
-        $bInputDllType = "struct*"
+    Local $sInputDllType
+    If IsDllStruct($input) Then
+        $sInputDllType = "struct*"
     Else
-        $bInputDllType = "ptr"
+        $sInputDllType = "ptr"
     EndIf
 
-    Local $bOutputDllType
-    If VarGetType($output) == "DLLStruct" Then
-        $bOutputDllType = "struct*"
+    Local $sOutputDllType
+    If IsDllStruct($output) Then
+        $sOutputDllType = "struct*"
     Else
-        $bOutputDllType = "ptr"
+        $sOutputDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBIMEF", $bInputDllType, $input, $bOutputDllType, $output, "float", $mu, "float", $a, "float", $b), "cveBIMEF", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBIMEF", $sInputDllType, $input, $sOutputDllType, $output, "float", $mu, "float", $a, "float", $b), "cveBIMEF", @error)
 EndFunc   ;==>_cveBIMEF
 
 Func _cveBIMEFMat($matInput, $matOutput, $mu = 0.5, $a = -0.3293, $b = 1.1258)
@@ -154,21 +154,21 @@ EndFunc   ;==>_cveBIMEFMat
 Func _cveBIMEF2($input, $output, $k, $mu, $a, $b)
     ; CVAPI(void) cveBIMEF2(cv::_InputArray* input, cv::_OutputArray* output, float k, float mu, float a, float b);
 
-    Local $bInputDllType
-    If VarGetType($input) == "DLLStruct" Then
-        $bInputDllType = "struct*"
+    Local $sInputDllType
+    If IsDllStruct($input) Then
+        $sInputDllType = "struct*"
     Else
-        $bInputDllType = "ptr"
+        $sInputDllType = "ptr"
     EndIf
 
-    Local $bOutputDllType
-    If VarGetType($output) == "DLLStruct" Then
-        $bOutputDllType = "struct*"
+    Local $sOutputDllType
+    If IsDllStruct($output) Then
+        $sOutputDllType = "struct*"
     Else
-        $bOutputDllType = "ptr"
+        $sOutputDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBIMEF2", $bInputDllType, $input, $bOutputDllType, $output, "float", $k, "float", $mu, "float", $a, "float", $b), "cveBIMEF2", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBIMEF2", $sInputDllType, $input, $sOutputDllType, $output, "float", $k, "float", $mu, "float", $a, "float", $b), "cveBIMEF2", @error)
 EndFunc   ;==>_cveBIMEF2
 
 Func _cveBIMEF2Mat($matInput, $matOutput, $k, $mu, $a, $b)

@@ -9,21 +9,23 @@ Func _cveSuperresCreateFrameSourceVideo($fileName, $useGpu, $sharedPtr)
         $fileName = _cveStringCreateFromStr($fileName)
     EndIf
 
-    Local $bFileNameDllType
-    If VarGetType($fileName) == "DLLStruct" Then
-        $bFileNameDllType = "struct*"
+    Local $sFileNameDllType
+    If IsDllStruct($fileName) Then
+        $sFileNameDllType = "struct*"
     Else
-        $bFileNameDllType = "ptr"
+        $sFileNameDllType = "ptr"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSuperresCreateFrameSourceVideo", $bFileNameDllType, $fileName, "boolean", $useGpu, $bSharedPtrDllType, $sharedPtr), "cveSuperresCreateFrameSourceVideo", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSuperresCreateFrameSourceVideo", $sFileNameDllType, $fileName, "boolean", $useGpu, $sSharedPtrDllType, $sharedPtr), "cveSuperresCreateFrameSourceVideo", @error)
 
     If $bFileNameIsString Then
         _cveStringRelease($fileName)
@@ -35,33 +37,35 @@ EndFunc   ;==>_cveSuperresCreateFrameSourceVideo
 Func _cveSuperresCreateFrameSourceCamera($deviceId, $sharedPtr)
     ; CVAPI(cv::superres::FrameSource*) cveSuperresCreateFrameSourceCamera(int deviceId, cv::Ptr<cv::superres::FrameSource>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSuperresCreateFrameSourceCamera", "int", $deviceId, $bSharedPtrDllType, $sharedPtr), "cveSuperresCreateFrameSourceCamera", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSuperresCreateFrameSourceCamera", "int", $deviceId, $sSharedPtrDllType, $sharedPtr), "cveSuperresCreateFrameSourceCamera", @error)
 EndFunc   ;==>_cveSuperresCreateFrameSourceCamera
 
 Func _cveSuperresFrameSourceNextFrame($frameSource, $frame)
     ; CVAPI(void) cveSuperresFrameSourceNextFrame(cv::superres::FrameSource* frameSource, cv::_OutputArray* frame);
 
-    Local $bFrameSourceDllType
-    If VarGetType($frameSource) == "DLLStruct" Then
-        $bFrameSourceDllType = "struct*"
+    Local $sFrameSourceDllType
+    If IsDllStruct($frameSource) Then
+        $sFrameSourceDllType = "struct*"
     Else
-        $bFrameSourceDllType = "ptr"
+        $sFrameSourceDllType = "ptr"
     EndIf
 
-    Local $bFrameDllType
-    If VarGetType($frame) == "DLLStruct" Then
-        $bFrameDllType = "struct*"
+    Local $sFrameDllType
+    If IsDllStruct($frame) Then
+        $sFrameDllType = "struct*"
     Else
-        $bFrameDllType = "ptr"
+        $sFrameDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSuperresFrameSourceNextFrame", $bFrameSourceDllType, $frameSource, $bFrameDllType, $frame), "cveSuperresFrameSourceNextFrame", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSuperresFrameSourceNextFrame", $sFrameSourceDllType, $frameSource, $sFrameDllType, $frame), "cveSuperresFrameSourceNextFrame", @error)
 EndFunc   ;==>_cveSuperresFrameSourceNextFrame
 
 Func _cveSuperresFrameSourceNextFrameMat($frameSource, $matFrame)
@@ -95,51 +99,59 @@ EndFunc   ;==>_cveSuperresFrameSourceNextFrameMat
 Func _cveSuperresFrameSourceRelease($sharedPtr)
     ; CVAPI(void) cveSuperresFrameSourceRelease(cv::Ptr<cv::superres::FrameSource>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSuperresFrameSourceRelease", $bSharedPtrDllType, $sharedPtr), "cveSuperresFrameSourceRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSuperresFrameSourceRelease", $sSharedPtrDllType, $sharedPtr), "cveSuperresFrameSourceRelease", @error)
 EndFunc   ;==>_cveSuperresFrameSourceRelease
 
 Func _cveSuperResolutionCreate($type, $frameSource, $frameSourceOut, $sharedPtr)
     ; CVAPI(cv::superres::SuperResolution*) cveSuperResolutionCreate(int type, cv::superres::FrameSource* frameSource, cv::superres::FrameSource** frameSourceOut, cv::Ptr<cv::superres::SuperResolution>** sharedPtr);
 
-    Local $bFrameSourceDllType
-    If VarGetType($frameSource) == "DLLStruct" Then
-        $bFrameSourceDllType = "struct*"
+    Local $sFrameSourceDllType
+    If IsDllStruct($frameSource) Then
+        $sFrameSourceDllType = "struct*"
     Else
-        $bFrameSourceDllType = "ptr"
+        $sFrameSourceDllType = "ptr"
     EndIf
 
-    Local $bFrameSourceOutDllType
-    If VarGetType($frameSourceOut) == "DLLStruct" Then
-        $bFrameSourceOutDllType = "struct*"
+    Local $sFrameSourceOutDllType
+    If IsDllStruct($frameSourceOut) Then
+        $sFrameSourceOutDllType = "struct*"
+    ElseIf $frameSourceOut == Null Then
+        $sFrameSourceOutDllType = "ptr"
     Else
-        $bFrameSourceOutDllType = "ptr*"
+        $sFrameSourceOutDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSuperResolutionCreate", "int", $type, $bFrameSourceDllType, $frameSource, $bFrameSourceOutDllType, $frameSourceOut, $bSharedPtrDllType, $sharedPtr), "cveSuperResolutionCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSuperResolutionCreate", "int", $type, $sFrameSourceDllType, $frameSource, $sFrameSourceOutDllType, $frameSourceOut, $sSharedPtrDllType, $sharedPtr), "cveSuperResolutionCreate", @error)
 EndFunc   ;==>_cveSuperResolutionCreate
 
 Func _cveSuperResolutionRelease($sharedPtr)
     ; CVAPI(void) cveSuperResolutionRelease(cv::Ptr<cv::superres::SuperResolution>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSuperResolutionRelease", $bSharedPtrDllType, $sharedPtr), "cveSuperResolutionRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSuperResolutionRelease", $sSharedPtrDllType, $sharedPtr), "cveSuperResolutionRelease", @error)
 EndFunc   ;==>_cveSuperResolutionRelease

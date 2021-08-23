@@ -18,35 +18,35 @@ Func _VectorOfDMatchPushMatrix($matches, $trainIdx, $distance = 0, $mask = 0)
         $vecMatches = $matches
     EndIf
 
-    Local $bMatchesDllType
-    If VarGetType($matches) == "DLLStruct" Then
-        $bMatchesDllType = "struct*"
+    Local $sMatchesDllType
+    If IsDllStruct($matches) Then
+        $sMatchesDllType = "struct*"
     Else
-        $bMatchesDllType = "ptr"
+        $sMatchesDllType = "ptr"
     EndIf
 
-    Local $bTrainIdxDllType
-    If VarGetType($trainIdx) == "DLLStruct" Then
-        $bTrainIdxDllType = "struct*"
+    Local $sTrainIdxDllType
+    If IsDllStruct($trainIdx) Then
+        $sTrainIdxDllType = "struct*"
     Else
-        $bTrainIdxDllType = "ptr"
+        $sTrainIdxDllType = "ptr"
     EndIf
 
-    Local $bDistanceDllType
-    If VarGetType($distance) == "DLLStruct" Then
-        $bDistanceDllType = "struct*"
+    Local $sDistanceDllType
+    If IsDllStruct($distance) Then
+        $sDistanceDllType = "struct*"
     Else
-        $bDistanceDllType = "ptr"
+        $sDistanceDllType = "ptr"
     EndIf
 
-    Local $bMaskDllType
-    If VarGetType($mask) == "DLLStruct" Then
-        $bMaskDllType = "struct*"
+    Local $sMaskDllType
+    If IsDllStruct($mask) Then
+        $sMaskDllType = "struct*"
     Else
-        $bMaskDllType = "ptr"
+        $sMaskDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDMatchPushMatrix", $bMatchesDllType, $vecMatches, $bTrainIdxDllType, $trainIdx, $bDistanceDllType, $distance, $bMaskDllType, $mask), "VectorOfDMatchPushMatrix", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDMatchPushMatrix", $sMatchesDllType, $vecMatches, $sTrainIdxDllType, $trainIdx, $sDistanceDllType, $distance, $sMaskDllType, $mask), "VectorOfDMatchPushMatrix", @error)
 
     If $bMatchesIsArray Then
         _VectorOfDMatchRelease($vecMatches)
@@ -70,28 +70,28 @@ Func _VectorOfDMatchToMat($matches, $trainIdx, $distance)
         $vecMatches = $matches
     EndIf
 
-    Local $bMatchesDllType
-    If VarGetType($matches) == "DLLStruct" Then
-        $bMatchesDllType = "struct*"
+    Local $sMatchesDllType
+    If IsDllStruct($matches) Then
+        $sMatchesDllType = "struct*"
     Else
-        $bMatchesDllType = "ptr"
+        $sMatchesDllType = "ptr"
     EndIf
 
-    Local $bTrainIdxDllType
-    If VarGetType($trainIdx) == "DLLStruct" Then
-        $bTrainIdxDllType = "struct*"
+    Local $sTrainIdxDllType
+    If IsDllStruct($trainIdx) Then
+        $sTrainIdxDllType = "struct*"
     Else
-        $bTrainIdxDllType = "ptr"
+        $sTrainIdxDllType = "ptr"
     EndIf
 
-    Local $bDistanceDllType
-    If VarGetType($distance) == "DLLStruct" Then
-        $bDistanceDllType = "struct*"
+    Local $sDistanceDllType
+    If IsDllStruct($distance) Then
+        $sDistanceDllType = "struct*"
     Else
-        $bDistanceDllType = "ptr"
+        $sDistanceDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDMatchToMat", $bMatchesDllType, $vecMatches, $bTrainIdxDllType, $trainIdx, $bDistanceDllType, $distance), "VectorOfDMatchToMat", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDMatchToMat", $sMatchesDllType, $vecMatches, $sTrainIdxDllType, $trainIdx, $sDistanceDllType, $distance), "VectorOfDMatchToMat", @error)
 
     If $bMatchesIsArray Then
         _VectorOfVectorOfDMatchRelease($vecMatches)
@@ -115,14 +115,14 @@ Func _VectorOfKeyPointFilterByImageBorder($keypoints, $imageSize, $borderSize)
         $vecKeypoints = $keypoints
     EndIf
 
-    Local $bKeypointsDllType
-    If VarGetType($keypoints) == "DLLStruct" Then
-        $bKeypointsDllType = "struct*"
+    Local $sKeypointsDllType
+    If IsDllStruct($keypoints) Then
+        $sKeypointsDllType = "struct*"
     Else
-        $bKeypointsDllType = "ptr"
+        $sKeypointsDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfKeyPointFilterByImageBorder", $bKeypointsDllType, $vecKeypoints, "ptr", $imageSize, "int", $borderSize), "VectorOfKeyPointFilterByImageBorder", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfKeyPointFilterByImageBorder", $sKeypointsDllType, $vecKeypoints, "ptr", $imageSize, "int", $borderSize), "VectorOfKeyPointFilterByImageBorder", @error)
 
     If $bKeypointsIsArray Then
         _VectorOfKeyPointRelease($vecKeypoints)
@@ -146,14 +146,14 @@ Func _VectorOfKeyPointFilterByKeypointSize($keypoints, $minSize, $maxSize)
         $vecKeypoints = $keypoints
     EndIf
 
-    Local $bKeypointsDllType
-    If VarGetType($keypoints) == "DLLStruct" Then
-        $bKeypointsDllType = "struct*"
+    Local $sKeypointsDllType
+    If IsDllStruct($keypoints) Then
+        $sKeypointsDllType = "struct*"
     Else
-        $bKeypointsDllType = "ptr"
+        $sKeypointsDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfKeyPointFilterByKeypointSize", $bKeypointsDllType, $vecKeypoints, "float", $minSize, "float", $maxSize), "VectorOfKeyPointFilterByKeypointSize", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfKeyPointFilterByKeypointSize", $sKeypointsDllType, $vecKeypoints, "float", $minSize, "float", $maxSize), "VectorOfKeyPointFilterByKeypointSize", @error)
 
     If $bKeypointsIsArray Then
         _VectorOfKeyPointRelease($vecKeypoints)
@@ -177,21 +177,21 @@ Func _VectorOfKeyPointFilterByPixelsMask($keypoints, $mask)
         $vecKeypoints = $keypoints
     EndIf
 
-    Local $bKeypointsDllType
-    If VarGetType($keypoints) == "DLLStruct" Then
-        $bKeypointsDllType = "struct*"
+    Local $sKeypointsDllType
+    If IsDllStruct($keypoints) Then
+        $sKeypointsDllType = "struct*"
     Else
-        $bKeypointsDllType = "ptr"
+        $sKeypointsDllType = "ptr"
     EndIf
 
-    Local $bMaskDllType
-    If VarGetType($mask) == "DLLStruct" Then
-        $bMaskDllType = "struct*"
+    Local $sMaskDllType
+    If IsDllStruct($mask) Then
+        $sMaskDllType = "struct*"
     Else
-        $bMaskDllType = "ptr"
+        $sMaskDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfKeyPointFilterByPixelsMask", $bKeypointsDllType, $vecKeypoints, $bMaskDllType, $mask), "VectorOfKeyPointFilterByPixelsMask", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfKeyPointFilterByPixelsMask", $sKeypointsDllType, $vecKeypoints, $sMaskDllType, $mask), "VectorOfKeyPointFilterByPixelsMask", @error)
 
     If $bKeypointsIsArray Then
         _VectorOfKeyPointRelease($vecKeypoints)

@@ -4,21 +4,21 @@
 Func _cveUpdateMotionHistory($silhouette, $mhi, $timestamp, $duration)
     ; CVAPI(void) cveUpdateMotionHistory(cv::_InputArray* silhouette, cv::_InputOutputArray* mhi, double timestamp, double duration);
 
-    Local $bSilhouetteDllType
-    If VarGetType($silhouette) == "DLLStruct" Then
-        $bSilhouetteDllType = "struct*"
+    Local $sSilhouetteDllType
+    If IsDllStruct($silhouette) Then
+        $sSilhouetteDllType = "struct*"
     Else
-        $bSilhouetteDllType = "ptr"
+        $sSilhouetteDllType = "ptr"
     EndIf
 
-    Local $bMhiDllType
-    If VarGetType($mhi) == "DLLStruct" Then
-        $bMhiDllType = "struct*"
+    Local $sMhiDllType
+    If IsDllStruct($mhi) Then
+        $sMhiDllType = "struct*"
     Else
-        $bMhiDllType = "ptr"
+        $sMhiDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUpdateMotionHistory", $bSilhouetteDllType, $silhouette, $bMhiDllType, $mhi, "double", $timestamp, "double", $duration), "cveUpdateMotionHistory", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUpdateMotionHistory", $sSilhouetteDllType, $silhouette, $sMhiDllType, $mhi, "double", $timestamp, "double", $duration), "cveUpdateMotionHistory", @error)
 EndFunc   ;==>_cveUpdateMotionHistory
 
 Func _cveUpdateMotionHistoryMat($matSilhouette, $matMhi, $timestamp, $duration)
@@ -74,28 +74,28 @@ EndFunc   ;==>_cveUpdateMotionHistoryMat
 Func _cveCalcMotionGradient($mhi, $mask, $orientation, $delta1, $delta2, $apertureSize = 3)
     ; CVAPI(void) cveCalcMotionGradient(cv::_InputArray* mhi, cv::_OutputArray* mask, cv::_OutputArray* orientation, double delta1, double delta2, int apertureSize);
 
-    Local $bMhiDllType
-    If VarGetType($mhi) == "DLLStruct" Then
-        $bMhiDllType = "struct*"
+    Local $sMhiDllType
+    If IsDllStruct($mhi) Then
+        $sMhiDllType = "struct*"
     Else
-        $bMhiDllType = "ptr"
+        $sMhiDllType = "ptr"
     EndIf
 
-    Local $bMaskDllType
-    If VarGetType($mask) == "DLLStruct" Then
-        $bMaskDllType = "struct*"
+    Local $sMaskDllType
+    If IsDllStruct($mask) Then
+        $sMaskDllType = "struct*"
     Else
-        $bMaskDllType = "ptr"
+        $sMaskDllType = "ptr"
     EndIf
 
-    Local $bOrientationDllType
-    If VarGetType($orientation) == "DLLStruct" Then
-        $bOrientationDllType = "struct*"
+    Local $sOrientationDllType
+    If IsDllStruct($orientation) Then
+        $sOrientationDllType = "struct*"
     Else
-        $bOrientationDllType = "ptr"
+        $sOrientationDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCalcMotionGradient", $bMhiDllType, $mhi, $bMaskDllType, $mask, $bOrientationDllType, $orientation, "double", $delta1, "double", $delta2, "int", $apertureSize), "cveCalcMotionGradient", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCalcMotionGradient", $sMhiDllType, $mhi, $sMaskDllType, $mask, $sOrientationDllType, $orientation, "double", $delta1, "double", $delta2, "int", $apertureSize), "cveCalcMotionGradient", @error)
 EndFunc   ;==>_cveCalcMotionGradient
 
 Func _cveCalcMotionGradientMat($matMhi, $matMask, $matOrientation, $delta1, $delta2, $apertureSize = 3)
@@ -173,28 +173,28 @@ EndFunc   ;==>_cveCalcMotionGradientMat
 Func _cveCalcGlobalOrientation($orientation, $mask, $mhi, $timestamp, $duration)
     ; CVAPI(void) cveCalcGlobalOrientation(cv::_InputArray* orientation, cv::_InputArray* mask, cv::_InputArray* mhi, double timestamp, double duration);
 
-    Local $bOrientationDllType
-    If VarGetType($orientation) == "DLLStruct" Then
-        $bOrientationDllType = "struct*"
+    Local $sOrientationDllType
+    If IsDllStruct($orientation) Then
+        $sOrientationDllType = "struct*"
     Else
-        $bOrientationDllType = "ptr"
+        $sOrientationDllType = "ptr"
     EndIf
 
-    Local $bMaskDllType
-    If VarGetType($mask) == "DLLStruct" Then
-        $bMaskDllType = "struct*"
+    Local $sMaskDllType
+    If IsDllStruct($mask) Then
+        $sMaskDllType = "struct*"
     Else
-        $bMaskDllType = "ptr"
+        $sMaskDllType = "ptr"
     EndIf
 
-    Local $bMhiDllType
-    If VarGetType($mhi) == "DLLStruct" Then
-        $bMhiDllType = "struct*"
+    Local $sMhiDllType
+    If IsDllStruct($mhi) Then
+        $sMhiDllType = "struct*"
     Else
-        $bMhiDllType = "ptr"
+        $sMhiDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCalcGlobalOrientation", $bOrientationDllType, $orientation, $bMaskDllType, $mask, $bMhiDllType, $mhi, "double", $timestamp, "double", $duration), "cveCalcGlobalOrientation", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCalcGlobalOrientation", $sOrientationDllType, $orientation, $sMaskDllType, $mask, $sMhiDllType, $mhi, "double", $timestamp, "double", $duration), "cveCalcGlobalOrientation", @error)
 EndFunc   ;==>_cveCalcGlobalOrientation
 
 Func _cveCalcGlobalOrientationMat($matOrientation, $matMask, $matMhi, $timestamp, $duration)
@@ -272,18 +272,18 @@ EndFunc   ;==>_cveCalcGlobalOrientationMat
 Func _cveSegmentMotion($mhi, $segmask, $boundingRects, $timestamp, $segThresh)
     ; CVAPI(void) cveSegmentMotion(cv::_InputArray* mhi, cv::_OutputArray* segmask, std::vector<cv::Rect>* boundingRects, double timestamp, double segThresh);
 
-    Local $bMhiDllType
-    If VarGetType($mhi) == "DLLStruct" Then
-        $bMhiDllType = "struct*"
+    Local $sMhiDllType
+    If IsDllStruct($mhi) Then
+        $sMhiDllType = "struct*"
     Else
-        $bMhiDllType = "ptr"
+        $sMhiDllType = "ptr"
     EndIf
 
-    Local $bSegmaskDllType
-    If VarGetType($segmask) == "DLLStruct" Then
-        $bSegmaskDllType = "struct*"
+    Local $sSegmaskDllType
+    If IsDllStruct($segmask) Then
+        $sSegmaskDllType = "struct*"
     Else
-        $bSegmaskDllType = "ptr"
+        $sSegmaskDllType = "ptr"
     EndIf
 
     Local $vecBoundingRects, $iArrBoundingRectsSize
@@ -300,14 +300,14 @@ Func _cveSegmentMotion($mhi, $segmask, $boundingRects, $timestamp, $segThresh)
         $vecBoundingRects = $boundingRects
     EndIf
 
-    Local $bBoundingRectsDllType
-    If VarGetType($boundingRects) == "DLLStruct" Then
-        $bBoundingRectsDllType = "struct*"
+    Local $sBoundingRectsDllType
+    If IsDllStruct($boundingRects) Then
+        $sBoundingRectsDllType = "struct*"
     Else
-        $bBoundingRectsDllType = "ptr"
+        $sBoundingRectsDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSegmentMotion", $bMhiDllType, $mhi, $bSegmaskDllType, $segmask, $bBoundingRectsDllType, $vecBoundingRects, "double", $timestamp, "double", $segThresh), "cveSegmentMotion", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSegmentMotion", $sMhiDllType, $mhi, $sSegmaskDllType, $segmask, $sBoundingRectsDllType, $vecBoundingRects, "double", $timestamp, "double", $segThresh), "cveSegmentMotion", @error)
 
     If $bBoundingRectsIsArray Then
         _VectorOfRectRelease($vecBoundingRects)
@@ -367,78 +367,94 @@ EndFunc   ;==>_cveSegmentMotionMat
 Func _cveOptFlowDeepFlowCreate($algorithm, $sharedPtr)
     ; CVAPI(cv::DenseOpticalFlow*) cveOptFlowDeepFlowCreate(cv::Algorithm** algorithm, cv::Ptr<cv::DenseOpticalFlow>** sharedPtr);
 
-    Local $bAlgorithmDllType
-    If VarGetType($algorithm) == "DLLStruct" Then
-        $bAlgorithmDllType = "struct*"
+    Local $sAlgorithmDllType
+    If IsDllStruct($algorithm) Then
+        $sAlgorithmDllType = "struct*"
+    ElseIf $algorithm == Null Then
+        $sAlgorithmDllType = "ptr"
     Else
-        $bAlgorithmDllType = "ptr*"
+        $sAlgorithmDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOptFlowDeepFlowCreate", $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveOptFlowDeepFlowCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOptFlowDeepFlowCreate", $sAlgorithmDllType, $algorithm, $sSharedPtrDllType, $sharedPtr), "cveOptFlowDeepFlowCreate", @error)
 EndFunc   ;==>_cveOptFlowDeepFlowCreate
 
 Func _cveOptFlowPCAFlowCreate($algorithm, $sharedPtr)
     ; CVAPI(cv::DenseOpticalFlow*) cveOptFlowPCAFlowCreate(cv::Algorithm** algorithm, cv::Ptr<cv::DenseOpticalFlow>** sharedPtr);
 
-    Local $bAlgorithmDllType
-    If VarGetType($algorithm) == "DLLStruct" Then
-        $bAlgorithmDllType = "struct*"
+    Local $sAlgorithmDllType
+    If IsDllStruct($algorithm) Then
+        $sAlgorithmDllType = "struct*"
+    ElseIf $algorithm == Null Then
+        $sAlgorithmDllType = "ptr"
     Else
-        $bAlgorithmDllType = "ptr*"
+        $sAlgorithmDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOptFlowPCAFlowCreate", $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveOptFlowPCAFlowCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOptFlowPCAFlowCreate", $sAlgorithmDllType, $algorithm, $sSharedPtrDllType, $sharedPtr), "cveOptFlowPCAFlowCreate", @error)
 EndFunc   ;==>_cveOptFlowPCAFlowCreate
 
 Func _cveDenseOpticalFlowCreateDualTVL1($denseOpticalFlow, $algorithm, $sharedPtr)
     ; CVAPI(cv::optflow::DualTVL1OpticalFlow*) cveDenseOpticalFlowCreateDualTVL1(cv::DenseOpticalFlow** denseOpticalFlow, cv::Algorithm** algorithm, cv::Ptr<cv::optflow::DualTVL1OpticalFlow>** sharedPtr);
 
-    Local $bDenseOpticalFlowDllType
-    If VarGetType($denseOpticalFlow) == "DLLStruct" Then
-        $bDenseOpticalFlowDllType = "struct*"
+    Local $sDenseOpticalFlowDllType
+    If IsDllStruct($denseOpticalFlow) Then
+        $sDenseOpticalFlowDllType = "struct*"
+    ElseIf $denseOpticalFlow == Null Then
+        $sDenseOpticalFlowDllType = "ptr"
     Else
-        $bDenseOpticalFlowDllType = "ptr*"
+        $sDenseOpticalFlowDllType = "ptr*"
     EndIf
 
-    Local $bAlgorithmDllType
-    If VarGetType($algorithm) == "DLLStruct" Then
-        $bAlgorithmDllType = "struct*"
+    Local $sAlgorithmDllType
+    If IsDllStruct($algorithm) Then
+        $sAlgorithmDllType = "struct*"
+    ElseIf $algorithm == Null Then
+        $sAlgorithmDllType = "ptr"
     Else
-        $bAlgorithmDllType = "ptr*"
+        $sAlgorithmDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDenseOpticalFlowCreateDualTVL1", $bDenseOpticalFlowDllType, $denseOpticalFlow, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveDenseOpticalFlowCreateDualTVL1", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDenseOpticalFlowCreateDualTVL1", $sDenseOpticalFlowDllType, $denseOpticalFlow, $sAlgorithmDllType, $algorithm, $sSharedPtrDllType, $sharedPtr), "cveDenseOpticalFlowCreateDualTVL1", @error)
 EndFunc   ;==>_cveDenseOpticalFlowCreateDualTVL1
 
 Func _cveDualTVL1OpticalFlowRelease($sharedPtr)
     ; CVAPI(void) cveDualTVL1OpticalFlowRelease(cv::Ptr<cv::optflow::DualTVL1OpticalFlow>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDualTVL1OpticalFlowRelease", $bSharedPtrDllType, $sharedPtr), "cveDualTVL1OpticalFlowRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDualTVL1OpticalFlowRelease", $sSharedPtrDllType, $sharedPtr), "cveDualTVL1OpticalFlowRelease", @error)
 EndFunc   ;==>_cveDualTVL1OpticalFlowRelease
 
 Func _cveRLOFOpticalFlowParameterCreate()
@@ -449,111 +465,129 @@ EndFunc   ;==>_cveRLOFOpticalFlowParameterCreate
 Func _cveRLOFOpticalFlowParameterRelease($p)
     ; CVAPI(void) cveRLOFOpticalFlowParameterRelease(cv::optflow::RLOFOpticalFlowParameter** p);
 
-    Local $bPDllType
-    If VarGetType($p) == "DLLStruct" Then
-        $bPDllType = "struct*"
+    Local $sPDllType
+    If IsDllStruct($p) Then
+        $sPDllType = "struct*"
+    ElseIf $p == Null Then
+        $sPDllType = "ptr"
     Else
-        $bPDllType = "ptr*"
+        $sPDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRLOFOpticalFlowParameterRelease", $bPDllType, $p), "cveRLOFOpticalFlowParameterRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRLOFOpticalFlowParameterRelease", $sPDllType, $p), "cveRLOFOpticalFlowParameterRelease", @error)
 EndFunc   ;==>_cveRLOFOpticalFlowParameterRelease
 
 Func _cveDenseRLOFOpticalFlowCreate($rlofParameter, $forwardBackwardThreshold, $gridStep, $interpType, $epicK, $epicSigma, $epicLambda, $usePostProc, $fgsLambda, $fgsSigma, $denseOpticalFlow, $algorithm, $sharedPtr)
     ; CVAPI(cv::optflow::DenseRLOFOpticalFlow*) cveDenseRLOFOpticalFlowCreate(cv::optflow::RLOFOpticalFlowParameter* rlofParameter, float forwardBackwardThreshold, CvSize* gridStep, int interpType, int epicK, float epicSigma, float epicLambda, bool usePostProc, float fgsLambda, float fgsSigma, cv::DenseOpticalFlow** denseOpticalFlow, cv::Algorithm** algorithm, cv::Ptr<cv::optflow::DenseRLOFOpticalFlow>** sharedPtr);
 
-    Local $bRlofParameterDllType
-    If VarGetType($rlofParameter) == "DLLStruct" Then
-        $bRlofParameterDllType = "struct*"
+    Local $sRlofParameterDllType
+    If IsDllStruct($rlofParameter) Then
+        $sRlofParameterDllType = "struct*"
     Else
-        $bRlofParameterDllType = "ptr"
+        $sRlofParameterDllType = "ptr"
     EndIf
 
-    Local $bGridStepDllType
-    If VarGetType($gridStep) == "DLLStruct" Then
-        $bGridStepDllType = "struct*"
+    Local $sGridStepDllType
+    If IsDllStruct($gridStep) Then
+        $sGridStepDllType = "struct*"
     Else
-        $bGridStepDllType = "ptr"
+        $sGridStepDllType = "ptr"
     EndIf
 
-    Local $bDenseOpticalFlowDllType
-    If VarGetType($denseOpticalFlow) == "DLLStruct" Then
-        $bDenseOpticalFlowDllType = "struct*"
+    Local $sDenseOpticalFlowDllType
+    If IsDllStruct($denseOpticalFlow) Then
+        $sDenseOpticalFlowDllType = "struct*"
+    ElseIf $denseOpticalFlow == Null Then
+        $sDenseOpticalFlowDllType = "ptr"
     Else
-        $bDenseOpticalFlowDllType = "ptr*"
+        $sDenseOpticalFlowDllType = "ptr*"
     EndIf
 
-    Local $bAlgorithmDllType
-    If VarGetType($algorithm) == "DLLStruct" Then
-        $bAlgorithmDllType = "struct*"
+    Local $sAlgorithmDllType
+    If IsDllStruct($algorithm) Then
+        $sAlgorithmDllType = "struct*"
+    ElseIf $algorithm == Null Then
+        $sAlgorithmDllType = "ptr"
     Else
-        $bAlgorithmDllType = "ptr*"
+        $sAlgorithmDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDenseRLOFOpticalFlowCreate", $bRlofParameterDllType, $rlofParameter, "float", $forwardBackwardThreshold, $bGridStepDllType, $gridStep, "int", $interpType, "int", $epicK, "float", $epicSigma, "float", $epicLambda, "boolean", $usePostProc, "float", $fgsLambda, "float", $fgsSigma, $bDenseOpticalFlowDllType, $denseOpticalFlow, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveDenseRLOFOpticalFlowCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDenseRLOFOpticalFlowCreate", $sRlofParameterDllType, $rlofParameter, "float", $forwardBackwardThreshold, $sGridStepDllType, $gridStep, "int", $interpType, "int", $epicK, "float", $epicSigma, "float", $epicLambda, "boolean", $usePostProc, "float", $fgsLambda, "float", $fgsSigma, $sDenseOpticalFlowDllType, $denseOpticalFlow, $sAlgorithmDllType, $algorithm, $sSharedPtrDllType, $sharedPtr), "cveDenseRLOFOpticalFlowCreate", @error)
 EndFunc   ;==>_cveDenseRLOFOpticalFlowCreate
 
 Func _cveDenseRLOFOpticalFlowRelease($sharedPtr)
     ; CVAPI(void) cveDenseRLOFOpticalFlowRelease(cv::Ptr<cv::optflow::DenseRLOFOpticalFlow>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDenseRLOFOpticalFlowRelease", $bSharedPtrDllType, $sharedPtr), "cveDenseRLOFOpticalFlowRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDenseRLOFOpticalFlowRelease", $sSharedPtrDllType, $sharedPtr), "cveDenseRLOFOpticalFlowRelease", @error)
 EndFunc   ;==>_cveDenseRLOFOpticalFlowRelease
 
 Func _cveSparseRLOFOpticalFlowCreate($rlofParameter, $forwardBackwardThreshold, $sparseOpticalFlow, $algorithm, $sharedPtr)
     ; CVAPI(cv::optflow::SparseRLOFOpticalFlow*) cveSparseRLOFOpticalFlowCreate(cv::optflow::RLOFOpticalFlowParameter* rlofParameter, float forwardBackwardThreshold, cv::SparseOpticalFlow** sparseOpticalFlow, cv::Algorithm** algorithm, cv::Ptr<cv::optflow::SparseRLOFOpticalFlow>** sharedPtr);
 
-    Local $bRlofParameterDllType
-    If VarGetType($rlofParameter) == "DLLStruct" Then
-        $bRlofParameterDllType = "struct*"
+    Local $sRlofParameterDllType
+    If IsDllStruct($rlofParameter) Then
+        $sRlofParameterDllType = "struct*"
     Else
-        $bRlofParameterDllType = "ptr"
+        $sRlofParameterDllType = "ptr"
     EndIf
 
-    Local $bSparseOpticalFlowDllType
-    If VarGetType($sparseOpticalFlow) == "DLLStruct" Then
-        $bSparseOpticalFlowDllType = "struct*"
+    Local $sSparseOpticalFlowDllType
+    If IsDllStruct($sparseOpticalFlow) Then
+        $sSparseOpticalFlowDllType = "struct*"
+    ElseIf $sparseOpticalFlow == Null Then
+        $sSparseOpticalFlowDllType = "ptr"
     Else
-        $bSparseOpticalFlowDllType = "ptr*"
+        $sSparseOpticalFlowDllType = "ptr*"
     EndIf
 
-    Local $bAlgorithmDllType
-    If VarGetType($algorithm) == "DLLStruct" Then
-        $bAlgorithmDllType = "struct*"
+    Local $sAlgorithmDllType
+    If IsDllStruct($algorithm) Then
+        $sAlgorithmDllType = "struct*"
+    ElseIf $algorithm == Null Then
+        $sAlgorithmDllType = "ptr"
     Else
-        $bAlgorithmDllType = "ptr*"
+        $sAlgorithmDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSparseRLOFOpticalFlowCreate", $bRlofParameterDllType, $rlofParameter, "float", $forwardBackwardThreshold, $bSparseOpticalFlowDllType, $sparseOpticalFlow, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveSparseRLOFOpticalFlowCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSparseRLOFOpticalFlowCreate", $sRlofParameterDllType, $rlofParameter, "float", $forwardBackwardThreshold, $sSparseOpticalFlowDllType, $sparseOpticalFlow, $sAlgorithmDllType, $algorithm, $sSharedPtrDllType, $sharedPtr), "cveSparseRLOFOpticalFlowCreate", @error)
 EndFunc   ;==>_cveSparseRLOFOpticalFlowCreate
 
 Func _cveSparseRLOFOpticalFlowRelease($sharedPtr)
     ; CVAPI(void) cveSparseRLOFOpticalFlowRelease(cv::Ptr<cv::optflow::SparseRLOFOpticalFlow>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSparseRLOFOpticalFlowRelease", $bSharedPtrDllType, $sharedPtr), "cveSparseRLOFOpticalFlowRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSparseRLOFOpticalFlowRelease", $sSharedPtrDllType, $sharedPtr), "cveSparseRLOFOpticalFlowRelease", @error)
 EndFunc   ;==>_cveSparseRLOFOpticalFlowRelease

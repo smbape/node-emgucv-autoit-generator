@@ -28,14 +28,14 @@ Func _VectorOfDoubleGetSize($v)
         $vecV = $v
     EndIf
 
-    Local $bVDllType
-    If VarGetType($v) == "DLLStruct" Then
-        $bVDllType = "struct*"
+    Local $sVDllType
+    If IsDllStruct($v) Then
+        $sVDllType = "struct*"
     Else
-        $bVDllType = "ptr"
+        $sVDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "VectorOfDoubleGetSize", $bVDllType, $vecV), "VectorOfDoubleGetSize", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "VectorOfDoubleGetSize", $sVDllType, $vecV), "VectorOfDoubleGetSize", @error)
 
     If $bVIsArray Then
         _VectorOfDoubleRelease($vecV)
@@ -61,21 +61,21 @@ Func _VectorOfDoublePush($v, $value)
         $vecV = $v
     EndIf
 
-    Local $bVDllType
-    If VarGetType($v) == "DLLStruct" Then
-        $bVDllType = "struct*"
+    Local $sVDllType
+    If IsDllStruct($v) Then
+        $sVDllType = "struct*"
     Else
-        $bVDllType = "ptr"
+        $sVDllType = "ptr"
     EndIf
 
-    Local $bValueDllType
-    If VarGetType($value) == "DLLStruct" Then
-        $bValueDllType = "struct*"
+    Local $sValueDllType
+    If IsDllStruct($value) Then
+        $sValueDllType = "struct*"
     Else
-        $bValueDllType = "double*"
+        $sValueDllType = "double*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDoublePush", $bVDllType, $vecV, "double*", $value), "VectorOfDoublePush", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDoublePush", $sVDllType, $vecV, "double*", $value), "VectorOfDoublePush", @error)
 
     If $bVIsArray Then
         _VectorOfDoubleRelease($vecV)
@@ -99,21 +99,21 @@ Func _VectorOfDoublePushMulti($v, $values, $count)
         $vecV = $v
     EndIf
 
-    Local $bVDllType
-    If VarGetType($v) == "DLLStruct" Then
-        $bVDllType = "struct*"
+    Local $sVDllType
+    If IsDllStruct($v) Then
+        $sVDllType = "struct*"
     Else
-        $bVDllType = "ptr"
+        $sVDllType = "ptr"
     EndIf
 
-    Local $bValuesDllType
-    If VarGetType($values) == "DLLStruct" Then
-        $bValuesDllType = "struct*"
+    Local $sValuesDllType
+    If IsDllStruct($values) Then
+        $sValuesDllType = "struct*"
     Else
-        $bValuesDllType = "double*"
+        $sValuesDllType = "double*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDoublePushMulti", $bVDllType, $vecV, $bValuesDllType, $values, "int", $count), "VectorOfDoublePushMulti", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDoublePushMulti", $sVDllType, $vecV, $sValuesDllType, $values, "int", $count), "VectorOfDoublePushMulti", @error)
 
     If $bVIsArray Then
         _VectorOfDoubleRelease($vecV)
@@ -137,11 +137,11 @@ Func _VectorOfDoublePushVector($v, $other)
         $vecV = $v
     EndIf
 
-    Local $bVDllType
-    If VarGetType($v) == "DLLStruct" Then
-        $bVDllType = "struct*"
+    Local $sVDllType
+    If IsDllStruct($v) Then
+        $sVDllType = "struct*"
     Else
-        $bVDllType = "ptr"
+        $sVDllType = "ptr"
     EndIf
 
     Local $vecOther, $iArrOtherSize
@@ -158,14 +158,14 @@ Func _VectorOfDoublePushVector($v, $other)
         $vecOther = $other
     EndIf
 
-    Local $bOtherDllType
-    If VarGetType($other) == "DLLStruct" Then
-        $bOtherDllType = "struct*"
+    Local $sOtherDllType
+    If IsDllStruct($other) Then
+        $sOtherDllType = "struct*"
     Else
-        $bOtherDllType = "ptr"
+        $sOtherDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDoublePushVector", $bVDllType, $vecV, $bOtherDllType, $vecOther), "VectorOfDoublePushVector", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDoublePushVector", $sVDllType, $vecV, $sOtherDllType, $vecOther), "VectorOfDoublePushVector", @error)
 
     If $bOtherIsArray Then
         _VectorOfDoubleRelease($vecOther)
@@ -193,14 +193,14 @@ Func _VectorOfDoubleClear($v)
         $vecV = $v
     EndIf
 
-    Local $bVDllType
-    If VarGetType($v) == "DLLStruct" Then
-        $bVDllType = "struct*"
+    Local $sVDllType
+    If IsDllStruct($v) Then
+        $sVDllType = "struct*"
     Else
-        $bVDllType = "ptr"
+        $sVDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDoubleClear", $bVDllType, $vecV), "VectorOfDoubleClear", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDoubleClear", $sVDllType, $vecV), "VectorOfDoubleClear", @error)
 
     If $bVIsArray Then
         _VectorOfDoubleRelease($vecV)
@@ -224,14 +224,16 @@ Func _VectorOfDoubleRelease($v)
         $vecV = $v
     EndIf
 
-    Local $bVDllType
-    If VarGetType($v) == "DLLStruct" Then
-        $bVDllType = "struct*"
+    Local $sVDllType
+    If IsDllStruct($v) Then
+        $sVDllType = "struct*"
+    ElseIf $v == Null Then
+        $sVDllType = "ptr"
     Else
-        $bVDllType = "ptr*"
+        $sVDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDoubleRelease", $bVDllType, $vecV), "VectorOfDoubleRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDoubleRelease", $sVDllType, $vecV), "VectorOfDoubleRelease", @error)
 
     If $bVIsArray Then
         _VectorOfDoubleRelease($vecV)
@@ -255,21 +257,21 @@ Func _VectorOfDoubleCopyData($v, $data)
         $vecV = $v
     EndIf
 
-    Local $bVDllType
-    If VarGetType($v) == "DLLStruct" Then
-        $bVDllType = "struct*"
+    Local $sVDllType
+    If IsDllStruct($v) Then
+        $sVDllType = "struct*"
     Else
-        $bVDllType = "ptr"
+        $sVDllType = "ptr"
     EndIf
 
-    Local $bDataDllType
-    If VarGetType($data) == "DLLStruct" Then
-        $bDataDllType = "struct*"
+    Local $sDataDllType
+    If IsDllStruct($data) Then
+        $sDataDllType = "struct*"
     Else
-        $bDataDllType = "double*"
+        $sDataDllType = "double*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDoubleCopyData", $bVDllType, $vecV, $bDataDllType, $data), "VectorOfDoubleCopyData", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDoubleCopyData", $sVDllType, $vecV, $sDataDllType, $data), "VectorOfDoubleCopyData", @error)
 
     If $bVIsArray Then
         _VectorOfDoubleRelease($vecV)
@@ -293,14 +295,14 @@ Func _VectorOfDoubleGetStartAddress($v)
         $vecV = $v
     EndIf
 
-    Local $bVDllType
-    If VarGetType($v) == "DLLStruct" Then
-        $bVDllType = "struct*"
+    Local $sVDllType
+    If IsDllStruct($v) Then
+        $sVDllType = "struct*"
     Else
-        $bVDllType = "ptr"
+        $sVDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfDoubleGetStartAddress", $bVDllType, $vecV), "VectorOfDoubleGetStartAddress", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfDoubleGetStartAddress", $sVDllType, $vecV), "VectorOfDoubleGetStartAddress", @error)
 
     If $bVIsArray Then
         _VectorOfDoubleRelease($vecV)
@@ -326,14 +328,14 @@ Func _VectorOfDoubleGetEndAddress($v)
         $vecV = $v
     EndIf
 
-    Local $bVDllType
-    If VarGetType($v) == "DLLStruct" Then
-        $bVDllType = "struct*"
+    Local $sVDllType
+    If IsDllStruct($v) Then
+        $sVDllType = "struct*"
     Else
-        $bVDllType = "ptr"
+        $sVDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfDoubleGetEndAddress", $bVDllType, $vecV), "VectorOfDoubleGetEndAddress", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "VectorOfDoubleGetEndAddress", $sVDllType, $vecV), "VectorOfDoubleGetEndAddress", @error)
 
     If $bVIsArray Then
         _VectorOfDoubleRelease($vecV)
@@ -359,21 +361,21 @@ Func _VectorOfDoubleGetItem($vec, $index, $element)
         $vecVec = $vec
     EndIf
 
-    Local $bVecDllType
-    If VarGetType($vec) == "DLLStruct" Then
-        $bVecDllType = "struct*"
+    Local $sVecDllType
+    If IsDllStruct($vec) Then
+        $sVecDllType = "struct*"
     Else
-        $bVecDllType = "ptr"
+        $sVecDllType = "ptr"
     EndIf
 
-    Local $bElementDllType
-    If VarGetType($element) == "DLLStruct" Then
-        $bElementDllType = "struct*"
+    Local $sElementDllType
+    If IsDllStruct($element) Then
+        $sElementDllType = "struct*"
     Else
-        $bElementDllType = "double*"
+        $sElementDllType = "double*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDoubleGetItem", $bVecDllType, $vecVec, "int", $index, $bElementDllType, $element), "VectorOfDoubleGetItem", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDoubleGetItem", $sVecDllType, $vecVec, "int", $index, $sElementDllType, $element), "VectorOfDoubleGetItem", @error)
 
     If $bVecIsArray Then
         _VectorOfDoubleRelease($vecVec)
@@ -397,21 +399,23 @@ Func _VectorOfDoubleGetItemPtr($vec, $index, $element)
         $vecVec = $vec
     EndIf
 
-    Local $bVecDllType
-    If VarGetType($vec) == "DLLStruct" Then
-        $bVecDllType = "struct*"
+    Local $sVecDllType
+    If IsDllStruct($vec) Then
+        $sVecDllType = "struct*"
     Else
-        $bVecDllType = "ptr"
+        $sVecDllType = "ptr"
     EndIf
 
-    Local $bElementDllType
-    If VarGetType($element) == "DLLStruct" Then
-        $bElementDllType = "struct*"
+    Local $sElementDllType
+    If IsDllStruct($element) Then
+        $sElementDllType = "struct*"
+    ElseIf $element == Null Then
+        $sElementDllType = "ptr"
     Else
-        $bElementDllType = "ptr*"
+        $sElementDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDoubleGetItemPtr", $bVecDllType, $vecVec, "int", $index, $bElementDllType, $element), "VectorOfDoubleGetItemPtr", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "VectorOfDoubleGetItemPtr", $sVecDllType, $vecVec, "int", $index, $sElementDllType, $element), "VectorOfDoubleGetItemPtr", @error)
 
     If $bVecIsArray Then
         _VectorOfDoubleRelease($vecVec)
@@ -435,14 +439,14 @@ Func _cveInputArrayFromVectorOfDouble($vec)
         $vecVec = $vec
     EndIf
 
-    Local $bVecDllType
-    If VarGetType($vec) == "DLLStruct" Then
-        $bVecDllType = "struct*"
+    Local $sVecDllType
+    If IsDllStruct($vec) Then
+        $sVecDllType = "struct*"
     Else
-        $bVecDllType = "ptr"
+        $sVecDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputArrayFromVectorOfDouble", $bVecDllType, $vecVec), "cveInputArrayFromVectorOfDouble", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputArrayFromVectorOfDouble", $sVecDllType, $vecVec), "cveInputArrayFromVectorOfDouble", @error)
 
     If $bVecIsArray Then
         _VectorOfDoubleRelease($vecVec)
@@ -468,14 +472,14 @@ Func _cveOutputArrayFromVectorOfDouble($vec)
         $vecVec = $vec
     EndIf
 
-    Local $bVecDllType
-    If VarGetType($vec) == "DLLStruct" Then
-        $bVecDllType = "struct*"
+    Local $sVecDllType
+    If IsDllStruct($vec) Then
+        $sVecDllType = "struct*"
     Else
-        $bVecDllType = "ptr"
+        $sVecDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOutputArrayFromVectorOfDouble", $bVecDllType, $vecVec), "cveOutputArrayFromVectorOfDouble", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOutputArrayFromVectorOfDouble", $sVecDllType, $vecVec), "cveOutputArrayFromVectorOfDouble", @error)
 
     If $bVecIsArray Then
         _VectorOfDoubleRelease($vecVec)
@@ -501,14 +505,14 @@ Func _cveInputOutputArrayFromVectorOfDouble($vec)
         $vecVec = $vec
     EndIf
 
-    Local $bVecDllType
-    If VarGetType($vec) == "DLLStruct" Then
-        $bVecDllType = "struct*"
+    Local $sVecDllType
+    If IsDllStruct($vec) Then
+        $sVecDllType = "struct*"
     Else
-        $bVecDllType = "ptr"
+        $sVecDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputOutputArrayFromVectorOfDouble", $bVecDllType, $vecVec), "cveInputOutputArrayFromVectorOfDouble", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveInputOutputArrayFromVectorOfDouble", $sVecDllType, $vecVec), "cveInputOutputArrayFromVectorOfDouble", @error)
 
     If $bVecIsArray Then
         _VectorOfDoubleRelease($vecVec)

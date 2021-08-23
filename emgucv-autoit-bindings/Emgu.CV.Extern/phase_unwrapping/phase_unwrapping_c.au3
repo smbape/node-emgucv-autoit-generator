@@ -4,53 +4,59 @@
 Func _cveHistogramPhaseUnwrappingCreate($width, $height, $histThresh, $nbrOfSmallBins, $nbrOfLargeBins, $sharedPtr)
     ; CVAPI(cv::phase_unwrapping::HistogramPhaseUnwrapping*) cveHistogramPhaseUnwrappingCreate(int width, int height, float histThresh, int nbrOfSmallBins, int nbrOfLargeBins, cv::Ptr<cv::phase_unwrapping::HistogramPhaseUnwrapping>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHistogramPhaseUnwrappingCreate", "int", $width, "int", $height, "float", $histThresh, "int", $nbrOfSmallBins, "int", $nbrOfLargeBins, $bSharedPtrDllType, $sharedPtr), "cveHistogramPhaseUnwrappingCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHistogramPhaseUnwrappingCreate", "int", $width, "int", $height, "float", $histThresh, "int", $nbrOfSmallBins, "int", $nbrOfLargeBins, $sSharedPtrDllType, $sharedPtr), "cveHistogramPhaseUnwrappingCreate", @error)
 EndFunc   ;==>_cveHistogramPhaseUnwrappingCreate
 
 Func _cveHistogramPhaseUnwrappingRelease($phase_unwrapping, $sharedPtr)
     ; CVAPI(void) cveHistogramPhaseUnwrappingRelease(cv::phase_unwrapping::HistogramPhaseUnwrapping** phase_unwrapping, cv::Ptr<cv::phase_unwrapping::HistogramPhaseUnwrapping>** sharedPtr);
 
-    Local $bPhase_unwrappingDllType
-    If VarGetType($phase_unwrapping) == "DLLStruct" Then
-        $bPhase_unwrappingDllType = "struct*"
+    Local $sPhase_unwrappingDllType
+    If IsDllStruct($phase_unwrapping) Then
+        $sPhase_unwrappingDllType = "struct*"
+    ElseIf $phase_unwrapping == Null Then
+        $sPhase_unwrappingDllType = "ptr"
     Else
-        $bPhase_unwrappingDllType = "ptr*"
+        $sPhase_unwrappingDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHistogramPhaseUnwrappingRelease", $bPhase_unwrappingDllType, $phase_unwrapping, $bSharedPtrDllType, $sharedPtr), "cveHistogramPhaseUnwrappingRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHistogramPhaseUnwrappingRelease", $sPhase_unwrappingDllType, $phase_unwrapping, $sSharedPtrDllType, $sharedPtr), "cveHistogramPhaseUnwrappingRelease", @error)
 EndFunc   ;==>_cveHistogramPhaseUnwrappingRelease
 
 Func _cveHistogramPhaseUnwrappingGetInverseReliabilityMap($phase_unwrapping, $reliabilityMap)
     ; CVAPI(void) cveHistogramPhaseUnwrappingGetInverseReliabilityMap(cv::phase_unwrapping::HistogramPhaseUnwrapping* phase_unwrapping, cv::_OutputArray* reliabilityMap);
 
-    Local $bPhase_unwrappingDllType
-    If VarGetType($phase_unwrapping) == "DLLStruct" Then
-        $bPhase_unwrappingDllType = "struct*"
+    Local $sPhase_unwrappingDllType
+    If IsDllStruct($phase_unwrapping) Then
+        $sPhase_unwrappingDllType = "struct*"
     Else
-        $bPhase_unwrappingDllType = "ptr"
+        $sPhase_unwrappingDllType = "ptr"
     EndIf
 
-    Local $bReliabilityMapDllType
-    If VarGetType($reliabilityMap) == "DLLStruct" Then
-        $bReliabilityMapDllType = "struct*"
+    Local $sReliabilityMapDllType
+    If IsDllStruct($reliabilityMap) Then
+        $sReliabilityMapDllType = "struct*"
     Else
-        $bReliabilityMapDllType = "ptr"
+        $sReliabilityMapDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHistogramPhaseUnwrappingGetInverseReliabilityMap", $bPhase_unwrappingDllType, $phase_unwrapping, $bReliabilityMapDllType, $reliabilityMap), "cveHistogramPhaseUnwrappingGetInverseReliabilityMap", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHistogramPhaseUnwrappingGetInverseReliabilityMap", $sPhase_unwrappingDllType, $phase_unwrapping, $sReliabilityMapDllType, $reliabilityMap), "cveHistogramPhaseUnwrappingGetInverseReliabilityMap", @error)
 EndFunc   ;==>_cveHistogramPhaseUnwrappingGetInverseReliabilityMap
 
 Func _cveHistogramPhaseUnwrappingGetInverseReliabilityMapMat($phase_unwrapping, $matReliabilityMap)
@@ -84,35 +90,35 @@ EndFunc   ;==>_cveHistogramPhaseUnwrappingGetInverseReliabilityMapMat
 Func _cveHistogramPhaseMapUnwrappingUnwrapPhaseMap($phase_unwrapping, $wrappedPhaseMap, $unwrappedPhaseMap, $shadowMask)
     ; CVAPI(void) cveHistogramPhaseMapUnwrappingUnwrapPhaseMap(cv::phase_unwrapping::HistogramPhaseUnwrapping* phase_unwrapping, cv::_InputArray* wrappedPhaseMap, cv::_OutputArray* unwrappedPhaseMap, cv::_InputArray* shadowMask);
 
-    Local $bPhase_unwrappingDllType
-    If VarGetType($phase_unwrapping) == "DLLStruct" Then
-        $bPhase_unwrappingDllType = "struct*"
+    Local $sPhase_unwrappingDllType
+    If IsDllStruct($phase_unwrapping) Then
+        $sPhase_unwrappingDllType = "struct*"
     Else
-        $bPhase_unwrappingDllType = "ptr"
+        $sPhase_unwrappingDllType = "ptr"
     EndIf
 
-    Local $bWrappedPhaseMapDllType
-    If VarGetType($wrappedPhaseMap) == "DLLStruct" Then
-        $bWrappedPhaseMapDllType = "struct*"
+    Local $sWrappedPhaseMapDllType
+    If IsDllStruct($wrappedPhaseMap) Then
+        $sWrappedPhaseMapDllType = "struct*"
     Else
-        $bWrappedPhaseMapDllType = "ptr"
+        $sWrappedPhaseMapDllType = "ptr"
     EndIf
 
-    Local $bUnwrappedPhaseMapDllType
-    If VarGetType($unwrappedPhaseMap) == "DLLStruct" Then
-        $bUnwrappedPhaseMapDllType = "struct*"
+    Local $sUnwrappedPhaseMapDllType
+    If IsDllStruct($unwrappedPhaseMap) Then
+        $sUnwrappedPhaseMapDllType = "struct*"
     Else
-        $bUnwrappedPhaseMapDllType = "ptr"
+        $sUnwrappedPhaseMapDllType = "ptr"
     EndIf
 
-    Local $bShadowMaskDllType
-    If VarGetType($shadowMask) == "DLLStruct" Then
-        $bShadowMaskDllType = "struct*"
+    Local $sShadowMaskDllType
+    If IsDllStruct($shadowMask) Then
+        $sShadowMaskDllType = "struct*"
     Else
-        $bShadowMaskDllType = "ptr"
+        $sShadowMaskDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHistogramPhaseMapUnwrappingUnwrapPhaseMap", $bPhase_unwrappingDllType, $phase_unwrapping, $bWrappedPhaseMapDllType, $wrappedPhaseMap, $bUnwrappedPhaseMapDllType, $unwrappedPhaseMap, $bShadowMaskDllType, $shadowMask), "cveHistogramPhaseMapUnwrappingUnwrapPhaseMap", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHistogramPhaseMapUnwrappingUnwrapPhaseMap", $sPhase_unwrappingDllType, $phase_unwrapping, $sWrappedPhaseMapDllType, $wrappedPhaseMap, $sUnwrappedPhaseMapDllType, $unwrappedPhaseMap, $sShadowMaskDllType, $shadowMask), "cveHistogramPhaseMapUnwrappingUnwrapPhaseMap", @error)
 EndFunc   ;==>_cveHistogramPhaseMapUnwrappingUnwrapPhaseMap
 
 Func _cveHistogramPhaseMapUnwrappingUnwrapPhaseMapMat($phase_unwrapping, $matWrappedPhaseMap, $matUnwrappedPhaseMap, $matShadowMask)

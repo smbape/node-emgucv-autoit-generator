@@ -4,11 +4,11 @@
 Func _cveTextRecognitionModelGetDecodeType($obj, $str)
     ; CVAPI(void) cveTextRecognitionModelGetDecodeType(cv::dnn::TextRecognitionModel* obj, cv::String* str);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
     Local $bStrIsString = VarGetType($str) == "String"
@@ -16,14 +16,14 @@ Func _cveTextRecognitionModelGetDecodeType($obj, $str)
         $str = _cveStringCreateFromStr($str)
     EndIf
 
-    Local $bStrDllType
-    If VarGetType($str) == "DLLStruct" Then
-        $bStrDllType = "struct*"
+    Local $sStrDllType
+    If IsDllStruct($str) Then
+        $sStrDllType = "struct*"
     Else
-        $bStrDllType = "ptr"
+        $sStrDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTextRecognitionModelGetDecodeType", $bObjDllType, $obj, $bStrDllType, $str), "cveTextRecognitionModelGetDecodeType", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTextRecognitionModelGetDecodeType", $sObjDllType, $obj, $sStrDllType, $str), "cveTextRecognitionModelGetDecodeType", @error)
 
     If $bStrIsString Then
         _cveStringRelease($str)
@@ -33,11 +33,11 @@ EndFunc   ;==>_cveTextRecognitionModelGetDecodeType
 Func _cveTextRecognitionModelSetDecodeType($obj, $str)
     ; CVAPI(void) cveTextRecognitionModelSetDecodeType(cv::dnn::TextRecognitionModel* obj, cv::String* str);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
     Local $bStrIsString = VarGetType($str) == "String"
@@ -45,14 +45,14 @@ Func _cveTextRecognitionModelSetDecodeType($obj, $str)
         $str = _cveStringCreateFromStr($str)
     EndIf
 
-    Local $bStrDllType
-    If VarGetType($str) == "DLLStruct" Then
-        $bStrDllType = "struct*"
+    Local $sStrDllType
+    If IsDllStruct($str) Then
+        $sStrDllType = "struct*"
     Else
-        $bStrDllType = "ptr"
+        $sStrDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTextRecognitionModelSetDecodeType", $bObjDllType, $obj, $bStrDllType, $str), "cveTextRecognitionModelSetDecodeType", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTextRecognitionModelSetDecodeType", $sObjDllType, $obj, $sStrDllType, $str), "cveTextRecognitionModelSetDecodeType", @error)
 
     If $bStrIsString Then
         _cveStringRelease($str)

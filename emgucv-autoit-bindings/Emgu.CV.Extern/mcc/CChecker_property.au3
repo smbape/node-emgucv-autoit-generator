@@ -4,49 +4,49 @@
 Func _cveCCheckerGetTarget($obj)
     ; CVAPI(cv::mcc::TYPECHART) cveCCheckerGetTarget(cv::mcc::CChecker* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveCCheckerGetTarget", $bObjDllType, $obj), "cveCCheckerGetTarget", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveCCheckerGetTarget", $sObjDllType, $obj), "cveCCheckerGetTarget", @error)
 EndFunc   ;==>_cveCCheckerGetTarget
 
 Func _cveCCheckerSetTarget($obj, $value)
     ; CVAPI(void) cveCCheckerSetTarget(cv::mcc::CChecker* obj, cv::mcc::TYPECHART value);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCCheckerSetTarget", $bObjDllType, $obj, "int", $value), "cveCCheckerSetTarget", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCCheckerSetTarget", $sObjDllType, $obj, "int", $value), "cveCCheckerSetTarget", @error)
 EndFunc   ;==>_cveCCheckerSetTarget
 
 Func _cveCCheckerGetCost($obj)
     ; CVAPI(float) cveCCheckerGetCost(cv::mcc::CChecker* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveCCheckerGetCost", $bObjDllType, $obj), "cveCCheckerGetCost", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveCCheckerGetCost", $sObjDllType, $obj), "cveCCheckerGetCost", @error)
 EndFunc   ;==>_cveCCheckerGetCost
 
 Func _cveCCheckerSetCost($obj, $value)
     ; CVAPI(void) cveCCheckerSetCost(cv::mcc::CChecker* obj, float value);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCCheckerSetCost", $bObjDllType, $obj, "float", $value), "cveCCheckerSetCost", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCCheckerSetCost", $sObjDllType, $obj, "float", $value), "cveCCheckerSetCost", @error)
 EndFunc   ;==>_cveCCheckerSetCost

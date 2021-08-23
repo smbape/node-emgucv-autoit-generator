@@ -9,14 +9,14 @@ Func _depthaiDeviceCreate($usb_device, $usb2_mode)
         $usb_device = _cveStringCreateFromStr($usb_device)
     EndIf
 
-    Local $bUsb_deviceDllType
-    If VarGetType($usb_device) == "DLLStruct" Then
-        $bUsb_deviceDllType = "struct*"
+    Local $sUsb_deviceDllType
+    If IsDllStruct($usb_device) Then
+        $sUsb_deviceDllType = "struct*"
     Else
-        $bUsb_deviceDllType = "ptr"
+        $sUsb_deviceDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "depthaiDeviceCreate", $bUsb_deviceDllType, $usb_device, "boolean", $usb2_mode), "depthaiDeviceCreate", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "depthaiDeviceCreate", $sUsb_deviceDllType, $usb_device, "boolean", $usb2_mode), "depthaiDeviceCreate", @error)
 
     If $bUsb_deviceIsString Then
         _cveStringRelease($usb_device)
@@ -28,24 +28,26 @@ EndFunc   ;==>_depthaiDeviceCreate
 Func _depthaiDeviceRelease($usb_device)
     ; CVAPI(void) depthaiDeviceRelease(Device** usb_device);
 
-    Local $bUsb_deviceDllType
-    If VarGetType($usb_device) == "DLLStruct" Then
-        $bUsb_deviceDllType = "struct*"
+    Local $sUsb_deviceDllType
+    If IsDllStruct($usb_device) Then
+        $sUsb_deviceDllType = "struct*"
+    ElseIf $usb_device == Null Then
+        $sUsb_deviceDllType = "ptr"
     Else
-        $bUsb_deviceDllType = "ptr*"
+        $sUsb_deviceDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "depthaiDeviceRelease", $bUsb_deviceDllType, $usb_device), "depthaiDeviceRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "depthaiDeviceRelease", $sUsb_deviceDllType, $usb_device), "depthaiDeviceRelease", @error)
 EndFunc   ;==>_depthaiDeviceRelease
 
 Func _depthaiDeviceGetAvailableStreams($usb_device, $availableStreams)
     ; CVAPI(void) depthaiDeviceGetAvailableStreams(Device* usb_device, std::vector<cv::String>* availableStreams);
 
-    Local $bUsb_deviceDllType
-    If VarGetType($usb_device) == "DLLStruct" Then
-        $bUsb_deviceDllType = "struct*"
+    Local $sUsb_deviceDllType
+    If IsDllStruct($usb_device) Then
+        $sUsb_deviceDllType = "struct*"
     Else
-        $bUsb_deviceDllType = "ptr"
+        $sUsb_deviceDllType = "ptr"
     EndIf
 
     Local $vecAvailableStreams, $iArrAvailableStreamsSize
@@ -62,14 +64,14 @@ Func _depthaiDeviceGetAvailableStreams($usb_device, $availableStreams)
         $vecAvailableStreams = $availableStreams
     EndIf
 
-    Local $bAvailableStreamsDllType
-    If VarGetType($availableStreams) == "DLLStruct" Then
-        $bAvailableStreamsDllType = "struct*"
+    Local $sAvailableStreamsDllType
+    If IsDllStruct($availableStreams) Then
+        $sAvailableStreamsDllType = "struct*"
     Else
-        $bAvailableStreamsDllType = "ptr"
+        $sAvailableStreamsDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "depthaiDeviceGetAvailableStreams", $bUsb_deviceDllType, $usb_device, $bAvailableStreamsDllType, $vecAvailableStreams), "depthaiDeviceGetAvailableStreams", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "depthaiDeviceGetAvailableStreams", $sUsb_deviceDllType, $usb_device, $sAvailableStreamsDllType, $vecAvailableStreams), "depthaiDeviceGetAvailableStreams", @error)
 
     If $bAvailableStreamsIsArray Then
         _VectorOfCvStringRelease($vecAvailableStreams)
@@ -79,11 +81,11 @@ EndFunc   ;==>_depthaiDeviceGetAvailableStreams
 Func _depthaiDeviceCreatePipeline($usb_device, $config_json_str, $hostedPipelinePtr)
     ; CVAPI(CNNHostPipeline*) depthaiDeviceCreatePipeline(Device* usb_device, cv::String* config_json_str, std::shared_ptr<CNNHostPipeline>** hostedPipelinePtr);
 
-    Local $bUsb_deviceDllType
-    If VarGetType($usb_device) == "DLLStruct" Then
-        $bUsb_deviceDllType = "struct*"
+    Local $sUsb_deviceDllType
+    If IsDllStruct($usb_device) Then
+        $sUsb_deviceDllType = "struct*"
     Else
-        $bUsb_deviceDllType = "ptr"
+        $sUsb_deviceDllType = "ptr"
     EndIf
 
     Local $bConfig_json_strIsString = VarGetType($config_json_str) == "String"
@@ -91,21 +93,23 @@ Func _depthaiDeviceCreatePipeline($usb_device, $config_json_str, $hostedPipeline
         $config_json_str = _cveStringCreateFromStr($config_json_str)
     EndIf
 
-    Local $bConfig_json_strDllType
-    If VarGetType($config_json_str) == "DLLStruct" Then
-        $bConfig_json_strDllType = "struct*"
+    Local $sConfig_json_strDllType
+    If IsDllStruct($config_json_str) Then
+        $sConfig_json_strDllType = "struct*"
     Else
-        $bConfig_json_strDllType = "ptr"
+        $sConfig_json_strDllType = "ptr"
     EndIf
 
-    Local $bHostedPipelinePtrDllType
-    If VarGetType($hostedPipelinePtr) == "DLLStruct" Then
-        $bHostedPipelinePtrDllType = "struct*"
+    Local $sHostedPipelinePtrDllType
+    If IsDllStruct($hostedPipelinePtr) Then
+        $sHostedPipelinePtrDllType = "struct*"
+    ElseIf $hostedPipelinePtr == Null Then
+        $sHostedPipelinePtrDllType = "ptr"
     Else
-        $bHostedPipelinePtrDllType = "ptr*"
+        $sHostedPipelinePtrDllType = "ptr*"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "depthaiDeviceCreatePipeline", $bUsb_deviceDllType, $usb_device, $bConfig_json_strDllType, $config_json_str, $bHostedPipelinePtrDllType, $hostedPipelinePtr), "depthaiDeviceCreatePipeline", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "depthaiDeviceCreatePipeline", $sUsb_deviceDllType, $usb_device, $sConfig_json_strDllType, $config_json_str, $sHostedPipelinePtrDllType, $hostedPipelinePtr), "depthaiDeviceCreatePipeline", @error)
 
     If $bConfig_json_strIsString Then
         _cveStringRelease($config_json_str)
@@ -117,113 +121,121 @@ EndFunc   ;==>_depthaiDeviceCreatePipeline
 Func _depthaiCNNHostPipelineRelease($hostedPipelinePtr)
     ; CVAPI(void) depthaiCNNHostPipelineRelease(std::shared_ptr<CNNHostPipeline>** hostedPipelinePtr);
 
-    Local $bHostedPipelinePtrDllType
-    If VarGetType($hostedPipelinePtr) == "DLLStruct" Then
-        $bHostedPipelinePtrDllType = "struct*"
+    Local $sHostedPipelinePtrDllType
+    If IsDllStruct($hostedPipelinePtr) Then
+        $sHostedPipelinePtrDllType = "struct*"
+    ElseIf $hostedPipelinePtr == Null Then
+        $sHostedPipelinePtrDllType = "ptr"
     Else
-        $bHostedPipelinePtrDllType = "ptr*"
+        $sHostedPipelinePtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "depthaiCNNHostPipelineRelease", $bHostedPipelinePtrDllType, $hostedPipelinePtr), "depthaiCNNHostPipelineRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "depthaiCNNHostPipelineRelease", $sHostedPipelinePtrDllType, $hostedPipelinePtr), "depthaiCNNHostPipelineRelease", @error)
 EndFunc   ;==>_depthaiCNNHostPipelineRelease
 
 Func _depthaiCNNHostPipelineGetAvailableNNetAndDataPackets($cnnHostPipeline, $blocking)
     ; CVAPI(NNetAndDataPackets*) depthaiCNNHostPipelineGetAvailableNNetAndDataPackets(CNNHostPipeline* cnnHostPipeline, bool blocking);
 
-    Local $bCnnHostPipelineDllType
-    If VarGetType($cnnHostPipeline) == "DLLStruct" Then
-        $bCnnHostPipelineDllType = "struct*"
+    Local $sCnnHostPipelineDllType
+    If IsDllStruct($cnnHostPipeline) Then
+        $sCnnHostPipelineDllType = "struct*"
     Else
-        $bCnnHostPipelineDllType = "ptr"
+        $sCnnHostPipelineDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "depthaiCNNHostPipelineGetAvailableNNetAndDataPackets", $bCnnHostPipelineDllType, $cnnHostPipeline, "boolean", $blocking), "depthaiCNNHostPipelineGetAvailableNNetAndDataPackets", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "depthaiCNNHostPipelineGetAvailableNNetAndDataPackets", $sCnnHostPipelineDllType, $cnnHostPipeline, "boolean", $blocking), "depthaiCNNHostPipelineGetAvailableNNetAndDataPackets", @error)
 EndFunc   ;==>_depthaiCNNHostPipelineGetAvailableNNetAndDataPackets
 
 Func _depthaiNNetAndDataPacketsGetNNetCount($nnetAndDataPackets)
     ; CVAPI(int) depthaiNNetAndDataPacketsGetNNetCount(NNetAndDataPackets* nnetAndDataPackets);
 
-    Local $bNnetAndDataPacketsDllType
-    If VarGetType($nnetAndDataPackets) == "DLLStruct" Then
-        $bNnetAndDataPacketsDllType = "struct*"
+    Local $sNnetAndDataPacketsDllType
+    If IsDllStruct($nnetAndDataPackets) Then
+        $sNnetAndDataPacketsDllType = "struct*"
     Else
-        $bNnetAndDataPacketsDllType = "ptr"
+        $sNnetAndDataPacketsDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "depthaiNNetAndDataPacketsGetNNetCount", $bNnetAndDataPacketsDllType, $nnetAndDataPackets), "depthaiNNetAndDataPacketsGetNNetCount", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "depthaiNNetAndDataPacketsGetNNetCount", $sNnetAndDataPacketsDllType, $nnetAndDataPackets), "depthaiNNetAndDataPacketsGetNNetCount", @error)
 EndFunc   ;==>_depthaiNNetAndDataPacketsGetNNetCount
 
 Func _depthaiNNetAndDataPacketsGetNNetArr($nnetAndDataPackets, $packetArr)
     ; CVAPI(void) depthaiNNetAndDataPacketsGetNNetArr(NNetAndDataPackets* nnetAndDataPackets, NNetPacket** packetArr);
 
-    Local $bNnetAndDataPacketsDllType
-    If VarGetType($nnetAndDataPackets) == "DLLStruct" Then
-        $bNnetAndDataPacketsDllType = "struct*"
+    Local $sNnetAndDataPacketsDllType
+    If IsDllStruct($nnetAndDataPackets) Then
+        $sNnetAndDataPacketsDllType = "struct*"
     Else
-        $bNnetAndDataPacketsDllType = "ptr"
+        $sNnetAndDataPacketsDllType = "ptr"
     EndIf
 
-    Local $bPacketArrDllType
-    If VarGetType($packetArr) == "DLLStruct" Then
-        $bPacketArrDllType = "struct*"
+    Local $sPacketArrDllType
+    If IsDllStruct($packetArr) Then
+        $sPacketArrDllType = "struct*"
+    ElseIf $packetArr == Null Then
+        $sPacketArrDllType = "ptr"
     Else
-        $bPacketArrDllType = "ptr*"
+        $sPacketArrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "depthaiNNetAndDataPacketsGetNNetArr", $bNnetAndDataPacketsDllType, $nnetAndDataPackets, $bPacketArrDllType, $packetArr), "depthaiNNetAndDataPacketsGetNNetArr", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "depthaiNNetAndDataPacketsGetNNetArr", $sNnetAndDataPacketsDllType, $nnetAndDataPackets, $sPacketArrDllType, $packetArr), "depthaiNNetAndDataPacketsGetNNetArr", @error)
 EndFunc   ;==>_depthaiNNetAndDataPacketsGetNNetArr
 
 Func _depthaiNNetAndDataPacketsGetHostDataPacketCount($nnetAndDataPackets)
     ; CVAPI(int) depthaiNNetAndDataPacketsGetHostDataPacketCount(NNetAndDataPackets* nnetAndDataPackets);
 
-    Local $bNnetAndDataPacketsDllType
-    If VarGetType($nnetAndDataPackets) == "DLLStruct" Then
-        $bNnetAndDataPacketsDllType = "struct*"
+    Local $sNnetAndDataPacketsDllType
+    If IsDllStruct($nnetAndDataPackets) Then
+        $sNnetAndDataPacketsDllType = "struct*"
     Else
-        $bNnetAndDataPacketsDllType = "ptr"
+        $sNnetAndDataPacketsDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "depthaiNNetAndDataPacketsGetHostDataPacketCount", $bNnetAndDataPacketsDllType, $nnetAndDataPackets), "depthaiNNetAndDataPacketsGetHostDataPacketCount", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "depthaiNNetAndDataPacketsGetHostDataPacketCount", $sNnetAndDataPacketsDllType, $nnetAndDataPackets), "depthaiNNetAndDataPacketsGetHostDataPacketCount", @error)
 EndFunc   ;==>_depthaiNNetAndDataPacketsGetHostDataPacketCount
 
 Func _depthaiNNetAndDataPacketsGetHostDataPacketArr($nnetAndDataPackets, $packetArr)
     ; CVAPI(void) depthaiNNetAndDataPacketsGetHostDataPacketArr(NNetAndDataPackets* nnetAndDataPackets, HostDataPacket** packetArr);
 
-    Local $bNnetAndDataPacketsDllType
-    If VarGetType($nnetAndDataPackets) == "DLLStruct" Then
-        $bNnetAndDataPacketsDllType = "struct*"
+    Local $sNnetAndDataPacketsDllType
+    If IsDllStruct($nnetAndDataPackets) Then
+        $sNnetAndDataPacketsDllType = "struct*"
     Else
-        $bNnetAndDataPacketsDllType = "ptr"
+        $sNnetAndDataPacketsDllType = "ptr"
     EndIf
 
-    Local $bPacketArrDllType
-    If VarGetType($packetArr) == "DLLStruct" Then
-        $bPacketArrDllType = "struct*"
+    Local $sPacketArrDllType
+    If IsDllStruct($packetArr) Then
+        $sPacketArrDllType = "struct*"
+    ElseIf $packetArr == Null Then
+        $sPacketArrDllType = "ptr"
     Else
-        $bPacketArrDllType = "ptr*"
+        $sPacketArrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "depthaiNNetAndDataPacketsGetHostDataPacketArr", $bNnetAndDataPacketsDllType, $nnetAndDataPackets, $bPacketArrDllType, $packetArr), "depthaiNNetAndDataPacketsGetHostDataPacketArr", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "depthaiNNetAndDataPacketsGetHostDataPacketArr", $sNnetAndDataPacketsDllType, $nnetAndDataPackets, $sPacketArrDllType, $packetArr), "depthaiNNetAndDataPacketsGetHostDataPacketArr", @error)
 EndFunc   ;==>_depthaiNNetAndDataPacketsGetHostDataPacketArr
 
 Func _depthaiNNetAndDataPacketsRelease($nnetAndDataPackets)
     ; CVAPI(void) depthaiNNetAndDataPacketsRelease(NNetAndDataPackets** nnetAndDataPackets);
 
-    Local $bNnetAndDataPacketsDllType
-    If VarGetType($nnetAndDataPackets) == "DLLStruct" Then
-        $bNnetAndDataPacketsDllType = "struct*"
+    Local $sNnetAndDataPacketsDllType
+    If IsDllStruct($nnetAndDataPackets) Then
+        $sNnetAndDataPacketsDllType = "struct*"
+    ElseIf $nnetAndDataPackets == Null Then
+        $sNnetAndDataPacketsDllType = "ptr"
     Else
-        $bNnetAndDataPacketsDllType = "ptr*"
+        $sNnetAndDataPacketsDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "depthaiNNetAndDataPacketsRelease", $bNnetAndDataPacketsDllType, $nnetAndDataPackets), "depthaiNNetAndDataPacketsRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "depthaiNNetAndDataPacketsRelease", $sNnetAndDataPacketsDllType, $nnetAndDataPackets), "depthaiNNetAndDataPacketsRelease", @error)
 EndFunc   ;==>_depthaiNNetAndDataPacketsRelease
 
 Func _depthaiHostDataPacketGetDimensions($packet, $dimensions)
     ; CVAPI(void) depthaiHostDataPacketGetDimensions(HostDataPacket* packet, std::vector<int>* dimensions);
 
-    Local $bPacketDllType
-    If VarGetType($packet) == "DLLStruct" Then
-        $bPacketDllType = "struct*"
+    Local $sPacketDllType
+    If IsDllStruct($packet) Then
+        $sPacketDllType = "struct*"
     Else
-        $bPacketDllType = "ptr"
+        $sPacketDllType = "ptr"
     EndIf
 
     Local $vecDimensions, $iArrDimensionsSize
@@ -240,14 +252,14 @@ Func _depthaiHostDataPacketGetDimensions($packet, $dimensions)
         $vecDimensions = $dimensions
     EndIf
 
-    Local $bDimensionsDllType
-    If VarGetType($dimensions) == "DLLStruct" Then
-        $bDimensionsDllType = "struct*"
+    Local $sDimensionsDllType
+    If IsDllStruct($dimensions) Then
+        $sDimensionsDllType = "struct*"
     Else
-        $bDimensionsDllType = "ptr"
+        $sDimensionsDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "depthaiHostDataPacketGetDimensions", $bPacketDllType, $packet, $bDimensionsDllType, $vecDimensions), "depthaiHostDataPacketGetDimensions", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "depthaiHostDataPacketGetDimensions", $sPacketDllType, $packet, $sDimensionsDllType, $vecDimensions), "depthaiHostDataPacketGetDimensions", @error)
 
     If $bDimensionsIsArray Then
         _VectorOfIntRelease($vecDimensions)
@@ -257,71 +269,71 @@ EndFunc   ;==>_depthaiHostDataPacketGetDimensions
 Func _depthaiHostDataPacketGetMetadata($packet, $metadata)
     ; CVAPI(bool) depthaiHostDataPacketGetMetadata(HostDataPacket* packet, FrameMetadata* metadata);
 
-    Local $bPacketDllType
-    If VarGetType($packet) == "DLLStruct" Then
-        $bPacketDllType = "struct*"
+    Local $sPacketDllType
+    If IsDllStruct($packet) Then
+        $sPacketDllType = "struct*"
     Else
-        $bPacketDllType = "ptr"
+        $sPacketDllType = "ptr"
     EndIf
 
-    Local $bMetadataDllType
-    If VarGetType($metadata) == "DLLStruct" Then
-        $bMetadataDllType = "struct*"
+    Local $sMetadataDllType
+    If IsDllStruct($metadata) Then
+        $sMetadataDllType = "struct*"
     Else
-        $bMetadataDllType = "ptr"
+        $sMetadataDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "depthaiHostDataPacketGetMetadata", $bPacketDllType, $packet, $bMetadataDllType, $metadata), "depthaiHostDataPacketGetMetadata", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "depthaiHostDataPacketGetMetadata", $sPacketDllType, $packet, $sMetadataDllType, $metadata), "depthaiHostDataPacketGetMetadata", @error)
 EndFunc   ;==>_depthaiHostDataPacketGetMetadata
 
 Func _depthaiNNetPacketGetDetectedObjectsCount($packet)
     ; CVAPI(int) depthaiNNetPacketGetDetectedObjectsCount(NNetPacket* packet);
 
-    Local $bPacketDllType
-    If VarGetType($packet) == "DLLStruct" Then
-        $bPacketDllType = "struct*"
+    Local $sPacketDllType
+    If IsDllStruct($packet) Then
+        $sPacketDllType = "struct*"
     Else
-        $bPacketDllType = "ptr"
+        $sPacketDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "depthaiNNetPacketGetDetectedObjectsCount", $bPacketDllType, $packet), "depthaiNNetPacketGetDetectedObjectsCount", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "depthaiNNetPacketGetDetectedObjectsCount", $sPacketDllType, $packet), "depthaiNNetPacketGetDetectedObjectsCount", @error)
 EndFunc   ;==>_depthaiNNetPacketGetDetectedObjectsCount
 
 Func _depthaiNNetPacketGetDetectedObjects($packet, $detections)
     ; CVAPI(void) depthaiNNetPacketGetDetectedObjects(NNetPacket* packet, dai::Detection* detections);
 
-    Local $bPacketDllType
-    If VarGetType($packet) == "DLLStruct" Then
-        $bPacketDllType = "struct*"
+    Local $sPacketDllType
+    If IsDllStruct($packet) Then
+        $sPacketDllType = "struct*"
     Else
-        $bPacketDllType = "ptr"
+        $sPacketDllType = "ptr"
     EndIf
 
-    Local $bDetectionsDllType
-    If VarGetType($detections) == "DLLStruct" Then
-        $bDetectionsDllType = "struct*"
+    Local $sDetectionsDllType
+    If IsDllStruct($detections) Then
+        $sDetectionsDllType = "struct*"
     Else
-        $bDetectionsDllType = "ptr"
+        $sDetectionsDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "depthaiNNetPacketGetDetectedObjects", $bPacketDllType, $packet, $bDetectionsDllType, $detections), "depthaiNNetPacketGetDetectedObjects", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "depthaiNNetPacketGetDetectedObjects", $sPacketDllType, $packet, $sDetectionsDllType, $detections), "depthaiNNetPacketGetDetectedObjects", @error)
 EndFunc   ;==>_depthaiNNetPacketGetDetectedObjects
 
 Func _depthaiNNetPacketGetMetadata($packet, $metadata)
     ; CVAPI(bool) depthaiNNetPacketGetMetadata(NNetPacket* packet, FrameMetadata* metadata);
 
-    Local $bPacketDllType
-    If VarGetType($packet) == "DLLStruct" Then
-        $bPacketDllType = "struct*"
+    Local $sPacketDllType
+    If IsDllStruct($packet) Then
+        $sPacketDllType = "struct*"
     Else
-        $bPacketDllType = "ptr"
+        $sPacketDllType = "ptr"
     EndIf
 
-    Local $bMetadataDllType
-    If VarGetType($metadata) == "DLLStruct" Then
-        $bMetadataDllType = "struct*"
+    Local $sMetadataDllType
+    If IsDllStruct($metadata) Then
+        $sMetadataDllType = "struct*"
     Else
-        $bMetadataDllType = "ptr"
+        $sMetadataDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "depthaiNNetPacketGetMetadata", $bPacketDllType, $packet, $bMetadataDllType, $metadata), "depthaiNNetPacketGetMetadata", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "depthaiNNetPacketGetMetadata", $sPacketDllType, $packet, $sMetadataDllType, $metadata), "depthaiNNetPacketGetMetadata", @error)
 EndFunc   ;==>_depthaiNNetPacketGetMetadata
 
 Func _depthaiFrameMetadataCreate()
@@ -332,12 +344,14 @@ EndFunc   ;==>_depthaiFrameMetadataCreate
 Func _depthaiFrameMetadataRelease($metadata)
     ; CVAPI(void) depthaiFrameMetadataRelease(FrameMetadata** metadata);
 
-    Local $bMetadataDllType
-    If VarGetType($metadata) == "DLLStruct" Then
-        $bMetadataDllType = "struct*"
+    Local $sMetadataDllType
+    If IsDllStruct($metadata) Then
+        $sMetadataDllType = "struct*"
+    ElseIf $metadata == Null Then
+        $sMetadataDllType = "ptr"
     Else
-        $bMetadataDllType = "ptr*"
+        $sMetadataDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "depthaiFrameMetadataRelease", $bMetadataDllType, $metadata), "depthaiFrameMetadataRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "depthaiFrameMetadataRelease", $sMetadataDllType, $metadata), "depthaiFrameMetadataRelease", @error)
 EndFunc   ;==>_depthaiFrameMetadataRelease

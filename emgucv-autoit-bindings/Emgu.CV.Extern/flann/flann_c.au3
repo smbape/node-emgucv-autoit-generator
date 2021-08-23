@@ -4,220 +4,252 @@
 Func _cveLinearIndexParamsCreate($ip)
     ; CVAPI(cv::flann::LinearIndexParams*) cveLinearIndexParamsCreate(cv::flann::IndexParams** ip);
 
-    Local $bIpDllType
-    If VarGetType($ip) == "DLLStruct" Then
-        $bIpDllType = "struct*"
+    Local $sIpDllType
+    If IsDllStruct($ip) Then
+        $sIpDllType = "struct*"
+    ElseIf $ip == Null Then
+        $sIpDllType = "ptr"
     Else
-        $bIpDllType = "ptr*"
+        $sIpDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveLinearIndexParamsCreate", $bIpDllType, $ip), "cveLinearIndexParamsCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveLinearIndexParamsCreate", $sIpDllType, $ip), "cveLinearIndexParamsCreate", @error)
 EndFunc   ;==>_cveLinearIndexParamsCreate
 
 Func _cveLinearIndexParamsRelease($p)
     ; CVAPI(void) cveLinearIndexParamsRelease(cv::flann::LinearIndexParams** p);
 
-    Local $bPDllType
-    If VarGetType($p) == "DLLStruct" Then
-        $bPDllType = "struct*"
+    Local $sPDllType
+    If IsDllStruct($p) Then
+        $sPDllType = "struct*"
+    ElseIf $p == Null Then
+        $sPDllType = "ptr"
     Else
-        $bPDllType = "ptr*"
+        $sPDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLinearIndexParamsRelease", $bPDllType, $p), "cveLinearIndexParamsRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLinearIndexParamsRelease", $sPDllType, $p), "cveLinearIndexParamsRelease", @error)
 EndFunc   ;==>_cveLinearIndexParamsRelease
 
 Func _cveKDTreeIndexParamsCreate($ip, $trees)
     ; CVAPI(cv::flann::KDTreeIndexParams*) cveKDTreeIndexParamsCreate(cv::flann::IndexParams** ip, int trees);
 
-    Local $bIpDllType
-    If VarGetType($ip) == "DLLStruct" Then
-        $bIpDllType = "struct*"
+    Local $sIpDllType
+    If IsDllStruct($ip) Then
+        $sIpDllType = "struct*"
+    ElseIf $ip == Null Then
+        $sIpDllType = "ptr"
     Else
-        $bIpDllType = "ptr*"
+        $sIpDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveKDTreeIndexParamsCreate", $bIpDllType, $ip, "int", $trees), "cveKDTreeIndexParamsCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveKDTreeIndexParamsCreate", $sIpDllType, $ip, "int", $trees), "cveKDTreeIndexParamsCreate", @error)
 EndFunc   ;==>_cveKDTreeIndexParamsCreate
 
 Func _cveKDTreeIndexParamsRelease($p)
     ; CVAPI(void) cveKDTreeIndexParamsRelease(cv::flann::KDTreeIndexParams** p);
 
-    Local $bPDllType
-    If VarGetType($p) == "DLLStruct" Then
-        $bPDllType = "struct*"
+    Local $sPDllType
+    If IsDllStruct($p) Then
+        $sPDllType = "struct*"
+    ElseIf $p == Null Then
+        $sPDllType = "ptr"
     Else
-        $bPDllType = "ptr*"
+        $sPDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveKDTreeIndexParamsRelease", $bPDllType, $p), "cveKDTreeIndexParamsRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveKDTreeIndexParamsRelease", $sPDllType, $p), "cveKDTreeIndexParamsRelease", @error)
 EndFunc   ;==>_cveKDTreeIndexParamsRelease
 
 Func _cveLshIndexParamsCreate($ip, $tableNumber, $keySize, $multiProbeLevel)
     ; CVAPI(cv::flann::LshIndexParams*) cveLshIndexParamsCreate(cv::flann::IndexParams** ip, int tableNumber, int keySize, int multiProbeLevel);
 
-    Local $bIpDllType
-    If VarGetType($ip) == "DLLStruct" Then
-        $bIpDllType = "struct*"
+    Local $sIpDllType
+    If IsDllStruct($ip) Then
+        $sIpDllType = "struct*"
+    ElseIf $ip == Null Then
+        $sIpDllType = "ptr"
     Else
-        $bIpDllType = "ptr*"
+        $sIpDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveLshIndexParamsCreate", $bIpDllType, $ip, "int", $tableNumber, "int", $keySize, "int", $multiProbeLevel), "cveLshIndexParamsCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveLshIndexParamsCreate", $sIpDllType, $ip, "int", $tableNumber, "int", $keySize, "int", $multiProbeLevel), "cveLshIndexParamsCreate", @error)
 EndFunc   ;==>_cveLshIndexParamsCreate
 
 Func _cveLshIndexParamsRelease($p)
     ; CVAPI(void) cveLshIndexParamsRelease(cv::flann::LshIndexParams** p);
 
-    Local $bPDllType
-    If VarGetType($p) == "DLLStruct" Then
-        $bPDllType = "struct*"
+    Local $sPDllType
+    If IsDllStruct($p) Then
+        $sPDllType = "struct*"
+    ElseIf $p == Null Then
+        $sPDllType = "ptr"
     Else
-        $bPDllType = "ptr*"
+        $sPDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLshIndexParamsRelease", $bPDllType, $p), "cveLshIndexParamsRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLshIndexParamsRelease", $sPDllType, $p), "cveLshIndexParamsRelease", @error)
 EndFunc   ;==>_cveLshIndexParamsRelease
 
 Func _cveKMeansIndexParamsCreate($ip, $branching, $iterations, $centersInit, $cbIndex)
     ; CVAPI(cv::flann::KMeansIndexParams*) cveKMeansIndexParamsCreate(cv::flann::IndexParams** ip, int branching, int iterations, cvflann::flann_centers_init_t centersInit, float cbIndex);
 
-    Local $bIpDllType
-    If VarGetType($ip) == "DLLStruct" Then
-        $bIpDllType = "struct*"
+    Local $sIpDllType
+    If IsDllStruct($ip) Then
+        $sIpDllType = "struct*"
+    ElseIf $ip == Null Then
+        $sIpDllType = "ptr"
     Else
-        $bIpDllType = "ptr*"
+        $sIpDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveKMeansIndexParamsCreate", $bIpDllType, $ip, "int", $branching, "int", $iterations, "int", $centersInit, "float", $cbIndex), "cveKMeansIndexParamsCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveKMeansIndexParamsCreate", $sIpDllType, $ip, "int", $branching, "int", $iterations, "int", $centersInit, "float", $cbIndex), "cveKMeansIndexParamsCreate", @error)
 EndFunc   ;==>_cveKMeansIndexParamsCreate
 
 Func _cveKMeansIndexParamsRelease($p)
     ; CVAPI(void) cveKMeansIndexParamsRelease(cv::flann::KMeansIndexParams** p);
 
-    Local $bPDllType
-    If VarGetType($p) == "DLLStruct" Then
-        $bPDllType = "struct*"
+    Local $sPDllType
+    If IsDllStruct($p) Then
+        $sPDllType = "struct*"
+    ElseIf $p == Null Then
+        $sPDllType = "ptr"
     Else
-        $bPDllType = "ptr*"
+        $sPDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveKMeansIndexParamsRelease", $bPDllType, $p), "cveKMeansIndexParamsRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveKMeansIndexParamsRelease", $sPDllType, $p), "cveKMeansIndexParamsRelease", @error)
 EndFunc   ;==>_cveKMeansIndexParamsRelease
 
 Func _cveCompositeIndexParamsCreate($ip, $trees, $branching, $iterations, $centersInit, $cbIndex)
     ; CVAPI(cv::flann::CompositeIndexParams*) cveCompositeIndexParamsCreate(cv::flann::IndexParams** ip, int trees, int branching, int iterations, cvflann::flann_centers_init_t centersInit, float cbIndex);
 
-    Local $bIpDllType
-    If VarGetType($ip) == "DLLStruct" Then
-        $bIpDllType = "struct*"
+    Local $sIpDllType
+    If IsDllStruct($ip) Then
+        $sIpDllType = "struct*"
+    ElseIf $ip == Null Then
+        $sIpDllType = "ptr"
     Else
-        $bIpDllType = "ptr*"
+        $sIpDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCompositeIndexParamsCreate", $bIpDllType, $ip, "int", $trees, "int", $branching, "int", $iterations, "int", $centersInit, "float", $cbIndex), "cveCompositeIndexParamsCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCompositeIndexParamsCreate", $sIpDllType, $ip, "int", $trees, "int", $branching, "int", $iterations, "int", $centersInit, "float", $cbIndex), "cveCompositeIndexParamsCreate", @error)
 EndFunc   ;==>_cveCompositeIndexParamsCreate
 
 Func _cveCompositeIndexParamsRelease($p)
     ; CVAPI(void) cveCompositeIndexParamsRelease(cv::flann::CompositeIndexParams** p);
 
-    Local $bPDllType
-    If VarGetType($p) == "DLLStruct" Then
-        $bPDllType = "struct*"
+    Local $sPDllType
+    If IsDllStruct($p) Then
+        $sPDllType = "struct*"
+    ElseIf $p == Null Then
+        $sPDllType = "ptr"
     Else
-        $bPDllType = "ptr*"
+        $sPDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCompositeIndexParamsRelease", $bPDllType, $p), "cveCompositeIndexParamsRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCompositeIndexParamsRelease", $sPDllType, $p), "cveCompositeIndexParamsRelease", @error)
 EndFunc   ;==>_cveCompositeIndexParamsRelease
 
 Func _cveAutotunedIndexParamsCreate($ip, $targetPrecision, $buildWeight, $memoryWeight, $sampleFraction)
     ; CVAPI(cv::flann::AutotunedIndexParams*) cveAutotunedIndexParamsCreate(cv::flann::IndexParams** ip, float targetPrecision, float buildWeight, float memoryWeight, float sampleFraction);
 
-    Local $bIpDllType
-    If VarGetType($ip) == "DLLStruct" Then
-        $bIpDllType = "struct*"
+    Local $sIpDllType
+    If IsDllStruct($ip) Then
+        $sIpDllType = "struct*"
+    ElseIf $ip == Null Then
+        $sIpDllType = "ptr"
     Else
-        $bIpDllType = "ptr*"
+        $sIpDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveAutotunedIndexParamsCreate", $bIpDllType, $ip, "float", $targetPrecision, "float", $buildWeight, "float", $memoryWeight, "float", $sampleFraction), "cveAutotunedIndexParamsCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveAutotunedIndexParamsCreate", $sIpDllType, $ip, "float", $targetPrecision, "float", $buildWeight, "float", $memoryWeight, "float", $sampleFraction), "cveAutotunedIndexParamsCreate", @error)
 EndFunc   ;==>_cveAutotunedIndexParamsCreate
 
 Func _cveAutotunedIndexParamsRelease($p)
     ; CVAPI(void) cveAutotunedIndexParamsRelease(cv::flann::AutotunedIndexParams** p);
 
-    Local $bPDllType
-    If VarGetType($p) == "DLLStruct" Then
-        $bPDllType = "struct*"
+    Local $sPDllType
+    If IsDllStruct($p) Then
+        $sPDllType = "struct*"
+    ElseIf $p == Null Then
+        $sPDllType = "ptr"
     Else
-        $bPDllType = "ptr*"
+        $sPDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAutotunedIndexParamsRelease", $bPDllType, $p), "cveAutotunedIndexParamsRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAutotunedIndexParamsRelease", $sPDllType, $p), "cveAutotunedIndexParamsRelease", @error)
 EndFunc   ;==>_cveAutotunedIndexParamsRelease
 
 Func _cveHierarchicalClusteringIndexParamsCreate($ip, $branching, $centersInit, $trees, $leafSize)
     ; CVAPI(cv::flann::HierarchicalClusteringIndexParams*) cveHierarchicalClusteringIndexParamsCreate(cv::flann::IndexParams** ip, int branching, cvflann::flann_centers_init_t centersInit, int trees, int leafSize);
 
-    Local $bIpDllType
-    If VarGetType($ip) == "DLLStruct" Then
-        $bIpDllType = "struct*"
+    Local $sIpDllType
+    If IsDllStruct($ip) Then
+        $sIpDllType = "struct*"
+    ElseIf $ip == Null Then
+        $sIpDllType = "ptr"
     Else
-        $bIpDllType = "ptr*"
+        $sIpDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHierarchicalClusteringIndexParamsCreate", $bIpDllType, $ip, "int", $branching, "int", $centersInit, "int", $trees, "int", $leafSize), "cveHierarchicalClusteringIndexParamsCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHierarchicalClusteringIndexParamsCreate", $sIpDllType, $ip, "int", $branching, "int", $centersInit, "int", $trees, "int", $leafSize), "cveHierarchicalClusteringIndexParamsCreate", @error)
 EndFunc   ;==>_cveHierarchicalClusteringIndexParamsCreate
 
 Func _cveHierarchicalClusteringIndexParamsRelease($p)
     ; CVAPI(void) cveHierarchicalClusteringIndexParamsRelease(cv::flann::HierarchicalClusteringIndexParams** p);
 
-    Local $bPDllType
-    If VarGetType($p) == "DLLStruct" Then
-        $bPDllType = "struct*"
+    Local $sPDllType
+    If IsDllStruct($p) Then
+        $sPDllType = "struct*"
+    ElseIf $p == Null Then
+        $sPDllType = "ptr"
     Else
-        $bPDllType = "ptr*"
+        $sPDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHierarchicalClusteringIndexParamsRelease", $bPDllType, $p), "cveHierarchicalClusteringIndexParamsRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHierarchicalClusteringIndexParamsRelease", $sPDllType, $p), "cveHierarchicalClusteringIndexParamsRelease", @error)
 EndFunc   ;==>_cveHierarchicalClusteringIndexParamsRelease
 
 Func _cveSearchParamsCreate($ip, $checks, $eps, $sorted)
     ; CVAPI(cv::flann::SearchParams*) cveSearchParamsCreate(cv::flann::IndexParams** ip, int checks, float eps, bool sorted);
 
-    Local $bIpDllType
-    If VarGetType($ip) == "DLLStruct" Then
-        $bIpDllType = "struct*"
+    Local $sIpDllType
+    If IsDllStruct($ip) Then
+        $sIpDllType = "struct*"
+    ElseIf $ip == Null Then
+        $sIpDllType = "ptr"
     Else
-        $bIpDllType = "ptr*"
+        $sIpDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSearchParamsCreate", $bIpDllType, $ip, "int", $checks, "float", $eps, "boolean", $sorted), "cveSearchParamsCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveSearchParamsCreate", $sIpDllType, $ip, "int", $checks, "float", $eps, "boolean", $sorted), "cveSearchParamsCreate", @error)
 EndFunc   ;==>_cveSearchParamsCreate
 
 Func _cveSearchParamsRelease($p)
     ; CVAPI(void) cveSearchParamsRelease(cv::flann::SearchParams** p);
 
-    Local $bPDllType
-    If VarGetType($p) == "DLLStruct" Then
-        $bPDllType = "struct*"
+    Local $sPDllType
+    If IsDllStruct($p) Then
+        $sPDllType = "struct*"
+    ElseIf $p == Null Then
+        $sPDllType = "ptr"
     Else
-        $bPDllType = "ptr*"
+        $sPDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSearchParamsRelease", $bPDllType, $p), "cveSearchParamsRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSearchParamsRelease", $sPDllType, $p), "cveSearchParamsRelease", @error)
 EndFunc   ;==>_cveSearchParamsRelease
 
 Func _cveFlannIndexCreate($features, $p, $distType)
     ; CVAPI(cv::flann::Index*) cveFlannIndexCreate(cv::_InputArray* features, cv::flann::IndexParams* p, int distType);
 
-    Local $bFeaturesDllType
-    If VarGetType($features) == "DLLStruct" Then
-        $bFeaturesDllType = "struct*"
+    Local $sFeaturesDllType
+    If IsDllStruct($features) Then
+        $sFeaturesDllType = "struct*"
     Else
-        $bFeaturesDllType = "ptr"
+        $sFeaturesDllType = "ptr"
     EndIf
 
-    Local $bPDllType
-    If VarGetType($p) == "DLLStruct" Then
-        $bPDllType = "struct*"
+    Local $sPDllType
+    If IsDllStruct($p) Then
+        $sPDllType = "struct*"
     Else
-        $bPDllType = "ptr"
+        $sPDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFlannIndexCreate", $bFeaturesDllType, $features, $bPDllType, $p, "int", $distType), "cveFlannIndexCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFlannIndexCreate", $sFeaturesDllType, $features, $sPDllType, $p, "int", $distType), "cveFlannIndexCreate", @error)
 EndFunc   ;==>_cveFlannIndexCreate
 
 Func _cveFlannIndexCreateMat($matFeatures, $p, $distType)
@@ -253,35 +285,35 @@ EndFunc   ;==>_cveFlannIndexCreateMat
 Func _cveFlannIndexKnnSearch($index, $queries, $indices, $dists, $knn, $checks, $eps, $sorted)
     ; CVAPI(void) cveFlannIndexKnnSearch(cv::flann::Index* index, cv::_InputArray* queries, cv::_OutputArray* indices, cv::_OutputArray* dists, int knn, int checks, float eps, bool sorted);
 
-    Local $bIndexDllType
-    If VarGetType($index) == "DLLStruct" Then
-        $bIndexDllType = "struct*"
+    Local $sIndexDllType
+    If IsDllStruct($index) Then
+        $sIndexDllType = "struct*"
     Else
-        $bIndexDllType = "ptr"
+        $sIndexDllType = "ptr"
     EndIf
 
-    Local $bQueriesDllType
-    If VarGetType($queries) == "DLLStruct" Then
-        $bQueriesDllType = "struct*"
+    Local $sQueriesDllType
+    If IsDllStruct($queries) Then
+        $sQueriesDllType = "struct*"
     Else
-        $bQueriesDllType = "ptr"
+        $sQueriesDllType = "ptr"
     EndIf
 
-    Local $bIndicesDllType
-    If VarGetType($indices) == "DLLStruct" Then
-        $bIndicesDllType = "struct*"
+    Local $sIndicesDllType
+    If IsDllStruct($indices) Then
+        $sIndicesDllType = "struct*"
     Else
-        $bIndicesDllType = "ptr"
+        $sIndicesDllType = "ptr"
     EndIf
 
-    Local $bDistsDllType
-    If VarGetType($dists) == "DLLStruct" Then
-        $bDistsDllType = "struct*"
+    Local $sDistsDllType
+    If IsDllStruct($dists) Then
+        $sDistsDllType = "struct*"
     Else
-        $bDistsDllType = "ptr"
+        $sDistsDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFlannIndexKnnSearch", $bIndexDllType, $index, $bQueriesDllType, $queries, $bIndicesDllType, $indices, $bDistsDllType, $dists, "int", $knn, "int", $checks, "float", $eps, "boolean", $sorted), "cveFlannIndexKnnSearch", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFlannIndexKnnSearch", $sIndexDllType, $index, $sQueriesDllType, $queries, $sIndicesDllType, $indices, $sDistsDllType, $dists, "int", $knn, "int", $checks, "float", $eps, "boolean", $sorted), "cveFlannIndexKnnSearch", @error)
 EndFunc   ;==>_cveFlannIndexKnnSearch
 
 Func _cveFlannIndexKnnSearchMat($index, $matQueries, $matIndices, $matDists, $knn, $checks, $eps, $sorted)
@@ -359,34 +391,34 @@ EndFunc   ;==>_cveFlannIndexKnnSearchMat
 Func _cveFlannIndexRadiusSearch($index, $queries, $indices, $dists, $radius, $maxResults, $checks, $eps, $sorted)
     ; CVAPI(int) cveFlannIndexRadiusSearch(cv::flann::Index* index, cv::_InputArray* queries, cv::_OutputArray* indices, cv::_OutputArray* dists, double radius, int maxResults, int checks, float eps, bool sorted);
 
-    Local $bIndexDllType
-    If VarGetType($index) == "DLLStruct" Then
-        $bIndexDllType = "struct*"
+    Local $sIndexDllType
+    If IsDllStruct($index) Then
+        $sIndexDllType = "struct*"
     Else
-        $bIndexDllType = "ptr"
+        $sIndexDllType = "ptr"
     EndIf
 
-    Local $bQueriesDllType
-    If VarGetType($queries) == "DLLStruct" Then
-        $bQueriesDllType = "struct*"
+    Local $sQueriesDllType
+    If IsDllStruct($queries) Then
+        $sQueriesDllType = "struct*"
     Else
-        $bQueriesDllType = "ptr"
+        $sQueriesDllType = "ptr"
     EndIf
 
-    Local $bIndicesDllType
-    If VarGetType($indices) == "DLLStruct" Then
-        $bIndicesDllType = "struct*"
+    Local $sIndicesDllType
+    If IsDllStruct($indices) Then
+        $sIndicesDllType = "struct*"
     Else
-        $bIndicesDllType = "ptr"
+        $sIndicesDllType = "ptr"
     EndIf
 
-    Local $bDistsDllType
-    If VarGetType($dists) == "DLLStruct" Then
-        $bDistsDllType = "struct*"
+    Local $sDistsDllType
+    If IsDllStruct($dists) Then
+        $sDistsDllType = "struct*"
     Else
-        $bDistsDllType = "ptr"
+        $sDistsDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveFlannIndexRadiusSearch", $bIndexDllType, $index, $bQueriesDllType, $queries, $bIndicesDllType, $indices, $bDistsDllType, $dists, "double", $radius, "int", $maxResults, "int", $checks, "float", $eps, "boolean", $sorted), "cveFlannIndexRadiusSearch", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveFlannIndexRadiusSearch", $sIndexDllType, $index, $sQueriesDllType, $queries, $sIndicesDllType, $indices, $sDistsDllType, $dists, "double", $radius, "int", $maxResults, "int", $checks, "float", $eps, "boolean", $sorted), "cveFlannIndexRadiusSearch", @error)
 EndFunc   ;==>_cveFlannIndexRadiusSearch
 
 Func _cveFlannIndexRadiusSearchMat($index, $matQueries, $matIndices, $matDists, $radius, $maxResults, $checks, $eps, $sorted)
@@ -466,12 +498,14 @@ EndFunc   ;==>_cveFlannIndexRadiusSearchMat
 Func _cveFlannIndexRelease($index)
     ; CVAPI(void) cveFlannIndexRelease(cv::flann::Index** index);
 
-    Local $bIndexDllType
-    If VarGetType($index) == "DLLStruct" Then
-        $bIndexDllType = "struct*"
+    Local $sIndexDllType
+    If IsDllStruct($index) Then
+        $sIndexDllType = "struct*"
+    ElseIf $index == Null Then
+        $sIndexDllType = "ptr"
     Else
-        $bIndexDllType = "ptr*"
+        $sIndexDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFlannIndexRelease", $bIndexDllType, $index), "cveFlannIndexRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFlannIndexRelease", $sIndexDllType, $index), "cveFlannIndexRelease", @error)
 EndFunc   ;==>_cveFlannIndexRelease

@@ -4,239 +4,287 @@
 Func _cveStaticSaliencySpectralResidualCreate($static_saliency, $saliency, $algorithm, $sharedPtr)
     ; CVAPI(cv::saliency::StaticSaliencySpectralResidual*) cveStaticSaliencySpectralResidualCreate(cv::saliency::StaticSaliency** static_saliency, cv::saliency::Saliency** saliency, cv::Algorithm** algorithm, cv::Ptr<cv::saliency::StaticSaliencySpectralResidual>** sharedPtr);
 
-    Local $bStatic_saliencyDllType
-    If VarGetType($static_saliency) == "DLLStruct" Then
-        $bStatic_saliencyDllType = "struct*"
+    Local $sStatic_saliencyDllType
+    If IsDllStruct($static_saliency) Then
+        $sStatic_saliencyDllType = "struct*"
+    ElseIf $static_saliency == Null Then
+        $sStatic_saliencyDllType = "ptr"
     Else
-        $bStatic_saliencyDllType = "ptr*"
+        $sStatic_saliencyDllType = "ptr*"
     EndIf
 
-    Local $bSaliencyDllType
-    If VarGetType($saliency) == "DLLStruct" Then
-        $bSaliencyDllType = "struct*"
+    Local $sSaliencyDllType
+    If IsDllStruct($saliency) Then
+        $sSaliencyDllType = "struct*"
+    ElseIf $saliency == Null Then
+        $sSaliencyDllType = "ptr"
     Else
-        $bSaliencyDllType = "ptr*"
+        $sSaliencyDllType = "ptr*"
     EndIf
 
-    Local $bAlgorithmDllType
-    If VarGetType($algorithm) == "DLLStruct" Then
-        $bAlgorithmDllType = "struct*"
+    Local $sAlgorithmDllType
+    If IsDllStruct($algorithm) Then
+        $sAlgorithmDllType = "struct*"
+    ElseIf $algorithm == Null Then
+        $sAlgorithmDllType = "ptr"
     Else
-        $bAlgorithmDllType = "ptr*"
+        $sAlgorithmDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveStaticSaliencySpectralResidualCreate", $bStatic_saliencyDllType, $static_saliency, $bSaliencyDllType, $saliency, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveStaticSaliencySpectralResidualCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveStaticSaliencySpectralResidualCreate", $sStatic_saliencyDllType, $static_saliency, $sSaliencyDllType, $saliency, $sAlgorithmDllType, $algorithm, $sSharedPtrDllType, $sharedPtr), "cveStaticSaliencySpectralResidualCreate", @error)
 EndFunc   ;==>_cveStaticSaliencySpectralResidualCreate
 
 Func _cveStaticSaliencySpectralResidualRelease($saliency, $sharedPtr)
     ; CVAPI(void) cveStaticSaliencySpectralResidualRelease(cv::saliency::StaticSaliencySpectralResidual** saliency, cv::Ptr<cv::saliency::StaticSaliencySpectralResidual>** sharedPtr);
 
-    Local $bSaliencyDllType
-    If VarGetType($saliency) == "DLLStruct" Then
-        $bSaliencyDllType = "struct*"
+    Local $sSaliencyDllType
+    If IsDllStruct($saliency) Then
+        $sSaliencyDllType = "struct*"
+    ElseIf $saliency == Null Then
+        $sSaliencyDllType = "ptr"
     Else
-        $bSaliencyDllType = "ptr*"
+        $sSaliencyDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStaticSaliencySpectralResidualRelease", $bSaliencyDllType, $saliency, $bSharedPtrDllType, $sharedPtr), "cveStaticSaliencySpectralResidualRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStaticSaliencySpectralResidualRelease", $sSaliencyDllType, $saliency, $sSharedPtrDllType, $sharedPtr), "cveStaticSaliencySpectralResidualRelease", @error)
 EndFunc   ;==>_cveStaticSaliencySpectralResidualRelease
 
 Func _cveStaticSaliencyFineGrainedCreate($static_saliency, $saliency, $algorithm, $sharedPtr)
     ; CVAPI(cv::saliency::StaticSaliencyFineGrained*) cveStaticSaliencyFineGrainedCreate(cv::saliency::StaticSaliency** static_saliency, cv::saliency::Saliency** saliency, cv::Algorithm** algorithm, cv::Ptr<cv::saliency::StaticSaliencyFineGrained>** sharedPtr);
 
-    Local $bStatic_saliencyDllType
-    If VarGetType($static_saliency) == "DLLStruct" Then
-        $bStatic_saliencyDllType = "struct*"
+    Local $sStatic_saliencyDllType
+    If IsDllStruct($static_saliency) Then
+        $sStatic_saliencyDllType = "struct*"
+    ElseIf $static_saliency == Null Then
+        $sStatic_saliencyDllType = "ptr"
     Else
-        $bStatic_saliencyDllType = "ptr*"
+        $sStatic_saliencyDllType = "ptr*"
     EndIf
 
-    Local $bSaliencyDllType
-    If VarGetType($saliency) == "DLLStruct" Then
-        $bSaliencyDllType = "struct*"
+    Local $sSaliencyDllType
+    If IsDllStruct($saliency) Then
+        $sSaliencyDllType = "struct*"
+    ElseIf $saliency == Null Then
+        $sSaliencyDllType = "ptr"
     Else
-        $bSaliencyDllType = "ptr*"
+        $sSaliencyDllType = "ptr*"
     EndIf
 
-    Local $bAlgorithmDllType
-    If VarGetType($algorithm) == "DLLStruct" Then
-        $bAlgorithmDllType = "struct*"
+    Local $sAlgorithmDllType
+    If IsDllStruct($algorithm) Then
+        $sAlgorithmDllType = "struct*"
+    ElseIf $algorithm == Null Then
+        $sAlgorithmDllType = "ptr"
     Else
-        $bAlgorithmDllType = "ptr*"
+        $sAlgorithmDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveStaticSaliencyFineGrainedCreate", $bStatic_saliencyDllType, $static_saliency, $bSaliencyDllType, $saliency, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveStaticSaliencyFineGrainedCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveStaticSaliencyFineGrainedCreate", $sStatic_saliencyDllType, $static_saliency, $sSaliencyDllType, $saliency, $sAlgorithmDllType, $algorithm, $sSharedPtrDllType, $sharedPtr), "cveStaticSaliencyFineGrainedCreate", @error)
 EndFunc   ;==>_cveStaticSaliencyFineGrainedCreate
 
 Func _cveStaticSaliencyFineGrainedRelease($saliency, $sharedPtr)
     ; CVAPI(void) cveStaticSaliencyFineGrainedRelease(cv::saliency::StaticSaliencyFineGrained** saliency, cv::Ptr<cv::saliency::StaticSaliencyFineGrained>** sharedPtr);
 
-    Local $bSaliencyDllType
-    If VarGetType($saliency) == "DLLStruct" Then
-        $bSaliencyDllType = "struct*"
+    Local $sSaliencyDllType
+    If IsDllStruct($saliency) Then
+        $sSaliencyDllType = "struct*"
+    ElseIf $saliency == Null Then
+        $sSaliencyDllType = "ptr"
     Else
-        $bSaliencyDllType = "ptr*"
+        $sSaliencyDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStaticSaliencyFineGrainedRelease", $bSaliencyDllType, $saliency, $bSharedPtrDllType, $sharedPtr), "cveStaticSaliencyFineGrainedRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStaticSaliencyFineGrainedRelease", $sSaliencyDllType, $saliency, $sSharedPtrDllType, $sharedPtr), "cveStaticSaliencyFineGrainedRelease", @error)
 EndFunc   ;==>_cveStaticSaliencyFineGrainedRelease
 
 Func _cveMotionSaliencyBinWangApr2014Create($motion_saliency, $saliency, $algorithm, $sharedPtr)
     ; CVAPI(cv::saliency::MotionSaliencyBinWangApr2014*) cveMotionSaliencyBinWangApr2014Create(cv::saliency::MotionSaliency** motion_saliency, cv::saliency::Saliency** saliency, cv::Algorithm** algorithm, cv::Ptr<cv::saliency::MotionSaliencyBinWangApr2014>** sharedPtr);
 
-    Local $bMotion_saliencyDllType
-    If VarGetType($motion_saliency) == "DLLStruct" Then
-        $bMotion_saliencyDllType = "struct*"
+    Local $sMotion_saliencyDllType
+    If IsDllStruct($motion_saliency) Then
+        $sMotion_saliencyDllType = "struct*"
+    ElseIf $motion_saliency == Null Then
+        $sMotion_saliencyDllType = "ptr"
     Else
-        $bMotion_saliencyDllType = "ptr*"
+        $sMotion_saliencyDllType = "ptr*"
     EndIf
 
-    Local $bSaliencyDllType
-    If VarGetType($saliency) == "DLLStruct" Then
-        $bSaliencyDllType = "struct*"
+    Local $sSaliencyDllType
+    If IsDllStruct($saliency) Then
+        $sSaliencyDllType = "struct*"
+    ElseIf $saliency == Null Then
+        $sSaliencyDllType = "ptr"
     Else
-        $bSaliencyDllType = "ptr*"
+        $sSaliencyDllType = "ptr*"
     EndIf
 
-    Local $bAlgorithmDllType
-    If VarGetType($algorithm) == "DLLStruct" Then
-        $bAlgorithmDllType = "struct*"
+    Local $sAlgorithmDllType
+    If IsDllStruct($algorithm) Then
+        $sAlgorithmDllType = "struct*"
+    ElseIf $algorithm == Null Then
+        $sAlgorithmDllType = "ptr"
     Else
-        $bAlgorithmDllType = "ptr*"
+        $sAlgorithmDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMotionSaliencyBinWangApr2014Create", $bMotion_saliencyDllType, $motion_saliency, $bSaliencyDllType, $saliency, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveMotionSaliencyBinWangApr2014Create", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMotionSaliencyBinWangApr2014Create", $sMotion_saliencyDllType, $motion_saliency, $sSaliencyDllType, $saliency, $sAlgorithmDllType, $algorithm, $sSharedPtrDllType, $sharedPtr), "cveMotionSaliencyBinWangApr2014Create", @error)
 EndFunc   ;==>_cveMotionSaliencyBinWangApr2014Create
 
 Func _cveMotionSaliencyBinWangApr2014Release($saliency, $sharedPtr)
     ; CVAPI(void) cveMotionSaliencyBinWangApr2014Release(cv::saliency::MotionSaliencyBinWangApr2014** saliency, cv::Ptr<cv::saliency::MotionSaliencyBinWangApr2014>** sharedPtr);
 
-    Local $bSaliencyDllType
-    If VarGetType($saliency) == "DLLStruct" Then
-        $bSaliencyDllType = "struct*"
+    Local $sSaliencyDllType
+    If IsDllStruct($saliency) Then
+        $sSaliencyDllType = "struct*"
+    ElseIf $saliency == Null Then
+        $sSaliencyDllType = "ptr"
     Else
-        $bSaliencyDllType = "ptr*"
+        $sSaliencyDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMotionSaliencyBinWangApr2014Release", $bSaliencyDllType, $saliency, $bSharedPtrDllType, $sharedPtr), "cveMotionSaliencyBinWangApr2014Release", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMotionSaliencyBinWangApr2014Release", $sSaliencyDllType, $saliency, $sSharedPtrDllType, $sharedPtr), "cveMotionSaliencyBinWangApr2014Release", @error)
 EndFunc   ;==>_cveMotionSaliencyBinWangApr2014Release
 
 Func _cveObjectnessBINGCreate($objectness_saliency, $saliency, $algorithm, $sharedPtr)
     ; CVAPI(cv::saliency::ObjectnessBING*) cveObjectnessBINGCreate(cv::saliency::Objectness** objectness_saliency, cv::saliency::Saliency** saliency, cv::Algorithm** algorithm, cv::Ptr<cv::saliency::ObjectnessBING>** sharedPtr);
 
-    Local $bObjectness_saliencyDllType
-    If VarGetType($objectness_saliency) == "DLLStruct" Then
-        $bObjectness_saliencyDllType = "struct*"
+    Local $sObjectness_saliencyDllType
+    If IsDllStruct($objectness_saliency) Then
+        $sObjectness_saliencyDllType = "struct*"
+    ElseIf $objectness_saliency == Null Then
+        $sObjectness_saliencyDllType = "ptr"
     Else
-        $bObjectness_saliencyDllType = "ptr*"
+        $sObjectness_saliencyDllType = "ptr*"
     EndIf
 
-    Local $bSaliencyDllType
-    If VarGetType($saliency) == "DLLStruct" Then
-        $bSaliencyDllType = "struct*"
+    Local $sSaliencyDllType
+    If IsDllStruct($saliency) Then
+        $sSaliencyDllType = "struct*"
+    ElseIf $saliency == Null Then
+        $sSaliencyDllType = "ptr"
     Else
-        $bSaliencyDllType = "ptr*"
+        $sSaliencyDllType = "ptr*"
     EndIf
 
-    Local $bAlgorithmDllType
-    If VarGetType($algorithm) == "DLLStruct" Then
-        $bAlgorithmDllType = "struct*"
+    Local $sAlgorithmDllType
+    If IsDllStruct($algorithm) Then
+        $sAlgorithmDllType = "struct*"
+    ElseIf $algorithm == Null Then
+        $sAlgorithmDllType = "ptr"
     Else
-        $bAlgorithmDllType = "ptr*"
+        $sAlgorithmDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveObjectnessBINGCreate", $bObjectness_saliencyDllType, $objectness_saliency, $bSaliencyDllType, $saliency, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveObjectnessBINGCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveObjectnessBINGCreate", $sObjectness_saliencyDllType, $objectness_saliency, $sSaliencyDllType, $saliency, $sAlgorithmDllType, $algorithm, $sSharedPtrDllType, $sharedPtr), "cveObjectnessBINGCreate", @error)
 EndFunc   ;==>_cveObjectnessBINGCreate
 
 Func _cveObjectnessBINGRelease($saliency, $sharedPtr)
     ; CVAPI(void) cveObjectnessBINGRelease(cv::saliency::ObjectnessBING** saliency, cv::Ptr<cv::saliency::ObjectnessBING>** sharedPtr);
 
-    Local $bSaliencyDllType
-    If VarGetType($saliency) == "DLLStruct" Then
-        $bSaliencyDllType = "struct*"
+    Local $sSaliencyDllType
+    If IsDllStruct($saliency) Then
+        $sSaliencyDllType = "struct*"
+    ElseIf $saliency == Null Then
+        $sSaliencyDllType = "ptr"
     Else
-        $bSaliencyDllType = "ptr*"
+        $sSaliencyDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveObjectnessBINGRelease", $bSaliencyDllType, $saliency, $bSharedPtrDllType, $sharedPtr), "cveObjectnessBINGRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveObjectnessBINGRelease", $sSaliencyDllType, $saliency, $sSharedPtrDllType, $sharedPtr), "cveObjectnessBINGRelease", @error)
 EndFunc   ;==>_cveObjectnessBINGRelease
 
 Func _cveSaliencyComputeSaliency($saliency, $image, $saliencyMap)
     ; CVAPI(bool) cveSaliencyComputeSaliency(cv::saliency::Saliency* saliency, cv::_InputArray* image, cv::_OutputArray* saliencyMap);
 
-    Local $bSaliencyDllType
-    If VarGetType($saliency) == "DLLStruct" Then
-        $bSaliencyDllType = "struct*"
+    Local $sSaliencyDllType
+    If IsDllStruct($saliency) Then
+        $sSaliencyDllType = "struct*"
     Else
-        $bSaliencyDllType = "ptr"
+        $sSaliencyDllType = "ptr"
     EndIf
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bSaliencyMapDllType
-    If VarGetType($saliencyMap) == "DLLStruct" Then
-        $bSaliencyMapDllType = "struct*"
+    Local $sSaliencyMapDllType
+    If IsDllStruct($saliencyMap) Then
+        $sSaliencyMapDllType = "struct*"
     Else
-        $bSaliencyMapDllType = "ptr"
+        $sSaliencyMapDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveSaliencyComputeSaliency", $bSaliencyDllType, $saliency, $bImageDllType, $image, $bSaliencyMapDllType, $saliencyMap), "cveSaliencyComputeSaliency", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveSaliencyComputeSaliency", $sSaliencyDllType, $saliency, $sImageDllType, $image, $sSaliencyMapDllType, $saliencyMap), "cveSaliencyComputeSaliency", @error)
 EndFunc   ;==>_cveSaliencyComputeSaliency
 
 Func _cveSaliencyComputeSaliencyMat($saliency, $matImage, $matSaliencyMap)
@@ -294,27 +342,27 @@ EndFunc   ;==>_cveSaliencyComputeSaliencyMat
 Func _cveStaticSaliencyComputeBinaryMap($saliency, $saliencyMap, $binaryMap)
     ; CVAPI(bool) cveStaticSaliencyComputeBinaryMap(cv::saliency::StaticSaliency* saliency, cv::_InputArray* saliencyMap, cv::_OutputArray* binaryMap);
 
-    Local $bSaliencyDllType
-    If VarGetType($saliency) == "DLLStruct" Then
-        $bSaliencyDllType = "struct*"
+    Local $sSaliencyDllType
+    If IsDllStruct($saliency) Then
+        $sSaliencyDllType = "struct*"
     Else
-        $bSaliencyDllType = "ptr"
+        $sSaliencyDllType = "ptr"
     EndIf
 
-    Local $bSaliencyMapDllType
-    If VarGetType($saliencyMap) == "DLLStruct" Then
-        $bSaliencyMapDllType = "struct*"
+    Local $sSaliencyMapDllType
+    If IsDllStruct($saliencyMap) Then
+        $sSaliencyMapDllType = "struct*"
     Else
-        $bSaliencyMapDllType = "ptr"
+        $sSaliencyMapDllType = "ptr"
     EndIf
 
-    Local $bBinaryMapDllType
-    If VarGetType($binaryMap) == "DLLStruct" Then
-        $bBinaryMapDllType = "struct*"
+    Local $sBinaryMapDllType
+    If IsDllStruct($binaryMap) Then
+        $sBinaryMapDllType = "struct*"
     Else
-        $bBinaryMapDllType = "ptr"
+        $sBinaryMapDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveStaticSaliencyComputeBinaryMap", $bSaliencyDllType, $saliency, $bSaliencyMapDllType, $saliencyMap, $bBinaryMapDllType, $binaryMap), "cveStaticSaliencyComputeBinaryMap", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveStaticSaliencyComputeBinaryMap", $sSaliencyDllType, $saliency, $sSaliencyMapDllType, $saliencyMap, $sBinaryMapDllType, $binaryMap), "cveStaticSaliencyComputeBinaryMap", @error)
 EndFunc   ;==>_cveStaticSaliencyComputeBinaryMap
 
 Func _cveStaticSaliencyComputeBinaryMapMat($saliency, $matSaliencyMap, $matBinaryMap)
@@ -372,36 +420,36 @@ EndFunc   ;==>_cveStaticSaliencyComputeBinaryMapMat
 Func _cveSaliencyMotionInit($saliency)
     ; CVAPI(bool) cveSaliencyMotionInit(cv::saliency::Saliency* saliency);
 
-    Local $bSaliencyDllType
-    If VarGetType($saliency) == "DLLStruct" Then
-        $bSaliencyDllType = "struct*"
+    Local $sSaliencyDllType
+    If IsDllStruct($saliency) Then
+        $sSaliencyDllType = "struct*"
     Else
-        $bSaliencyDllType = "ptr"
+        $sSaliencyDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveSaliencyMotionInit", $bSaliencyDllType, $saliency), "cveSaliencyMotionInit", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveSaliencyMotionInit", $sSaliencyDllType, $saliency), "cveSaliencyMotionInit", @error)
 EndFunc   ;==>_cveSaliencyMotionInit
 
 Func _cveSaliencyMotionSetImageSize($saliency, $width, $height)
     ; CVAPI(void) cveSaliencyMotionSetImageSize(cv::saliency::Saliency* saliency, int width, int height);
 
-    Local $bSaliencyDllType
-    If VarGetType($saliency) == "DLLStruct" Then
-        $bSaliencyDllType = "struct*"
+    Local $sSaliencyDllType
+    If IsDllStruct($saliency) Then
+        $sSaliencyDllType = "struct*"
     Else
-        $bSaliencyDllType = "ptr"
+        $sSaliencyDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSaliencyMotionSetImageSize", $bSaliencyDllType, $saliency, "int", $width, "int", $height), "cveSaliencyMotionSetImageSize", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSaliencyMotionSetImageSize", $sSaliencyDllType, $saliency, "int", $width, "int", $height), "cveSaliencyMotionSetImageSize", @error)
 EndFunc   ;==>_cveSaliencyMotionSetImageSize
 
 Func _cveObjectnessBINGSetTrainingPath($saliency, $trainingPath)
     ; CVAPI(void) cveObjectnessBINGSetTrainingPath(cv::saliency::ObjectnessBING* saliency, cv::String* trainingPath);
 
-    Local $bSaliencyDllType
-    If VarGetType($saliency) == "DLLStruct" Then
-        $bSaliencyDllType = "struct*"
+    Local $sSaliencyDllType
+    If IsDllStruct($saliency) Then
+        $sSaliencyDllType = "struct*"
     Else
-        $bSaliencyDllType = "ptr"
+        $sSaliencyDllType = "ptr"
     EndIf
 
     Local $bTrainingPathIsString = VarGetType($trainingPath) == "String"
@@ -409,14 +457,14 @@ Func _cveObjectnessBINGSetTrainingPath($saliency, $trainingPath)
         $trainingPath = _cveStringCreateFromStr($trainingPath)
     EndIf
 
-    Local $bTrainingPathDllType
-    If VarGetType($trainingPath) == "DLLStruct" Then
-        $bTrainingPathDllType = "struct*"
+    Local $sTrainingPathDllType
+    If IsDllStruct($trainingPath) Then
+        $sTrainingPathDllType = "struct*"
     Else
-        $bTrainingPathDllType = "ptr"
+        $sTrainingPathDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveObjectnessBINGSetTrainingPath", $bSaliencyDllType, $saliency, $bTrainingPathDllType, $trainingPath), "cveObjectnessBINGSetTrainingPath", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveObjectnessBINGSetTrainingPath", $sSaliencyDllType, $saliency, $sTrainingPathDllType, $trainingPath), "cveObjectnessBINGSetTrainingPath", @error)
 
     If $bTrainingPathIsString Then
         _cveStringRelease($trainingPath)
@@ -426,11 +474,11 @@ EndFunc   ;==>_cveObjectnessBINGSetTrainingPath
 Func _cveObjectnessBINGGetObjectnessValues($saliency, $values)
     ; CVAPI(void) cveObjectnessBINGGetObjectnessValues(cv::saliency::ObjectnessBING* saliency, std::vector<float>* values);
 
-    Local $bSaliencyDllType
-    If VarGetType($saliency) == "DLLStruct" Then
-        $bSaliencyDllType = "struct*"
+    Local $sSaliencyDllType
+    If IsDllStruct($saliency) Then
+        $sSaliencyDllType = "struct*"
     Else
-        $bSaliencyDllType = "ptr"
+        $sSaliencyDllType = "ptr"
     EndIf
 
     Local $vecValues, $iArrValuesSize
@@ -447,14 +495,14 @@ Func _cveObjectnessBINGGetObjectnessValues($saliency, $values)
         $vecValues = $values
     EndIf
 
-    Local $bValuesDllType
-    If VarGetType($values) == "DLLStruct" Then
-        $bValuesDllType = "struct*"
+    Local $sValuesDllType
+    If IsDllStruct($values) Then
+        $sValuesDllType = "struct*"
     Else
-        $bValuesDllType = "ptr"
+        $sValuesDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveObjectnessBINGGetObjectnessValues", $bSaliencyDllType, $saliency, $bValuesDllType, $vecValues), "cveObjectnessBINGGetObjectnessValues", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveObjectnessBINGGetObjectnessValues", $sSaliencyDllType, $saliency, $sValuesDllType, $vecValues), "cveObjectnessBINGGetObjectnessValues", @error)
 
     If $bValuesIsArray Then
         _VectorOfFloatRelease($vecValues)

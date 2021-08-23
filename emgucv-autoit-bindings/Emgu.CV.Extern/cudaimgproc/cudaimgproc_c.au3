@@ -4,49 +4,49 @@
 Func _cudaBlendLinear($img1, $img2, $weights1, $weights2, $result, $stream)
     ; CVAPI(void) cudaBlendLinear(cv::_InputArray* img1, cv::_InputArray* img2, cv::_InputArray* weights1, cv::_InputArray* weights2, cv::_OutputArray* result, cv::cuda::Stream* stream);
 
-    Local $bImg1DllType
-    If VarGetType($img1) == "DLLStruct" Then
-        $bImg1DllType = "struct*"
+    Local $sImg1DllType
+    If IsDllStruct($img1) Then
+        $sImg1DllType = "struct*"
     Else
-        $bImg1DllType = "ptr"
+        $sImg1DllType = "ptr"
     EndIf
 
-    Local $bImg2DllType
-    If VarGetType($img2) == "DLLStruct" Then
-        $bImg2DllType = "struct*"
+    Local $sImg2DllType
+    If IsDllStruct($img2) Then
+        $sImg2DllType = "struct*"
     Else
-        $bImg2DllType = "ptr"
+        $sImg2DllType = "ptr"
     EndIf
 
-    Local $bWeights1DllType
-    If VarGetType($weights1) == "DLLStruct" Then
-        $bWeights1DllType = "struct*"
+    Local $sWeights1DllType
+    If IsDllStruct($weights1) Then
+        $sWeights1DllType = "struct*"
     Else
-        $bWeights1DllType = "ptr"
+        $sWeights1DllType = "ptr"
     EndIf
 
-    Local $bWeights2DllType
-    If VarGetType($weights2) == "DLLStruct" Then
-        $bWeights2DllType = "struct*"
+    Local $sWeights2DllType
+    If IsDllStruct($weights2) Then
+        $sWeights2DllType = "struct*"
     Else
-        $bWeights2DllType = "ptr"
+        $sWeights2DllType = "ptr"
     EndIf
 
-    Local $bResultDllType
-    If VarGetType($result) == "DLLStruct" Then
-        $bResultDllType = "struct*"
+    Local $sResultDllType
+    If IsDllStruct($result) Then
+        $sResultDllType = "struct*"
     Else
-        $bResultDllType = "ptr"
+        $sResultDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaBlendLinear", $bImg1DllType, $img1, $bImg2DllType, $img2, $bWeights1DllType, $weights1, $bWeights2DllType, $weights2, $bResultDllType, $result, $bStreamDllType, $stream), "cudaBlendLinear", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaBlendLinear", $sImg1DllType, $img1, $sImg2DllType, $img2, $sWeights1DllType, $weights1, $sWeights2DllType, $weights2, $sResultDllType, $result, $sStreamDllType, $stream), "cudaBlendLinear", @error)
 EndFunc   ;==>_cudaBlendLinear
 
 Func _cudaBlendLinearMat($matImg1, $matImg2, $matWeights1, $matWeights2, $matResult, $stream)
@@ -168,28 +168,28 @@ EndFunc   ;==>_cudaBlendLinearMat
 Func _cudaCvtColor($src, $dst, $code, $dcn, $stream)
     ; CVAPI(void) cudaCvtColor(cv::_InputArray* src, cv::_OutputArray* dst, int code, int dcn, cv::cuda::Stream* stream);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCvtColor", $bSrcDllType, $src, $bDstDllType, $dst, "int", $code, "int", $dcn, $bStreamDllType, $stream), "cudaCvtColor", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCvtColor", $sSrcDllType, $src, $sDstDllType, $dst, "int", $code, "int", $dcn, $sStreamDllType, $stream), "cudaCvtColor", @error)
 EndFunc   ;==>_cudaCvtColor
 
 Func _cudaCvtColorMat($matSrc, $matDst, $code, $dcn, $stream)
@@ -245,28 +245,28 @@ EndFunc   ;==>_cudaCvtColorMat
 Func _cudaDemosaicing($src, $dst, $code, $dcn, $stream)
     ; CVAPI(void) cudaDemosaicing(cv::_InputArray* src, cv::_OutputArray* dst, int code, int dcn, cv::cuda::Stream* stream);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDemosaicing", $bSrcDllType, $src, $bDstDllType, $dst, "int", $code, "int", $dcn, $bStreamDllType, $stream), "cudaDemosaicing", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDemosaicing", $sSrcDllType, $src, $sDstDllType, $dst, "int", $code, "int", $dcn, $sStreamDllType, $stream), "cudaDemosaicing", @error)
 EndFunc   ;==>_cudaDemosaicing
 
 Func _cudaDemosaicingMat($matSrc, $matDst, $code, $dcn, $stream)
@@ -322,28 +322,28 @@ EndFunc   ;==>_cudaDemosaicingMat
 Func _cudaSwapChannels($image, $dstOrder, $stream)
     ; CVAPI(void) cudaSwapChannels(cv::_InputOutputArray* image, const int* dstOrder, cv::cuda::Stream* stream);
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bDstOrderDllType
-    If VarGetType($dstOrder) == "DLLStruct" Then
-        $bDstOrderDllType = "struct*"
+    Local $sDstOrderDllType
+    If IsDllStruct($dstOrder) Then
+        $sDstOrderDllType = "struct*"
     Else
-        $bDstOrderDllType = "int*"
+        $sDstOrderDllType = "int*"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaSwapChannels", $bImageDllType, $image, $bDstOrderDllType, $dstOrder, $bStreamDllType, $stream), "cudaSwapChannels", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaSwapChannels", $sImageDllType, $image, $sDstOrderDllType, $dstOrder, $sStreamDllType, $stream), "cudaSwapChannels", @error)
 EndFunc   ;==>_cudaSwapChannels
 
 Func _cudaSwapChannelsMat($matImage, $dstOrder, $stream)
@@ -377,35 +377,35 @@ EndFunc   ;==>_cudaSwapChannelsMat
 Func _cudaAlphaComp($img1, $img2, $dst, $alphaOp, $stream)
     ; CVAPI(void) cudaAlphaComp(cv::_InputArray* img1, cv::_InputArray* img2, cv::_OutputArray* dst, int alphaOp, cv::cuda::Stream* stream);
 
-    Local $bImg1DllType
-    If VarGetType($img1) == "DLLStruct" Then
-        $bImg1DllType = "struct*"
+    Local $sImg1DllType
+    If IsDllStruct($img1) Then
+        $sImg1DllType = "struct*"
     Else
-        $bImg1DllType = "ptr"
+        $sImg1DllType = "ptr"
     EndIf
 
-    Local $bImg2DllType
-    If VarGetType($img2) == "DLLStruct" Then
-        $bImg2DllType = "struct*"
+    Local $sImg2DllType
+    If IsDllStruct($img2) Then
+        $sImg2DllType = "struct*"
     Else
-        $bImg2DllType = "ptr"
+        $sImg2DllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaAlphaComp", $bImg1DllType, $img1, $bImg2DllType, $img2, $bDstDllType, $dst, "int", $alphaOp, $bStreamDllType, $stream), "cudaAlphaComp", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaAlphaComp", $sImg1DllType, $img1, $sImg2DllType, $img2, $sDstDllType, $dst, "int", $alphaOp, $sStreamDllType, $stream), "cudaAlphaComp", @error)
 EndFunc   ;==>_cudaAlphaComp
 
 Func _cudaAlphaCompMat($matImg1, $matImg2, $matDst, $alphaOp, $stream)
@@ -483,35 +483,35 @@ EndFunc   ;==>_cudaAlphaCompMat
 Func _cudaMeanShiftFiltering($src, $dst, $sp, $sr, $criteria, $stream)
     ; CVAPI(void) cudaMeanShiftFiltering(cv::_InputArray* src, cv::_OutputArray* dst, int sp, int sr, CvTermCriteria* criteria, cv::cuda::Stream* stream);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    Local $bCriteriaDllType
-    If VarGetType($criteria) == "DLLStruct" Then
-        $bCriteriaDllType = "struct*"
+    Local $sCriteriaDllType
+    If IsDllStruct($criteria) Then
+        $sCriteriaDllType = "struct*"
     Else
-        $bCriteriaDllType = "ptr"
+        $sCriteriaDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaMeanShiftFiltering", $bSrcDllType, $src, $bDstDllType, $dst, "int", $sp, "int", $sr, $bCriteriaDllType, $criteria, $bStreamDllType, $stream), "cudaMeanShiftFiltering", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaMeanShiftFiltering", $sSrcDllType, $src, $sDstDllType, $dst, "int", $sp, "int", $sr, $sCriteriaDllType, $criteria, $sStreamDllType, $stream), "cudaMeanShiftFiltering", @error)
 EndFunc   ;==>_cudaMeanShiftFiltering
 
 Func _cudaMeanShiftFilteringMat($matSrc, $matDst, $sp, $sr, $criteria, $stream)
@@ -567,42 +567,42 @@ EndFunc   ;==>_cudaMeanShiftFilteringMat
 Func _cudaMeanShiftProc($src, $dstr, $dstsp, $sp, $sr, $criteria, $stream)
     ; CVAPI(void) cudaMeanShiftProc(cv::_InputArray* src, cv::_OutputArray* dstr, cv::_OutputArray* dstsp, int sp, int sr, CvTermCriteria* criteria, cv::cuda::Stream* stream);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bDstrDllType
-    If VarGetType($dstr) == "DLLStruct" Then
-        $bDstrDllType = "struct*"
+    Local $sDstrDllType
+    If IsDllStruct($dstr) Then
+        $sDstrDllType = "struct*"
     Else
-        $bDstrDllType = "ptr"
+        $sDstrDllType = "ptr"
     EndIf
 
-    Local $bDstspDllType
-    If VarGetType($dstsp) == "DLLStruct" Then
-        $bDstspDllType = "struct*"
+    Local $sDstspDllType
+    If IsDllStruct($dstsp) Then
+        $sDstspDllType = "struct*"
     Else
-        $bDstspDllType = "ptr"
+        $sDstspDllType = "ptr"
     EndIf
 
-    Local $bCriteriaDllType
-    If VarGetType($criteria) == "DLLStruct" Then
-        $bCriteriaDllType = "struct*"
+    Local $sCriteriaDllType
+    If IsDllStruct($criteria) Then
+        $sCriteriaDllType = "struct*"
     Else
-        $bCriteriaDllType = "ptr"
+        $sCriteriaDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaMeanShiftProc", $bSrcDllType, $src, $bDstrDllType, $dstr, $bDstspDllType, $dstsp, "int", $sp, "int", $sr, $bCriteriaDllType, $criteria, $bStreamDllType, $stream), "cudaMeanShiftProc", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaMeanShiftProc", $sSrcDllType, $src, $sDstrDllType, $dstr, $sDstspDllType, $dstsp, "int", $sp, "int", $sr, $sCriteriaDllType, $criteria, $sStreamDllType, $stream), "cudaMeanShiftProc", @error)
 EndFunc   ;==>_cudaMeanShiftProc
 
 Func _cudaMeanShiftProcMat($matSrc, $matDstr, $matDstsp, $sp, $sr, $criteria, $stream)
@@ -680,35 +680,35 @@ EndFunc   ;==>_cudaMeanShiftProcMat
 Func _cudaMeanShiftSegmentation($src, $dst, $sp, $sr, $minsize, $criteria, $stream)
     ; CVAPI(void) cudaMeanShiftSegmentation(cv::_InputArray* src, cv::_OutputArray* dst, int sp, int sr, int minsize, CvTermCriteria* criteria, cv::cuda::Stream* stream);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    Local $bCriteriaDllType
-    If VarGetType($criteria) == "DLLStruct" Then
-        $bCriteriaDllType = "struct*"
+    Local $sCriteriaDllType
+    If IsDllStruct($criteria) Then
+        $sCriteriaDllType = "struct*"
     Else
-        $bCriteriaDllType = "ptr"
+        $sCriteriaDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaMeanShiftSegmentation", $bSrcDllType, $src, $bDstDllType, $dst, "int", $sp, "int", $sr, "int", $minsize, $bCriteriaDllType, $criteria, $bStreamDllType, $stream), "cudaMeanShiftSegmentation", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaMeanShiftSegmentation", $sSrcDllType, $src, $sDstDllType, $dst, "int", $sp, "int", $sr, "int", $minsize, $sCriteriaDllType, $criteria, $sStreamDllType, $stream), "cudaMeanShiftSegmentation", @error)
 EndFunc   ;==>_cudaMeanShiftSegmentation
 
 Func _cudaMeanShiftSegmentationMat($matSrc, $matDst, $sp, $sr, $minsize, $criteria, $stream)
@@ -764,28 +764,28 @@ EndFunc   ;==>_cudaMeanShiftSegmentationMat
 Func _cudaCalcHist($src, $hist, $stream)
     ; CVAPI(void) cudaCalcHist(cv::_InputArray* src, cv::_OutputArray* hist, cv::cuda::Stream* stream);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bHistDllType
-    If VarGetType($hist) == "DLLStruct" Then
-        $bHistDllType = "struct*"
+    Local $sHistDllType
+    If IsDllStruct($hist) Then
+        $sHistDllType = "struct*"
     Else
-        $bHistDllType = "ptr"
+        $sHistDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCalcHist", $bSrcDllType, $src, $bHistDllType, $hist, $bStreamDllType, $stream), "cudaCalcHist", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCalcHist", $sSrcDllType, $src, $sHistDllType, $hist, $sStreamDllType, $stream), "cudaCalcHist", @error)
 EndFunc   ;==>_cudaCalcHist
 
 Func _cudaCalcHistMat($matSrc, $matHist, $stream)
@@ -841,28 +841,28 @@ EndFunc   ;==>_cudaCalcHistMat
 Func _cudaEqualizeHist($src, $dst, $stream)
     ; CVAPI(void) cudaEqualizeHist(cv::_InputArray* src, cv::_OutputArray* dst, cv::cuda::Stream* stream);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaEqualizeHist", $bSrcDllType, $src, $bDstDllType, $dst, $bStreamDllType, $stream), "cudaEqualizeHist", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaEqualizeHist", $sSrcDllType, $src, $sDstDllType, $dst, $sStreamDllType, $stream), "cudaEqualizeHist", @error)
 EndFunc   ;==>_cudaEqualizeHist
 
 Func _cudaEqualizeHistMat($matSrc, $matDst, $stream)
@@ -918,28 +918,28 @@ EndFunc   ;==>_cudaEqualizeHistMat
 Func _cudaHistEven($src, $hist, $histSize, $lowerLevel, $upperLevel, $stream)
     ; CVAPI(void) cudaHistEven(cv::_InputArray* src, cv::_OutputArray* hist, int histSize, int lowerLevel, int upperLevel, cv::cuda::Stream* stream);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bHistDllType
-    If VarGetType($hist) == "DLLStruct" Then
-        $bHistDllType = "struct*"
+    Local $sHistDllType
+    If IsDllStruct($hist) Then
+        $sHistDllType = "struct*"
     Else
-        $bHistDllType = "ptr"
+        $sHistDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHistEven", $bSrcDllType, $src, $bHistDllType, $hist, "int", $histSize, "int", $lowerLevel, "int", $upperLevel, $bStreamDllType, $stream), "cudaHistEven", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHistEven", $sSrcDllType, $src, $sHistDllType, $hist, "int", $histSize, "int", $lowerLevel, "int", $upperLevel, $sStreamDllType, $stream), "cudaHistEven", @error)
 EndFunc   ;==>_cudaHistEven
 
 Func _cudaHistEvenMat($matSrc, $matHist, $histSize, $lowerLevel, $upperLevel, $stream)
@@ -995,35 +995,35 @@ EndFunc   ;==>_cudaHistEvenMat
 Func _cudaHistRange($src, $hist, $levels, $stream)
     ; CVAPI(void) cudaHistRange(cv::_InputArray* src, cv::_OutputArray* hist, cv::_InputArray* levels, cv::cuda::Stream* stream);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bHistDllType
-    If VarGetType($hist) == "DLLStruct" Then
-        $bHistDllType = "struct*"
+    Local $sHistDllType
+    If IsDllStruct($hist) Then
+        $sHistDllType = "struct*"
     Else
-        $bHistDllType = "ptr"
+        $sHistDllType = "ptr"
     EndIf
 
-    Local $bLevelsDllType
-    If VarGetType($levels) == "DLLStruct" Then
-        $bLevelsDllType = "struct*"
+    Local $sLevelsDllType
+    If IsDllStruct($levels) Then
+        $sLevelsDllType = "struct*"
     Else
-        $bLevelsDllType = "ptr"
+        $sLevelsDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHistRange", $bSrcDllType, $src, $bHistDllType, $hist, $bLevelsDllType, $levels, $bStreamDllType, $stream), "cudaHistRange", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHistRange", $sSrcDllType, $src, $sHistDllType, $hist, $sLevelsDllType, $levels, $sStreamDllType, $stream), "cudaHistRange", @error)
 EndFunc   ;==>_cudaHistRange
 
 Func _cudaHistRangeMat($matSrc, $matHist, $matLevels, $stream)
@@ -1101,28 +1101,28 @@ EndFunc   ;==>_cudaHistRangeMat
 Func _cudaBilateralFilter($src, $dst, $kernelSize, $sigmaColor, $sigmaSpatial, $borderMode, $stream)
     ; CVAPI(void) cudaBilateralFilter(cv::_InputArray* src, cv::_OutputArray* dst, int kernelSize, float sigmaColor, float sigmaSpatial, int borderMode, cv::cuda::Stream* stream);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaBilateralFilter", $bSrcDllType, $src, $bDstDllType, $dst, "int", $kernelSize, "float", $sigmaColor, "float", $sigmaSpatial, "int", $borderMode, $bStreamDllType, $stream), "cudaBilateralFilter", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaBilateralFilter", $sSrcDllType, $src, $sDstDllType, $dst, "int", $kernelSize, "float", $sigmaColor, "float", $sigmaSpatial, "int", $borderMode, $sStreamDllType, $stream), "cudaBilateralFilter", @error)
 EndFunc   ;==>_cudaBilateralFilter
 
 Func _cudaBilateralFilterMat($matSrc, $matDst, $kernelSize, $sigmaColor, $sigmaSpatial, $borderMode, $stream)
@@ -1178,59 +1178,63 @@ EndFunc   ;==>_cudaBilateralFilterMat
 Func _cudaCreateHarrisCorner($srcType, $blockSize, $ksize, $k, $borderType, $sharedPtr)
     ; CVAPI(cv::cuda::CornernessCriteria*) cudaCreateHarrisCorner(int srcType, int blockSize, int ksize, double k, int borderType, cv::Ptr<cv::cuda::CornernessCriteria>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateHarrisCorner", "int", $srcType, "int", $blockSize, "int", $ksize, "double", $k, "int", $borderType, $bSharedPtrDllType, $sharedPtr), "cudaCreateHarrisCorner", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateHarrisCorner", "int", $srcType, "int", $blockSize, "int", $ksize, "double", $k, "int", $borderType, $sSharedPtrDllType, $sharedPtr), "cudaCreateHarrisCorner", @error)
 EndFunc   ;==>_cudaCreateHarrisCorner
 
 Func _cudaCreateMinEigenValCorner($srcType, $blockSize, $ksize, $borderType, $sharedPtr)
     ; CVAPI(cv::cuda::CornernessCriteria*) cudaCreateMinEigenValCorner(int srcType, int blockSize, int ksize, int borderType, cv::Ptr<cv::cuda::CornernessCriteria>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateMinEigenValCorner", "int", $srcType, "int", $blockSize, "int", $ksize, "int", $borderType, $bSharedPtrDllType, $sharedPtr), "cudaCreateMinEigenValCorner", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateMinEigenValCorner", "int", $srcType, "int", $blockSize, "int", $ksize, "int", $borderType, $sSharedPtrDllType, $sharedPtr), "cudaCreateMinEigenValCorner", @error)
 EndFunc   ;==>_cudaCreateMinEigenValCorner
 
 Func _cudaCornernessCriteriaCompute($detector, $src, $dst, $stream)
     ; CVAPI(void) cudaCornernessCriteriaCompute(cv::Ptr<cv::cuda::CornernessCriteria>* detector, cv::_InputArray* src, cv::_OutputArray* dst, cv::cuda::Stream* stream);
 
-    Local $bDetectorDllType
-    If VarGetType($detector) == "DLLStruct" Then
-        $bDetectorDllType = "struct*"
+    Local $sDetectorDllType
+    If IsDllStruct($detector) Then
+        $sDetectorDllType = "struct*"
     Else
-        $bDetectorDllType = "ptr"
+        $sDetectorDllType = "ptr"
     EndIf
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCornernessCriteriaCompute", $bDetectorDllType, $detector, $bSrcDllType, $src, $bDstDllType, $dst, $bStreamDllType, $stream), "cudaCornernessCriteriaCompute", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCornernessCriteriaCompute", $sDetectorDllType, $detector, $sSrcDllType, $src, $sDstDllType, $dst, $sStreamDllType, $stream), "cudaCornernessCriteriaCompute", @error)
 EndFunc   ;==>_cudaCornernessCriteriaCompute
 
 Func _cudaCornernessCriteriaComputeMat($detector, $matSrc, $matDst, $stream)
@@ -1286,67 +1290,71 @@ EndFunc   ;==>_cudaCornernessCriteriaComputeMat
 Func _cudaCornernessCriteriaRelease($detector)
     ; CVAPI(void) cudaCornernessCriteriaRelease(cv::Ptr<cv::cuda::CornernessCriteria>** detector);
 
-    Local $bDetectorDllType
-    If VarGetType($detector) == "DLLStruct" Then
-        $bDetectorDllType = "struct*"
+    Local $sDetectorDllType
+    If IsDllStruct($detector) Then
+        $sDetectorDllType = "struct*"
+    ElseIf $detector == Null Then
+        $sDetectorDllType = "ptr"
     Else
-        $bDetectorDllType = "ptr*"
+        $sDetectorDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCornernessCriteriaRelease", $bDetectorDllType, $detector), "cudaCornernessCriteriaRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCornernessCriteriaRelease", $sDetectorDllType, $detector), "cudaCornernessCriteriaRelease", @error)
 EndFunc   ;==>_cudaCornernessCriteriaRelease
 
 Func _cudaCLAHECreate($clipLimit, $tileGridSize, $sharedPtr)
     ; CVAPI(cv::cuda::CLAHE*) cudaCLAHECreate(double clipLimit, CvSize* tileGridSize, cv::Ptr<cv::cuda::CLAHE>** sharedPtr);
 
-    Local $bTileGridSizeDllType
-    If VarGetType($tileGridSize) == "DLLStruct" Then
-        $bTileGridSizeDllType = "struct*"
+    Local $sTileGridSizeDllType
+    If IsDllStruct($tileGridSize) Then
+        $sTileGridSizeDllType = "struct*"
     Else
-        $bTileGridSizeDllType = "ptr"
+        $sTileGridSizeDllType = "ptr"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCLAHECreate", "double", $clipLimit, $bTileGridSizeDllType, $tileGridSize, $bSharedPtrDllType, $sharedPtr), "cudaCLAHECreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCLAHECreate", "double", $clipLimit, $sTileGridSizeDllType, $tileGridSize, $sSharedPtrDllType, $sharedPtr), "cudaCLAHECreate", @error)
 EndFunc   ;==>_cudaCLAHECreate
 
 Func _cudaCLAHEApply($clahe, $src, $dst, $stream)
     ; CVAPI(void) cudaCLAHEApply(cv::cuda::CLAHE* clahe, cv::_InputArray* src, cv::_OutputArray* dst, cv::cuda::Stream* stream);
 
-    Local $bClaheDllType
-    If VarGetType($clahe) == "DLLStruct" Then
-        $bClaheDllType = "struct*"
+    Local $sClaheDllType
+    If IsDllStruct($clahe) Then
+        $sClaheDllType = "struct*"
     Else
-        $bClaheDllType = "ptr"
+        $sClaheDllType = "ptr"
     EndIf
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCLAHEApply", $bClaheDllType, $clahe, $bSrcDllType, $src, $bDstDllType, $dst, $bStreamDllType, $stream), "cudaCLAHEApply", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCLAHEApply", $sClaheDllType, $clahe, $sSrcDllType, $src, $sDstDllType, $dst, $sStreamDllType, $stream), "cudaCLAHEApply", @error)
 EndFunc   ;==>_cudaCLAHEApply
 
 Func _cudaCLAHEApplyMat($clahe, $matSrc, $matDst, $stream)
@@ -1402,60 +1410,64 @@ EndFunc   ;==>_cudaCLAHEApplyMat
 Func _cudaCLAHERelease($clahe)
     ; CVAPI(void) cudaCLAHERelease(cv::Ptr<cv::cuda::CLAHE>** clahe);
 
-    Local $bClaheDllType
-    If VarGetType($clahe) == "DLLStruct" Then
-        $bClaheDllType = "struct*"
+    Local $sClaheDllType
+    If IsDllStruct($clahe) Then
+        $sClaheDllType = "struct*"
+    ElseIf $clahe == Null Then
+        $sClaheDllType = "ptr"
     Else
-        $bClaheDllType = "ptr*"
+        $sClaheDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCLAHERelease", $bClaheDllType, $clahe), "cudaCLAHERelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCLAHERelease", $sClaheDllType, $clahe), "cudaCLAHERelease", @error)
 EndFunc   ;==>_cudaCLAHERelease
 
 Func _cudaCreateCannyEdgeDetector($lowThreshold, $highThreshold, $apertureSize, $L2gradient, $sharedPtr)
     ; CVAPI(cv::cuda::CannyEdgeDetector*) cudaCreateCannyEdgeDetector(double lowThreshold, double highThreshold, int apertureSize, bool L2gradient, cv::Ptr<cv::cuda::CannyEdgeDetector>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateCannyEdgeDetector", "double", $lowThreshold, "double", $highThreshold, "int", $apertureSize, "boolean", $L2gradient, $bSharedPtrDllType, $sharedPtr), "cudaCreateCannyEdgeDetector", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateCannyEdgeDetector", "double", $lowThreshold, "double", $highThreshold, "int", $apertureSize, "boolean", $L2gradient, $sSharedPtrDllType, $sharedPtr), "cudaCreateCannyEdgeDetector", @error)
 EndFunc   ;==>_cudaCreateCannyEdgeDetector
 
 Func _cudaCannyEdgeDetectorDetect($detector, $src, $edges, $stream)
     ; CVAPI(void) cudaCannyEdgeDetectorDetect(cv::cuda::CannyEdgeDetector* detector, cv::_InputArray* src, cv::_OutputArray* edges, cv::cuda::Stream* stream);
 
-    Local $bDetectorDllType
-    If VarGetType($detector) == "DLLStruct" Then
-        $bDetectorDllType = "struct*"
+    Local $sDetectorDllType
+    If IsDllStruct($detector) Then
+        $sDetectorDllType = "struct*"
     Else
-        $bDetectorDllType = "ptr"
+        $sDetectorDllType = "ptr"
     EndIf
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bEdgesDllType
-    If VarGetType($edges) == "DLLStruct" Then
-        $bEdgesDllType = "struct*"
+    Local $sEdgesDllType
+    If IsDllStruct($edges) Then
+        $sEdgesDllType = "struct*"
     Else
-        $bEdgesDllType = "ptr"
+        $sEdgesDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCannyEdgeDetectorDetect", $bDetectorDllType, $detector, $bSrcDllType, $src, $bEdgesDllType, $edges, $bStreamDllType, $stream), "cudaCannyEdgeDetectorDetect", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCannyEdgeDetectorDetect", $sDetectorDllType, $detector, $sSrcDllType, $src, $sEdgesDllType, $edges, $sStreamDllType, $stream), "cudaCannyEdgeDetectorDetect", @error)
 EndFunc   ;==>_cudaCannyEdgeDetectorDetect
 
 Func _cudaCannyEdgeDetectorDetectMat($detector, $matSrc, $matEdges, $stream)
@@ -1511,67 +1523,71 @@ EndFunc   ;==>_cudaCannyEdgeDetectorDetectMat
 Func _cudaCannyEdgeDetectorRelease($detector)
     ; CVAPI(void) cudaCannyEdgeDetectorRelease(cv::Ptr<cv::cuda::CannyEdgeDetector>** detector);
 
-    Local $bDetectorDllType
-    If VarGetType($detector) == "DLLStruct" Then
-        $bDetectorDllType = "struct*"
+    Local $sDetectorDllType
+    If IsDllStruct($detector) Then
+        $sDetectorDllType = "struct*"
+    ElseIf $detector == Null Then
+        $sDetectorDllType = "ptr"
     Else
-        $bDetectorDllType = "ptr*"
+        $sDetectorDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCannyEdgeDetectorRelease", $bDetectorDllType, $detector), "cudaCannyEdgeDetectorRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCannyEdgeDetectorRelease", $sDetectorDllType, $detector), "cudaCannyEdgeDetectorRelease", @error)
 EndFunc   ;==>_cudaCannyEdgeDetectorRelease
 
 Func _cudaGoodFeaturesToTrackDetectorCreate($srcType, $maxCorners, $qualityLevel, $minDistance, $blockSize, $useHarrisDetector, $harrisK, $sharedPtr)
     ; CVAPI(cv::cuda::CornersDetector*) cudaGoodFeaturesToTrackDetectorCreate(int srcType, int maxCorners, double qualityLevel, double minDistance, int blockSize, bool useHarrisDetector, double harrisK, cv::Ptr<cv::cuda::CornersDetector>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaGoodFeaturesToTrackDetectorCreate", "int", $srcType, "int", $maxCorners, "double", $qualityLevel, "double", $minDistance, "int", $blockSize, "boolean", $useHarrisDetector, "double", $harrisK, $bSharedPtrDllType, $sharedPtr), "cudaGoodFeaturesToTrackDetectorCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaGoodFeaturesToTrackDetectorCreate", "int", $srcType, "int", $maxCorners, "double", $qualityLevel, "double", $minDistance, "int", $blockSize, "boolean", $useHarrisDetector, "double", $harrisK, $sSharedPtrDllType, $sharedPtr), "cudaGoodFeaturesToTrackDetectorCreate", @error)
 EndFunc   ;==>_cudaGoodFeaturesToTrackDetectorCreate
 
 Func _cudaCornersDetectorDetect($detector, $image, $corners, $mask, $stream)
     ; CVAPI(void) cudaCornersDetectorDetect(cv::cuda::CornersDetector* detector, cv::_InputArray* image, cv::_OutputArray* corners, cv::_InputArray* mask, cv::cuda::Stream* stream);
 
-    Local $bDetectorDllType
-    If VarGetType($detector) == "DLLStruct" Then
-        $bDetectorDllType = "struct*"
+    Local $sDetectorDllType
+    If IsDllStruct($detector) Then
+        $sDetectorDllType = "struct*"
     Else
-        $bDetectorDllType = "ptr"
+        $sDetectorDllType = "ptr"
     EndIf
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bCornersDllType
-    If VarGetType($corners) == "DLLStruct" Then
-        $bCornersDllType = "struct*"
+    Local $sCornersDllType
+    If IsDllStruct($corners) Then
+        $sCornersDllType = "struct*"
     Else
-        $bCornersDllType = "ptr"
+        $sCornersDllType = "ptr"
     EndIf
 
-    Local $bMaskDllType
-    If VarGetType($mask) == "DLLStruct" Then
-        $bMaskDllType = "struct*"
+    Local $sMaskDllType
+    If IsDllStruct($mask) Then
+        $sMaskDllType = "struct*"
     Else
-        $bMaskDllType = "ptr"
+        $sMaskDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCornersDetectorDetect", $bDetectorDllType, $detector, $bImageDllType, $image, $bCornersDllType, $corners, $bMaskDllType, $mask, $bStreamDllType, $stream), "cudaCornersDetectorDetect", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCornersDetectorDetect", $sDetectorDllType, $detector, $sImageDllType, $image, $sCornersDllType, $corners, $sMaskDllType, $mask, $sStreamDllType, $stream), "cudaCornersDetectorDetect", @error)
 EndFunc   ;==>_cudaCornersDetectorDetect
 
 Func _cudaCornersDetectorDetectMat($detector, $matImage, $matCorners, $matMask, $stream)
@@ -1649,87 +1665,93 @@ EndFunc   ;==>_cudaCornersDetectorDetectMat
 Func _cudaCornersDetectorRelease($detector)
     ; CVAPI(void) cudaCornersDetectorRelease(cv::Ptr<cv::cuda::CornersDetector>** detector);
 
-    Local $bDetectorDllType
-    If VarGetType($detector) == "DLLStruct" Then
-        $bDetectorDllType = "struct*"
+    Local $sDetectorDllType
+    If IsDllStruct($detector) Then
+        $sDetectorDllType = "struct*"
+    ElseIf $detector == Null Then
+        $sDetectorDllType = "ptr"
     Else
-        $bDetectorDllType = "ptr*"
+        $sDetectorDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCornersDetectorRelease", $bDetectorDllType, $detector), "cudaCornersDetectorRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCornersDetectorRelease", $sDetectorDllType, $detector), "cudaCornersDetectorRelease", @error)
 EndFunc   ;==>_cudaCornersDetectorRelease
 
 Func _cudaTemplateMatchingCreate($srcType, $method, $blockSize, $sharedPtr)
     ; CVAPI(cv::cuda::TemplateMatching*) cudaTemplateMatchingCreate(int srcType, int method, CvSize* blockSize, cv::Ptr<cv::cuda::TemplateMatching>** sharedPtr);
 
-    Local $bBlockSizeDllType
-    If VarGetType($blockSize) == "DLLStruct" Then
-        $bBlockSizeDllType = "struct*"
+    Local $sBlockSizeDllType
+    If IsDllStruct($blockSize) Then
+        $sBlockSizeDllType = "struct*"
     Else
-        $bBlockSizeDllType = "ptr"
+        $sBlockSizeDllType = "ptr"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaTemplateMatchingCreate", "int", $srcType, "int", $method, $bBlockSizeDllType, $blockSize, $bSharedPtrDllType, $sharedPtr), "cudaTemplateMatchingCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaTemplateMatchingCreate", "int", $srcType, "int", $method, $sBlockSizeDllType, $blockSize, $sSharedPtrDllType, $sharedPtr), "cudaTemplateMatchingCreate", @error)
 EndFunc   ;==>_cudaTemplateMatchingCreate
 
 Func _cudaTemplateMatchingRelease($tm)
     ; CVAPI(void) cudaTemplateMatchingRelease(cv::Ptr<cv::cuda::TemplateMatching>** tm);
 
-    Local $bTmDllType
-    If VarGetType($tm) == "DLLStruct" Then
-        $bTmDllType = "struct*"
+    Local $sTmDllType
+    If IsDllStruct($tm) Then
+        $sTmDllType = "struct*"
+    ElseIf $tm == Null Then
+        $sTmDllType = "ptr"
     Else
-        $bTmDllType = "ptr*"
+        $sTmDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaTemplateMatchingRelease", $bTmDllType, $tm), "cudaTemplateMatchingRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaTemplateMatchingRelease", $sTmDllType, $tm), "cudaTemplateMatchingRelease", @error)
 EndFunc   ;==>_cudaTemplateMatchingRelease
 
 Func _cudaTemplateMatchingMatch($tm, $image, $templ, $result, $stream)
     ; CVAPI(void) cudaTemplateMatchingMatch(cv::cuda::TemplateMatching* tm, cv::_InputArray* image, cv::_InputArray* templ, cv::_OutputArray* result, cv::cuda::Stream* stream);
 
-    Local $bTmDllType
-    If VarGetType($tm) == "DLLStruct" Then
-        $bTmDllType = "struct*"
+    Local $sTmDllType
+    If IsDllStruct($tm) Then
+        $sTmDllType = "struct*"
     Else
-        $bTmDllType = "ptr"
+        $sTmDllType = "ptr"
     EndIf
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bTemplDllType
-    If VarGetType($templ) == "DLLStruct" Then
-        $bTemplDllType = "struct*"
+    Local $sTemplDllType
+    If IsDllStruct($templ) Then
+        $sTemplDllType = "struct*"
     Else
-        $bTemplDllType = "ptr"
+        $sTemplDllType = "ptr"
     EndIf
 
-    Local $bResultDllType
-    If VarGetType($result) == "DLLStruct" Then
-        $bResultDllType = "struct*"
+    Local $sResultDllType
+    If IsDllStruct($result) Then
+        $sResultDllType = "struct*"
     Else
-        $bResultDllType = "ptr"
+        $sResultDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaTemplateMatchingMatch", $bTmDllType, $tm, $bImageDllType, $image, $bTemplDllType, $templ, $bResultDllType, $result, $bStreamDllType, $stream), "cudaTemplateMatchingMatch", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaTemplateMatchingMatch", $sTmDllType, $tm, $sImageDllType, $image, $sTemplDllType, $templ, $sResultDllType, $result, $sStreamDllType, $stream), "cudaTemplateMatchingMatch", @error)
 EndFunc   ;==>_cudaTemplateMatchingMatch
 
 Func _cudaTemplateMatchingMatchMat($tm, $matImage, $matTempl, $matResult, $stream)
@@ -1807,47 +1829,49 @@ EndFunc   ;==>_cudaTemplateMatchingMatchMat
 Func _cudaHoughLinesDetectorCreate($rho, $theta, $threshold, $doSort, $maxLines, $sharedPtr)
     ; CVAPI(cv::cuda::HoughLinesDetector*) cudaHoughLinesDetectorCreate(float rho, float theta, int threshold, bool doSort, int maxLines, cv::Ptr<cv::cuda::HoughLinesDetector>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaHoughLinesDetectorCreate", "float", $rho, "float", $theta, "int", $threshold, "boolean", $doSort, "int", $maxLines, $bSharedPtrDllType, $sharedPtr), "cudaHoughLinesDetectorCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaHoughLinesDetectorCreate", "float", $rho, "float", $theta, "int", $threshold, "boolean", $doSort, "int", $maxLines, $sSharedPtrDllType, $sharedPtr), "cudaHoughLinesDetectorCreate", @error)
 EndFunc   ;==>_cudaHoughLinesDetectorCreate
 
 Func _cudaHoughLinesDetectorDetect($detector, $src, $lines, $stream)
     ; CVAPI(void) cudaHoughLinesDetectorDetect(cv::cuda::HoughLinesDetector* detector, cv::_InputArray* src, cv::_OutputArray* lines, cv::cuda::Stream* stream);
 
-    Local $bDetectorDllType
-    If VarGetType($detector) == "DLLStruct" Then
-        $bDetectorDllType = "struct*"
+    Local $sDetectorDllType
+    If IsDllStruct($detector) Then
+        $sDetectorDllType = "struct*"
     Else
-        $bDetectorDllType = "ptr"
+        $sDetectorDllType = "ptr"
     EndIf
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bLinesDllType
-    If VarGetType($lines) == "DLLStruct" Then
-        $bLinesDllType = "struct*"
+    Local $sLinesDllType
+    If IsDllStruct($lines) Then
+        $sLinesDllType = "struct*"
     Else
-        $bLinesDllType = "ptr"
+        $sLinesDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughLinesDetectorDetect", $bDetectorDllType, $detector, $bSrcDllType, $src, $bLinesDllType, $lines, $bStreamDllType, $stream), "cudaHoughLinesDetectorDetect", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughLinesDetectorDetect", $sDetectorDllType, $detector, $sSrcDllType, $src, $sLinesDllType, $lines, $sStreamDllType, $stream), "cudaHoughLinesDetectorDetect", @error)
 EndFunc   ;==>_cudaHoughLinesDetectorDetect
 
 Func _cudaHoughLinesDetectorDetectMat($detector, $matSrc, $matLines, $stream)
@@ -1903,60 +1927,64 @@ EndFunc   ;==>_cudaHoughLinesDetectorDetectMat
 Func _cudaHoughLinesDetectorRelease($detector)
     ; CVAPI(void) cudaHoughLinesDetectorRelease(cv::Ptr<cv::cuda::HoughLinesDetector>** detector);
 
-    Local $bDetectorDllType
-    If VarGetType($detector) == "DLLStruct" Then
-        $bDetectorDllType = "struct*"
+    Local $sDetectorDllType
+    If IsDllStruct($detector) Then
+        $sDetectorDllType = "struct*"
+    ElseIf $detector == Null Then
+        $sDetectorDllType = "ptr"
     Else
-        $bDetectorDllType = "ptr*"
+        $sDetectorDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughLinesDetectorRelease", $bDetectorDllType, $detector), "cudaHoughLinesDetectorRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughLinesDetectorRelease", $sDetectorDllType, $detector), "cudaHoughLinesDetectorRelease", @error)
 EndFunc   ;==>_cudaHoughLinesDetectorRelease
 
 Func _cudaHoughSegmentDetectorCreate($rho, $theta, $minLineLength, $maxLineGap, $maxLines, $sharedPtr)
     ; CVAPI(cv::cuda::HoughSegmentDetector*) cudaHoughSegmentDetectorCreate(float rho, float theta, int minLineLength, int maxLineGap, int maxLines, cv::Ptr<cv::cuda::HoughSegmentDetector>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaHoughSegmentDetectorCreate", "float", $rho, "float", $theta, "int", $minLineLength, "int", $maxLineGap, "int", $maxLines, $bSharedPtrDllType, $sharedPtr), "cudaHoughSegmentDetectorCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaHoughSegmentDetectorCreate", "float", $rho, "float", $theta, "int", $minLineLength, "int", $maxLineGap, "int", $maxLines, $sSharedPtrDllType, $sharedPtr), "cudaHoughSegmentDetectorCreate", @error)
 EndFunc   ;==>_cudaHoughSegmentDetectorCreate
 
 Func _cudaHoughSegmentDetectorDetect($detector, $src, $lines, $stream)
     ; CVAPI(void) cudaHoughSegmentDetectorDetect(cv::cuda::HoughSegmentDetector* detector, cv::_InputArray* src, cv::_OutputArray* lines, cv::cuda::Stream* stream);
 
-    Local $bDetectorDllType
-    If VarGetType($detector) == "DLLStruct" Then
-        $bDetectorDllType = "struct*"
+    Local $sDetectorDllType
+    If IsDllStruct($detector) Then
+        $sDetectorDllType = "struct*"
     Else
-        $bDetectorDllType = "ptr"
+        $sDetectorDllType = "ptr"
     EndIf
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bLinesDllType
-    If VarGetType($lines) == "DLLStruct" Then
-        $bLinesDllType = "struct*"
+    Local $sLinesDllType
+    If IsDllStruct($lines) Then
+        $sLinesDllType = "struct*"
     Else
-        $bLinesDllType = "ptr"
+        $sLinesDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughSegmentDetectorDetect", $bDetectorDllType, $detector, $bSrcDllType, $src, $bLinesDllType, $lines, $bStreamDllType, $stream), "cudaHoughSegmentDetectorDetect", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughSegmentDetectorDetect", $sDetectorDllType, $detector, $sSrcDllType, $src, $sLinesDllType, $lines, $sStreamDllType, $stream), "cudaHoughSegmentDetectorDetect", @error)
 EndFunc   ;==>_cudaHoughSegmentDetectorDetect
 
 Func _cudaHoughSegmentDetectorDetectMat($detector, $matSrc, $matLines, $stream)
@@ -2012,60 +2040,64 @@ EndFunc   ;==>_cudaHoughSegmentDetectorDetectMat
 Func _cudaHoughSegmentDetectorRelease($detector)
     ; CVAPI(void) cudaHoughSegmentDetectorRelease(cv::Ptr<cv::cuda::HoughSegmentDetector>** detector);
 
-    Local $bDetectorDllType
-    If VarGetType($detector) == "DLLStruct" Then
-        $bDetectorDllType = "struct*"
+    Local $sDetectorDllType
+    If IsDllStruct($detector) Then
+        $sDetectorDllType = "struct*"
+    ElseIf $detector == Null Then
+        $sDetectorDllType = "ptr"
     Else
-        $bDetectorDllType = "ptr*"
+        $sDetectorDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughSegmentDetectorRelease", $bDetectorDllType, $detector), "cudaHoughSegmentDetectorRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughSegmentDetectorRelease", $sDetectorDllType, $detector), "cudaHoughSegmentDetectorRelease", @error)
 EndFunc   ;==>_cudaHoughSegmentDetectorRelease
 
 Func _cudaHoughCirclesDetectorCreate($dp, $minDist, $cannyThreshold, $votesThreshold, $minRadius, $maxRadius, $maxCircles, $sharedPtr)
     ; CVAPI(cv::cuda::HoughCirclesDetector*) cudaHoughCirclesDetectorCreate(float dp, float minDist, int cannyThreshold, int votesThreshold, int minRadius, int maxRadius, int maxCircles, cv::Ptr<cv::cuda::HoughCirclesDetector>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaHoughCirclesDetectorCreate", "float", $dp, "float", $minDist, "int", $cannyThreshold, "int", $votesThreshold, "int", $minRadius, "int", $maxRadius, "int", $maxCircles, $bSharedPtrDllType, $sharedPtr), "cudaHoughCirclesDetectorCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaHoughCirclesDetectorCreate", "float", $dp, "float", $minDist, "int", $cannyThreshold, "int", $votesThreshold, "int", $minRadius, "int", $maxRadius, "int", $maxCircles, $sSharedPtrDllType, $sharedPtr), "cudaHoughCirclesDetectorCreate", @error)
 EndFunc   ;==>_cudaHoughCirclesDetectorCreate
 
 Func _cudaHoughCirclesDetectorDetect($detector, $src, $circles, $stream)
     ; CVAPI(void) cudaHoughCirclesDetectorDetect(cv::cuda::HoughCirclesDetector* detector, cv::_InputArray* src, cv::_OutputArray* circles, cv::cuda::Stream* stream);
 
-    Local $bDetectorDllType
-    If VarGetType($detector) == "DLLStruct" Then
-        $bDetectorDllType = "struct*"
+    Local $sDetectorDllType
+    If IsDllStruct($detector) Then
+        $sDetectorDllType = "struct*"
     Else
-        $bDetectorDllType = "ptr"
+        $sDetectorDllType = "ptr"
     EndIf
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bCirclesDllType
-    If VarGetType($circles) == "DLLStruct" Then
-        $bCirclesDllType = "struct*"
+    Local $sCirclesDllType
+    If IsDllStruct($circles) Then
+        $sCirclesDllType = "struct*"
     Else
-        $bCirclesDllType = "ptr"
+        $sCirclesDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughCirclesDetectorDetect", $bDetectorDllType, $detector, $bSrcDllType, $src, $bCirclesDllType, $circles, $bStreamDllType, $stream), "cudaHoughCirclesDetectorDetect", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughCirclesDetectorDetect", $sDetectorDllType, $detector, $sSrcDllType, $src, $sCirclesDllType, $circles, $sStreamDllType, $stream), "cudaHoughCirclesDetectorDetect", @error)
 EndFunc   ;==>_cudaHoughCirclesDetectorDetect
 
 Func _cudaHoughCirclesDetectorDetectMat($detector, $matSrc, $matCircles, $stream)
@@ -2121,41 +2153,43 @@ EndFunc   ;==>_cudaHoughCirclesDetectorDetectMat
 Func _cudaHoughCirclesDetectorRelease($detector)
     ; CVAPI(void) cudaHoughCirclesDetectorRelease(cv::Ptr<cv::cuda::HoughCirclesDetector>** detector);
 
-    Local $bDetectorDllType
-    If VarGetType($detector) == "DLLStruct" Then
-        $bDetectorDllType = "struct*"
+    Local $sDetectorDllType
+    If IsDllStruct($detector) Then
+        $sDetectorDllType = "struct*"
+    ElseIf $detector == Null Then
+        $sDetectorDllType = "ptr"
     Else
-        $bDetectorDllType = "ptr*"
+        $sDetectorDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughCirclesDetectorRelease", $bDetectorDllType, $detector), "cudaHoughCirclesDetectorRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughCirclesDetectorRelease", $sDetectorDllType, $detector), "cudaHoughCirclesDetectorRelease", @error)
 EndFunc   ;==>_cudaHoughCirclesDetectorRelease
 
 Func _cudaGammaCorrection($src, $dst, $forward, $stream)
     ; CVAPI(void) cudaGammaCorrection(cv::_InputArray* src, cv::_OutputArray* dst, bool forward, cv::cuda::Stream* stream);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaGammaCorrection", $bSrcDllType, $src, $bDstDllType, $dst, "boolean", $forward, $bStreamDllType, $stream), "cudaGammaCorrection", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaGammaCorrection", $sSrcDllType, $src, $sDstDllType, $dst, "boolean", $forward, $sStreamDllType, $stream), "cudaGammaCorrection", @error)
 EndFunc   ;==>_cudaGammaCorrection
 
 Func _cudaGammaCorrectionMat($matSrc, $matDst, $forward, $stream)

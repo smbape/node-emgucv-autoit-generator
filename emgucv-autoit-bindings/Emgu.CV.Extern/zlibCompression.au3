@@ -9,53 +9,53 @@ EndFunc   ;==>_zlib_compress_bound
 Func _zlib_compress2($dataCompressed, $sizeDataCompressed, $dataOriginal, $sizeDataOriginal, $compressionLevel)
     ; CVAPI(void) zlib_compress2(Byte* dataCompressed, int* sizeDataCompressed, Byte* dataOriginal, int sizeDataOriginal, int compressionLevel);
 
-    Local $bDataCompressedDllType
-    If VarGetType($dataCompressed) == "DLLStruct" Then
-        $bDataCompressedDllType = "struct*"
+    Local $sDataCompressedDllType
+    If IsDllStruct($dataCompressed) Then
+        $sDataCompressedDllType = "struct*"
     Else
-        $bDataCompressedDllType = "ptr"
+        $sDataCompressedDllType = "ptr"
     EndIf
 
-    Local $bSizeDataCompressedDllType
-    If VarGetType($sizeDataCompressed) == "DLLStruct" Then
-        $bSizeDataCompressedDllType = "struct*"
+    Local $sSizeDataCompressedDllType
+    If IsDllStruct($sizeDataCompressed) Then
+        $sSizeDataCompressedDllType = "struct*"
     Else
-        $bSizeDataCompressedDllType = "int*"
+        $sSizeDataCompressedDllType = "int*"
     EndIf
 
-    Local $bDataOriginalDllType
-    If VarGetType($dataOriginal) == "DLLStruct" Then
-        $bDataOriginalDllType = "struct*"
+    Local $sDataOriginalDllType
+    If IsDllStruct($dataOriginal) Then
+        $sDataOriginalDllType = "struct*"
     Else
-        $bDataOriginalDllType = "ptr"
+        $sDataOriginalDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "zlib_compress2", $bDataCompressedDllType, $dataCompressed, $bSizeDataCompressedDllType, $sizeDataCompressed, $bDataOriginalDllType, $dataOriginal, "int", $sizeDataOriginal, "int", $compressionLevel), "zlib_compress2", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "zlib_compress2", $sDataCompressedDllType, $dataCompressed, $sSizeDataCompressedDllType, $sizeDataCompressed, $sDataOriginalDllType, $dataOriginal, "int", $sizeDataOriginal, "int", $compressionLevel), "zlib_compress2", @error)
 EndFunc   ;==>_zlib_compress2
 
 Func _zlib_uncompress($dataUncompressed, $sizeDataUncompressed, $compressedData, $sizeDataCompressed)
     ; CVAPI(void) zlib_uncompress(Byte* dataUncompressed, int* sizeDataUncompressed, Byte* compressedData, int sizeDataCompressed);
 
-    Local $bDataUncompressedDllType
-    If VarGetType($dataUncompressed) == "DLLStruct" Then
-        $bDataUncompressedDllType = "struct*"
+    Local $sDataUncompressedDllType
+    If IsDllStruct($dataUncompressed) Then
+        $sDataUncompressedDllType = "struct*"
     Else
-        $bDataUncompressedDllType = "ptr"
+        $sDataUncompressedDllType = "ptr"
     EndIf
 
-    Local $bSizeDataUncompressedDllType
-    If VarGetType($sizeDataUncompressed) == "DLLStruct" Then
-        $bSizeDataUncompressedDllType = "struct*"
+    Local $sSizeDataUncompressedDllType
+    If IsDllStruct($sizeDataUncompressed) Then
+        $sSizeDataUncompressedDllType = "struct*"
     Else
-        $bSizeDataUncompressedDllType = "int*"
+        $sSizeDataUncompressedDllType = "int*"
     EndIf
 
-    Local $bCompressedDataDllType
-    If VarGetType($compressedData) == "DLLStruct" Then
-        $bCompressedDataDllType = "struct*"
+    Local $sCompressedDataDllType
+    If IsDllStruct($compressedData) Then
+        $sCompressedDataDllType = "struct*"
     Else
-        $bCompressedDataDllType = "ptr"
+        $sCompressedDataDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "zlib_uncompress", $bDataUncompressedDllType, $dataUncompressed, $bSizeDataUncompressedDllType, $sizeDataUncompressed, $bCompressedDataDllType, $compressedData, "int", $sizeDataCompressed), "zlib_uncompress", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "zlib_uncompress", $sDataUncompressedDllType, $dataUncompressed, $sSizeDataUncompressedDllType, $sizeDataUncompressed, $sCompressedDataDllType, $compressedData, "int", $sizeDataCompressed), "zlib_uncompress", @error)
 EndFunc   ;==>_zlib_uncompress

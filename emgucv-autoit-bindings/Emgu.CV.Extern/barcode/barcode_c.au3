@@ -9,11 +9,11 @@ Func _cveBarcodeDetectorCreate($prototxtPath, $modelPath)
         $prototxtPath = _cveStringCreateFromStr($prototxtPath)
     EndIf
 
-    Local $bPrototxtPathDllType
-    If VarGetType($prototxtPath) == "DLLStruct" Then
-        $bPrototxtPathDllType = "struct*"
+    Local $sPrototxtPathDllType
+    If IsDllStruct($prototxtPath) Then
+        $sPrototxtPathDllType = "struct*"
     Else
-        $bPrototxtPathDllType = "ptr"
+        $sPrototxtPathDllType = "ptr"
     EndIf
 
     Local $bModelPathIsString = VarGetType($modelPath) == "String"
@@ -21,14 +21,14 @@ Func _cveBarcodeDetectorCreate($prototxtPath, $modelPath)
         $modelPath = _cveStringCreateFromStr($modelPath)
     EndIf
 
-    Local $bModelPathDllType
-    If VarGetType($modelPath) == "DLLStruct" Then
-        $bModelPathDllType = "struct*"
+    Local $sModelPathDllType
+    If IsDllStruct($modelPath) Then
+        $sModelPathDllType = "struct*"
     Else
-        $bModelPathDllType = "ptr"
+        $sModelPathDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBarcodeDetectorCreate", $bPrototxtPathDllType, $prototxtPath, $bModelPathDllType, $modelPath), "cveBarcodeDetectorCreate", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBarcodeDetectorCreate", $sPrototxtPathDllType, $prototxtPath, $sModelPathDllType, $modelPath), "cveBarcodeDetectorCreate", @error)
 
     If $bModelPathIsString Then
         _cveStringRelease($modelPath)
@@ -44,40 +44,42 @@ EndFunc   ;==>_cveBarcodeDetectorCreate
 Func _cveBarcodeDetectorRelease($detector)
     ; CVAPI(void) cveBarcodeDetectorRelease(cv::barcode::BarcodeDetector** detector);
 
-    Local $bDetectorDllType
-    If VarGetType($detector) == "DLLStruct" Then
-        $bDetectorDllType = "struct*"
+    Local $sDetectorDllType
+    If IsDllStruct($detector) Then
+        $sDetectorDllType = "struct*"
+    ElseIf $detector == Null Then
+        $sDetectorDllType = "ptr"
     Else
-        $bDetectorDllType = "ptr*"
+        $sDetectorDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBarcodeDetectorRelease", $bDetectorDllType, $detector), "cveBarcodeDetectorRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBarcodeDetectorRelease", $sDetectorDllType, $detector), "cveBarcodeDetectorRelease", @error)
 EndFunc   ;==>_cveBarcodeDetectorRelease
 
 Func _cveBarcodeDetectorDetect($detector, $img, $points)
     ; CVAPI(bool) cveBarcodeDetectorDetect(cv::barcode::BarcodeDetector* detector, cv::_InputArray* img, cv::_OutputArray* points);
 
-    Local $bDetectorDllType
-    If VarGetType($detector) == "DLLStruct" Then
-        $bDetectorDllType = "struct*"
+    Local $sDetectorDllType
+    If IsDllStruct($detector) Then
+        $sDetectorDllType = "struct*"
     Else
-        $bDetectorDllType = "ptr"
+        $sDetectorDllType = "ptr"
     EndIf
 
-    Local $bImgDllType
-    If VarGetType($img) == "DLLStruct" Then
-        $bImgDllType = "struct*"
+    Local $sImgDllType
+    If IsDllStruct($img) Then
+        $sImgDllType = "struct*"
     Else
-        $bImgDllType = "ptr"
+        $sImgDllType = "ptr"
     EndIf
 
-    Local $bPointsDllType
-    If VarGetType($points) == "DLLStruct" Then
-        $bPointsDllType = "struct*"
+    Local $sPointsDllType
+    If IsDllStruct($points) Then
+        $sPointsDllType = "struct*"
     Else
-        $bPointsDllType = "ptr"
+        $sPointsDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveBarcodeDetectorDetect", $bDetectorDllType, $detector, $bImgDllType, $img, $bPointsDllType, $points), "cveBarcodeDetectorDetect", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveBarcodeDetectorDetect", $sDetectorDllType, $detector, $sImgDllType, $img, $sPointsDllType, $points), "cveBarcodeDetectorDetect", @error)
 EndFunc   ;==>_cveBarcodeDetectorDetect
 
 Func _cveBarcodeDetectorDetectMat($detector, $matImg, $matPoints)
@@ -135,25 +137,25 @@ EndFunc   ;==>_cveBarcodeDetectorDetectMat
 Func _cveBarcodeDetectorDecode($detector, $img, $points, $decoded_info, $decoded_type)
     ; CVAPI(bool) cveBarcodeDetectorDecode(cv::barcode::BarcodeDetector* detector, cv::_InputArray* img, cv::_InputArray* points, std::vector<cv::String>* decoded_info, std::vector<int>* decoded_type);
 
-    Local $bDetectorDllType
-    If VarGetType($detector) == "DLLStruct" Then
-        $bDetectorDllType = "struct*"
+    Local $sDetectorDllType
+    If IsDllStruct($detector) Then
+        $sDetectorDllType = "struct*"
     Else
-        $bDetectorDllType = "ptr"
+        $sDetectorDllType = "ptr"
     EndIf
 
-    Local $bImgDllType
-    If VarGetType($img) == "DLLStruct" Then
-        $bImgDllType = "struct*"
+    Local $sImgDllType
+    If IsDllStruct($img) Then
+        $sImgDllType = "struct*"
     Else
-        $bImgDllType = "ptr"
+        $sImgDllType = "ptr"
     EndIf
 
-    Local $bPointsDllType
-    If VarGetType($points) == "DLLStruct" Then
-        $bPointsDllType = "struct*"
+    Local $sPointsDllType
+    If IsDllStruct($points) Then
+        $sPointsDllType = "struct*"
     Else
-        $bPointsDllType = "ptr"
+        $sPointsDllType = "ptr"
     EndIf
 
     Local $vecDecoded_info, $iArrDecoded_infoSize
@@ -170,11 +172,11 @@ Func _cveBarcodeDetectorDecode($detector, $img, $points, $decoded_info, $decoded
         $vecDecoded_info = $decoded_info
     EndIf
 
-    Local $bDecoded_infoDllType
-    If VarGetType($decoded_info) == "DLLStruct" Then
-        $bDecoded_infoDllType = "struct*"
+    Local $sDecoded_infoDllType
+    If IsDllStruct($decoded_info) Then
+        $sDecoded_infoDllType = "struct*"
     Else
-        $bDecoded_infoDllType = "ptr"
+        $sDecoded_infoDllType = "ptr"
     EndIf
 
     Local $vecDecoded_type, $iArrDecoded_typeSize
@@ -191,14 +193,14 @@ Func _cveBarcodeDetectorDecode($detector, $img, $points, $decoded_info, $decoded
         $vecDecoded_type = $decoded_type
     EndIf
 
-    Local $bDecoded_typeDllType
-    If VarGetType($decoded_type) == "DLLStruct" Then
-        $bDecoded_typeDllType = "struct*"
+    Local $sDecoded_typeDllType
+    If IsDllStruct($decoded_type) Then
+        $sDecoded_typeDllType = "struct*"
     Else
-        $bDecoded_typeDllType = "ptr"
+        $sDecoded_typeDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveBarcodeDetectorDecode", $bDetectorDllType, $detector, $bImgDllType, $img, $bPointsDllType, $points, $bDecoded_infoDllType, $vecDecoded_info, $bDecoded_typeDllType, $vecDecoded_type), "cveBarcodeDetectorDecode", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveBarcodeDetectorDecode", $sDetectorDllType, $detector, $sImgDllType, $img, $sPointsDllType, $points, $sDecoded_infoDllType, $vecDecoded_info, $sDecoded_typeDllType, $vecDecoded_type), "cveBarcodeDetectorDecode", @error)
 
     If $bDecoded_typeIsArray Then
         _VectorOfIntRelease($vecDecoded_type)
@@ -266,18 +268,18 @@ EndFunc   ;==>_cveBarcodeDetectorDecodeMat
 Func _cveBarcodeDetectorDetectAndDecode($detector, $img, $decoded_info, $decoded_type, $points)
     ; CVAPI(bool) cveBarcodeDetectorDetectAndDecode(cv::barcode::BarcodeDetector* detector, cv::_InputArray* img, std::vector<cv::String>* decoded_info, std::vector<int>* decoded_type, cv::_OutputArray* points);
 
-    Local $bDetectorDllType
-    If VarGetType($detector) == "DLLStruct" Then
-        $bDetectorDllType = "struct*"
+    Local $sDetectorDllType
+    If IsDllStruct($detector) Then
+        $sDetectorDllType = "struct*"
     Else
-        $bDetectorDllType = "ptr"
+        $sDetectorDllType = "ptr"
     EndIf
 
-    Local $bImgDllType
-    If VarGetType($img) == "DLLStruct" Then
-        $bImgDllType = "struct*"
+    Local $sImgDllType
+    If IsDllStruct($img) Then
+        $sImgDllType = "struct*"
     Else
-        $bImgDllType = "ptr"
+        $sImgDllType = "ptr"
     EndIf
 
     Local $vecDecoded_info, $iArrDecoded_infoSize
@@ -294,11 +296,11 @@ Func _cveBarcodeDetectorDetectAndDecode($detector, $img, $decoded_info, $decoded
         $vecDecoded_info = $decoded_info
     EndIf
 
-    Local $bDecoded_infoDllType
-    If VarGetType($decoded_info) == "DLLStruct" Then
-        $bDecoded_infoDllType = "struct*"
+    Local $sDecoded_infoDllType
+    If IsDllStruct($decoded_info) Then
+        $sDecoded_infoDllType = "struct*"
     Else
-        $bDecoded_infoDllType = "ptr"
+        $sDecoded_infoDllType = "ptr"
     EndIf
 
     Local $vecDecoded_type, $iArrDecoded_typeSize
@@ -315,21 +317,21 @@ Func _cveBarcodeDetectorDetectAndDecode($detector, $img, $decoded_info, $decoded
         $vecDecoded_type = $decoded_type
     EndIf
 
-    Local $bDecoded_typeDllType
-    If VarGetType($decoded_type) == "DLLStruct" Then
-        $bDecoded_typeDllType = "struct*"
+    Local $sDecoded_typeDllType
+    If IsDllStruct($decoded_type) Then
+        $sDecoded_typeDllType = "struct*"
     Else
-        $bDecoded_typeDllType = "ptr"
+        $sDecoded_typeDllType = "ptr"
     EndIf
 
-    Local $bPointsDllType
-    If VarGetType($points) == "DLLStruct" Then
-        $bPointsDllType = "struct*"
+    Local $sPointsDllType
+    If IsDllStruct($points) Then
+        $sPointsDllType = "struct*"
     Else
-        $bPointsDllType = "ptr"
+        $sPointsDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveBarcodeDetectorDetectAndDecode", $bDetectorDllType, $detector, $bImgDllType, $img, $bDecoded_infoDllType, $vecDecoded_info, $bDecoded_typeDllType, $vecDecoded_type, $bPointsDllType, $points), "cveBarcodeDetectorDetectAndDecode", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveBarcodeDetectorDetectAndDecode", $sDetectorDllType, $detector, $sImgDllType, $img, $sDecoded_infoDllType, $vecDecoded_info, $sDecoded_typeDllType, $vecDecoded_type, $sPointsDllType, $points), "cveBarcodeDetectorDetectAndDecode", @error)
 
     If $bDecoded_typeIsArray Then
         _VectorOfIntRelease($vecDecoded_type)

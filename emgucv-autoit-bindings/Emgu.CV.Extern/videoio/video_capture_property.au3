@@ -4,36 +4,36 @@
 Func _cveVideoCaptureIsOpened($obj)
     ; CVAPI(bool) cveVideoCaptureIsOpened(cv::VideoCapture* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureIsOpened", $bObjDllType, $obj), "cveVideoCaptureIsOpened", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureIsOpened", $sObjDllType, $obj), "cveVideoCaptureIsOpened", @error)
 EndFunc   ;==>_cveVideoCaptureIsOpened
 
 Func _cveVideoCaptureGetExceptionMode($obj)
     ; CVAPI(bool) cveVideoCaptureGetExceptionMode(cv::VideoCapture* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureGetExceptionMode", $bObjDllType, $obj), "cveVideoCaptureGetExceptionMode", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureGetExceptionMode", $sObjDllType, $obj), "cveVideoCaptureGetExceptionMode", @error)
 EndFunc   ;==>_cveVideoCaptureGetExceptionMode
 
 Func _cveVideoCaptureSetExceptionMode($obj, $value)
     ; CVAPI(void) cveVideoCaptureSetExceptionMode(cv::VideoCapture* obj, bool value);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideoCaptureSetExceptionMode", $bObjDllType, $obj, "boolean", $value), "cveVideoCaptureSetExceptionMode", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideoCaptureSetExceptionMode", $sObjDllType, $obj, "boolean", $value), "cveVideoCaptureSetExceptionMode", @error)
 EndFunc   ;==>_cveVideoCaptureSetExceptionMode

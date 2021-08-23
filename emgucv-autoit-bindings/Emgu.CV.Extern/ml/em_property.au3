@@ -4,89 +4,89 @@
 Func _cveEMGetClustersNumber($obj)
     ; CVAPI(int) cveEMGetClustersNumber(cv::ml::EM* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveEMGetClustersNumber", $bObjDllType, $obj), "cveEMGetClustersNumber", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveEMGetClustersNumber", $sObjDllType, $obj), "cveEMGetClustersNumber", @error)
 EndFunc   ;==>_cveEMGetClustersNumber
 
 Func _cveEMSetClustersNumber($obj, $value)
     ; CVAPI(void) cveEMSetClustersNumber(cv::ml::EM* obj, int value);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMSetClustersNumber", $bObjDllType, $obj, "int", $value), "cveEMSetClustersNumber", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMSetClustersNumber", $sObjDllType, $obj, "int", $value), "cveEMSetClustersNumber", @error)
 EndFunc   ;==>_cveEMSetClustersNumber
 
 Func _cveEMGetCovarianceMatrixType($obj)
     ; CVAPI(int) cveEMGetCovarianceMatrixType(cv::ml::EM* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveEMGetCovarianceMatrixType", $bObjDllType, $obj), "cveEMGetCovarianceMatrixType", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveEMGetCovarianceMatrixType", $sObjDllType, $obj), "cveEMGetCovarianceMatrixType", @error)
 EndFunc   ;==>_cveEMGetCovarianceMatrixType
 
 Func _cveEMSetCovarianceMatrixType($obj, $value)
     ; CVAPI(void) cveEMSetCovarianceMatrixType(cv::ml::EM* obj, int value);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMSetCovarianceMatrixType", $bObjDllType, $obj, "int", $value), "cveEMSetCovarianceMatrixType", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMSetCovarianceMatrixType", $sObjDllType, $obj, "int", $value), "cveEMSetCovarianceMatrixType", @error)
 EndFunc   ;==>_cveEMSetCovarianceMatrixType
 
 Func _cveEMGetTermCriteria($obj, $value)
     ; CVAPI(void) cveEMGetTermCriteria(cv::ml::EM* obj, CvTermCriteria* value);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
-    Local $bValueDllType
-    If VarGetType($value) == "DLLStruct" Then
-        $bValueDllType = "struct*"
+    Local $sValueDllType
+    If IsDllStruct($value) Then
+        $sValueDllType = "struct*"
     Else
-        $bValueDllType = "ptr"
+        $sValueDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMGetTermCriteria", $bObjDllType, $obj, $bValueDllType, $value), "cveEMGetTermCriteria", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMGetTermCriteria", $sObjDllType, $obj, $sValueDllType, $value), "cveEMGetTermCriteria", @error)
 EndFunc   ;==>_cveEMGetTermCriteria
 
 Func _cveEMSetTermCriteria($obj, $value)
     ; CVAPI(void) cveEMSetTermCriteria(cv::ml::EM* obj, CvTermCriteria* value);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
-    Local $bValueDllType
-    If VarGetType($value) == "DLLStruct" Then
-        $bValueDllType = "struct*"
+    Local $sValueDllType
+    If IsDllStruct($value) Then
+        $sValueDllType = "struct*"
     Else
-        $bValueDllType = "ptr"
+        $sValueDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMSetTermCriteria", $bObjDllType, $obj, $bValueDllType, $value), "cveEMSetTermCriteria", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMSetTermCriteria", $sObjDllType, $obj, $sValueDllType, $value), "cveEMSetTermCriteria", @error)
 EndFunc   ;==>_cveEMSetTermCriteria

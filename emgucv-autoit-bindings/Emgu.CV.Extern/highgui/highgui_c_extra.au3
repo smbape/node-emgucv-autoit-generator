@@ -9,21 +9,21 @@ Func _cveImshow($winname, $mat)
         $winname = _cveStringCreateFromStr($winname)
     EndIf
 
-    Local $bWinnameDllType
-    If VarGetType($winname) == "DLLStruct" Then
-        $bWinnameDllType = "struct*"
+    Local $sWinnameDllType
+    If IsDllStruct($winname) Then
+        $sWinnameDllType = "struct*"
     Else
-        $bWinnameDllType = "ptr"
+        $sWinnameDllType = "ptr"
     EndIf
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveImshow", $bWinnameDllType, $winname, $bMatDllType, $mat), "cveImshow", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveImshow", $sWinnameDllType, $winname, $sMatDllType, $mat), "cveImshow", @error)
 
     If $bWinnameIsString Then
         _cveStringRelease($winname)
@@ -66,14 +66,14 @@ Func _cveNamedWindow($winname, $flags = $CV_WINDOW_AUTOSIZE)
         $winname = _cveStringCreateFromStr($winname)
     EndIf
 
-    Local $bWinnameDllType
-    If VarGetType($winname) == "DLLStruct" Then
-        $bWinnameDllType = "struct*"
+    Local $sWinnameDllType
+    If IsDllStruct($winname) Then
+        $sWinnameDllType = "struct*"
     Else
-        $bWinnameDllType = "ptr"
+        $sWinnameDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveNamedWindow", $bWinnameDllType, $winname, "int", $flags), "cveNamedWindow", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveNamedWindow", $sWinnameDllType, $winname, "int", $flags), "cveNamedWindow", @error)
 
     If $bWinnameIsString Then
         _cveStringRelease($winname)
@@ -88,14 +88,14 @@ Func _cveSetWindowProperty($winname, $propId, $propValue)
         $winname = _cveStringCreateFromStr($winname)
     EndIf
 
-    Local $bWinnameDllType
-    If VarGetType($winname) == "DLLStruct" Then
-        $bWinnameDllType = "struct*"
+    Local $sWinnameDllType
+    If IsDllStruct($winname) Then
+        $sWinnameDllType = "struct*"
     Else
-        $bWinnameDllType = "ptr"
+        $sWinnameDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSetWindowProperty", $bWinnameDllType, $winname, "int", $propId, "double", $propValue), "cveSetWindowProperty", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSetWindowProperty", $sWinnameDllType, $winname, "int", $propId, "double", $propValue), "cveSetWindowProperty", @error)
 
     If $bWinnameIsString Then
         _cveStringRelease($winname)
@@ -110,11 +110,11 @@ Func _cveSetWindowTitle($winname, $title)
         $winname = _cveStringCreateFromStr($winname)
     EndIf
 
-    Local $bWinnameDllType
-    If VarGetType($winname) == "DLLStruct" Then
-        $bWinnameDllType = "struct*"
+    Local $sWinnameDllType
+    If IsDllStruct($winname) Then
+        $sWinnameDllType = "struct*"
     Else
-        $bWinnameDllType = "ptr"
+        $sWinnameDllType = "ptr"
     EndIf
 
     Local $bTitleIsString = VarGetType($title) == "String"
@@ -122,14 +122,14 @@ Func _cveSetWindowTitle($winname, $title)
         $title = _cveStringCreateFromStr($title)
     EndIf
 
-    Local $bTitleDllType
-    If VarGetType($title) == "DLLStruct" Then
-        $bTitleDllType = "struct*"
+    Local $sTitleDllType
+    If IsDllStruct($title) Then
+        $sTitleDllType = "struct*"
     Else
-        $bTitleDllType = "ptr"
+        $sTitleDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSetWindowTitle", $bWinnameDllType, $winname, $bTitleDllType, $title), "cveSetWindowTitle", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSetWindowTitle", $sWinnameDllType, $winname, $sTitleDllType, $title), "cveSetWindowTitle", @error)
 
     If $bTitleIsString Then
         _cveStringRelease($title)
@@ -148,14 +148,14 @@ Func _cveGetWindowProperty($winname, $propId)
         $winname = _cveStringCreateFromStr($winname)
     EndIf
 
-    Local $bWinnameDllType
-    If VarGetType($winname) == "DLLStruct" Then
-        $bWinnameDllType = "struct*"
+    Local $sWinnameDllType
+    If IsDllStruct($winname) Then
+        $sWinnameDllType = "struct*"
     Else
-        $bWinnameDllType = "ptr"
+        $sWinnameDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveGetWindowProperty", $bWinnameDllType, $winname, "int", $propId), "cveGetWindowProperty", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveGetWindowProperty", $sWinnameDllType, $winname, "int", $propId), "cveGetWindowProperty", @error)
 
     If $bWinnameIsString Then
         _cveStringRelease($winname)
@@ -172,14 +172,14 @@ Func _cveDestroyWindow($winname)
         $winname = _cveStringCreateFromStr($winname)
     EndIf
 
-    Local $bWinnameDllType
-    If VarGetType($winname) == "DLLStruct" Then
-        $bWinnameDllType = "struct*"
+    Local $sWinnameDllType
+    If IsDllStruct($winname) Then
+        $sWinnameDllType = "struct*"
     Else
-        $bWinnameDllType = "ptr"
+        $sWinnameDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDestroyWindow", $bWinnameDllType, $winname), "cveDestroyWindow", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDestroyWindow", $sWinnameDllType, $winname), "cveDestroyWindow", @error)
 
     If $bWinnameIsString Then
         _cveStringRelease($winname)
@@ -209,28 +209,28 @@ Func _cveSelectROI($windowName, $img, $showCrosshair, $fromCenter, $roi)
         $windowName = _cveStringCreateFromStr($windowName)
     EndIf
 
-    Local $bWindowNameDllType
-    If VarGetType($windowName) == "DLLStruct" Then
-        $bWindowNameDllType = "struct*"
+    Local $sWindowNameDllType
+    If IsDllStruct($windowName) Then
+        $sWindowNameDllType = "struct*"
     Else
-        $bWindowNameDllType = "ptr"
+        $sWindowNameDllType = "ptr"
     EndIf
 
-    Local $bImgDllType
-    If VarGetType($img) == "DLLStruct" Then
-        $bImgDllType = "struct*"
+    Local $sImgDllType
+    If IsDllStruct($img) Then
+        $sImgDllType = "struct*"
     Else
-        $bImgDllType = "ptr"
+        $sImgDllType = "ptr"
     EndIf
 
-    Local $bRoiDllType
-    If VarGetType($roi) == "DLLStruct" Then
-        $bRoiDllType = "struct*"
+    Local $sRoiDllType
+    If IsDllStruct($roi) Then
+        $sRoiDllType = "struct*"
     Else
-        $bRoiDllType = "ptr"
+        $sRoiDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSelectROI", $bWindowNameDllType, $windowName, $bImgDllType, $img, "boolean", $showCrosshair, "boolean", $fromCenter, $bRoiDllType, $roi), "cveSelectROI", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSelectROI", $sWindowNameDllType, $windowName, $sImgDllType, $img, "boolean", $showCrosshair, "boolean", $fromCenter, $sRoiDllType, $roi), "cveSelectROI", @error)
 
     If $bWindowNameIsString Then
         _cveStringRelease($windowName)
@@ -273,18 +273,18 @@ Func _cveSelectROIs($windowName, $img, $boundingBoxs, $showCrosshair = true, $fr
         $windowName = _cveStringCreateFromStr($windowName)
     EndIf
 
-    Local $bWindowNameDllType
-    If VarGetType($windowName) == "DLLStruct" Then
-        $bWindowNameDllType = "struct*"
+    Local $sWindowNameDllType
+    If IsDllStruct($windowName) Then
+        $sWindowNameDllType = "struct*"
     Else
-        $bWindowNameDllType = "ptr"
+        $sWindowNameDllType = "ptr"
     EndIf
 
-    Local $bImgDllType
-    If VarGetType($img) == "DLLStruct" Then
-        $bImgDllType = "struct*"
+    Local $sImgDllType
+    If IsDllStruct($img) Then
+        $sImgDllType = "struct*"
     Else
-        $bImgDllType = "ptr"
+        $sImgDllType = "ptr"
     EndIf
 
     Local $vecBoundingBoxs, $iArrBoundingBoxsSize
@@ -301,14 +301,14 @@ Func _cveSelectROIs($windowName, $img, $boundingBoxs, $showCrosshair = true, $fr
         $vecBoundingBoxs = $boundingBoxs
     EndIf
 
-    Local $bBoundingBoxsDllType
-    If VarGetType($boundingBoxs) == "DLLStruct" Then
-        $bBoundingBoxsDllType = "struct*"
+    Local $sBoundingBoxsDllType
+    If IsDllStruct($boundingBoxs) Then
+        $sBoundingBoxsDllType = "struct*"
     Else
-        $bBoundingBoxsDllType = "ptr"
+        $sBoundingBoxsDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSelectROIs", $bWindowNameDllType, $windowName, $bImgDllType, $img, $bBoundingBoxsDllType, $vecBoundingBoxs, "boolean", $showCrosshair, "boolean", $fromCenter), "cveSelectROIs", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSelectROIs", $sWindowNameDllType, $windowName, $sImgDllType, $img, $sBoundingBoxsDllType, $vecBoundingBoxs, "boolean", $showCrosshair, "boolean", $fromCenter), "cveSelectROIs", @error)
 
     If $bBoundingBoxsIsArray Then
         _VectorOfRectRelease($vecBoundingBoxs)

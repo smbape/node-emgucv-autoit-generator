@@ -9,45 +9,47 @@ EndFunc   ;==>_DataLoggerCreate
 Func _DataLoggerRelease($logger)
     ; CVAPI(void) DataLoggerRelease(emgu::DataLogger** logger);
 
-    Local $bLoggerDllType
-    If VarGetType($logger) == "DLLStruct" Then
-        $bLoggerDllType = "struct*"
+    Local $sLoggerDllType
+    If IsDllStruct($logger) Then
+        $sLoggerDllType = "struct*"
+    ElseIf $logger == Null Then
+        $sLoggerDllType = "ptr"
     Else
-        $bLoggerDllType = "ptr*"
+        $sLoggerDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "DataLoggerRelease", $bLoggerDllType, $logger), "DataLoggerRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "DataLoggerRelease", $sLoggerDllType, $logger), "DataLoggerRelease", @error)
 EndFunc   ;==>_DataLoggerRelease
 
 Func _DataLoggerRegisterCallback($logger, $messageCallback)
     ; CVAPI(void) DataLoggerRegisterCallback(emgu::DataLogger* logger, emgu::DataCallback messageCallback);
 
-    Local $bLoggerDllType
-    If VarGetType($logger) == "DLLStruct" Then
-        $bLoggerDllType = "struct*"
+    Local $sLoggerDllType
+    If IsDllStruct($logger) Then
+        $sLoggerDllType = "struct*"
     Else
-        $bLoggerDllType = "ptr"
+        $sLoggerDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "DataLoggerRegisterCallback", $bLoggerDllType, $logger, "ptr", $messageCallback), "DataLoggerRegisterCallback", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "DataLoggerRegisterCallback", $sLoggerDllType, $logger, "ptr", $messageCallback), "DataLoggerRegisterCallback", @error)
 EndFunc   ;==>_DataLoggerRegisterCallback
 
 Func _DataLoggerLog($logger, $data, $logLevel)
     ; CVAPI(void) DataLoggerLog(emgu::DataLogger* logger, void* data, int logLevel);
 
-    Local $bLoggerDllType
-    If VarGetType($logger) == "DLLStruct" Then
-        $bLoggerDllType = "struct*"
+    Local $sLoggerDllType
+    If IsDllStruct($logger) Then
+        $sLoggerDllType = "struct*"
     Else
-        $bLoggerDllType = "ptr"
+        $sLoggerDllType = "ptr"
     EndIf
 
-    Local $bDataDllType
-    If VarGetType($data) == "DLLStruct" Then
-        $bDataDllType = "struct*"
+    Local $sDataDllType
+    If IsDllStruct($data) Then
+        $sDataDllType = "struct*"
     Else
-        $bDataDllType = "ptr"
+        $sDataDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "DataLoggerLog", $bLoggerDllType, $logger, $bDataDllType, $data, "int", $logLevel), "DataLoggerLog", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "DataLoggerLog", $sLoggerDllType, $logger, $sDataDllType, $data, "int", $logLevel), "DataLoggerLog", @error)
 EndFunc   ;==>_DataLoggerLog

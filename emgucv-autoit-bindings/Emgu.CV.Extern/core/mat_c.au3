@@ -9,157 +9,159 @@ EndFunc   ;==>_cveMatCreate
 Func _cveMatCreateData($mat, $row, $cols, $type)
     ; CVAPI(void) cveMatCreateData(cv::Mat* mat, int row, int cols, int type);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatCreateData", $bMatDllType, $mat, "int", $row, "int", $cols, "int", $type), "cveMatCreateData", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatCreateData", $sMatDllType, $mat, "int", $row, "int", $cols, "int", $type), "cveMatCreateData", @error)
 EndFunc   ;==>_cveMatCreateData
 
 Func _cveMatCreateWithData($rows, $cols, $type, $data, $step)
     ; CVAPI(cv::Mat*) cveMatCreateWithData(int rows, int cols, int type, void* data, size_t step);
 
-    Local $bDataDllType
-    If VarGetType($data) == "DLLStruct" Then
-        $bDataDllType = "struct*"
+    Local $sDataDllType
+    If IsDllStruct($data) Then
+        $sDataDllType = "struct*"
     Else
-        $bDataDllType = "ptr"
+        $sDataDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatCreateWithData", "int", $rows, "int", $cols, "int", $type, $bDataDllType, $data, "ulong_ptr", $step), "cveMatCreateWithData", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatCreateWithData", "int", $rows, "int", $cols, "int", $type, $sDataDllType, $data, "ulong_ptr", $step), "cveMatCreateWithData", @error)
 EndFunc   ;==>_cveMatCreateWithData
 
 Func _cveMatCreateMultiDimWithData($ndims, $sizes, $type, $data, $steps)
     ; CVAPI(cv::Mat*) cveMatCreateMultiDimWithData(int ndims, const int* sizes, int type, void* data, size_t* steps);
 
-    Local $bSizesDllType
-    If VarGetType($sizes) == "DLLStruct" Then
-        $bSizesDllType = "struct*"
+    Local $sSizesDllType
+    If IsDllStruct($sizes) Then
+        $sSizesDllType = "struct*"
     Else
-        $bSizesDllType = "int*"
+        $sSizesDllType = "int*"
     EndIf
 
-    Local $bDataDllType
-    If VarGetType($data) == "DLLStruct" Then
-        $bDataDllType = "struct*"
+    Local $sDataDllType
+    If IsDllStruct($data) Then
+        $sDataDllType = "struct*"
     Else
-        $bDataDllType = "ptr"
+        $sDataDllType = "ptr"
     EndIf
 
-    Local $bStepsDllType
-    If VarGetType($steps) == "DLLStruct" Then
-        $bStepsDllType = "struct*"
+    Local $sStepsDllType
+    If IsDllStruct($steps) Then
+        $sStepsDllType = "struct*"
     Else
-        $bStepsDllType = "ptr"
+        $sStepsDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatCreateMultiDimWithData", "int", $ndims, $bSizesDllType, $sizes, "int", $type, $bDataDllType, $data, $bStepsDllType, $steps), "cveMatCreateMultiDimWithData", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatCreateMultiDimWithData", "int", $ndims, $sSizesDllType, $sizes, "int", $type, $sDataDllType, $data, $sStepsDllType, $steps), "cveMatCreateMultiDimWithData", @error)
 EndFunc   ;==>_cveMatCreateMultiDimWithData
 
 Func _cveMatCreateFromRect($mat, $roi)
     ; CVAPI(cv::Mat*) cveMatCreateFromRect(cv::Mat* mat, CvRect* roi);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
 
-    Local $bRoiDllType
-    If VarGetType($roi) == "DLLStruct" Then
-        $bRoiDllType = "struct*"
+    Local $sRoiDllType
+    If IsDllStruct($roi) Then
+        $sRoiDllType = "struct*"
     Else
-        $bRoiDllType = "ptr"
+        $sRoiDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatCreateFromRect", $bMatDllType, $mat, $bRoiDllType, $roi), "cveMatCreateFromRect", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatCreateFromRect", $sMatDllType, $mat, $sRoiDllType, $roi), "cveMatCreateFromRect", @error)
 EndFunc   ;==>_cveMatCreateFromRect
 
 Func _cveMatCreateFromRange($mat, $rowRange, $colRange)
     ; CVAPI(cv::Mat*) cveMatCreateFromRange(cv::Mat* mat, cv::Range* rowRange, cv::Range* colRange);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
 
-    Local $bRowRangeDllType
-    If VarGetType($rowRange) == "DLLStruct" Then
-        $bRowRangeDllType = "struct*"
+    Local $sRowRangeDllType
+    If IsDllStruct($rowRange) Then
+        $sRowRangeDllType = "struct*"
     Else
-        $bRowRangeDllType = "ptr"
+        $sRowRangeDllType = "ptr"
     EndIf
 
-    Local $bColRangeDllType
-    If VarGetType($colRange) == "DLLStruct" Then
-        $bColRangeDllType = "struct*"
+    Local $sColRangeDllType
+    If IsDllStruct($colRange) Then
+        $sColRangeDllType = "struct*"
     Else
-        $bColRangeDllType = "ptr"
+        $sColRangeDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatCreateFromRange", $bMatDllType, $mat, $bRowRangeDllType, $rowRange, $bColRangeDllType, $colRange), "cveMatCreateFromRange", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatCreateFromRange", $sMatDllType, $mat, $sRowRangeDllType, $rowRange, $sColRangeDllType, $colRange), "cveMatCreateFromRange", @error)
 EndFunc   ;==>_cveMatCreateFromRange
 
 Func _cveMatRelease($mat)
     ; CVAPI(void) cveMatRelease(cv::Mat** mat);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
+    ElseIf $mat == Null Then
+        $sMatDllType = "ptr"
     Else
-        $bMatDllType = "ptr*"
+        $sMatDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatRelease", $bMatDllType, $mat), "cveMatRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatRelease", $sMatDllType, $mat), "cveMatRelease", @error)
 EndFunc   ;==>_cveMatRelease
 
 Func _cveMatGetSize($mat, $size)
     ; CVAPI(void) cveMatGetSize(cv::Mat* mat, CvSize* size);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
 
-    Local $bSizeDllType
-    If VarGetType($size) == "DLLStruct" Then
-        $bSizeDllType = "struct*"
+    Local $sSizeDllType
+    If IsDllStruct($size) Then
+        $sSizeDllType = "struct*"
     Else
-        $bSizeDllType = "ptr"
+        $sSizeDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatGetSize", $bMatDllType, $mat, $bSizeDllType, $size), "cveMatGetSize", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatGetSize", $sMatDllType, $mat, $sSizeDllType, $size), "cveMatGetSize", @error)
 EndFunc   ;==>_cveMatGetSize
 
 Func _cveMatCopyTo($mat, $m, $mask)
     ; CVAPI(void) cveMatCopyTo(cv::Mat* mat, cv::_OutputArray* m, cv::_InputArray* mask);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
 
-    Local $bMDllType
-    If VarGetType($m) == "DLLStruct" Then
-        $bMDllType = "struct*"
+    Local $sMDllType
+    If IsDllStruct($m) Then
+        $sMDllType = "struct*"
     Else
-        $bMDllType = "ptr"
+        $sMDllType = "ptr"
     EndIf
 
-    Local $bMaskDllType
-    If VarGetType($mask) == "DLLStruct" Then
-        $bMaskDllType = "struct*"
+    Local $sMaskDllType
+    If IsDllStruct($mask) Then
+        $sMaskDllType = "struct*"
     Else
-        $bMaskDllType = "ptr"
+        $sMaskDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatCopyTo", $bMatDllType, $mat, $bMDllType, $m, $bMaskDllType, $mask), "cveMatCopyTo", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatCopyTo", $sMatDllType, $mat, $sMDllType, $m, $sMaskDllType, $mask), "cveMatCopyTo", @error)
 EndFunc   ;==>_cveMatCopyTo
 
 Func _cveMatCopyToMat($mat, $matM, $matMask)
@@ -215,107 +217,107 @@ EndFunc   ;==>_cveMatCopyToMat
 Func _cveArrToMat($cvArray, $copyData, $allowND, $coiMode)
     ; CVAPI(cv::Mat*) cveArrToMat(CvArr* cvArray, bool copyData, bool allowND, int coiMode);
 
-    Local $bCvArrayDllType
-    If VarGetType($cvArray) == "DLLStruct" Then
-        $bCvArrayDllType = "struct*"
+    Local $sCvArrayDllType
+    If IsDllStruct($cvArray) Then
+        $sCvArrayDllType = "struct*"
     Else
-        $bCvArrayDllType = "ptr"
+        $sCvArrayDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveArrToMat", $bCvArrayDllType, $cvArray, "boolean", $copyData, "boolean", $allowND, "int", $coiMode), "cveArrToMat", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveArrToMat", $sCvArrayDllType, $cvArray, "boolean", $copyData, "boolean", $allowND, "int", $coiMode), "cveArrToMat", @error)
 EndFunc   ;==>_cveArrToMat
 
 Func _cveMatToIplImage($mat)
     ; CVAPI(IplImage*) cveMatToIplImage(cv::Mat* mat);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatToIplImage", $bMatDllType, $mat), "cveMatToIplImage", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatToIplImage", $sMatDllType, $mat), "cveMatToIplImage", @error)
 EndFunc   ;==>_cveMatToIplImage
 
 Func _cveMatGetElementSize($mat)
     ; CVAPI(int) cveMatGetElementSize(cv::Mat* mat);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveMatGetElementSize", $bMatDllType, $mat), "cveMatGetElementSize", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveMatGetElementSize", $sMatDllType, $mat), "cveMatGetElementSize", @error)
 EndFunc   ;==>_cveMatGetElementSize
 
 Func _cveMatGetDataPointer($mat)
     ; CVAPI(uchar*) cveMatGetDataPointer(cv::Mat* mat);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatGetDataPointer", $bMatDllType, $mat), "cveMatGetDataPointer", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatGetDataPointer", $sMatDllType, $mat), "cveMatGetDataPointer", @error)
 EndFunc   ;==>_cveMatGetDataPointer
 
 Func _cveMatGetDataPointer2($mat, $indices)
     ; CVAPI(uchar*) cveMatGetDataPointer2(cv::Mat* mat, int* indices);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
 
-    Local $bIndicesDllType
-    If VarGetType($indices) == "DLLStruct" Then
-        $bIndicesDllType = "struct*"
+    Local $sIndicesDllType
+    If IsDllStruct($indices) Then
+        $sIndicesDllType = "struct*"
     Else
-        $bIndicesDllType = "int*"
+        $sIndicesDllType = "int*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatGetDataPointer2", $bMatDllType, $mat, $bIndicesDllType, $indices), "cveMatGetDataPointer2", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatGetDataPointer2", $sMatDllType, $mat, $sIndicesDllType, $indices), "cveMatGetDataPointer2", @error)
 EndFunc   ;==>_cveMatGetDataPointer2
 
 Func _cveMatGetStep($mat)
     ; CVAPI(size_t) cveMatGetStep(cv::Mat* mat);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ulong_ptr:cdecl", "cveMatGetStep", $bMatDllType, $mat), "cveMatGetStep", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ulong_ptr:cdecl", "cveMatGetStep", $sMatDllType, $mat), "cveMatGetStep", @error)
 EndFunc   ;==>_cveMatGetStep
 
 Func _cveMatSetTo($mat, $value, $mask)
     ; CVAPI(void) cveMatSetTo(cv::Mat* mat, cv::_InputArray* value, cv::_InputArray* mask);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
 
-    Local $bValueDllType
-    If VarGetType($value) == "DLLStruct" Then
-        $bValueDllType = "struct*"
+    Local $sValueDllType
+    If IsDllStruct($value) Then
+        $sValueDllType = "struct*"
     Else
-        $bValueDllType = "ptr"
+        $sValueDllType = "ptr"
     EndIf
 
-    Local $bMaskDllType
-    If VarGetType($mask) == "DLLStruct" Then
-        $bMaskDllType = "struct*"
+    Local $sMaskDllType
+    If IsDllStruct($mask) Then
+        $sMaskDllType = "struct*"
     Else
-        $bMaskDllType = "ptr"
+        $sMaskDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatSetTo", $bMatDllType, $mat, $bValueDllType, $value, $bMaskDllType, $mask), "cveMatSetTo", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatSetTo", $sMatDllType, $mat, $sValueDllType, $value, $sMaskDllType, $mask), "cveMatSetTo", @error)
 EndFunc   ;==>_cveMatSetTo
 
 Func _cveMatSetToMat($mat, $matValue, $matMask)
@@ -371,33 +373,33 @@ EndFunc   ;==>_cveMatSetToMat
 Func _cveMatGetUMat($mat, $access, $usageFlags)
     ; CVAPI(cv::UMat*) cveMatGetUMat(cv::Mat* mat, int access, cv::UMatUsageFlags usageFlags);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatGetUMat", $bMatDllType, $mat, "int", $access, "int", $usageFlags), "cveMatGetUMat", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatGetUMat", $sMatDllType, $mat, "int", $access, "int", $usageFlags), "cveMatGetUMat", @error)
 EndFunc   ;==>_cveMatGetUMat
 
 Func _cveMatConvertTo($mat, $out, $rtype, $alpha, $beta)
     ; CVAPI(void) cveMatConvertTo(cv::Mat* mat, cv::_OutputArray* out, int rtype, double alpha, double beta);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
 
-    Local $bOutDllType
-    If VarGetType($out) == "DLLStruct" Then
-        $bOutDllType = "struct*"
+    Local $sOutDllType
+    If IsDllStruct($out) Then
+        $sOutDllType = "struct*"
     Else
-        $bOutDllType = "ptr"
+        $sOutDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatConvertTo", $bMatDllType, $mat, $bOutDllType, $out, "int", $rtype, "double", $alpha, "double", $beta), "cveMatConvertTo", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatConvertTo", $sMatDllType, $mat, $sOutDllType, $out, "int", $rtype, "double", $alpha, "double", $beta), "cveMatConvertTo", @error)
 EndFunc   ;==>_cveMatConvertTo
 
 Func _cveMatConvertToMat($mat, $matOut, $rtype, $alpha, $beta)
@@ -431,32 +433,32 @@ EndFunc   ;==>_cveMatConvertToMat
 Func _cveMatReshape($mat, $cn, $rows)
     ; CVAPI(cv::Mat*) cveMatReshape(cv::Mat* mat, int cn, int rows);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatReshape", $bMatDllType, $mat, "int", $cn, "int", $rows), "cveMatReshape", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMatReshape", $sMatDllType, $mat, "int", $cn, "int", $rows), "cveMatReshape", @error)
 EndFunc   ;==>_cveMatReshape
 
 Func _cveMatDot($mat, $m)
     ; CVAPI(double) cveMatDot(cv::Mat* mat, cv::_InputArray* m);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
 
-    Local $bMDllType
-    If VarGetType($m) == "DLLStruct" Then
-        $bMDllType = "struct*"
+    Local $sMDllType
+    If IsDllStruct($m) Then
+        $sMDllType = "struct*"
     Else
-        $bMDllType = "ptr"
+        $sMDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveMatDot", $bMatDllType, $mat, $bMDllType, $m), "cveMatDot", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveMatDot", $sMatDllType, $mat, $sMDllType, $m), "cveMatDot", @error)
 EndFunc   ;==>_cveMatDot
 
 Func _cveMatDotMat($mat, $matM)
@@ -492,28 +494,28 @@ EndFunc   ;==>_cveMatDotMat
 Func _cveMatCross($mat, $m, $result)
     ; CVAPI(void) cveMatCross(cv::Mat* mat, cv::_InputArray* m, cv::Mat* result);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
 
-    Local $bMDllType
-    If VarGetType($m) == "DLLStruct" Then
-        $bMDllType = "struct*"
+    Local $sMDllType
+    If IsDllStruct($m) Then
+        $sMDllType = "struct*"
     Else
-        $bMDllType = "ptr"
+        $sMDllType = "ptr"
     EndIf
 
-    Local $bResultDllType
-    If VarGetType($result) == "DLLStruct" Then
-        $bResultDllType = "struct*"
+    Local $sResultDllType
+    If IsDllStruct($result) Then
+        $sResultDllType = "struct*"
     Else
-        $bResultDllType = "ptr"
+        $sResultDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatCross", $bMatDllType, $mat, $bMDllType, $m, $bResultDllType, $result), "cveMatCross", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatCross", $sMatDllType, $mat, $sMDllType, $m, $sResultDllType, $result), "cveMatCross", @error)
 EndFunc   ;==>_cveMatCross
 
 Func _cveMatCrossMat($mat, $matM, $result)
@@ -547,158 +549,158 @@ EndFunc   ;==>_cveMatCrossMat
 Func _cveMatCopyDataTo($mat, $dest)
     ; CVAPI(void) cveMatCopyDataTo(cv::Mat* mat, unsigned char* dest);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
 
-    Local $bDestDllType
-    If VarGetType($dest) == "DLLStruct" Then
-        $bDestDllType = "struct*"
+    Local $sDestDllType
+    If IsDllStruct($dest) Then
+        $sDestDllType = "struct*"
     Else
-        $bDestDllType = "ptr"
+        $sDestDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatCopyDataTo", $bMatDllType, $mat, $bDestDllType, $dest), "cveMatCopyDataTo", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatCopyDataTo", $sMatDllType, $mat, $sDestDllType, $dest), "cveMatCopyDataTo", @error)
 EndFunc   ;==>_cveMatCopyDataTo
 
 Func _cveMatCopyDataFrom($mat, $source)
     ; CVAPI(void) cveMatCopyDataFrom(cv::Mat* mat, unsigned char* source);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
 
-    Local $bSourceDllType
-    If VarGetType($source) == "DLLStruct" Then
-        $bSourceDllType = "struct*"
+    Local $sSourceDllType
+    If IsDllStruct($source) Then
+        $sSourceDllType = "struct*"
     Else
-        $bSourceDllType = "ptr"
+        $sSourceDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatCopyDataFrom", $bMatDllType, $mat, $bSourceDllType, $source), "cveMatCopyDataFrom", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatCopyDataFrom", $sMatDllType, $mat, $sSourceDllType, $source), "cveMatCopyDataFrom", @error)
 EndFunc   ;==>_cveMatCopyDataFrom
 
 Func _cveMatGetSizeOfDimension($mat, $sizes)
     ; CVAPI(void) cveMatGetSizeOfDimension(cv::Mat* mat, int* sizes);
 
-    Local $bMatDllType
-    If VarGetType($mat) == "DLLStruct" Then
-        $bMatDllType = "struct*"
+    Local $sMatDllType
+    If IsDllStruct($mat) Then
+        $sMatDllType = "struct*"
     Else
-        $bMatDllType = "ptr"
+        $sMatDllType = "ptr"
     EndIf
 
-    Local $bSizesDllType
-    If VarGetType($sizes) == "DLLStruct" Then
-        $bSizesDllType = "struct*"
+    Local $sSizesDllType
+    If IsDllStruct($sizes) Then
+        $sSizesDllType = "struct*"
     Else
-        $bSizesDllType = "int*"
+        $sSizesDllType = "int*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatGetSizeOfDimension", $bMatDllType, $mat, $bSizesDllType, $sizes), "cveMatGetSizeOfDimension", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatGetSizeOfDimension", $sMatDllType, $mat, $sSizesDllType, $sizes), "cveMatGetSizeOfDimension", @error)
 EndFunc   ;==>_cveMatGetSizeOfDimension
 
 Func _cveSwapMat($mat1, $mat2)
     ; CVAPI(void) cveSwapMat(cv::Mat* mat1, cv::Mat* mat2);
 
-    Local $bMat1DllType
-    If VarGetType($mat1) == "DLLStruct" Then
-        $bMat1DllType = "struct*"
+    Local $sMat1DllType
+    If IsDllStruct($mat1) Then
+        $sMat1DllType = "struct*"
     Else
-        $bMat1DllType = "ptr"
+        $sMat1DllType = "ptr"
     EndIf
 
-    Local $bMat2DllType
-    If VarGetType($mat2) == "DLLStruct" Then
-        $bMat2DllType = "struct*"
+    Local $sMat2DllType
+    If IsDllStruct($mat2) Then
+        $sMat2DllType = "struct*"
     Else
-        $bMat2DllType = "ptr"
+        $sMat2DllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSwapMat", $bMat1DllType, $mat1, $bMat2DllType, $mat2), "cveSwapMat", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSwapMat", $sMat1DllType, $mat1, $sMat2DllType, $mat2), "cveSwapMat", @error)
 EndFunc   ;==>_cveSwapMat
 
 Func _cveMatEye($rows, $cols, $type, $m)
     ; CVAPI(void) cveMatEye(int rows, int cols, int type, cv::Mat* m);
 
-    Local $bMDllType
-    If VarGetType($m) == "DLLStruct" Then
-        $bMDllType = "struct*"
+    Local $sMDllType
+    If IsDllStruct($m) Then
+        $sMDllType = "struct*"
     Else
-        $bMDllType = "ptr"
+        $sMDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatEye", "int", $rows, "int", $cols, "int", $type, $bMDllType, $m), "cveMatEye", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatEye", "int", $rows, "int", $cols, "int", $type, $sMDllType, $m), "cveMatEye", @error)
 EndFunc   ;==>_cveMatEye
 
 Func _cveMatDiag($src, $d, $dst)
     ; CVAPI(void) cveMatDiag(cv::Mat* src, int d, cv::Mat* dst);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatDiag", $bSrcDllType, $src, "int", $d, $bDstDllType, $dst), "cveMatDiag", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatDiag", $sSrcDllType, $src, "int", $d, $sDstDllType, $dst), "cveMatDiag", @error)
 EndFunc   ;==>_cveMatDiag
 
 Func _cveMatT($src, $dst)
     ; CVAPI(void) cveMatT(cv::Mat* src, cv::Mat* dst);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatT", $bSrcDllType, $src, $bDstDllType, $dst), "cveMatT", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatT", $sSrcDllType, $src, $sDstDllType, $dst), "cveMatT", @error)
 EndFunc   ;==>_cveMatT
 
 Func _cveMatZeros($rows, $cols, $type, $dst)
     ; CVAPI(void) cveMatZeros(int rows, int cols, int type, cv::Mat* dst);
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatZeros", "int", $rows, "int", $cols, "int", $type, $bDstDllType, $dst), "cveMatZeros", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatZeros", "int", $rows, "int", $cols, "int", $type, $sDstDllType, $dst), "cveMatZeros", @error)
 EndFunc   ;==>_cveMatZeros
 
 Func _cveMatOnes($rows, $cols, $type, $dst)
     ; CVAPI(void) cveMatOnes(int rows, int cols, int type, cv::Mat* dst);
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatOnes", "int", $rows, "int", $cols, "int", $type, $bDstDllType, $dst), "cveMatOnes", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatOnes", "int", $rows, "int", $cols, "int", $type, $sDstDllType, $dst), "cveMatOnes", @error)
 EndFunc   ;==>_cveMatOnes

@@ -4,43 +4,49 @@
 Func _cveFreeType2Create($algorithmPtr, $sharedPtr)
     ; CVAPI(cv::freetype::FreeType2*) cveFreeType2Create(cv::Algorithm** algorithmPtr, cv::Ptr<cv::freetype::FreeType2>** sharedPtr);
 
-    Local $bAlgorithmPtrDllType
-    If VarGetType($algorithmPtr) == "DLLStruct" Then
-        $bAlgorithmPtrDllType = "struct*"
+    Local $sAlgorithmPtrDllType
+    If IsDllStruct($algorithmPtr) Then
+        $sAlgorithmPtrDllType = "struct*"
+    ElseIf $algorithmPtr == Null Then
+        $sAlgorithmPtrDllType = "ptr"
     Else
-        $bAlgorithmPtrDllType = "ptr*"
+        $sAlgorithmPtrDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFreeType2Create", $bAlgorithmPtrDllType, $algorithmPtr, $bSharedPtrDllType, $sharedPtr), "cveFreeType2Create", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFreeType2Create", $sAlgorithmPtrDllType, $algorithmPtr, $sSharedPtrDllType, $sharedPtr), "cveFreeType2Create", @error)
 EndFunc   ;==>_cveFreeType2Create
 
 Func _cveFreeType2Release($sharedPtr)
     ; CVAPI(void) cveFreeType2Release(cv::Ptr<cv::freetype::FreeType2>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFreeType2Release", $bSharedPtrDllType, $sharedPtr), "cveFreeType2Release", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFreeType2Release", $sSharedPtrDllType, $sharedPtr), "cveFreeType2Release", @error)
 EndFunc   ;==>_cveFreeType2Release
 
 Func _cveFreeType2LoadFontData($freetype, $fontFileName, $id)
     ; CVAPI(void) cveFreeType2LoadFontData(cv::freetype::FreeType2* freetype, cv::String* fontFileName, int id);
 
-    Local $bFreetypeDllType
-    If VarGetType($freetype) == "DLLStruct" Then
-        $bFreetypeDllType = "struct*"
+    Local $sFreetypeDllType
+    If IsDllStruct($freetype) Then
+        $sFreetypeDllType = "struct*"
     Else
-        $bFreetypeDllType = "ptr"
+        $sFreetypeDllType = "ptr"
     EndIf
 
     Local $bFontFileNameIsString = VarGetType($fontFileName) == "String"
@@ -48,14 +54,14 @@ Func _cveFreeType2LoadFontData($freetype, $fontFileName, $id)
         $fontFileName = _cveStringCreateFromStr($fontFileName)
     EndIf
 
-    Local $bFontFileNameDllType
-    If VarGetType($fontFileName) == "DLLStruct" Then
-        $bFontFileNameDllType = "struct*"
+    Local $sFontFileNameDllType
+    If IsDllStruct($fontFileName) Then
+        $sFontFileNameDllType = "struct*"
     Else
-        $bFontFileNameDllType = "ptr"
+        $sFontFileNameDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFreeType2LoadFontData", $bFreetypeDllType, $freetype, $bFontFileNameDllType, $fontFileName, "int", $id), "cveFreeType2LoadFontData", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFreeType2LoadFontData", $sFreetypeDllType, $freetype, $sFontFileNameDllType, $fontFileName, "int", $id), "cveFreeType2LoadFontData", @error)
 
     If $bFontFileNameIsString Then
         _cveStringRelease($fontFileName)
@@ -65,31 +71,31 @@ EndFunc   ;==>_cveFreeType2LoadFontData
 Func _cveFreeType2SetSplitNumber($freetype, $num)
     ; CVAPI(void) cveFreeType2SetSplitNumber(cv::freetype::FreeType2* freetype, int num);
 
-    Local $bFreetypeDllType
-    If VarGetType($freetype) == "DLLStruct" Then
-        $bFreetypeDllType = "struct*"
+    Local $sFreetypeDllType
+    If IsDllStruct($freetype) Then
+        $sFreetypeDllType = "struct*"
     Else
-        $bFreetypeDllType = "ptr"
+        $sFreetypeDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFreeType2SetSplitNumber", $bFreetypeDllType, $freetype, "int", $num), "cveFreeType2SetSplitNumber", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFreeType2SetSplitNumber", $sFreetypeDllType, $freetype, "int", $num), "cveFreeType2SetSplitNumber", @error)
 EndFunc   ;==>_cveFreeType2SetSplitNumber
 
 Func _cveFreeType2PutText($freetype, $img, $text, $org, $fontHeight, $color, $thickness, $lineType, $bottomLeftOrigin)
     ; CVAPI(void) cveFreeType2PutText(cv::freetype::FreeType2* freetype, cv::_InputOutputArray* img, cv::String* text, CvPoint* org, int fontHeight, CvScalar* color, int thickness, int lineType, bool bottomLeftOrigin);
 
-    Local $bFreetypeDllType
-    If VarGetType($freetype) == "DLLStruct" Then
-        $bFreetypeDllType = "struct*"
+    Local $sFreetypeDllType
+    If IsDllStruct($freetype) Then
+        $sFreetypeDllType = "struct*"
     Else
-        $bFreetypeDllType = "ptr"
+        $sFreetypeDllType = "ptr"
     EndIf
 
-    Local $bImgDllType
-    If VarGetType($img) == "DLLStruct" Then
-        $bImgDllType = "struct*"
+    Local $sImgDllType
+    If IsDllStruct($img) Then
+        $sImgDllType = "struct*"
     Else
-        $bImgDllType = "ptr"
+        $sImgDllType = "ptr"
     EndIf
 
     Local $bTextIsString = VarGetType($text) == "String"
@@ -97,28 +103,28 @@ Func _cveFreeType2PutText($freetype, $img, $text, $org, $fontHeight, $color, $th
         $text = _cveStringCreateFromStr($text)
     EndIf
 
-    Local $bTextDllType
-    If VarGetType($text) == "DLLStruct" Then
-        $bTextDllType = "struct*"
+    Local $sTextDllType
+    If IsDllStruct($text) Then
+        $sTextDllType = "struct*"
     Else
-        $bTextDllType = "ptr"
+        $sTextDllType = "ptr"
     EndIf
 
-    Local $bOrgDllType
-    If VarGetType($org) == "DLLStruct" Then
-        $bOrgDllType = "struct*"
+    Local $sOrgDllType
+    If IsDllStruct($org) Then
+        $sOrgDllType = "struct*"
     Else
-        $bOrgDllType = "ptr"
+        $sOrgDllType = "ptr"
     EndIf
 
-    Local $bColorDllType
-    If VarGetType($color) == "DLLStruct" Then
-        $bColorDllType = "struct*"
+    Local $sColorDllType
+    If IsDllStruct($color) Then
+        $sColorDllType = "struct*"
     Else
-        $bColorDllType = "ptr"
+        $sColorDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFreeType2PutText", $bFreetypeDllType, $freetype, $bImgDllType, $img, $bTextDllType, $text, $bOrgDllType, $org, "int", $fontHeight, $bColorDllType, $color, "int", $thickness, "int", $lineType, "boolean", $bottomLeftOrigin), "cveFreeType2PutText", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFreeType2PutText", $sFreetypeDllType, $freetype, $sImgDllType, $img, $sTextDllType, $text, $sOrgDllType, $org, "int", $fontHeight, $sColorDllType, $color, "int", $thickness, "int", $lineType, "boolean", $bottomLeftOrigin), "cveFreeType2PutText", @error)
 
     If $bTextIsString Then
         _cveStringRelease($text)
@@ -156,11 +162,11 @@ EndFunc   ;==>_cveFreeType2PutTextMat
 Func _cveFreeType2GetTextSize($freetype, $text, $fontHeight, $thickness, $baseLine, $size)
     ; CVAPI(void) cveFreeType2GetTextSize(cv::freetype::FreeType2* freetype, cv::String* text, int fontHeight, int thickness, int* baseLine, CvSize* size);
 
-    Local $bFreetypeDllType
-    If VarGetType($freetype) == "DLLStruct" Then
-        $bFreetypeDllType = "struct*"
+    Local $sFreetypeDllType
+    If IsDllStruct($freetype) Then
+        $sFreetypeDllType = "struct*"
     Else
-        $bFreetypeDllType = "ptr"
+        $sFreetypeDllType = "ptr"
     EndIf
 
     Local $bTextIsString = VarGetType($text) == "String"
@@ -168,28 +174,28 @@ Func _cveFreeType2GetTextSize($freetype, $text, $fontHeight, $thickness, $baseLi
         $text = _cveStringCreateFromStr($text)
     EndIf
 
-    Local $bTextDllType
-    If VarGetType($text) == "DLLStruct" Then
-        $bTextDllType = "struct*"
+    Local $sTextDllType
+    If IsDllStruct($text) Then
+        $sTextDllType = "struct*"
     Else
-        $bTextDllType = "ptr"
+        $sTextDllType = "ptr"
     EndIf
 
-    Local $bBaseLineDllType
-    If VarGetType($baseLine) == "DLLStruct" Then
-        $bBaseLineDllType = "struct*"
+    Local $sBaseLineDllType
+    If IsDllStruct($baseLine) Then
+        $sBaseLineDllType = "struct*"
     Else
-        $bBaseLineDllType = "int*"
+        $sBaseLineDllType = "int*"
     EndIf
 
-    Local $bSizeDllType
-    If VarGetType($size) == "DLLStruct" Then
-        $bSizeDllType = "struct*"
+    Local $sSizeDllType
+    If IsDllStruct($size) Then
+        $sSizeDllType = "struct*"
     Else
-        $bSizeDllType = "ptr"
+        $sSizeDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFreeType2GetTextSize", $bFreetypeDllType, $freetype, $bTextDllType, $text, "int", $fontHeight, "int", $thickness, $bBaseLineDllType, $baseLine, $bSizeDllType, $size), "cveFreeType2GetTextSize", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFreeType2GetTextSize", $sFreetypeDllType, $freetype, $sTextDllType, $text, "int", $fontHeight, "int", $thickness, $sBaseLineDllType, $baseLine, $sSizeDllType, $size), "cveFreeType2GetTextSize", @error)
 
     If $bTextIsString Then
         _cveStringRelease($text)

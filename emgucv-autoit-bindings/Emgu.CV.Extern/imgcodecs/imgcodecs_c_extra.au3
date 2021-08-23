@@ -9,14 +9,14 @@ Func _cveHaveImageReader($filename)
         $filename = _cveStringCreateFromStr($filename)
     EndIf
 
-    Local $bFilenameDllType
-    If VarGetType($filename) == "DLLStruct" Then
-        $bFilenameDllType = "struct*"
+    Local $sFilenameDllType
+    If IsDllStruct($filename) Then
+        $sFilenameDllType = "struct*"
     Else
-        $bFilenameDllType = "ptr"
+        $sFilenameDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveHaveImageReader", $bFilenameDllType, $filename), "cveHaveImageReader", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveHaveImageReader", $sFilenameDllType, $filename), "cveHaveImageReader", @error)
 
     If $bFilenameIsString Then
         _cveStringRelease($filename)
@@ -33,14 +33,14 @@ Func _cveHaveImageWriter($filename)
         $filename = _cveStringCreateFromStr($filename)
     EndIf
 
-    Local $bFilenameDllType
-    If VarGetType($filename) == "DLLStruct" Then
-        $bFilenameDllType = "struct*"
+    Local $sFilenameDllType
+    If IsDllStruct($filename) Then
+        $sFilenameDllType = "struct*"
     Else
-        $bFilenameDllType = "ptr"
+        $sFilenameDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveHaveImageWriter", $bFilenameDllType, $filename), "cveHaveImageWriter", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveHaveImageWriter", $sFilenameDllType, $filename), "cveHaveImageWriter", @error)
 
     If $bFilenameIsString Then
         _cveStringRelease($filename)
@@ -57,18 +57,18 @@ Func _cveImwrite($filename, $img, $params = _VectorOfIntCreate())
         $filename = _cveStringCreateFromStr($filename)
     EndIf
 
-    Local $bFilenameDllType
-    If VarGetType($filename) == "DLLStruct" Then
-        $bFilenameDllType = "struct*"
+    Local $sFilenameDllType
+    If IsDllStruct($filename) Then
+        $sFilenameDllType = "struct*"
     Else
-        $bFilenameDllType = "ptr"
+        $sFilenameDllType = "ptr"
     EndIf
 
-    Local $bImgDllType
-    If VarGetType($img) == "DLLStruct" Then
-        $bImgDllType = "struct*"
+    Local $sImgDllType
+    If IsDllStruct($img) Then
+        $sImgDllType = "struct*"
     Else
-        $bImgDllType = "ptr"
+        $sImgDllType = "ptr"
     EndIf
 
     Local $vecParams, $iArrParamsSize
@@ -85,14 +85,14 @@ Func _cveImwrite($filename, $img, $params = _VectorOfIntCreate())
         $vecParams = $params
     EndIf
 
-    Local $bParamsDllType
-    If VarGetType($params) == "DLLStruct" Then
-        $bParamsDllType = "struct*"
+    Local $sParamsDllType
+    If IsDllStruct($params) Then
+        $sParamsDllType = "struct*"
     Else
-        $bParamsDllType = "ptr"
+        $sParamsDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveImwrite", $bFilenameDllType, $filename, $bImgDllType, $img, $bParamsDllType, $vecParams), "cveImwrite", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveImwrite", $sFilenameDllType, $filename, $sImgDllType, $img, $sParamsDllType, $vecParams), "cveImwrite", @error)
 
     If $bParamsIsArray Then
         _VectorOfIntRelease($vecParams)
@@ -143,18 +143,18 @@ Func _cveImwritemulti($filename, $img, $params)
         $filename = _cveStringCreateFromStr($filename)
     EndIf
 
-    Local $bFilenameDllType
-    If VarGetType($filename) == "DLLStruct" Then
-        $bFilenameDllType = "struct*"
+    Local $sFilenameDllType
+    If IsDllStruct($filename) Then
+        $sFilenameDllType = "struct*"
     Else
-        $bFilenameDllType = "ptr"
+        $sFilenameDllType = "ptr"
     EndIf
 
-    Local $bImgDllType
-    If VarGetType($img) == "DLLStruct" Then
-        $bImgDllType = "struct*"
+    Local $sImgDllType
+    If IsDllStruct($img) Then
+        $sImgDllType = "struct*"
     Else
-        $bImgDllType = "ptr"
+        $sImgDllType = "ptr"
     EndIf
 
     Local $vecParams, $iArrParamsSize
@@ -171,14 +171,14 @@ Func _cveImwritemulti($filename, $img, $params)
         $vecParams = $params
     EndIf
 
-    Local $bParamsDllType
-    If VarGetType($params) == "DLLStruct" Then
-        $bParamsDllType = "struct*"
+    Local $sParamsDllType
+    If IsDllStruct($params) Then
+        $sParamsDllType = "struct*"
     Else
-        $bParamsDllType = "ptr"
+        $sParamsDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveImwritemulti", $bFilenameDllType, $filename, $bImgDllType, $img, $bParamsDllType, $vecParams), "cveImwritemulti", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveImwritemulti", $sFilenameDllType, $filename, $sImgDllType, $img, $sParamsDllType, $vecParams), "cveImwritemulti", @error)
 
     If $bParamsIsArray Then
         _VectorOfIntRelease($vecParams)
@@ -233,21 +233,21 @@ Func _cveImread($fileName, $flags = $CV_IMREAD_COLOR, $result = Null)
         $fileName = _cveStringCreateFromStr($fileName)
     EndIf
 
-    Local $bFileNameDllType
-    If VarGetType($fileName) == "DLLStruct" Then
-        $bFileNameDllType = "struct*"
+    Local $sFileNameDllType
+    If IsDllStruct($fileName) Then
+        $sFileNameDllType = "struct*"
     Else
-        $bFileNameDllType = "ptr"
+        $sFileNameDllType = "ptr"
     EndIf
 
-    Local $bResultDllType
-    If VarGetType($result) == "DLLStruct" Then
-        $bResultDllType = "struct*"
+    Local $sResultDllType
+    If IsDllStruct($result) Then
+        $sResultDllType = "struct*"
     Else
-        $bResultDllType = "ptr"
+        $sResultDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveImread", $bFileNameDllType, $fileName, "int", $flags, $bResultDllType, $result), "cveImread", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveImread", $sFileNameDllType, $fileName, "int", $flags, $sResultDllType, $result), "cveImread", @error)
 
     If $bFileNameIsString Then
         _cveStringRelease($fileName)
@@ -264,11 +264,11 @@ Func _cveImreadmulti($filename, $mats, $flags = $CV_IMREAD_ANYCOLOR)
         $filename = _cveStringCreateFromStr($filename)
     EndIf
 
-    Local $bFilenameDllType
-    If VarGetType($filename) == "DLLStruct" Then
-        $bFilenameDllType = "struct*"
+    Local $sFilenameDllType
+    If IsDllStruct($filename) Then
+        $sFilenameDllType = "struct*"
     Else
-        $bFilenameDllType = "ptr"
+        $sFilenameDllType = "ptr"
     EndIf
 
     Local $vecMats, $iArrMatsSize
@@ -285,14 +285,14 @@ Func _cveImreadmulti($filename, $mats, $flags = $CV_IMREAD_ANYCOLOR)
         $vecMats = $mats
     EndIf
 
-    Local $bMatsDllType
-    If VarGetType($mats) == "DLLStruct" Then
-        $bMatsDllType = "struct*"
+    Local $sMatsDllType
+    If IsDllStruct($mats) Then
+        $sMatsDllType = "struct*"
     Else
-        $bMatsDllType = "ptr"
+        $sMatsDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveImreadmulti", $bFilenameDllType, $filename, $bMatsDllType, $vecMats, "int", $flags), "cveImreadmulti", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveImreadmulti", $sFilenameDllType, $filename, $sMatsDllType, $vecMats, "int", $flags), "cveImreadmulti", @error)
 
     If $bMatsIsArray Then
         _VectorOfMatRelease($vecMats)
@@ -308,21 +308,21 @@ EndFunc   ;==>_cveImreadmulti
 Func _cveImdecode($buf, $flags, $dst)
     ; CVAPI(void) cveImdecode(cv::_InputArray* buf, int flags, cv::Mat* dst);
 
-    Local $bBufDllType
-    If VarGetType($buf) == "DLLStruct" Then
-        $bBufDllType = "struct*"
+    Local $sBufDllType
+    If IsDllStruct($buf) Then
+        $sBufDllType = "struct*"
     Else
-        $bBufDllType = "ptr"
+        $sBufDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveImdecode", $bBufDllType, $buf, "int", $flags, $bDstDllType, $dst), "cveImdecode", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveImdecode", $sBufDllType, $buf, "int", $flags, $sDstDllType, $dst), "cveImdecode", @error)
 EndFunc   ;==>_cveImdecode
 
 Func _cveImdecodeMat($matBuf, $flags, $dst)
@@ -361,18 +361,18 @@ Func _cveImencode($ext, $img, $buf, $params = _VectorOfIntCreate())
         $ext = _cveStringCreateFromStr($ext)
     EndIf
 
-    Local $bExtDllType
-    If VarGetType($ext) == "DLLStruct" Then
-        $bExtDllType = "struct*"
+    Local $sExtDllType
+    If IsDllStruct($ext) Then
+        $sExtDllType = "struct*"
     Else
-        $bExtDllType = "ptr"
+        $sExtDllType = "ptr"
     EndIf
 
-    Local $bImgDllType
-    If VarGetType($img) == "DLLStruct" Then
-        $bImgDllType = "struct*"
+    Local $sImgDllType
+    If IsDllStruct($img) Then
+        $sImgDllType = "struct*"
     Else
-        $bImgDllType = "ptr"
+        $sImgDllType = "ptr"
     EndIf
 
     Local $vecBuf, $iArrBufSize
@@ -389,11 +389,11 @@ Func _cveImencode($ext, $img, $buf, $params = _VectorOfIntCreate())
         $vecBuf = $buf
     EndIf
 
-    Local $bBufDllType
-    If VarGetType($buf) == "DLLStruct" Then
-        $bBufDllType = "struct*"
+    Local $sBufDllType
+    If IsDllStruct($buf) Then
+        $sBufDllType = "struct*"
     Else
-        $bBufDllType = "ptr"
+        $sBufDllType = "ptr"
     EndIf
 
     Local $vecParams, $iArrParamsSize
@@ -410,14 +410,14 @@ Func _cveImencode($ext, $img, $buf, $params = _VectorOfIntCreate())
         $vecParams = $params
     EndIf
 
-    Local $bParamsDllType
-    If VarGetType($params) == "DLLStruct" Then
-        $bParamsDllType = "struct*"
+    Local $sParamsDllType
+    If IsDllStruct($params) Then
+        $sParamsDllType = "struct*"
     Else
-        $bParamsDllType = "ptr"
+        $sParamsDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveImencode", $bExtDllType, $ext, $bImgDllType, $img, $bBufDllType, $vecBuf, $bParamsDllType, $vecParams), "cveImencode", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveImencode", $sExtDllType, $ext, $sImgDllType, $img, $sBufDllType, $vecBuf, $sParamsDllType, $vecParams), "cveImencode", @error)
 
     If $bParamsIsArray Then
         _VectorOfIntRelease($vecParams)

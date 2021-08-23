@@ -4,11 +4,11 @@
 Func _cveStitcherWorkScale($obj)
     ; CVAPI(double) cveStitcherWorkScale(cv::Stitcher* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveStitcherWorkScale", $bObjDllType, $obj), "cveStitcherWorkScale", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveStitcherWorkScale", $sObjDllType, $obj), "cveStitcherWorkScale", @error)
 EndFunc   ;==>_cveStitcherWorkScale

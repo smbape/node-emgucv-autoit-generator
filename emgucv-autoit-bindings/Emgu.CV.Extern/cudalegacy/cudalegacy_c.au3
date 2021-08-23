@@ -4,47 +4,49 @@
 Func _cudaBackgroundSubtractorGMGCreate($initializationFrames, $decisionThreshold, $sharedPtr)
     ; CVAPI(cv::cuda::BackgroundSubtractorGMG*) cudaBackgroundSubtractorGMGCreate(int initializationFrames, double decisionThreshold, cv::Ptr<cv::cuda::BackgroundSubtractorGMG>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaBackgroundSubtractorGMGCreate", "int", $initializationFrames, "double", $decisionThreshold, $bSharedPtrDllType, $sharedPtr), "cudaBackgroundSubtractorGMGCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaBackgroundSubtractorGMGCreate", "int", $initializationFrames, "double", $decisionThreshold, $sSharedPtrDllType, $sharedPtr), "cudaBackgroundSubtractorGMGCreate", @error)
 EndFunc   ;==>_cudaBackgroundSubtractorGMGCreate
 
 Func _cudaBackgroundSubtractorGMGApply($gmg, $frame, $fgMask, $learningRate, $stream)
     ; CVAPI(void) cudaBackgroundSubtractorGMGApply(cv::cuda::BackgroundSubtractorGMG* gmg, cv::_InputArray* frame, cv::_OutputArray* fgMask, double learningRate, cv::cuda::Stream* stream);
 
-    Local $bGmgDllType
-    If VarGetType($gmg) == "DLLStruct" Then
-        $bGmgDllType = "struct*"
+    Local $sGmgDllType
+    If IsDllStruct($gmg) Then
+        $sGmgDllType = "struct*"
     Else
-        $bGmgDllType = "ptr"
+        $sGmgDllType = "ptr"
     EndIf
 
-    Local $bFrameDllType
-    If VarGetType($frame) == "DLLStruct" Then
-        $bFrameDllType = "struct*"
+    Local $sFrameDllType
+    If IsDllStruct($frame) Then
+        $sFrameDllType = "struct*"
     Else
-        $bFrameDllType = "ptr"
+        $sFrameDllType = "ptr"
     EndIf
 
-    Local $bFgMaskDllType
-    If VarGetType($fgMask) == "DLLStruct" Then
-        $bFgMaskDllType = "struct*"
+    Local $sFgMaskDllType
+    If IsDllStruct($fgMask) Then
+        $sFgMaskDllType = "struct*"
     Else
-        $bFgMaskDllType = "ptr"
+        $sFgMaskDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaBackgroundSubtractorGMGApply", $bGmgDllType, $gmg, $bFrameDllType, $frame, $bFgMaskDllType, $fgMask, "double", $learningRate, $bStreamDllType, $stream), "cudaBackgroundSubtractorGMGApply", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaBackgroundSubtractorGMGApply", $sGmgDllType, $gmg, $sFrameDllType, $frame, $sFgMaskDllType, $fgMask, "double", $learningRate, $sStreamDllType, $stream), "cudaBackgroundSubtractorGMGApply", @error)
 EndFunc   ;==>_cudaBackgroundSubtractorGMGApply
 
 Func _cudaBackgroundSubtractorGMGApplyMat($gmg, $matFrame, $matFgMask, $learningRate, $stream)
@@ -100,53 +102,57 @@ EndFunc   ;==>_cudaBackgroundSubtractorGMGApplyMat
 Func _cudaBackgroundSubtractorGMGRelease($gmg)
     ; CVAPI(void) cudaBackgroundSubtractorGMGRelease(cv::Ptr<cv::cuda::BackgroundSubtractorGMG>** gmg);
 
-    Local $bGmgDllType
-    If VarGetType($gmg) == "DLLStruct" Then
-        $bGmgDllType = "struct*"
+    Local $sGmgDllType
+    If IsDllStruct($gmg) Then
+        $sGmgDllType = "struct*"
+    ElseIf $gmg == Null Then
+        $sGmgDllType = "ptr"
     Else
-        $bGmgDllType = "ptr*"
+        $sGmgDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaBackgroundSubtractorGMGRelease", $bGmgDllType, $gmg), "cudaBackgroundSubtractorGMGRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaBackgroundSubtractorGMGRelease", $sGmgDllType, $gmg), "cudaBackgroundSubtractorGMGRelease", @error)
 EndFunc   ;==>_cudaBackgroundSubtractorGMGRelease
 
 Func _cudaBackgroundSubtractorFGDCreate($Lc, $N1c, $N2c, $Lcc, $N1cc, $N2cc, $isObjWithoutHoles, $performMorphing, $alpha1, $alpha2, $alpha3, $delta, $T, $minArea, $sharedPtr)
     ; CVAPI(cv::cuda::BackgroundSubtractorFGD*) cudaBackgroundSubtractorFGDCreate(int Lc, int N1c, int N2c, int Lcc, int N1cc, int N2cc, bool isObjWithoutHoles, int performMorphing, float alpha1, float alpha2, float alpha3, float delta, float T, float minArea, cv::Ptr<cv::cuda::BackgroundSubtractorFGD>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaBackgroundSubtractorFGDCreate", "int", $Lc, "int", $N1c, "int", $N2c, "int", $Lcc, "int", $N1cc, "int", $N2cc, "boolean", $isObjWithoutHoles, "int", $performMorphing, "float", $alpha1, "float", $alpha2, "float", $alpha3, "float", $delta, "float", $T, "float", $minArea, $bSharedPtrDllType, $sharedPtr), "cudaBackgroundSubtractorFGDCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaBackgroundSubtractorFGDCreate", "int", $Lc, "int", $N1c, "int", $N2c, "int", $Lcc, "int", $N1cc, "int", $N2cc, "boolean", $isObjWithoutHoles, "int", $performMorphing, "float", $alpha1, "float", $alpha2, "float", $alpha3, "float", $delta, "float", $T, "float", $minArea, $sSharedPtrDllType, $sharedPtr), "cudaBackgroundSubtractorFGDCreate", @error)
 EndFunc   ;==>_cudaBackgroundSubtractorFGDCreate
 
 Func _cudaBackgroundSubtractorFGDApply($fgd, $frame, $fgMask, $learningRate)
     ; CVAPI(void) cudaBackgroundSubtractorFGDApply(cv::cuda::BackgroundSubtractorFGD* fgd, cv::_InputArray* frame, cv::_OutputArray* fgMask, double learningRate);
 
-    Local $bFgdDllType
-    If VarGetType($fgd) == "DLLStruct" Then
-        $bFgdDllType = "struct*"
+    Local $sFgdDllType
+    If IsDllStruct($fgd) Then
+        $sFgdDllType = "struct*"
     Else
-        $bFgdDllType = "ptr"
+        $sFgdDllType = "ptr"
     EndIf
 
-    Local $bFrameDllType
-    If VarGetType($frame) == "DLLStruct" Then
-        $bFrameDllType = "struct*"
+    Local $sFrameDllType
+    If IsDllStruct($frame) Then
+        $sFrameDllType = "struct*"
     Else
-        $bFrameDllType = "ptr"
+        $sFrameDllType = "ptr"
     EndIf
 
-    Local $bFgMaskDllType
-    If VarGetType($fgMask) == "DLLStruct" Then
-        $bFgMaskDllType = "struct*"
+    Local $sFgMaskDllType
+    If IsDllStruct($fgMask) Then
+        $sFgMaskDllType = "struct*"
     Else
-        $bFgMaskDllType = "ptr"
+        $sFgMaskDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaBackgroundSubtractorFGDApply", $bFgdDllType, $fgd, $bFrameDllType, $frame, $bFgMaskDllType, $fgMask, "double", $learningRate), "cudaBackgroundSubtractorFGDApply", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaBackgroundSubtractorFGDApply", $sFgdDllType, $fgd, $sFrameDllType, $frame, $sFgMaskDllType, $fgMask, "double", $learningRate), "cudaBackgroundSubtractorFGDApply", @error)
 EndFunc   ;==>_cudaBackgroundSubtractorFGDApply
 
 Func _cudaBackgroundSubtractorFGDApplyMat($fgd, $matFrame, $matFgMask, $learningRate)
@@ -202,12 +208,14 @@ EndFunc   ;==>_cudaBackgroundSubtractorFGDApplyMat
 Func _cudaBackgroundSubtractorFGDRelease($fgd)
     ; CVAPI(void) cudaBackgroundSubtractorFGDRelease(cv::Ptr<cv::cuda::BackgroundSubtractorFGD>** fgd);
 
-    Local $bFgdDllType
-    If VarGetType($fgd) == "DLLStruct" Then
-        $bFgdDllType = "struct*"
+    Local $sFgdDllType
+    If IsDllStruct($fgd) Then
+        $sFgdDllType = "struct*"
+    ElseIf $fgd == Null Then
+        $sFgdDllType = "ptr"
     Else
-        $bFgdDllType = "ptr*"
+        $sFgdDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaBackgroundSubtractorFGDRelease", $bFgdDllType, $fgd), "cudaBackgroundSubtractorFGDRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaBackgroundSubtractorFGDRelease", $sFgdDllType, $fgd), "cudaBackgroundSubtractorFGDRelease", @error)
 EndFunc   ;==>_cudaBackgroundSubtractorFGDRelease

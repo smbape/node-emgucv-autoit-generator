@@ -4,28 +4,28 @@
 Func _cveImgHashBaseCompute($imgHash, $inputArr, $outputArr)
     ; CVAPI(void) cveImgHashBaseCompute(cv::img_hash::ImgHashBase* imgHash, cv::_InputArray* inputArr, cv::_OutputArray* outputArr);
 
-    Local $bImgHashDllType
-    If VarGetType($imgHash) == "DLLStruct" Then
-        $bImgHashDllType = "struct*"
+    Local $sImgHashDllType
+    If IsDllStruct($imgHash) Then
+        $sImgHashDllType = "struct*"
     Else
-        $bImgHashDllType = "ptr"
+        $sImgHashDllType = "ptr"
     EndIf
 
-    Local $bInputArrDllType
-    If VarGetType($inputArr) == "DLLStruct" Then
-        $bInputArrDllType = "struct*"
+    Local $sInputArrDllType
+    If IsDllStruct($inputArr) Then
+        $sInputArrDllType = "struct*"
     Else
-        $bInputArrDllType = "ptr"
+        $sInputArrDllType = "ptr"
     EndIf
 
-    Local $bOutputArrDllType
-    If VarGetType($outputArr) == "DLLStruct" Then
-        $bOutputArrDllType = "struct*"
+    Local $sOutputArrDllType
+    If IsDllStruct($outputArr) Then
+        $sOutputArrDllType = "struct*"
     Else
-        $bOutputArrDllType = "ptr"
+        $sOutputArrDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveImgHashBaseCompute", $bImgHashDllType, $imgHash, $bInputArrDllType, $inputArr, $bOutputArrDllType, $outputArr), "cveImgHashBaseCompute", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveImgHashBaseCompute", $sImgHashDllType, $imgHash, $sInputArrDllType, $inputArr, $sOutputArrDllType, $outputArr), "cveImgHashBaseCompute", @error)
 EndFunc   ;==>_cveImgHashBaseCompute
 
 Func _cveImgHashBaseComputeMat($imgHash, $matInputArr, $matOutputArr)
@@ -81,27 +81,27 @@ EndFunc   ;==>_cveImgHashBaseComputeMat
 Func _cveImgHashBaseCompare($imgHash, $hashOne, $hashTwo)
     ; CVAPI(double) cveImgHashBaseCompare(cv::img_hash::ImgHashBase* imgHash, cv::_InputArray* hashOne, cv::_InputArray* hashTwo);
 
-    Local $bImgHashDllType
-    If VarGetType($imgHash) == "DLLStruct" Then
-        $bImgHashDllType = "struct*"
+    Local $sImgHashDllType
+    If IsDllStruct($imgHash) Then
+        $sImgHashDllType = "struct*"
     Else
-        $bImgHashDllType = "ptr"
+        $sImgHashDllType = "ptr"
     EndIf
 
-    Local $bHashOneDllType
-    If VarGetType($hashOne) == "DLLStruct" Then
-        $bHashOneDllType = "struct*"
+    Local $sHashOneDllType
+    If IsDllStruct($hashOne) Then
+        $sHashOneDllType = "struct*"
     Else
-        $bHashOneDllType = "ptr"
+        $sHashOneDllType = "ptr"
     EndIf
 
-    Local $bHashTwoDllType
-    If VarGetType($hashTwo) == "DLLStruct" Then
-        $bHashTwoDllType = "struct*"
+    Local $sHashTwoDllType
+    If IsDllStruct($hashTwo) Then
+        $sHashTwoDllType = "struct*"
     Else
-        $bHashTwoDllType = "ptr"
+        $sHashTwoDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveImgHashBaseCompare", $bImgHashDllType, $imgHash, $bHashOneDllType, $hashOne, $bHashTwoDllType, $hashTwo), "cveImgHashBaseCompare", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveImgHashBaseCompare", $sImgHashDllType, $imgHash, $sHashOneDllType, $hashOne, $sHashTwoDllType, $hashTwo), "cveImgHashBaseCompare", @error)
 EndFunc   ;==>_cveImgHashBaseCompare
 
 Func _cveImgHashBaseCompareMat($imgHash, $matHashOne, $matHashTwo)
@@ -159,233 +159,281 @@ EndFunc   ;==>_cveImgHashBaseCompareMat
 Func _cveAverageHashCreate($imgHash, $sharedPtr)
     ; CVAPI(cv::img_hash::AverageHash*) cveAverageHashCreate(cv::img_hash::ImgHashBase** imgHash, cv::Ptr<cv::img_hash::AverageHash>** sharedPtr);
 
-    Local $bImgHashDllType
-    If VarGetType($imgHash) == "DLLStruct" Then
-        $bImgHashDllType = "struct*"
+    Local $sImgHashDllType
+    If IsDllStruct($imgHash) Then
+        $sImgHashDllType = "struct*"
+    ElseIf $imgHash == Null Then
+        $sImgHashDllType = "ptr"
     Else
-        $bImgHashDllType = "ptr*"
+        $sImgHashDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveAverageHashCreate", $bImgHashDllType, $imgHash, $bSharedPtrDllType, $sharedPtr), "cveAverageHashCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveAverageHashCreate", $sImgHashDllType, $imgHash, $sSharedPtrDllType, $sharedPtr), "cveAverageHashCreate", @error)
 EndFunc   ;==>_cveAverageHashCreate
 
 Func _cveAverageHashRelease($hash, $sharedPtr)
     ; CVAPI(void) cveAverageHashRelease(cv::img_hash::AverageHash** hash, cv::Ptr<cv::img_hash::AverageHash>** sharedPtr);
 
-    Local $bHashDllType
-    If VarGetType($hash) == "DLLStruct" Then
-        $bHashDllType = "struct*"
+    Local $sHashDllType
+    If IsDllStruct($hash) Then
+        $sHashDllType = "struct*"
+    ElseIf $hash == Null Then
+        $sHashDllType = "ptr"
     Else
-        $bHashDllType = "ptr*"
+        $sHashDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAverageHashRelease", $bHashDllType, $hash, $bSharedPtrDllType, $sharedPtr), "cveAverageHashRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveAverageHashRelease", $sHashDllType, $hash, $sSharedPtrDllType, $sharedPtr), "cveAverageHashRelease", @error)
 EndFunc   ;==>_cveAverageHashRelease
 
 Func _cveBlockMeanHashCreate($imgHash, $mode, $sharedPtr)
     ; CVAPI(cv::img_hash::BlockMeanHash*) cveBlockMeanHashCreate(cv::img_hash::ImgHashBase** imgHash, int mode, cv::Ptr<cv::img_hash::BlockMeanHash>** sharedPtr);
 
-    Local $bImgHashDllType
-    If VarGetType($imgHash) == "DLLStruct" Then
-        $bImgHashDllType = "struct*"
+    Local $sImgHashDllType
+    If IsDllStruct($imgHash) Then
+        $sImgHashDllType = "struct*"
+    ElseIf $imgHash == Null Then
+        $sImgHashDllType = "ptr"
     Else
-        $bImgHashDllType = "ptr*"
+        $sImgHashDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBlockMeanHashCreate", $bImgHashDllType, $imgHash, "int", $mode, $bSharedPtrDllType, $sharedPtr), "cveBlockMeanHashCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveBlockMeanHashCreate", $sImgHashDllType, $imgHash, "int", $mode, $sSharedPtrDllType, $sharedPtr), "cveBlockMeanHashCreate", @error)
 EndFunc   ;==>_cveBlockMeanHashCreate
 
 Func _cveBlockMeanHashRelease($hash, $sharedPtr)
     ; CVAPI(void) cveBlockMeanHashRelease(cv::img_hash::BlockMeanHash** hash, cv::Ptr<cv::img_hash::BlockMeanHash>** sharedPtr);
 
-    Local $bHashDllType
-    If VarGetType($hash) == "DLLStruct" Then
-        $bHashDllType = "struct*"
+    Local $sHashDllType
+    If IsDllStruct($hash) Then
+        $sHashDllType = "struct*"
+    ElseIf $hash == Null Then
+        $sHashDllType = "ptr"
     Else
-        $bHashDllType = "ptr*"
+        $sHashDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBlockMeanHashRelease", $bHashDllType, $hash, $bSharedPtrDllType, $sharedPtr), "cveBlockMeanHashRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBlockMeanHashRelease", $sHashDllType, $hash, $sSharedPtrDllType, $sharedPtr), "cveBlockMeanHashRelease", @error)
 EndFunc   ;==>_cveBlockMeanHashRelease
 
 Func _cveColorMomentHashCreate($imgHash, $sharedPtr)
     ; CVAPI(cv::img_hash::ColorMomentHash*) cveColorMomentHashCreate(cv::img_hash::ImgHashBase** imgHash, cv::Ptr<cv::img_hash::ColorMomentHash>** sharedPtr);
 
-    Local $bImgHashDllType
-    If VarGetType($imgHash) == "DLLStruct" Then
-        $bImgHashDllType = "struct*"
+    Local $sImgHashDllType
+    If IsDllStruct($imgHash) Then
+        $sImgHashDllType = "struct*"
+    ElseIf $imgHash == Null Then
+        $sImgHashDllType = "ptr"
     Else
-        $bImgHashDllType = "ptr*"
+        $sImgHashDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveColorMomentHashCreate", $bImgHashDllType, $imgHash, $bSharedPtrDllType, $sharedPtr), "cveColorMomentHashCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveColorMomentHashCreate", $sImgHashDllType, $imgHash, $sSharedPtrDllType, $sharedPtr), "cveColorMomentHashCreate", @error)
 EndFunc   ;==>_cveColorMomentHashCreate
 
 Func _cveColorMomentHashRelease($hash, $sharedPtr)
     ; CVAPI(void) cveColorMomentHashRelease(cv::img_hash::ColorMomentHash** hash, cv::Ptr<cv::img_hash::ColorMomentHash>** sharedPtr);
 
-    Local $bHashDllType
-    If VarGetType($hash) == "DLLStruct" Then
-        $bHashDllType = "struct*"
+    Local $sHashDllType
+    If IsDllStruct($hash) Then
+        $sHashDllType = "struct*"
+    ElseIf $hash == Null Then
+        $sHashDllType = "ptr"
     Else
-        $bHashDllType = "ptr*"
+        $sHashDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveColorMomentHashRelease", $bHashDllType, $hash, $bSharedPtrDllType, $sharedPtr), "cveColorMomentHashRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveColorMomentHashRelease", $sHashDllType, $hash, $sSharedPtrDllType, $sharedPtr), "cveColorMomentHashRelease", @error)
 EndFunc   ;==>_cveColorMomentHashRelease
 
 Func _cveMarrHildrethHashCreate($imgHash, $alpha, $scale, $sharedPtr)
     ; CVAPI(cv::img_hash::MarrHildrethHash*) cveMarrHildrethHashCreate(cv::img_hash::ImgHashBase** imgHash, float alpha, float scale, cv::Ptr<cv::img_hash::MarrHildrethHash>** sharedPtr);
 
-    Local $bImgHashDllType
-    If VarGetType($imgHash) == "DLLStruct" Then
-        $bImgHashDllType = "struct*"
+    Local $sImgHashDllType
+    If IsDllStruct($imgHash) Then
+        $sImgHashDllType = "struct*"
+    ElseIf $imgHash == Null Then
+        $sImgHashDllType = "ptr"
     Else
-        $bImgHashDllType = "ptr*"
+        $sImgHashDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMarrHildrethHashCreate", $bImgHashDllType, $imgHash, "float", $alpha, "float", $scale, $bSharedPtrDllType, $sharedPtr), "cveMarrHildrethHashCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveMarrHildrethHashCreate", $sImgHashDllType, $imgHash, "float", $alpha, "float", $scale, $sSharedPtrDllType, $sharedPtr), "cveMarrHildrethHashCreate", @error)
 EndFunc   ;==>_cveMarrHildrethHashCreate
 
 Func _cveMarrHildrethHashRelease($hash, $sharedPtr)
     ; CVAPI(void) cveMarrHildrethHashRelease(cv::img_hash::MarrHildrethHash** hash, cv::Ptr<cv::img_hash::MarrHildrethHash>** sharedPtr);
 
-    Local $bHashDllType
-    If VarGetType($hash) == "DLLStruct" Then
-        $bHashDllType = "struct*"
+    Local $sHashDllType
+    If IsDllStruct($hash) Then
+        $sHashDllType = "struct*"
+    ElseIf $hash == Null Then
+        $sHashDllType = "ptr"
     Else
-        $bHashDllType = "ptr*"
+        $sHashDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMarrHildrethHashRelease", $bHashDllType, $hash, $bSharedPtrDllType, $sharedPtr), "cveMarrHildrethHashRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMarrHildrethHashRelease", $sHashDllType, $hash, $sSharedPtrDllType, $sharedPtr), "cveMarrHildrethHashRelease", @error)
 EndFunc   ;==>_cveMarrHildrethHashRelease
 
 Func _cvePHashCreate($imgHash, $sharedPtr)
     ; CVAPI(cv::img_hash::PHash*) cvePHashCreate(cv::img_hash::ImgHashBase** imgHash, cv::Ptr<cv::img_hash::PHash>** sharedPtr);
 
-    Local $bImgHashDllType
-    If VarGetType($imgHash) == "DLLStruct" Then
-        $bImgHashDllType = "struct*"
+    Local $sImgHashDllType
+    If IsDllStruct($imgHash) Then
+        $sImgHashDllType = "struct*"
+    ElseIf $imgHash == Null Then
+        $sImgHashDllType = "ptr"
     Else
-        $bImgHashDllType = "ptr*"
+        $sImgHashDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePHashCreate", $bImgHashDllType, $imgHash, $bSharedPtrDllType, $sharedPtr), "cvePHashCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePHashCreate", $sImgHashDllType, $imgHash, $sSharedPtrDllType, $sharedPtr), "cvePHashCreate", @error)
 EndFunc   ;==>_cvePHashCreate
 
 Func _cvePHashRelease($hash, $sharedPtr)
     ; CVAPI(void) cvePHashRelease(cv::img_hash::PHash** hash, cv::Ptr<cv::img_hash::PHash>** sharedPtr);
 
-    Local $bHashDllType
-    If VarGetType($hash) == "DLLStruct" Then
-        $bHashDllType = "struct*"
+    Local $sHashDllType
+    If IsDllStruct($hash) Then
+        $sHashDllType = "struct*"
+    ElseIf $hash == Null Then
+        $sHashDllType = "ptr"
     Else
-        $bHashDllType = "ptr*"
+        $sHashDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePHashRelease", $bHashDllType, $hash, $bSharedPtrDllType, $sharedPtr), "cvePHashRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePHashRelease", $sHashDllType, $hash, $sSharedPtrDllType, $sharedPtr), "cvePHashRelease", @error)
 EndFunc   ;==>_cvePHashRelease
 
 Func _cveRadialVarianceHashCreate($imgHash, $sigma, $numOfAngleLine, $sharedPtr)
     ; CVAPI(cv::img_hash::RadialVarianceHash*) cveRadialVarianceHashCreate(cv::img_hash::ImgHashBase** imgHash, double sigma, int numOfAngleLine, cv::Ptr<cv::img_hash::RadialVarianceHash>** sharedPtr);
 
-    Local $bImgHashDllType
-    If VarGetType($imgHash) == "DLLStruct" Then
-        $bImgHashDllType = "struct*"
+    Local $sImgHashDllType
+    If IsDllStruct($imgHash) Then
+        $sImgHashDllType = "struct*"
+    ElseIf $imgHash == Null Then
+        $sImgHashDllType = "ptr"
     Else
-        $bImgHashDllType = "ptr*"
+        $sImgHashDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveRadialVarianceHashCreate", $bImgHashDllType, $imgHash, "double", $sigma, "int", $numOfAngleLine, $bSharedPtrDllType, $sharedPtr), "cveRadialVarianceHashCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveRadialVarianceHashCreate", $sImgHashDllType, $imgHash, "double", $sigma, "int", $numOfAngleLine, $sSharedPtrDllType, $sharedPtr), "cveRadialVarianceHashCreate", @error)
 EndFunc   ;==>_cveRadialVarianceHashCreate
 
 Func _cveRadialVarianceHashRelease($hash, $sharedPtr)
     ; CVAPI(void) cveRadialVarianceHashRelease(cv::img_hash::RadialVarianceHash** hash, cv::Ptr<cv::img_hash::RadialVarianceHash>** sharedPtr);
 
-    Local $bHashDllType
-    If VarGetType($hash) == "DLLStruct" Then
-        $bHashDllType = "struct*"
+    Local $sHashDllType
+    If IsDllStruct($hash) Then
+        $sHashDllType = "struct*"
+    ElseIf $hash == Null Then
+        $sHashDllType = "ptr"
     Else
-        $bHashDllType = "ptr*"
+        $sHashDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRadialVarianceHashRelease", $bHashDllType, $hash, $bSharedPtrDllType, $sharedPtr), "cveRadialVarianceHashRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRadialVarianceHashRelease", $sHashDllType, $hash, $sSharedPtrDllType, $sharedPtr), "cveRadialVarianceHashRelease", @error)
 EndFunc   ;==>_cveRadialVarianceHashRelease

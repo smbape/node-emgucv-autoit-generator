@@ -4,84 +4,92 @@
 Func _cudaCreateSobelFilter($srcType, $dstType, $dx, $dy, $ksize, $scale, $rowBorderType, $columnBorderType, $sharedPtr)
     ; CVAPI(cv::cuda::Filter*) cudaCreateSobelFilter(int srcType, int dstType, int dx, int dy, int ksize, double scale, int rowBorderType, int columnBorderType, cv::Ptr<cv::cuda::Filter>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateSobelFilter", "int", $srcType, "int", $dstType, "int", $dx, "int", $dy, "int", $ksize, "double", $scale, "int", $rowBorderType, "int", $columnBorderType, $bSharedPtrDllType, $sharedPtr), "cudaCreateSobelFilter", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateSobelFilter", "int", $srcType, "int", $dstType, "int", $dx, "int", $dy, "int", $ksize, "double", $scale, "int", $rowBorderType, "int", $columnBorderType, $sSharedPtrDllType, $sharedPtr), "cudaCreateSobelFilter", @error)
 EndFunc   ;==>_cudaCreateSobelFilter
 
 Func _cudaCreateGaussianFilter($srcType, $dstType, $ksize, $sigma1, $sigma2, $rowBorderType, $columnBorderType, $sharedPtr)
     ; CVAPI(cv::cuda::Filter*) cudaCreateGaussianFilter(int srcType, int dstType, CvSize* ksize, double sigma1, double sigma2, int rowBorderType, int columnBorderType, cv::Ptr<cv::cuda::Filter>** sharedPtr);
 
-    Local $bKsizeDllType
-    If VarGetType($ksize) == "DLLStruct" Then
-        $bKsizeDllType = "struct*"
+    Local $sKsizeDllType
+    If IsDllStruct($ksize) Then
+        $sKsizeDllType = "struct*"
     Else
-        $bKsizeDllType = "ptr"
+        $sKsizeDllType = "ptr"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateGaussianFilter", "int", $srcType, "int", $dstType, $bKsizeDllType, $ksize, "double", $sigma1, "double", $sigma2, "int", $rowBorderType, "int", $columnBorderType, $bSharedPtrDllType, $sharedPtr), "cudaCreateGaussianFilter", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateGaussianFilter", "int", $srcType, "int", $dstType, $sKsizeDllType, $ksize, "double", $sigma1, "double", $sigma2, "int", $rowBorderType, "int", $columnBorderType, $sSharedPtrDllType, $sharedPtr), "cudaCreateGaussianFilter", @error)
 EndFunc   ;==>_cudaCreateGaussianFilter
 
 Func _cudaCreateLaplacianFilter($srcType, $dstType, $ksize, $scale, $borderMode, $borderValue, $sharedPtr)
     ; CVAPI(cv::cuda::Filter*) cudaCreateLaplacianFilter(int srcType, int dstType, int ksize, double scale, int borderMode, CvScalar* borderValue, cv::Ptr<cv::cuda::Filter>** sharedPtr);
 
-    Local $bBorderValueDllType
-    If VarGetType($borderValue) == "DLLStruct" Then
-        $bBorderValueDllType = "struct*"
+    Local $sBorderValueDllType
+    If IsDllStruct($borderValue) Then
+        $sBorderValueDllType = "struct*"
     Else
-        $bBorderValueDllType = "ptr"
+        $sBorderValueDllType = "ptr"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateLaplacianFilter", "int", $srcType, "int", $dstType, "int", $ksize, "double", $scale, "int", $borderMode, $bBorderValueDllType, $borderValue, $bSharedPtrDllType, $sharedPtr), "cudaCreateLaplacianFilter", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateLaplacianFilter", "int", $srcType, "int", $dstType, "int", $ksize, "double", $scale, "int", $borderMode, $sBorderValueDllType, $borderValue, $sSharedPtrDllType, $sharedPtr), "cudaCreateLaplacianFilter", @error)
 EndFunc   ;==>_cudaCreateLaplacianFilter
 
 Func _cudaCreateLinearFilter($srcType, $dstType, $kernel, $anchor, $borderMode, $borderValue, $sharedPtr)
     ; CVAPI(cv::cuda::Filter*) cudaCreateLinearFilter(int srcType, int dstType, cv::_InputArray* kernel, CvPoint* anchor, int borderMode, CvScalar* borderValue, cv::Ptr<cv::cuda::Filter>** sharedPtr);
 
-    Local $bKernelDllType
-    If VarGetType($kernel) == "DLLStruct" Then
-        $bKernelDllType = "struct*"
+    Local $sKernelDllType
+    If IsDllStruct($kernel) Then
+        $sKernelDllType = "struct*"
     Else
-        $bKernelDllType = "ptr"
+        $sKernelDllType = "ptr"
     EndIf
 
-    Local $bAnchorDllType
-    If VarGetType($anchor) == "DLLStruct" Then
-        $bAnchorDllType = "struct*"
+    Local $sAnchorDllType
+    If IsDllStruct($anchor) Then
+        $sAnchorDllType = "struct*"
     Else
-        $bAnchorDllType = "ptr"
+        $sAnchorDllType = "ptr"
     EndIf
 
-    Local $bBorderValueDllType
-    If VarGetType($borderValue) == "DLLStruct" Then
-        $bBorderValueDllType = "struct*"
+    Local $sBorderValueDllType
+    If IsDllStruct($borderValue) Then
+        $sBorderValueDllType = "struct*"
     Else
-        $bBorderValueDllType = "ptr"
+        $sBorderValueDllType = "ptr"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateLinearFilter", "int", $srcType, "int", $dstType, $bKernelDllType, $kernel, $bAnchorDllType, $anchor, "int", $borderMode, $bBorderValueDllType, $borderValue, $bSharedPtrDllType, $sharedPtr), "cudaCreateLinearFilter", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateLinearFilter", "int", $srcType, "int", $dstType, $sKernelDllType, $kernel, $sAnchorDllType, $anchor, "int", $borderMode, $sBorderValueDllType, $borderValue, $sSharedPtrDllType, $sharedPtr), "cudaCreateLinearFilter", @error)
 EndFunc   ;==>_cudaCreateLinearFilter
 
 Func _cudaCreateLinearFilterMat($srcType, $dstType, $matKernel, $anchor, $borderMode, $borderValue, $sharedPtr)
@@ -117,126 +125,134 @@ EndFunc   ;==>_cudaCreateLinearFilterMat
 Func _cudaCreateBoxFilter($srcType, $dstType, $ksize, $anchor, $borderMode, $borderValue, $sharedPtr)
     ; CVAPI(cv::cuda::Filter*) cudaCreateBoxFilter(int srcType, int dstType, CvSize* ksize, CvPoint* anchor, int borderMode, CvScalar* borderValue, cv::Ptr<cv::cuda::Filter>** sharedPtr);
 
-    Local $bKsizeDllType
-    If VarGetType($ksize) == "DLLStruct" Then
-        $bKsizeDllType = "struct*"
+    Local $sKsizeDllType
+    If IsDllStruct($ksize) Then
+        $sKsizeDllType = "struct*"
     Else
-        $bKsizeDllType = "ptr"
+        $sKsizeDllType = "ptr"
     EndIf
 
-    Local $bAnchorDllType
-    If VarGetType($anchor) == "DLLStruct" Then
-        $bAnchorDllType = "struct*"
+    Local $sAnchorDllType
+    If IsDllStruct($anchor) Then
+        $sAnchorDllType = "struct*"
     Else
-        $bAnchorDllType = "ptr"
+        $sAnchorDllType = "ptr"
     EndIf
 
-    Local $bBorderValueDllType
-    If VarGetType($borderValue) == "DLLStruct" Then
-        $bBorderValueDllType = "struct*"
+    Local $sBorderValueDllType
+    If IsDllStruct($borderValue) Then
+        $sBorderValueDllType = "struct*"
     Else
-        $bBorderValueDllType = "ptr"
+        $sBorderValueDllType = "ptr"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateBoxFilter", "int", $srcType, "int", $dstType, $bKsizeDllType, $ksize, $bAnchorDllType, $anchor, "int", $borderMode, $bBorderValueDllType, $borderValue, $bSharedPtrDllType, $sharedPtr), "cudaCreateBoxFilter", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateBoxFilter", "int", $srcType, "int", $dstType, $sKsizeDllType, $ksize, $sAnchorDllType, $anchor, "int", $borderMode, $sBorderValueDllType, $borderValue, $sSharedPtrDllType, $sharedPtr), "cudaCreateBoxFilter", @error)
 EndFunc   ;==>_cudaCreateBoxFilter
 
 Func _cudaCreateBoxMaxFilter($srcType, $ksize, $anchor, $borderMode, $borderValue, $sharedPtr)
     ; CVAPI(cv::cuda::Filter*) cudaCreateBoxMaxFilter(int srcType, CvSize* ksize, CvPoint* anchor, int borderMode, CvScalar* borderValue, cv::Ptr<cv::cuda::Filter>** sharedPtr);
 
-    Local $bKsizeDllType
-    If VarGetType($ksize) == "DLLStruct" Then
-        $bKsizeDllType = "struct*"
+    Local $sKsizeDllType
+    If IsDllStruct($ksize) Then
+        $sKsizeDllType = "struct*"
     Else
-        $bKsizeDllType = "ptr"
+        $sKsizeDllType = "ptr"
     EndIf
 
-    Local $bAnchorDllType
-    If VarGetType($anchor) == "DLLStruct" Then
-        $bAnchorDllType = "struct*"
+    Local $sAnchorDllType
+    If IsDllStruct($anchor) Then
+        $sAnchorDllType = "struct*"
     Else
-        $bAnchorDllType = "ptr"
+        $sAnchorDllType = "ptr"
     EndIf
 
-    Local $bBorderValueDllType
-    If VarGetType($borderValue) == "DLLStruct" Then
-        $bBorderValueDllType = "struct*"
+    Local $sBorderValueDllType
+    If IsDllStruct($borderValue) Then
+        $sBorderValueDllType = "struct*"
     Else
-        $bBorderValueDllType = "ptr"
+        $sBorderValueDllType = "ptr"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateBoxMaxFilter", "int", $srcType, $bKsizeDllType, $ksize, $bAnchorDllType, $anchor, "int", $borderMode, $bBorderValueDllType, $borderValue, $bSharedPtrDllType, $sharedPtr), "cudaCreateBoxMaxFilter", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateBoxMaxFilter", "int", $srcType, $sKsizeDllType, $ksize, $sAnchorDllType, $anchor, "int", $borderMode, $sBorderValueDllType, $borderValue, $sSharedPtrDllType, $sharedPtr), "cudaCreateBoxMaxFilter", @error)
 EndFunc   ;==>_cudaCreateBoxMaxFilter
 
 Func _cudaCreateBoxMinFilter($srcType, $ksize, $anchor, $borderMode, $borderValue, $sharedPtr)
     ; CVAPI(cv::cuda::Filter*) cudaCreateBoxMinFilter(int srcType, CvSize* ksize, CvPoint* anchor, int borderMode, CvScalar* borderValue, cv::Ptr<cv::cuda::Filter>** sharedPtr);
 
-    Local $bKsizeDllType
-    If VarGetType($ksize) == "DLLStruct" Then
-        $bKsizeDllType = "struct*"
+    Local $sKsizeDllType
+    If IsDllStruct($ksize) Then
+        $sKsizeDllType = "struct*"
     Else
-        $bKsizeDllType = "ptr"
+        $sKsizeDllType = "ptr"
     EndIf
 
-    Local $bAnchorDllType
-    If VarGetType($anchor) == "DLLStruct" Then
-        $bAnchorDllType = "struct*"
+    Local $sAnchorDllType
+    If IsDllStruct($anchor) Then
+        $sAnchorDllType = "struct*"
     Else
-        $bAnchorDllType = "ptr"
+        $sAnchorDllType = "ptr"
     EndIf
 
-    Local $bBorderValueDllType
-    If VarGetType($borderValue) == "DLLStruct" Then
-        $bBorderValueDllType = "struct*"
+    Local $sBorderValueDllType
+    If IsDllStruct($borderValue) Then
+        $sBorderValueDllType = "struct*"
     Else
-        $bBorderValueDllType = "ptr"
+        $sBorderValueDllType = "ptr"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateBoxMinFilter", "int", $srcType, $bKsizeDllType, $ksize, $bAnchorDllType, $anchor, "int", $borderMode, $bBorderValueDllType, $borderValue, $bSharedPtrDllType, $sharedPtr), "cudaCreateBoxMinFilter", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateBoxMinFilter", "int", $srcType, $sKsizeDllType, $ksize, $sAnchorDllType, $anchor, "int", $borderMode, $sBorderValueDllType, $borderValue, $sSharedPtrDllType, $sharedPtr), "cudaCreateBoxMinFilter", @error)
 EndFunc   ;==>_cudaCreateBoxMinFilter
 
 Func _cudaCreateMorphologyFilter($op, $srcType, $kernel, $anchor, $iterations, $sharedPtr)
     ; CVAPI(cv::cuda::Filter*) cudaCreateMorphologyFilter(int op, int srcType, cv::_InputArray* kernel, CvPoint* anchor, int iterations, cv::Ptr<cv::cuda::Filter>** sharedPtr);
 
-    Local $bKernelDllType
-    If VarGetType($kernel) == "DLLStruct" Then
-        $bKernelDllType = "struct*"
+    Local $sKernelDllType
+    If IsDllStruct($kernel) Then
+        $sKernelDllType = "struct*"
     Else
-        $bKernelDllType = "ptr"
+        $sKernelDllType = "ptr"
     EndIf
 
-    Local $bAnchorDllType
-    If VarGetType($anchor) == "DLLStruct" Then
-        $bAnchorDllType = "struct*"
+    Local $sAnchorDllType
+    If IsDllStruct($anchor) Then
+        $sAnchorDllType = "struct*"
     Else
-        $bAnchorDllType = "ptr"
+        $sAnchorDllType = "ptr"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateMorphologyFilter", "int", $op, "int", $srcType, $bKernelDllType, $kernel, $bAnchorDllType, $anchor, "int", $iterations, $bSharedPtrDllType, $sharedPtr), "cudaCreateMorphologyFilter", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateMorphologyFilter", "int", $op, "int", $srcType, $sKernelDllType, $kernel, $sAnchorDllType, $anchor, "int", $iterations, $sSharedPtrDllType, $sharedPtr), "cudaCreateMorphologyFilter", @error)
 EndFunc   ;==>_cudaCreateMorphologyFilter
 
 Func _cudaCreateMorphologyFilterMat($op, $srcType, $matKernel, $anchor, $iterations, $sharedPtr)
@@ -272,34 +288,36 @@ EndFunc   ;==>_cudaCreateMorphologyFilterMat
 Func _cudaCreateSeparableLinearFilter($srcType, $dstType, $rowKernel, $columnKernel, $anchor, $rowBorderMode, $columnBorderMode, $sharedPtr)
     ; CVAPI(cv::cuda::Filter*) cudaCreateSeparableLinearFilter(int srcType, int dstType, cv::_InputArray* rowKernel, cv::_InputArray* columnKernel, CvPoint* anchor, int rowBorderMode, int columnBorderMode, cv::Ptr<cv::cuda::Filter>** sharedPtr);
 
-    Local $bRowKernelDllType
-    If VarGetType($rowKernel) == "DLLStruct" Then
-        $bRowKernelDllType = "struct*"
+    Local $sRowKernelDllType
+    If IsDllStruct($rowKernel) Then
+        $sRowKernelDllType = "struct*"
     Else
-        $bRowKernelDllType = "ptr"
+        $sRowKernelDllType = "ptr"
     EndIf
 
-    Local $bColumnKernelDllType
-    If VarGetType($columnKernel) == "DLLStruct" Then
-        $bColumnKernelDllType = "struct*"
+    Local $sColumnKernelDllType
+    If IsDllStruct($columnKernel) Then
+        $sColumnKernelDllType = "struct*"
     Else
-        $bColumnKernelDllType = "ptr"
+        $sColumnKernelDllType = "ptr"
     EndIf
 
-    Local $bAnchorDllType
-    If VarGetType($anchor) == "DLLStruct" Then
-        $bAnchorDllType = "struct*"
+    Local $sAnchorDllType
+    If IsDllStruct($anchor) Then
+        $sAnchorDllType = "struct*"
     Else
-        $bAnchorDllType = "ptr"
+        $sAnchorDllType = "ptr"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateSeparableLinearFilter", "int", $srcType, "int", $dstType, $bRowKernelDllType, $rowKernel, $bColumnKernelDllType, $columnKernel, $bAnchorDllType, $anchor, "int", $rowBorderMode, "int", $columnBorderMode, $bSharedPtrDllType, $sharedPtr), "cudaCreateSeparableLinearFilter", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateSeparableLinearFilter", "int", $srcType, "int", $dstType, $sRowKernelDllType, $rowKernel, $sColumnKernelDllType, $columnKernel, $sAnchorDllType, $anchor, "int", $rowBorderMode, "int", $columnBorderMode, $sSharedPtrDllType, $sharedPtr), "cudaCreateSeparableLinearFilter", @error)
 EndFunc   ;==>_cudaCreateSeparableLinearFilter
 
 Func _cudaCreateSeparableLinearFilterMat($srcType, $dstType, $matRowKernel, $matColumnKernel, $anchor, $rowBorderMode, $columnBorderMode, $sharedPtr)
@@ -357,109 +375,119 @@ EndFunc   ;==>_cudaCreateSeparableLinearFilterMat
 Func _cudaCreateDerivFilter($srcType, $dstType, $dx, $dy, $ksize, $normalize, $scale, $rowBorderMode, $columnBorderMode, $sharedPtr)
     ; CVAPI(cv::cuda::Filter*) cudaCreateDerivFilter(int srcType, int dstType, int dx, int dy, int ksize, bool normalize, double scale, int rowBorderMode, int columnBorderMode, cv::Ptr<cv::cuda::Filter>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateDerivFilter", "int", $srcType, "int", $dstType, "int", $dx, "int", $dy, "int", $ksize, "boolean", $normalize, "double", $scale, "int", $rowBorderMode, "int", $columnBorderMode, $bSharedPtrDllType, $sharedPtr), "cudaCreateDerivFilter", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateDerivFilter", "int", $srcType, "int", $dstType, "int", $dx, "int", $dy, "int", $ksize, "boolean", $normalize, "double", $scale, "int", $rowBorderMode, "int", $columnBorderMode, $sSharedPtrDllType, $sharedPtr), "cudaCreateDerivFilter", @error)
 EndFunc   ;==>_cudaCreateDerivFilter
 
 Func _cudaCreateScharrFilter($srcType, $dstType, $dx, $dy, $scale, $rowBorderMode, $columnBorderMode, $sharedPtr)
     ; CVAPI(cv::cuda::Filter*) cudaCreateScharrFilter(int srcType, int dstType, int dx, int dy, double scale, int rowBorderMode, int columnBorderMode, cv::Ptr<cv::cuda::Filter>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateScharrFilter", "int", $srcType, "int", $dstType, "int", $dx, "int", $dy, "double", $scale, "int", $rowBorderMode, "int", $columnBorderMode, $bSharedPtrDllType, $sharedPtr), "cudaCreateScharrFilter", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateScharrFilter", "int", $srcType, "int", $dstType, "int", $dx, "int", $dy, "double", $scale, "int", $rowBorderMode, "int", $columnBorderMode, $sSharedPtrDllType, $sharedPtr), "cudaCreateScharrFilter", @error)
 EndFunc   ;==>_cudaCreateScharrFilter
 
 Func _cudaCreateRowSumFilter($srcType, $dstType, $ksize, $anchor, $borderMode, $borderVal, $sharedPtr)
     ; CVAPI(cv::cuda::Filter*) cudaCreateRowSumFilter(int srcType, int dstType, int ksize, int anchor, int borderMode, CvScalar* borderVal, cv::Ptr<cv::cuda::Filter>** sharedPtr);
 
-    Local $bBorderValDllType
-    If VarGetType($borderVal) == "DLLStruct" Then
-        $bBorderValDllType = "struct*"
+    Local $sBorderValDllType
+    If IsDllStruct($borderVal) Then
+        $sBorderValDllType = "struct*"
     Else
-        $bBorderValDllType = "ptr"
+        $sBorderValDllType = "ptr"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateRowSumFilter", "int", $srcType, "int", $dstType, "int", $ksize, "int", $anchor, "int", $borderMode, $bBorderValDllType, $borderVal, $bSharedPtrDllType, $sharedPtr), "cudaCreateRowSumFilter", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateRowSumFilter", "int", $srcType, "int", $dstType, "int", $ksize, "int", $anchor, "int", $borderMode, $sBorderValDllType, $borderVal, $sSharedPtrDllType, $sharedPtr), "cudaCreateRowSumFilter", @error)
 EndFunc   ;==>_cudaCreateRowSumFilter
 
 Func _cudaCreateColumnSumFilter($srcType, $dstType, $ksize, $anchor, $borderMode, $borderVal, $sharedPtr)
     ; CVAPI(cv::cuda::Filter*) cudaCreateColumnSumFilter(int srcType, int dstType, int ksize, int anchor, int borderMode, CvScalar* borderVal, cv::Ptr<cv::cuda::Filter>** sharedPtr);
 
-    Local $bBorderValDllType
-    If VarGetType($borderVal) == "DLLStruct" Then
-        $bBorderValDllType = "struct*"
+    Local $sBorderValDllType
+    If IsDllStruct($borderVal) Then
+        $sBorderValDllType = "struct*"
     Else
-        $bBorderValDllType = "ptr"
+        $sBorderValDllType = "ptr"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateColumnSumFilter", "int", $srcType, "int", $dstType, "int", $ksize, "int", $anchor, "int", $borderMode, $bBorderValDllType, $borderVal, $bSharedPtrDllType, $sharedPtr), "cudaCreateColumnSumFilter", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateColumnSumFilter", "int", $srcType, "int", $dstType, "int", $ksize, "int", $anchor, "int", $borderMode, $sBorderValDllType, $borderVal, $sSharedPtrDllType, $sharedPtr), "cudaCreateColumnSumFilter", @error)
 EndFunc   ;==>_cudaCreateColumnSumFilter
 
 Func _cudaCreateMedianFilter($srcType, $windowSize, $partition, $sharedPtr)
     ; CVAPI(cv::cuda::Filter*) cudaCreateMedianFilter(int srcType, int windowSize, int partition, cv::Ptr<cv::cuda::Filter>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateMedianFilter", "int", $srcType, "int", $windowSize, "int", $partition, $bSharedPtrDllType, $sharedPtr), "cudaCreateMedianFilter", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateMedianFilter", "int", $srcType, "int", $windowSize, "int", $partition, $sSharedPtrDllType, $sharedPtr), "cudaCreateMedianFilter", @error)
 EndFunc   ;==>_cudaCreateMedianFilter
 
 Func _cudaFilterApply($filter, $image, $dst, $stream)
     ; CVAPI(void) cudaFilterApply(cv::cuda::Filter* filter, cv::_InputArray* image, cv::_OutputArray* dst, cv::cuda::Stream* stream);
 
-    Local $bFilterDllType
-    If VarGetType($filter) == "DLLStruct" Then
-        $bFilterDllType = "struct*"
+    Local $sFilterDllType
+    If IsDllStruct($filter) Then
+        $sFilterDllType = "struct*"
     Else
-        $bFilterDllType = "ptr"
+        $sFilterDllType = "ptr"
     EndIf
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaFilterApply", $bFilterDllType, $filter, $bImageDllType, $image, $bDstDllType, $dst, $bStreamDllType, $stream), "cudaFilterApply", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaFilterApply", $sFilterDllType, $filter, $sImageDllType, $image, $sDstDllType, $dst, $sStreamDllType, $stream), "cudaFilterApply", @error)
 EndFunc   ;==>_cudaFilterApply
 
 Func _cudaFilterApplyMat($filter, $matImage, $matDst, $stream)
@@ -515,12 +543,14 @@ EndFunc   ;==>_cudaFilterApplyMat
 Func _cudaFilterRelease($filter)
     ; CVAPI(void) cudaFilterRelease(cv::Ptr<cv::cuda::Filter>** filter);
 
-    Local $bFilterDllType
-    If VarGetType($filter) == "DLLStruct" Then
-        $bFilterDllType = "struct*"
+    Local $sFilterDllType
+    If IsDllStruct($filter) Then
+        $sFilterDllType = "struct*"
+    ElseIf $filter == Null Then
+        $sFilterDllType = "ptr"
     Else
-        $bFilterDllType = "ptr*"
+        $sFilterDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaFilterRelease", $bFilterDllType, $filter), "cudaFilterRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaFilterRelease", $sFilterDllType, $filter), "cudaFilterRelease", @error)
 EndFunc   ;==>_cudaFilterRelease

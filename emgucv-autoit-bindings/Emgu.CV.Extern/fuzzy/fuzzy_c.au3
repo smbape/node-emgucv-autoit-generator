@@ -4,28 +4,28 @@
 Func _cveFtCreateKernel($A, $B, $kernel, $chn)
     ; CVAPI(void) cveFtCreateKernel(cv::_InputArray* A, cv::_InputArray* B, cv::_OutputArray* kernel, int chn);
 
-    Local $bADllType
-    If VarGetType($A) == "DLLStruct" Then
-        $bADllType = "struct*"
+    Local $sADllType
+    If IsDllStruct($A) Then
+        $sADllType = "struct*"
     Else
-        $bADllType = "ptr"
+        $sADllType = "ptr"
     EndIf
 
-    Local $bBDllType
-    If VarGetType($B) == "DLLStruct" Then
-        $bBDllType = "struct*"
+    Local $sBDllType
+    If IsDllStruct($B) Then
+        $sBDllType = "struct*"
     Else
-        $bBDllType = "ptr"
+        $sBDllType = "ptr"
     EndIf
 
-    Local $bKernelDllType
-    If VarGetType($kernel) == "DLLStruct" Then
-        $bKernelDllType = "struct*"
+    Local $sKernelDllType
+    If IsDllStruct($kernel) Then
+        $sKernelDllType = "struct*"
     Else
-        $bKernelDllType = "ptr"
+        $sKernelDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtCreateKernel", $bADllType, $A, $bBDllType, $B, $bKernelDllType, $kernel, "int", $chn), "cveFtCreateKernel", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtCreateKernel", $sADllType, $A, $sBDllType, $B, $sKernelDllType, $kernel, "int", $chn), "cveFtCreateKernel", @error)
 EndFunc   ;==>_cveFtCreateKernel
 
 Func _cveFtCreateKernelMat($matA, $matB, $matKernel, $chn)
@@ -103,14 +103,14 @@ EndFunc   ;==>_cveFtCreateKernelMat
 Func _cveFtcreateKernelFromFunction($function, $radius, $kernel, $chn)
     ; CVAPI(void) cveFtcreateKernelFromFunction(int function, int radius, cv::_OutputArray* kernel, int chn);
 
-    Local $bKernelDllType
-    If VarGetType($kernel) == "DLLStruct" Then
-        $bKernelDllType = "struct*"
+    Local $sKernelDllType
+    If IsDllStruct($kernel) Then
+        $sKernelDllType = "struct*"
     Else
-        $bKernelDllType = "ptr"
+        $sKernelDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtcreateKernelFromFunction", "int", $function, "int", $radius, $bKernelDllType, $kernel, "int", $chn), "cveFtcreateKernelFromFunction", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtcreateKernelFromFunction", "int", $function, "int", $radius, $sKernelDllType, $kernel, "int", $chn), "cveFtcreateKernelFromFunction", @error)
 EndFunc   ;==>_cveFtcreateKernelFromFunction
 
 Func _cveFtcreateKernelFromFunctionMat($function, $radius, $matKernel, $chn)
@@ -144,53 +144,53 @@ EndFunc   ;==>_cveFtcreateKernelFromFunctionMat
 Func _cveFtInpaint($image, $mask, $output, $radius, $function, $algorithm)
     ; CVAPI(void) cveFtInpaint(cv::Mat* image, cv::Mat* mask, cv::Mat* output, int radius, int function, int algorithm);
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bMaskDllType
-    If VarGetType($mask) == "DLLStruct" Then
-        $bMaskDllType = "struct*"
+    Local $sMaskDllType
+    If IsDllStruct($mask) Then
+        $sMaskDllType = "struct*"
     Else
-        $bMaskDllType = "ptr"
+        $sMaskDllType = "ptr"
     EndIf
 
-    Local $bOutputDllType
-    If VarGetType($output) == "DLLStruct" Then
-        $bOutputDllType = "struct*"
+    Local $sOutputDllType
+    If IsDllStruct($output) Then
+        $sOutputDllType = "struct*"
     Else
-        $bOutputDllType = "ptr"
+        $sOutputDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtInpaint", $bImageDllType, $image, $bMaskDllType, $mask, $bOutputDllType, $output, "int", $radius, "int", $function, "int", $algorithm), "cveFtInpaint", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtInpaint", $sImageDllType, $image, $sMaskDllType, $mask, $sOutputDllType, $output, "int", $radius, "int", $function, "int", $algorithm), "cveFtInpaint", @error)
 EndFunc   ;==>_cveFtInpaint
 
 Func _cveFtFilter($image, $kernel, $output)
     ; CVAPI(void) cveFtFilter(cv::Mat* image, cv::Mat* kernel, cv::Mat* output);
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bKernelDllType
-    If VarGetType($kernel) == "DLLStruct" Then
-        $bKernelDllType = "struct*"
+    Local $sKernelDllType
+    If IsDllStruct($kernel) Then
+        $sKernelDllType = "struct*"
     Else
-        $bKernelDllType = "ptr"
+        $sKernelDllType = "ptr"
     EndIf
 
-    Local $bOutputDllType
-    If VarGetType($output) == "DLLStruct" Then
-        $bOutputDllType = "struct*"
+    Local $sOutputDllType
+    If IsDllStruct($output) Then
+        $sOutputDllType = "struct*"
     Else
-        $bOutputDllType = "ptr"
+        $sOutputDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtFilter", $bImageDllType, $image, $bKernelDllType, $kernel, $bOutputDllType, $output), "cveFtFilter", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtFilter", $sImageDllType, $image, $sKernelDllType, $kernel, $sOutputDllType, $output), "cveFtFilter", @error)
 EndFunc   ;==>_cveFtFilter

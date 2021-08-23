@@ -4,54 +4,56 @@
 Func _cudaStereoBMCreate($numDisparities, $blockSize, $sharedPtr)
     ; CVAPI(cv::cuda::StereoBM*) cudaStereoBMCreate(int numDisparities, int blockSize, cv::Ptr<cv::cuda::StereoBM>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaStereoBMCreate", "int", $numDisparities, "int", $blockSize, $bSharedPtrDllType, $sharedPtr), "cudaStereoBMCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaStereoBMCreate", "int", $numDisparities, "int", $blockSize, $sSharedPtrDllType, $sharedPtr), "cudaStereoBMCreate", @error)
 EndFunc   ;==>_cudaStereoBMCreate
 
 Func _cudaStereoBMFindStereoCorrespondence($stereo, $left, $right, $disparity, $stream)
     ; CVAPI(void) cudaStereoBMFindStereoCorrespondence(cv::cuda::StereoBM* stereo, cv::_InputArray* left, cv::_InputArray* right, cv::_OutputArray* disparity, cv::cuda::Stream* stream);
 
-    Local $bStereoDllType
-    If VarGetType($stereo) == "DLLStruct" Then
-        $bStereoDllType = "struct*"
+    Local $sStereoDllType
+    If IsDllStruct($stereo) Then
+        $sStereoDllType = "struct*"
     Else
-        $bStereoDllType = "ptr"
+        $sStereoDllType = "ptr"
     EndIf
 
-    Local $bLeftDllType
-    If VarGetType($left) == "DLLStruct" Then
-        $bLeftDllType = "struct*"
+    Local $sLeftDllType
+    If IsDllStruct($left) Then
+        $sLeftDllType = "struct*"
     Else
-        $bLeftDllType = "ptr"
+        $sLeftDllType = "ptr"
     EndIf
 
-    Local $bRightDllType
-    If VarGetType($right) == "DLLStruct" Then
-        $bRightDllType = "struct*"
+    Local $sRightDllType
+    If IsDllStruct($right) Then
+        $sRightDllType = "struct*"
     Else
-        $bRightDllType = "ptr"
+        $sRightDllType = "ptr"
     EndIf
 
-    Local $bDisparityDllType
-    If VarGetType($disparity) == "DLLStruct" Then
-        $bDisparityDllType = "struct*"
+    Local $sDisparityDllType
+    If IsDllStruct($disparity) Then
+        $sDisparityDllType = "struct*"
     Else
-        $bDisparityDllType = "ptr"
+        $sDisparityDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaStereoBMFindStereoCorrespondence", $bStereoDllType, $stereo, $bLeftDllType, $left, $bRightDllType, $right, $bDisparityDllType, $disparity, $bStreamDllType, $stream), "cudaStereoBMFindStereoCorrespondence", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaStereoBMFindStereoCorrespondence", $sStereoDllType, $stereo, $sLeftDllType, $left, $sRightDllType, $right, $sDisparityDllType, $disparity, $sStreamDllType, $stream), "cudaStereoBMFindStereoCorrespondence", @error)
 EndFunc   ;==>_cudaStereoBMFindStereoCorrespondence
 
 Func _cudaStereoBMFindStereoCorrespondenceMat($stereo, $matLeft, $matRight, $matDisparity, $stream)
@@ -129,67 +131,71 @@ EndFunc   ;==>_cudaStereoBMFindStereoCorrespondenceMat
 Func _cudaStereoBMRelease($stereoBM)
     ; CVAPI(void) cudaStereoBMRelease(cv::Ptr<cv::cuda::StereoBM>** stereoBM);
 
-    Local $bStereoBMDllType
-    If VarGetType($stereoBM) == "DLLStruct" Then
-        $bStereoBMDllType = "struct*"
+    Local $sStereoBMDllType
+    If IsDllStruct($stereoBM) Then
+        $sStereoBMDllType = "struct*"
+    ElseIf $stereoBM == Null Then
+        $sStereoBMDllType = "ptr"
     Else
-        $bStereoBMDllType = "ptr*"
+        $sStereoBMDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaStereoBMRelease", $bStereoBMDllType, $stereoBM), "cudaStereoBMRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaStereoBMRelease", $sStereoBMDllType, $stereoBM), "cudaStereoBMRelease", @error)
 EndFunc   ;==>_cudaStereoBMRelease
 
 Func _cudaStereoConstantSpaceBPCreate($ndisp, $iters, $levels, $nr_plane, $sharedPtr)
     ; CVAPI(cv::cuda::StereoConstantSpaceBP*) cudaStereoConstantSpaceBPCreate(int ndisp, int iters, int levels, int nr_plane, cv::Ptr<cv::cuda::StereoConstantSpaceBP>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaStereoConstantSpaceBPCreate", "int", $ndisp, "int", $iters, "int", $levels, "int", $nr_plane, $bSharedPtrDllType, $sharedPtr), "cudaStereoConstantSpaceBPCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaStereoConstantSpaceBPCreate", "int", $ndisp, "int", $iters, "int", $levels, "int", $nr_plane, $sSharedPtrDllType, $sharedPtr), "cudaStereoConstantSpaceBPCreate", @error)
 EndFunc   ;==>_cudaStereoConstantSpaceBPCreate
 
 Func _cudaStereoConstantSpaceBPFindStereoCorrespondence($stereo, $left, $right, $disparity, $stream)
     ; CVAPI(void) cudaStereoConstantSpaceBPFindStereoCorrespondence(cv::cuda::StereoConstantSpaceBP* stereo, cv::_InputArray* left, cv::_InputArray* right, cv::_OutputArray* disparity, cv::cuda::Stream* stream);
 
-    Local $bStereoDllType
-    If VarGetType($stereo) == "DLLStruct" Then
-        $bStereoDllType = "struct*"
+    Local $sStereoDllType
+    If IsDllStruct($stereo) Then
+        $sStereoDllType = "struct*"
     Else
-        $bStereoDllType = "ptr"
+        $sStereoDllType = "ptr"
     EndIf
 
-    Local $bLeftDllType
-    If VarGetType($left) == "DLLStruct" Then
-        $bLeftDllType = "struct*"
+    Local $sLeftDllType
+    If IsDllStruct($left) Then
+        $sLeftDllType = "struct*"
     Else
-        $bLeftDllType = "ptr"
+        $sLeftDllType = "ptr"
     EndIf
 
-    Local $bRightDllType
-    If VarGetType($right) == "DLLStruct" Then
-        $bRightDllType = "struct*"
+    Local $sRightDllType
+    If IsDllStruct($right) Then
+        $sRightDllType = "struct*"
     Else
-        $bRightDllType = "ptr"
+        $sRightDllType = "ptr"
     EndIf
 
-    Local $bDisparityDllType
-    If VarGetType($disparity) == "DLLStruct" Then
-        $bDisparityDllType = "struct*"
+    Local $sDisparityDllType
+    If IsDllStruct($disparity) Then
+        $sDisparityDllType = "struct*"
     Else
-        $bDisparityDllType = "ptr"
+        $sDisparityDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaStereoConstantSpaceBPFindStereoCorrespondence", $bStereoDllType, $stereo, $bLeftDllType, $left, $bRightDllType, $right, $bDisparityDllType, $disparity, $bStreamDllType, $stream), "cudaStereoConstantSpaceBPFindStereoCorrespondence", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaStereoConstantSpaceBPFindStereoCorrespondence", $sStereoDllType, $stereo, $sLeftDllType, $left, $sRightDllType, $right, $sDisparityDllType, $disparity, $sStreamDllType, $stream), "cudaStereoConstantSpaceBPFindStereoCorrespondence", @error)
 EndFunc   ;==>_cudaStereoConstantSpaceBPFindStereoCorrespondence
 
 Func _cudaStereoConstantSpaceBPFindStereoCorrespondenceMat($stereo, $matLeft, $matRight, $matDisparity, $stream)
@@ -267,67 +273,71 @@ EndFunc   ;==>_cudaStereoConstantSpaceBPFindStereoCorrespondenceMat
 Func _cudaStereoConstantSpaceBPRelease($stereo)
     ; CVAPI(void) cudaStereoConstantSpaceBPRelease(cv::Ptr<cv::cuda::StereoConstantSpaceBP>** stereo);
 
-    Local $bStereoDllType
-    If VarGetType($stereo) == "DLLStruct" Then
-        $bStereoDllType = "struct*"
+    Local $sStereoDllType
+    If IsDllStruct($stereo) Then
+        $sStereoDllType = "struct*"
+    ElseIf $stereo == Null Then
+        $sStereoDllType = "ptr"
     Else
-        $bStereoDllType = "ptr*"
+        $sStereoDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaStereoConstantSpaceBPRelease", $bStereoDllType, $stereo), "cudaStereoConstantSpaceBPRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaStereoConstantSpaceBPRelease", $sStereoDllType, $stereo), "cudaStereoConstantSpaceBPRelease", @error)
 EndFunc   ;==>_cudaStereoConstantSpaceBPRelease
 
 Func _cudaDisparityBilateralFilterCreate($ndisp, $radius, $iters, $sharedPtr)
     ; CVAPI(cv::cuda::DisparityBilateralFilter*) cudaDisparityBilateralFilterCreate(int ndisp, int radius, int iters, cv::Ptr<cv::cuda::DisparityBilateralFilter>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaDisparityBilateralFilterCreate", "int", $ndisp, "int", $radius, "int", $iters, $bSharedPtrDllType, $sharedPtr), "cudaDisparityBilateralFilterCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaDisparityBilateralFilterCreate", "int", $ndisp, "int", $radius, "int", $iters, $sSharedPtrDllType, $sharedPtr), "cudaDisparityBilateralFilterCreate", @error)
 EndFunc   ;==>_cudaDisparityBilateralFilterCreate
 
 Func _cudaDisparityBilateralFilterApply($filter, $disparity, $image, $dst, $stream)
     ; CVAPI(void) cudaDisparityBilateralFilterApply(cv::cuda::DisparityBilateralFilter* filter, cv::_InputArray* disparity, cv::_InputArray* image, cv::_OutputArray* dst, cv::cuda::Stream* stream);
 
-    Local $bFilterDllType
-    If VarGetType($filter) == "DLLStruct" Then
-        $bFilterDllType = "struct*"
+    Local $sFilterDllType
+    If IsDllStruct($filter) Then
+        $sFilterDllType = "struct*"
     Else
-        $bFilterDllType = "ptr"
+        $sFilterDllType = "ptr"
     EndIf
 
-    Local $bDisparityDllType
-    If VarGetType($disparity) == "DLLStruct" Then
-        $bDisparityDllType = "struct*"
+    Local $sDisparityDllType
+    If IsDllStruct($disparity) Then
+        $sDisparityDllType = "struct*"
     Else
-        $bDisparityDllType = "ptr"
+        $sDisparityDllType = "ptr"
     EndIf
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDisparityBilateralFilterApply", $bFilterDllType, $filter, $bDisparityDllType, $disparity, $bImageDllType, $image, $bDstDllType, $dst, $bStreamDllType, $stream), "cudaDisparityBilateralFilterApply", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDisparityBilateralFilterApply", $sFilterDllType, $filter, $sDisparityDllType, $disparity, $sImageDllType, $image, $sDstDllType, $dst, $sStreamDllType, $stream), "cudaDisparityBilateralFilterApply", @error)
 EndFunc   ;==>_cudaDisparityBilateralFilterApply
 
 Func _cudaDisparityBilateralFilterApplyMat($filter, $matDisparity, $matImage, $matDst, $stream)
@@ -405,41 +415,43 @@ EndFunc   ;==>_cudaDisparityBilateralFilterApplyMat
 Func _cudaDisparityBilateralFilterRelease($filter)
     ; CVAPI(void) cudaDisparityBilateralFilterRelease(cv::Ptr<cv::cuda::DisparityBilateralFilter>** filter);
 
-    Local $bFilterDllType
-    If VarGetType($filter) == "DLLStruct" Then
-        $bFilterDllType = "struct*"
+    Local $sFilterDllType
+    If IsDllStruct($filter) Then
+        $sFilterDllType = "struct*"
+    ElseIf $filter == Null Then
+        $sFilterDllType = "ptr"
     Else
-        $bFilterDllType = "ptr*"
+        $sFilterDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDisparityBilateralFilterRelease", $bFilterDllType, $filter), "cudaDisparityBilateralFilterRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDisparityBilateralFilterRelease", $sFilterDllType, $filter), "cudaDisparityBilateralFilterRelease", @error)
 EndFunc   ;==>_cudaDisparityBilateralFilterRelease
 
 Func _cudaDrawColorDisp($srcDisp, $dstDisp, $ndisp, $stream)
     ; CVAPI(void) cudaDrawColorDisp(cv::_InputArray* srcDisp, cv::_OutputArray* dstDisp, int ndisp, cv::cuda::Stream* stream);
 
-    Local $bSrcDispDllType
-    If VarGetType($srcDisp) == "DLLStruct" Then
-        $bSrcDispDllType = "struct*"
+    Local $sSrcDispDllType
+    If IsDllStruct($srcDisp) Then
+        $sSrcDispDllType = "struct*"
     Else
-        $bSrcDispDllType = "ptr"
+        $sSrcDispDllType = "ptr"
     EndIf
 
-    Local $bDstDispDllType
-    If VarGetType($dstDisp) == "DLLStruct" Then
-        $bDstDispDllType = "struct*"
+    Local $sDstDispDllType
+    If IsDllStruct($dstDisp) Then
+        $sDstDispDllType = "struct*"
     Else
-        $bDstDispDllType = "ptr"
+        $sDstDispDllType = "ptr"
     EndIf
 
-    Local $bStreamDllType
-    If VarGetType($stream) == "DLLStruct" Then
-        $bStreamDllType = "struct*"
+    Local $sStreamDllType
+    If IsDllStruct($stream) Then
+        $sStreamDllType = "struct*"
     Else
-        $bStreamDllType = "ptr"
+        $sStreamDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDrawColorDisp", $bSrcDispDllType, $srcDisp, $bDstDispDllType, $dstDisp, "int", $ndisp, $bStreamDllType, $stream), "cudaDrawColorDisp", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDrawColorDisp", $sSrcDispDllType, $srcDisp, $sDstDispDllType, $dstDisp, "int", $ndisp, $sStreamDllType, $stream), "cudaDrawColorDisp", @error)
 EndFunc   ;==>_cudaDrawColorDisp
 
 Func _cudaDrawColorDispMat($matSrcDisp, $matDstDisp, $ndisp, $stream)

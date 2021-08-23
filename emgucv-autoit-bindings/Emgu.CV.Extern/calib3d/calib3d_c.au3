@@ -4,34 +4,34 @@
 Func _cveEstimateAffine3D($src, $dst, $out, $inliers, $ransacThreshold = 3, $confidence = 0.99)
     ; CVAPI(int) cveEstimateAffine3D(cv::_InputArray* src, cv::_InputArray* dst, cv::_OutputArray* out, cv::_OutputArray* inliers, double ransacThreshold, double confidence);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    Local $bOutDllType
-    If VarGetType($out) == "DLLStruct" Then
-        $bOutDllType = "struct*"
+    Local $sOutDllType
+    If IsDllStruct($out) Then
+        $sOutDllType = "struct*"
     Else
-        $bOutDllType = "ptr"
+        $sOutDllType = "ptr"
     EndIf
 
-    Local $bInliersDllType
-    If VarGetType($inliers) == "DLLStruct" Then
-        $bInliersDllType = "struct*"
+    Local $sInliersDllType
+    If IsDllStruct($inliers) Then
+        $sInliersDllType = "struct*"
     Else
-        $bInliersDllType = "ptr"
+        $sInliersDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveEstimateAffine3D", $bSrcDllType, $src, $bDstDllType, $dst, $bOutDllType, $out, $bInliersDllType, $inliers, "double", $ransacThreshold, "double", $confidence), "cveEstimateAffine3D", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveEstimateAffine3D", $sSrcDllType, $src, $sDstDllType, $dst, $sOutDllType, $out, $sInliersDllType, $inliers, "double", $ransacThreshold, "double", $confidence), "cveEstimateAffine3D", @error)
 EndFunc   ;==>_cveEstimateAffine3D
 
 Func _cveEstimateAffine3DMat($matSrc, $matDst, $matOut, $matInliers, $ransacThreshold = 3, $confidence = 0.99)
@@ -133,79 +133,87 @@ EndFunc   ;==>_cveEstimateAffine3DMat
 Func _cveStereoSGBMCreate($minDisparity, $numDisparities, $blockSize, $P1, $P2, $disp12MaxDiff, $preFilterCap, $uniquenessRatio, $speckleWindowSize, $speckleRange, $mode, $stereoMatcher, $sharedPtr)
     ; CVAPI(cv::StereoSGBM*) cveStereoSGBMCreate(int minDisparity, int numDisparities, int blockSize, int P1, int P2, int disp12MaxDiff, int preFilterCap, int uniquenessRatio, int speckleWindowSize, int speckleRange, int mode, cv::StereoMatcher** stereoMatcher, cv::Ptr<cv::StereoSGBM>** sharedPtr);
 
-    Local $bStereoMatcherDllType
-    If VarGetType($stereoMatcher) == "DLLStruct" Then
-        $bStereoMatcherDllType = "struct*"
+    Local $sStereoMatcherDllType
+    If IsDllStruct($stereoMatcher) Then
+        $sStereoMatcherDllType = "struct*"
+    ElseIf $stereoMatcher == Null Then
+        $sStereoMatcherDllType = "ptr"
     Else
-        $bStereoMatcherDllType = "ptr*"
+        $sStereoMatcherDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveStereoSGBMCreate", "int", $minDisparity, "int", $numDisparities, "int", $blockSize, "int", $P1, "int", $P2, "int", $disp12MaxDiff, "int", $preFilterCap, "int", $uniquenessRatio, "int", $speckleWindowSize, "int", $speckleRange, "int", $mode, $bStereoMatcherDllType, $stereoMatcher, $bSharedPtrDllType, $sharedPtr), "cveStereoSGBMCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveStereoSGBMCreate", "int", $minDisparity, "int", $numDisparities, "int", $blockSize, "int", $P1, "int", $P2, "int", $disp12MaxDiff, "int", $preFilterCap, "int", $uniquenessRatio, "int", $speckleWindowSize, "int", $speckleRange, "int", $mode, $sStereoMatcherDllType, $stereoMatcher, $sSharedPtrDllType, $sharedPtr), "cveStereoSGBMCreate", @error)
 EndFunc   ;==>_cveStereoSGBMCreate
 
 Func _cveStereoSGBMRelease($sharedPtr)
     ; CVAPI(void) cveStereoSGBMRelease(cv::Ptr<cv::StereoSGBM>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStereoSGBMRelease", $bSharedPtrDllType, $sharedPtr), "cveStereoSGBMRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStereoSGBMRelease", $sSharedPtrDllType, $sharedPtr), "cveStereoSGBMRelease", @error)
 EndFunc   ;==>_cveStereoSGBMRelease
 
 Func _cveStereoBMCreate($mode, $numberOfDisparities, $sharedPtr)
     ; CVAPI(cv::StereoMatcher*) cveStereoBMCreate(int mode, int numberOfDisparities, cv::Ptr<cv::StereoMatcher>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveStereoBMCreate", "int", $mode, "int", $numberOfDisparities, $bSharedPtrDllType, $sharedPtr), "cveStereoBMCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveStereoBMCreate", "int", $mode, "int", $numberOfDisparities, $sSharedPtrDllType, $sharedPtr), "cveStereoBMCreate", @error)
 EndFunc   ;==>_cveStereoBMCreate
 
 Func _cveStereoMatcherCompute($disparitySolver, $left, $right, $disparity)
     ; CVAPI(void) cveStereoMatcherCompute(cv::StereoMatcher* disparitySolver, cv::_InputArray* left, cv::_InputArray* right, cv::_OutputArray* disparity);
 
-    Local $bDisparitySolverDllType
-    If VarGetType($disparitySolver) == "DLLStruct" Then
-        $bDisparitySolverDllType = "struct*"
+    Local $sDisparitySolverDllType
+    If IsDllStruct($disparitySolver) Then
+        $sDisparitySolverDllType = "struct*"
     Else
-        $bDisparitySolverDllType = "ptr"
+        $sDisparitySolverDllType = "ptr"
     EndIf
 
-    Local $bLeftDllType
-    If VarGetType($left) == "DLLStruct" Then
-        $bLeftDllType = "struct*"
+    Local $sLeftDllType
+    If IsDllStruct($left) Then
+        $sLeftDllType = "struct*"
     Else
-        $bLeftDllType = "ptr"
+        $sLeftDllType = "ptr"
     EndIf
 
-    Local $bRightDllType
-    If VarGetType($right) == "DLLStruct" Then
-        $bRightDllType = "struct*"
+    Local $sRightDllType
+    If IsDllStruct($right) Then
+        $sRightDllType = "struct*"
     Else
-        $bRightDllType = "ptr"
+        $sRightDllType = "ptr"
     EndIf
 
-    Local $bDisparityDllType
-    If VarGetType($disparity) == "DLLStruct" Then
-        $bDisparityDllType = "struct*"
+    Local $sDisparityDllType
+    If IsDllStruct($disparity) Then
+        $sDisparityDllType = "struct*"
     Else
-        $bDisparityDllType = "ptr"
+        $sDisparityDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStereoMatcherCompute", $bDisparitySolverDllType, $disparitySolver, $bLeftDllType, $left, $bRightDllType, $right, $bDisparityDllType, $disparity), "cveStereoMatcherCompute", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStereoMatcherCompute", $sDisparitySolverDllType, $disparitySolver, $sLeftDllType, $left, $sRightDllType, $right, $sDisparityDllType, $disparity), "cveStereoMatcherCompute", @error)
 EndFunc   ;==>_cveStereoMatcherCompute
 
 Func _cveStereoMatcherComputeMat($disparitySolver, $matLeft, $matRight, $matDisparity)
@@ -283,14 +291,16 @@ EndFunc   ;==>_cveStereoMatcherComputeMat
 Func _cveStereoMatcherRelease($sharedPtr)
     ; CVAPI(void) cveStereoMatcherRelease(cv::Ptr<cv::StereoMatcher>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStereoMatcherRelease", $bSharedPtrDllType, $sharedPtr), "cveStereoMatcherRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStereoMatcherRelease", $sSharedPtrDllType, $sharedPtr), "cveStereoMatcherRelease", @error)
 EndFunc   ;==>_cveStereoMatcherRelease
 
 Func _getHomographyMatrixFromMatchedFeatures($model, $observed, $matches, $mask, $randsacThreshold, $homography)
@@ -310,11 +320,11 @@ Func _getHomographyMatrixFromMatchedFeatures($model, $observed, $matches, $mask,
         $vecModel = $model
     EndIf
 
-    Local $bModelDllType
-    If VarGetType($model) == "DLLStruct" Then
-        $bModelDllType = "struct*"
+    Local $sModelDllType
+    If IsDllStruct($model) Then
+        $sModelDllType = "struct*"
     Else
-        $bModelDllType = "ptr"
+        $sModelDllType = "ptr"
     EndIf
 
     Local $vecObserved, $iArrObservedSize
@@ -331,11 +341,11 @@ Func _getHomographyMatrixFromMatchedFeatures($model, $observed, $matches, $mask,
         $vecObserved = $observed
     EndIf
 
-    Local $bObservedDllType
-    If VarGetType($observed) == "DLLStruct" Then
-        $bObservedDllType = "struct*"
+    Local $sObservedDllType
+    If IsDllStruct($observed) Then
+        $sObservedDllType = "struct*"
     Else
-        $bObservedDllType = "ptr"
+        $sObservedDllType = "ptr"
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
@@ -352,28 +362,28 @@ Func _getHomographyMatrixFromMatchedFeatures($model, $observed, $matches, $mask,
         $vecMatches = $matches
     EndIf
 
-    Local $bMatchesDllType
-    If VarGetType($matches) == "DLLStruct" Then
-        $bMatchesDllType = "struct*"
+    Local $sMatchesDllType
+    If IsDllStruct($matches) Then
+        $sMatchesDllType = "struct*"
     Else
-        $bMatchesDllType = "ptr"
+        $sMatchesDllType = "ptr"
     EndIf
 
-    Local $bMaskDllType
-    If VarGetType($mask) == "DLLStruct" Then
-        $bMaskDllType = "struct*"
+    Local $sMaskDllType
+    If IsDllStruct($mask) Then
+        $sMaskDllType = "struct*"
     Else
-        $bMaskDllType = "ptr"
+        $sMaskDllType = "ptr"
     EndIf
 
-    Local $bHomographyDllType
-    If VarGetType($homography) == "DLLStruct" Then
-        $bHomographyDllType = "struct*"
+    Local $sHomographyDllType
+    If IsDllStruct($homography) Then
+        $sHomographyDllType = "struct*"
     Else
-        $bHomographyDllType = "ptr"
+        $sHomographyDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "getHomographyMatrixFromMatchedFeatures", $bModelDllType, $vecModel, $bObservedDllType, $vecObserved, $bMatchesDllType, $vecMatches, $bMaskDllType, $mask, "double", $randsacThreshold, $bHomographyDllType, $homography), "getHomographyMatrixFromMatchedFeatures", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "getHomographyMatrixFromMatchedFeatures", $sModelDllType, $vecModel, $sObservedDllType, $vecObserved, $sMatchesDllType, $vecMatches, $sMaskDllType, $mask, "double", $randsacThreshold, $sHomographyDllType, $homography), "getHomographyMatrixFromMatchedFeatures", @error)
 
     If $bMatchesIsArray Then
         _VectorOfVectorOfDMatchRelease($vecMatches)
@@ -393,34 +403,34 @@ EndFunc   ;==>_getHomographyMatrixFromMatchedFeatures
 Func _cveFindCirclesGrid($image, $patternSize, $centers, $flags, $blobDetector)
     ; CVAPI(bool) cveFindCirclesGrid(cv::_InputArray* image, CvSize* patternSize, cv::_OutputArray* centers, int flags, cv::Feature2D* blobDetector);
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bPatternSizeDllType
-    If VarGetType($patternSize) == "DLLStruct" Then
-        $bPatternSizeDllType = "struct*"
+    Local $sPatternSizeDllType
+    If IsDllStruct($patternSize) Then
+        $sPatternSizeDllType = "struct*"
     Else
-        $bPatternSizeDllType = "ptr"
+        $sPatternSizeDllType = "ptr"
     EndIf
 
-    Local $bCentersDllType
-    If VarGetType($centers) == "DLLStruct" Then
-        $bCentersDllType = "struct*"
+    Local $sCentersDllType
+    If IsDllStruct($centers) Then
+        $sCentersDllType = "struct*"
     Else
-        $bCentersDllType = "ptr"
+        $sCentersDllType = "ptr"
     EndIf
 
-    Local $bBlobDetectorDllType
-    If VarGetType($blobDetector) == "DLLStruct" Then
-        $bBlobDetectorDllType = "struct*"
+    Local $sBlobDetectorDllType
+    If IsDllStruct($blobDetector) Then
+        $sBlobDetectorDllType = "struct*"
     Else
-        $bBlobDetectorDllType = "ptr"
+        $sBlobDetectorDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveFindCirclesGrid", $bImageDllType, $image, $bPatternSizeDllType, $patternSize, $bCentersDllType, $centers, "int", $flags, $bBlobDetectorDllType, $blobDetector), "cveFindCirclesGrid", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveFindCirclesGrid", $sImageDllType, $image, $sPatternSizeDllType, $patternSize, $sCentersDllType, $centers, "int", $flags, $sBlobDetectorDllType, $blobDetector), "cveFindCirclesGrid", @error)
 EndFunc   ;==>_cveFindCirclesGrid
 
 Func _cveFindCirclesGridMat($matImage, $patternSize, $matCenters, $flags, $blobDetector)
@@ -478,42 +488,42 @@ EndFunc   ;==>_cveFindCirclesGridMat
 Func _cveTriangulatePoints($projMat1, $projMat2, $projPoints1, $projPoints2, $points4D)
     ; CVAPI(void) cveTriangulatePoints(cv::_InputArray* projMat1, cv::_InputArray* projMat2, cv::_InputArray* projPoints1, cv::_InputArray* projPoints2, cv::_OutputArray* points4D);
 
-    Local $bProjMat1DllType
-    If VarGetType($projMat1) == "DLLStruct" Then
-        $bProjMat1DllType = "struct*"
+    Local $sProjMat1DllType
+    If IsDllStruct($projMat1) Then
+        $sProjMat1DllType = "struct*"
     Else
-        $bProjMat1DllType = "ptr"
+        $sProjMat1DllType = "ptr"
     EndIf
 
-    Local $bProjMat2DllType
-    If VarGetType($projMat2) == "DLLStruct" Then
-        $bProjMat2DllType = "struct*"
+    Local $sProjMat2DllType
+    If IsDllStruct($projMat2) Then
+        $sProjMat2DllType = "struct*"
     Else
-        $bProjMat2DllType = "ptr"
+        $sProjMat2DllType = "ptr"
     EndIf
 
-    Local $bProjPoints1DllType
-    If VarGetType($projPoints1) == "DLLStruct" Then
-        $bProjPoints1DllType = "struct*"
+    Local $sProjPoints1DllType
+    If IsDllStruct($projPoints1) Then
+        $sProjPoints1DllType = "struct*"
     Else
-        $bProjPoints1DllType = "ptr"
+        $sProjPoints1DllType = "ptr"
     EndIf
 
-    Local $bProjPoints2DllType
-    If VarGetType($projPoints2) == "DLLStruct" Then
-        $bProjPoints2DllType = "struct*"
+    Local $sProjPoints2DllType
+    If IsDllStruct($projPoints2) Then
+        $sProjPoints2DllType = "struct*"
     Else
-        $bProjPoints2DllType = "ptr"
+        $sProjPoints2DllType = "ptr"
     EndIf
 
-    Local $bPoints4DDllType
-    If VarGetType($points4D) == "DLLStruct" Then
-        $bPoints4DDllType = "struct*"
+    Local $sPoints4DDllType
+    If IsDllStruct($points4D) Then
+        $sPoints4DDllType = "struct*"
     Else
-        $bPoints4DDllType = "ptr"
+        $sPoints4DDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTriangulatePoints", $bProjMat1DllType, $projMat1, $bProjMat2DllType, $projMat2, $bProjPoints1DllType, $projPoints1, $bProjPoints2DllType, $projPoints2, $bPoints4DDllType, $points4D), "cveTriangulatePoints", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTriangulatePoints", $sProjMat1DllType, $projMat1, $sProjMat2DllType, $projMat2, $sProjPoints1DllType, $projPoints1, $sProjPoints2DllType, $projPoints2, $sPoints4DDllType, $points4D), "cveTriangulatePoints", @error)
 EndFunc   ;==>_cveTriangulatePoints
 
 Func _cveTriangulatePointsMat($matProjMat1, $matProjMat2, $matProjPoints1, $matProjPoints2, $matPoints4D)
@@ -635,42 +645,42 @@ EndFunc   ;==>_cveTriangulatePointsMat
 Func _cveCorrectMatches($f, $points1, $points2, $newPoints1, $newPoints2)
     ; CVAPI(void) cveCorrectMatches(cv::_InputArray* f, cv::_InputArray* points1, cv::_InputArray* points2, cv::_OutputArray* newPoints1, cv::_OutputArray* newPoints2);
 
-    Local $bFDllType
-    If VarGetType($f) == "DLLStruct" Then
-        $bFDllType = "struct*"
+    Local $sFDllType
+    If IsDllStruct($f) Then
+        $sFDllType = "struct*"
     Else
-        $bFDllType = "ptr"
+        $sFDllType = "ptr"
     EndIf
 
-    Local $bPoints1DllType
-    If VarGetType($points1) == "DLLStruct" Then
-        $bPoints1DllType = "struct*"
+    Local $sPoints1DllType
+    If IsDllStruct($points1) Then
+        $sPoints1DllType = "struct*"
     Else
-        $bPoints1DllType = "ptr"
+        $sPoints1DllType = "ptr"
     EndIf
 
-    Local $bPoints2DllType
-    If VarGetType($points2) == "DLLStruct" Then
-        $bPoints2DllType = "struct*"
+    Local $sPoints2DllType
+    If IsDllStruct($points2) Then
+        $sPoints2DllType = "struct*"
     Else
-        $bPoints2DllType = "ptr"
+        $sPoints2DllType = "ptr"
     EndIf
 
-    Local $bNewPoints1DllType
-    If VarGetType($newPoints1) == "DLLStruct" Then
-        $bNewPoints1DllType = "struct*"
+    Local $sNewPoints1DllType
+    If IsDllStruct($newPoints1) Then
+        $sNewPoints1DllType = "struct*"
     Else
-        $bNewPoints1DllType = "ptr"
+        $sNewPoints1DllType = "ptr"
     EndIf
 
-    Local $bNewPoints2DllType
-    If VarGetType($newPoints2) == "DLLStruct" Then
-        $bNewPoints2DllType = "struct*"
+    Local $sNewPoints2DllType
+    If IsDllStruct($newPoints2) Then
+        $sNewPoints2DllType = "struct*"
     Else
-        $bNewPoints2DllType = "ptr"
+        $sNewPoints2DllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCorrectMatches", $bFDllType, $f, $bPoints1DllType, $points1, $bPoints2DllType, $points2, $bNewPoints1DllType, $newPoints1, $bNewPoints2DllType, $newPoints2), "cveCorrectMatches", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCorrectMatches", $sFDllType, $f, $sPoints1DllType, $points1, $sPoints2DllType, $points2, $sNewPoints1DllType, $newPoints1, $sNewPoints2DllType, $newPoints2), "cveCorrectMatches", @error)
 EndFunc   ;==>_cveCorrectMatches
 
 Func _cveCorrectMatchesMat($matF, $matPoints1, $matPoints2, $matNewPoints1, $matNewPoints2)
@@ -792,27 +802,27 @@ EndFunc   ;==>_cveCorrectMatchesMat
 Func _cveFindChessboardCornersSB($image, $patternSize, $corners, $flags)
     ; CVAPI(bool) cveFindChessboardCornersSB(cv::_InputArray* image, CvSize* patternSize, cv::_OutputArray* corners, int flags);
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bPatternSizeDllType
-    If VarGetType($patternSize) == "DLLStruct" Then
-        $bPatternSizeDllType = "struct*"
+    Local $sPatternSizeDllType
+    If IsDllStruct($patternSize) Then
+        $sPatternSizeDllType = "struct*"
     Else
-        $bPatternSizeDllType = "ptr"
+        $sPatternSizeDllType = "ptr"
     EndIf
 
-    Local $bCornersDllType
-    If VarGetType($corners) == "DLLStruct" Then
-        $bCornersDllType = "struct*"
+    Local $sCornersDllType
+    If IsDllStruct($corners) Then
+        $sCornersDllType = "struct*"
     Else
-        $bCornersDllType = "ptr"
+        $sCornersDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveFindChessboardCornersSB", $bImageDllType, $image, $bPatternSizeDllType, $patternSize, $bCornersDllType, $corners, "int", $flags), "cveFindChessboardCornersSB", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveFindChessboardCornersSB", $sImageDllType, $image, $sPatternSizeDllType, $patternSize, $sCornersDllType, $corners, "int", $flags), "cveFindChessboardCornersSB", @error)
 EndFunc   ;==>_cveFindChessboardCornersSB
 
 Func _cveFindChessboardCornersSBMat($matImage, $patternSize, $matCorners, $flags)
@@ -870,42 +880,42 @@ EndFunc   ;==>_cveFindChessboardCornersSBMat
 Func _cveEstimateChessboardSharpness($image, $patternSize, $corners, $riseDistance, $vertical, $sharpness, $result)
     ; CVAPI(void) cveEstimateChessboardSharpness(cv::_InputArray* image, CvSize* patternSize, cv::_InputArray* corners, float riseDistance, bool vertical, cv::_OutputArray* sharpness, CvScalar* result);
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bPatternSizeDllType
-    If VarGetType($patternSize) == "DLLStruct" Then
-        $bPatternSizeDllType = "struct*"
+    Local $sPatternSizeDllType
+    If IsDllStruct($patternSize) Then
+        $sPatternSizeDllType = "struct*"
     Else
-        $bPatternSizeDllType = "ptr"
+        $sPatternSizeDllType = "ptr"
     EndIf
 
-    Local $bCornersDllType
-    If VarGetType($corners) == "DLLStruct" Then
-        $bCornersDllType = "struct*"
+    Local $sCornersDllType
+    If IsDllStruct($corners) Then
+        $sCornersDllType = "struct*"
     Else
-        $bCornersDllType = "ptr"
+        $sCornersDllType = "ptr"
     EndIf
 
-    Local $bSharpnessDllType
-    If VarGetType($sharpness) == "DLLStruct" Then
-        $bSharpnessDllType = "struct*"
+    Local $sSharpnessDllType
+    If IsDllStruct($sharpness) Then
+        $sSharpnessDllType = "struct*"
     Else
-        $bSharpnessDllType = "ptr"
+        $sSharpnessDllType = "ptr"
     EndIf
 
-    Local $bResultDllType
-    If VarGetType($result) == "DLLStruct" Then
-        $bResultDllType = "struct*"
+    Local $sResultDllType
+    If IsDllStruct($result) Then
+        $sResultDllType = "struct*"
     Else
-        $bResultDllType = "ptr"
+        $sResultDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEstimateChessboardSharpness", $bImageDllType, $image, $bPatternSizeDllType, $patternSize, $bCornersDllType, $corners, "float", $riseDistance, "boolean", $vertical, $bSharpnessDllType, $sharpness, $bResultDllType, $result), "cveEstimateChessboardSharpness", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEstimateChessboardSharpness", $sImageDllType, $image, $sPatternSizeDllType, $patternSize, $sCornersDllType, $corners, "float", $riseDistance, "boolean", $vertical, $sSharpnessDllType, $sharpness, $sResultDllType, $result), "cveEstimateChessboardSharpness", @error)
 EndFunc   ;==>_cveEstimateChessboardSharpness
 
 Func _cveEstimateChessboardSharpnessMat($matImage, $patternSize, $matCorners, $riseDistance, $vertical, $matSharpness, $result)
@@ -983,28 +993,28 @@ EndFunc   ;==>_cveEstimateChessboardSharpnessMat
 Func _cveDrawChessboardCorners($image, $patternSize, $corners, $patternWasFound)
     ; CVAPI(void) cveDrawChessboardCorners(cv::_InputOutputArray* image, CvSize* patternSize, cv::_InputArray* corners, bool patternWasFound);
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bPatternSizeDllType
-    If VarGetType($patternSize) == "DLLStruct" Then
-        $bPatternSizeDllType = "struct*"
+    Local $sPatternSizeDllType
+    If IsDllStruct($patternSize) Then
+        $sPatternSizeDllType = "struct*"
     Else
-        $bPatternSizeDllType = "ptr"
+        $sPatternSizeDllType = "ptr"
     EndIf
 
-    Local $bCornersDllType
-    If VarGetType($corners) == "DLLStruct" Then
-        $bCornersDllType = "struct*"
+    Local $sCornersDllType
+    If IsDllStruct($corners) Then
+        $sCornersDllType = "struct*"
     Else
-        $bCornersDllType = "ptr"
+        $sCornersDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDrawChessboardCorners", $bImageDllType, $image, $bPatternSizeDllType, $patternSize, $bCornersDllType, $corners, "boolean", $patternWasFound), "cveDrawChessboardCorners", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDrawChessboardCorners", $sImageDllType, $image, $sPatternSizeDllType, $patternSize, $sCornersDllType, $corners, "boolean", $patternWasFound), "cveDrawChessboardCorners", @error)
 EndFunc   ;==>_cveDrawChessboardCorners
 
 Func _cveDrawChessboardCornersMat($matImage, $patternSize, $matCorners, $patternWasFound)
@@ -1060,21 +1070,21 @@ EndFunc   ;==>_cveDrawChessboardCornersMat
 Func _cveFilterSpeckles($img, $newVal, $maxSpeckleSize, $maxDiff, $buf = _cveNoArray())
     ; CVAPI(void) cveFilterSpeckles(cv::_InputOutputArray* img, double newVal, int maxSpeckleSize, double maxDiff, cv::_InputOutputArray* buf);
 
-    Local $bImgDllType
-    If VarGetType($img) == "DLLStruct" Then
-        $bImgDllType = "struct*"
+    Local $sImgDllType
+    If IsDllStruct($img) Then
+        $sImgDllType = "struct*"
     Else
-        $bImgDllType = "ptr"
+        $sImgDllType = "ptr"
     EndIf
 
-    Local $bBufDllType
-    If VarGetType($buf) == "DLLStruct" Then
-        $bBufDllType = "struct*"
+    Local $sBufDllType
+    If IsDllStruct($buf) Then
+        $sBufDllType = "struct*"
     Else
-        $bBufDllType = "ptr"
+        $sBufDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFilterSpeckles", $bImgDllType, $img, "double", $newVal, "int", $maxSpeckleSize, "double", $maxDiff, $bBufDllType, $buf), "cveFilterSpeckles", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFilterSpeckles", $sImgDllType, $img, "double", $newVal, "int", $maxSpeckleSize, "double", $maxDiff, $sBufDllType, $buf), "cveFilterSpeckles", @error)
 EndFunc   ;==>_cveFilterSpeckles
 
 Func _cveFilterSpecklesMat($matImg, $newVal, $maxSpeckleSize, $maxDiff, $matBuf = _cveNoArrayMat())
@@ -1130,27 +1140,27 @@ EndFunc   ;==>_cveFilterSpecklesMat
 Func _cveFindChessboardCorners($image, $patternSize, $corners, $flags = $CV_CALIB_CB_ADAPTIVE_THRESH + $CV_CALIB_CB_NORMALIZE_IMAGE)
     ; CVAPI(bool) cveFindChessboardCorners(cv::_InputArray* image, CvSize* patternSize, cv::_OutputArray* corners, int flags);
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bPatternSizeDllType
-    If VarGetType($patternSize) == "DLLStruct" Then
-        $bPatternSizeDllType = "struct*"
+    Local $sPatternSizeDllType
+    If IsDllStruct($patternSize) Then
+        $sPatternSizeDllType = "struct*"
     Else
-        $bPatternSizeDllType = "ptr"
+        $sPatternSizeDllType = "ptr"
     EndIf
 
-    Local $bCornersDllType
-    If VarGetType($corners) == "DLLStruct" Then
-        $bCornersDllType = "struct*"
+    Local $sCornersDllType
+    If IsDllStruct($corners) Then
+        $sCornersDllType = "struct*"
     Else
-        $bCornersDllType = "ptr"
+        $sCornersDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveFindChessboardCorners", $bImageDllType, $image, $bPatternSizeDllType, $patternSize, $bCornersDllType, $corners, "int", $flags), "cveFindChessboardCorners", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveFindChessboardCorners", $sImageDllType, $image, $sPatternSizeDllType, $patternSize, $sCornersDllType, $corners, "int", $flags), "cveFindChessboardCorners", @error)
 EndFunc   ;==>_cveFindChessboardCorners
 
 Func _cveFindChessboardCornersMat($matImage, $patternSize, $matCorners, $flags = $CV_CALIB_CB_ADAPTIVE_THRESH + $CV_CALIB_CB_NORMALIZE_IMAGE)
@@ -1208,27 +1218,27 @@ EndFunc   ;==>_cveFindChessboardCornersMat
 Func _cveFind4QuadCornerSubpix($image, $corners, $regionSize)
     ; CVAPI(bool) cveFind4QuadCornerSubpix(cv::_InputArray* image, cv::_InputOutputArray* corners, CvSize* regionSize);
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bCornersDllType
-    If VarGetType($corners) == "DLLStruct" Then
-        $bCornersDllType = "struct*"
+    Local $sCornersDllType
+    If IsDllStruct($corners) Then
+        $sCornersDllType = "struct*"
     Else
-        $bCornersDllType = "ptr"
+        $sCornersDllType = "ptr"
     EndIf
 
-    Local $bRegionSizeDllType
-    If VarGetType($regionSize) == "DLLStruct" Then
-        $bRegionSizeDllType = "struct*"
+    Local $sRegionSizeDllType
+    If IsDllStruct($regionSize) Then
+        $sRegionSizeDllType = "struct*"
     Else
-        $bRegionSizeDllType = "ptr"
+        $sRegionSizeDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveFind4QuadCornerSubpix", $bImageDllType, $image, $bCornersDllType, $corners, $bRegionSizeDllType, $regionSize), "cveFind4QuadCornerSubpix", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveFind4QuadCornerSubpix", $sImageDllType, $image, $sCornersDllType, $corners, $sRegionSizeDllType, $regionSize), "cveFind4QuadCornerSubpix", @error)
 EndFunc   ;==>_cveFind4QuadCornerSubpix
 
 Func _cveFind4QuadCornerSubpixMat($matImage, $matCorners, $regionSize)
@@ -1286,48 +1296,48 @@ EndFunc   ;==>_cveFind4QuadCornerSubpixMat
 Func _cveStereoRectifyUncalibrated($points1, $points2, $f, $imgSize, $h1, $h2, $threshold = 5)
     ; CVAPI(bool) cveStereoRectifyUncalibrated(cv::_InputArray* points1, cv::_InputArray* points2, cv::_InputArray* f, CvSize* imgSize, cv::_OutputArray* h1, cv::_OutputArray* h2, double threshold);
 
-    Local $bPoints1DllType
-    If VarGetType($points1) == "DLLStruct" Then
-        $bPoints1DllType = "struct*"
+    Local $sPoints1DllType
+    If IsDllStruct($points1) Then
+        $sPoints1DllType = "struct*"
     Else
-        $bPoints1DllType = "ptr"
+        $sPoints1DllType = "ptr"
     EndIf
 
-    Local $bPoints2DllType
-    If VarGetType($points2) == "DLLStruct" Then
-        $bPoints2DllType = "struct*"
+    Local $sPoints2DllType
+    If IsDllStruct($points2) Then
+        $sPoints2DllType = "struct*"
     Else
-        $bPoints2DllType = "ptr"
+        $sPoints2DllType = "ptr"
     EndIf
 
-    Local $bFDllType
-    If VarGetType($f) == "DLLStruct" Then
-        $bFDllType = "struct*"
+    Local $sFDllType
+    If IsDllStruct($f) Then
+        $sFDllType = "struct*"
     Else
-        $bFDllType = "ptr"
+        $sFDllType = "ptr"
     EndIf
 
-    Local $bImgSizeDllType
-    If VarGetType($imgSize) == "DLLStruct" Then
-        $bImgSizeDllType = "struct*"
+    Local $sImgSizeDllType
+    If IsDllStruct($imgSize) Then
+        $sImgSizeDllType = "struct*"
     Else
-        $bImgSizeDllType = "ptr"
+        $sImgSizeDllType = "ptr"
     EndIf
 
-    Local $bH1DllType
-    If VarGetType($h1) == "DLLStruct" Then
-        $bH1DllType = "struct*"
+    Local $sH1DllType
+    If IsDllStruct($h1) Then
+        $sH1DllType = "struct*"
     Else
-        $bH1DllType = "ptr"
+        $sH1DllType = "ptr"
     EndIf
 
-    Local $bH2DllType
-    If VarGetType($h2) == "DLLStruct" Then
-        $bH2DllType = "struct*"
+    Local $sH2DllType
+    If IsDllStruct($h2) Then
+        $sH2DllType = "struct*"
     Else
-        $bH2DllType = "ptr"
+        $sH2DllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveStereoRectifyUncalibrated", $bPoints1DllType, $points1, $bPoints2DllType, $points2, $bFDllType, $f, $bImgSizeDllType, $imgSize, $bH1DllType, $h1, $bH2DllType, $h2, "double", $threshold), "cveStereoRectifyUncalibrated", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveStereoRectifyUncalibrated", $sPoints1DllType, $points1, $sPoints2DllType, $points2, $sFDllType, $f, $sImgSizeDllType, $imgSize, $sH1DllType, $h1, $sH2DllType, $h2, "double", $threshold), "cveStereoRectifyUncalibrated", @error)
 EndFunc   ;==>_cveStereoRectifyUncalibrated
 
 Func _cveStereoRectifyUncalibratedMat($matPoints1, $matPoints2, $matF, $imgSize, $matH1, $matH2, $threshold = 5)
@@ -1451,112 +1461,112 @@ EndFunc   ;==>_cveStereoRectifyUncalibratedMat
 Func _cveStereoRectify($cameraMatrix1, $distCoeffs1, $cameraMatrix2, $distCoeffs2, $imageSize, $r, $t, $r1, $r2, $p1, $p2, $q, $flags = $CV_CALIB_ZERO_DISPARITY, $alpha = -1, $newImageSize = _cvSize(), $validPixROI1 = 0, $validPixROI2 = 0)
     ; CVAPI(void) cveStereoRectify(cv::_InputArray* cameraMatrix1, cv::_InputArray* distCoeffs1, cv::_InputArray* cameraMatrix2, cv::_InputArray* distCoeffs2, CvSize* imageSize, cv::_InputArray* r, cv::_InputArray* t, cv::_OutputArray* r1, cv::_OutputArray* r2, cv::_OutputArray* p1, cv::_OutputArray* p2, cv::_OutputArray* q, int flags, double alpha, CvSize* newImageSize, CvRect* validPixROI1, CvRect* validPixROI2);
 
-    Local $bCameraMatrix1DllType
-    If VarGetType($cameraMatrix1) == "DLLStruct" Then
-        $bCameraMatrix1DllType = "struct*"
+    Local $sCameraMatrix1DllType
+    If IsDllStruct($cameraMatrix1) Then
+        $sCameraMatrix1DllType = "struct*"
     Else
-        $bCameraMatrix1DllType = "ptr"
+        $sCameraMatrix1DllType = "ptr"
     EndIf
 
-    Local $bDistCoeffs1DllType
-    If VarGetType($distCoeffs1) == "DLLStruct" Then
-        $bDistCoeffs1DllType = "struct*"
+    Local $sDistCoeffs1DllType
+    If IsDllStruct($distCoeffs1) Then
+        $sDistCoeffs1DllType = "struct*"
     Else
-        $bDistCoeffs1DllType = "ptr"
+        $sDistCoeffs1DllType = "ptr"
     EndIf
 
-    Local $bCameraMatrix2DllType
-    If VarGetType($cameraMatrix2) == "DLLStruct" Then
-        $bCameraMatrix2DllType = "struct*"
+    Local $sCameraMatrix2DllType
+    If IsDllStruct($cameraMatrix2) Then
+        $sCameraMatrix2DllType = "struct*"
     Else
-        $bCameraMatrix2DllType = "ptr"
+        $sCameraMatrix2DllType = "ptr"
     EndIf
 
-    Local $bDistCoeffs2DllType
-    If VarGetType($distCoeffs2) == "DLLStruct" Then
-        $bDistCoeffs2DllType = "struct*"
+    Local $sDistCoeffs2DllType
+    If IsDllStruct($distCoeffs2) Then
+        $sDistCoeffs2DllType = "struct*"
     Else
-        $bDistCoeffs2DllType = "ptr"
+        $sDistCoeffs2DllType = "ptr"
     EndIf
 
-    Local $bImageSizeDllType
-    If VarGetType($imageSize) == "DLLStruct" Then
-        $bImageSizeDllType = "struct*"
+    Local $sImageSizeDllType
+    If IsDllStruct($imageSize) Then
+        $sImageSizeDllType = "struct*"
     Else
-        $bImageSizeDllType = "ptr"
+        $sImageSizeDllType = "ptr"
     EndIf
 
-    Local $bRDllType
-    If VarGetType($r) == "DLLStruct" Then
-        $bRDllType = "struct*"
+    Local $sRDllType
+    If IsDllStruct($r) Then
+        $sRDllType = "struct*"
     Else
-        $bRDllType = "ptr"
+        $sRDllType = "ptr"
     EndIf
 
-    Local $bTDllType
-    If VarGetType($t) == "DLLStruct" Then
-        $bTDllType = "struct*"
+    Local $sTDllType
+    If IsDllStruct($t) Then
+        $sTDllType = "struct*"
     Else
-        $bTDllType = "ptr"
+        $sTDllType = "ptr"
     EndIf
 
-    Local $bR1DllType
-    If VarGetType($r1) == "DLLStruct" Then
-        $bR1DllType = "struct*"
+    Local $sR1DllType
+    If IsDllStruct($r1) Then
+        $sR1DllType = "struct*"
     Else
-        $bR1DllType = "ptr"
+        $sR1DllType = "ptr"
     EndIf
 
-    Local $bR2DllType
-    If VarGetType($r2) == "DLLStruct" Then
-        $bR2DllType = "struct*"
+    Local $sR2DllType
+    If IsDllStruct($r2) Then
+        $sR2DllType = "struct*"
     Else
-        $bR2DllType = "ptr"
+        $sR2DllType = "ptr"
     EndIf
 
-    Local $bP1DllType
-    If VarGetType($p1) == "DLLStruct" Then
-        $bP1DllType = "struct*"
+    Local $sP1DllType
+    If IsDllStruct($p1) Then
+        $sP1DllType = "struct*"
     Else
-        $bP1DllType = "ptr"
+        $sP1DllType = "ptr"
     EndIf
 
-    Local $bP2DllType
-    If VarGetType($p2) == "DLLStruct" Then
-        $bP2DllType = "struct*"
+    Local $sP2DllType
+    If IsDllStruct($p2) Then
+        $sP2DllType = "struct*"
     Else
-        $bP2DllType = "ptr"
+        $sP2DllType = "ptr"
     EndIf
 
-    Local $bQDllType
-    If VarGetType($q) == "DLLStruct" Then
-        $bQDllType = "struct*"
+    Local $sQDllType
+    If IsDllStruct($q) Then
+        $sQDllType = "struct*"
     Else
-        $bQDllType = "ptr"
+        $sQDllType = "ptr"
     EndIf
 
-    Local $bNewImageSizeDllType
-    If VarGetType($newImageSize) == "DLLStruct" Then
-        $bNewImageSizeDllType = "struct*"
+    Local $sNewImageSizeDllType
+    If IsDllStruct($newImageSize) Then
+        $sNewImageSizeDllType = "struct*"
     Else
-        $bNewImageSizeDllType = "ptr"
+        $sNewImageSizeDllType = "ptr"
     EndIf
 
-    Local $bValidPixROI1DllType
-    If VarGetType($validPixROI1) == "DLLStruct" Then
-        $bValidPixROI1DllType = "struct*"
+    Local $sValidPixROI1DllType
+    If IsDllStruct($validPixROI1) Then
+        $sValidPixROI1DllType = "struct*"
     Else
-        $bValidPixROI1DllType = "ptr"
+        $sValidPixROI1DllType = "ptr"
     EndIf
 
-    Local $bValidPixROI2DllType
-    If VarGetType($validPixROI2) == "DLLStruct" Then
-        $bValidPixROI2DllType = "struct*"
+    Local $sValidPixROI2DllType
+    If IsDllStruct($validPixROI2) Then
+        $sValidPixROI2DllType = "struct*"
     Else
-        $bValidPixROI2DllType = "ptr"
+        $sValidPixROI2DllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStereoRectify", $bCameraMatrix1DllType, $cameraMatrix1, $bDistCoeffs1DllType, $distCoeffs1, $bCameraMatrix2DllType, $cameraMatrix2, $bDistCoeffs2DllType, $distCoeffs2, $bImageSizeDllType, $imageSize, $bRDllType, $r, $bTDllType, $t, $bR1DllType, $r1, $bR2DllType, $r2, $bP1DllType, $p1, $bP2DllType, $p2, $bQDllType, $q, "int", $flags, "double", $alpha, $bNewImageSizeDllType, $newImageSize, $bValidPixROI1DllType, $validPixROI1, $bValidPixROI2DllType, $validPixROI2), "cveStereoRectify", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveStereoRectify", $sCameraMatrix1DllType, $cameraMatrix1, $sDistCoeffs1DllType, $distCoeffs1, $sCameraMatrix2DllType, $cameraMatrix2, $sDistCoeffs2DllType, $distCoeffs2, $sImageSizeDllType, $imageSize, $sRDllType, $r, $sTDllType, $t, $sR1DllType, $r1, $sR2DllType, $r2, $sP1DllType, $p1, $sP2DllType, $p2, $sQDllType, $q, "int", $flags, "double", $alpha, $sNewImageSizeDllType, $newImageSize, $sValidPixROI1DllType, $validPixROI1, $sValidPixROI2DllType, $validPixROI2), "cveStereoRectify", @error)
 EndFunc   ;==>_cveStereoRectify
 
 Func _cveStereoRectifyMat($matCameraMatrix1, $matDistCoeffs1, $matCameraMatrix2, $matDistCoeffs2, $imageSize, $matR, $matT, $matR1, $matR2, $matP1, $matP2, $matQ, $flags = $CV_CALIB_ZERO_DISPARITY, $alpha = -1, $newImageSize = _cvSize(), $validPixROI1 = 0, $validPixROI2 = 0)
@@ -1810,28 +1820,28 @@ EndFunc   ;==>_cveStereoRectifyMat
 Func _cveRodrigues($src, $dst, $jacobian = _cveNoArray())
     ; CVAPI(void) cveRodrigues(cv::_InputArray* src, cv::_OutputArray* dst, cv::_OutputArray* jacobian);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    Local $bJacobianDllType
-    If VarGetType($jacobian) == "DLLStruct" Then
-        $bJacobianDllType = "struct*"
+    Local $sJacobianDllType
+    If IsDllStruct($jacobian) Then
+        $sJacobianDllType = "struct*"
     Else
-        $bJacobianDllType = "ptr"
+        $sJacobianDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRodrigues", $bSrcDllType, $src, $bDstDllType, $dst, $bJacobianDllType, $jacobian), "cveRodrigues", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRodrigues", $sSrcDllType, $src, $sDstDllType, $dst, $sJacobianDllType, $jacobian), "cveRodrigues", @error)
 EndFunc   ;==>_cveRodrigues
 
 Func _cveRodriguesMat($matSrc, $matDst, $matJacobian = _cveNoArrayMat())
@@ -1909,62 +1919,62 @@ EndFunc   ;==>_cveRodriguesMat
 Func _cveCalibrateCamera($objectPoints, $imagePoints, $imageSize, $cameraMatrix, $distCoeffs, $rvecs, $tvecs, $flags = 0, $criteria = _cvTermCriteria( $CV_TERM_CRITERIA_COUNT + $CV_TERM_CRITERIA_EPS, 30, $CV_DBL_EPSILON))
     ; CVAPI(double) cveCalibrateCamera(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints, CvSize* imageSize, cv::_InputOutputArray* cameraMatrix, cv::_InputOutputArray* distCoeffs, cv::_OutputArray* rvecs, cv::_OutputArray* tvecs, int flags, CvTermCriteria* criteria);
 
-    Local $bObjectPointsDllType
-    If VarGetType($objectPoints) == "DLLStruct" Then
-        $bObjectPointsDllType = "struct*"
+    Local $sObjectPointsDllType
+    If IsDllStruct($objectPoints) Then
+        $sObjectPointsDllType = "struct*"
     Else
-        $bObjectPointsDllType = "ptr"
+        $sObjectPointsDllType = "ptr"
     EndIf
 
-    Local $bImagePointsDllType
-    If VarGetType($imagePoints) == "DLLStruct" Then
-        $bImagePointsDllType = "struct*"
+    Local $sImagePointsDllType
+    If IsDllStruct($imagePoints) Then
+        $sImagePointsDllType = "struct*"
     Else
-        $bImagePointsDllType = "ptr"
+        $sImagePointsDllType = "ptr"
     EndIf
 
-    Local $bImageSizeDllType
-    If VarGetType($imageSize) == "DLLStruct" Then
-        $bImageSizeDllType = "struct*"
+    Local $sImageSizeDllType
+    If IsDllStruct($imageSize) Then
+        $sImageSizeDllType = "struct*"
     Else
-        $bImageSizeDllType = "ptr"
+        $sImageSizeDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
 
-    Local $bRvecsDllType
-    If VarGetType($rvecs) == "DLLStruct" Then
-        $bRvecsDllType = "struct*"
+    Local $sRvecsDllType
+    If IsDllStruct($rvecs) Then
+        $sRvecsDllType = "struct*"
     Else
-        $bRvecsDllType = "ptr"
+        $sRvecsDllType = "ptr"
     EndIf
 
-    Local $bTvecsDllType
-    If VarGetType($tvecs) == "DLLStruct" Then
-        $bTvecsDllType = "struct*"
+    Local $sTvecsDllType
+    If IsDllStruct($tvecs) Then
+        $sTvecsDllType = "struct*"
     Else
-        $bTvecsDllType = "ptr"
+        $sTvecsDllType = "ptr"
     EndIf
 
-    Local $bCriteriaDllType
-    If VarGetType($criteria) == "DLLStruct" Then
-        $bCriteriaDllType = "struct*"
+    Local $sCriteriaDllType
+    If IsDllStruct($criteria) Then
+        $sCriteriaDllType = "struct*"
     Else
-        $bCriteriaDllType = "ptr"
+        $sCriteriaDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveCalibrateCamera", $bObjectPointsDllType, $objectPoints, $bImagePointsDllType, $imagePoints, $bImageSizeDllType, $imageSize, $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs, $bRvecsDllType, $rvecs, $bTvecsDllType, $tvecs, "int", $flags, $bCriteriaDllType, $criteria), "cveCalibrateCamera", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveCalibrateCamera", $sObjectPointsDllType, $objectPoints, $sImagePointsDllType, $imagePoints, $sImageSizeDllType, $imageSize, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRvecsDllType, $rvecs, $sTvecsDllType, $tvecs, "int", $flags, $sCriteriaDllType, $criteria), "cveCalibrateCamera", @error)
 EndFunc   ;==>_cveCalibrateCamera
 
 Func _cveCalibrateCameraMat($matObjectPoints, $matImagePoints, $imageSize, $matCameraMatrix, $matDistCoeffs, $matRvecs, $matTvecs, $flags = 0, $criteria = _cvTermCriteria( $CV_TERM_CRITERIA_COUNT + $CV_TERM_CRITERIA_EPS, 30, $CV_DBL_EPSILON))
@@ -2110,28 +2120,28 @@ EndFunc   ;==>_cveCalibrateCameraMat
 Func _cveReprojectImageTo3D($disparity, $threeDImage, $q, $handleMissingValues = false, $ddepth = -1)
     ; CVAPI(void) cveReprojectImageTo3D(cv::_InputArray* disparity, cv::_OutputArray* threeDImage, cv::_InputArray* q, bool handleMissingValues, int ddepth);
 
-    Local $bDisparityDllType
-    If VarGetType($disparity) == "DLLStruct" Then
-        $bDisparityDllType = "struct*"
+    Local $sDisparityDllType
+    If IsDllStruct($disparity) Then
+        $sDisparityDllType = "struct*"
     Else
-        $bDisparityDllType = "ptr"
+        $sDisparityDllType = "ptr"
     EndIf
 
-    Local $bThreeDImageDllType
-    If VarGetType($threeDImage) == "DLLStruct" Then
-        $bThreeDImageDllType = "struct*"
+    Local $sThreeDImageDllType
+    If IsDllStruct($threeDImage) Then
+        $sThreeDImageDllType = "struct*"
     Else
-        $bThreeDImageDllType = "ptr"
+        $sThreeDImageDllType = "ptr"
     EndIf
 
-    Local $bQDllType
-    If VarGetType($q) == "DLLStruct" Then
-        $bQDllType = "struct*"
+    Local $sQDllType
+    If IsDllStruct($q) Then
+        $sQDllType = "struct*"
     Else
-        $bQDllType = "ptr"
+        $sQDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveReprojectImageTo3D", $bDisparityDllType, $disparity, $bThreeDImageDllType, $threeDImage, $bQDllType, $q, "boolean", $handleMissingValues, "int", $ddepth), "cveReprojectImageTo3D", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveReprojectImageTo3D", $sDisparityDllType, $disparity, $sThreeDImageDllType, $threeDImage, $sQDllType, $q, "boolean", $handleMissingValues, "int", $ddepth), "cveReprojectImageTo3D", @error)
 EndFunc   ;==>_cveReprojectImageTo3D
 
 Func _cveReprojectImageTo3DMat($matDisparity, $matThreeDImage, $matQ, $handleMissingValues = false, $ddepth = -1)
@@ -2209,21 +2219,21 @@ EndFunc   ;==>_cveReprojectImageTo3DMat
 Func _cveConvertPointsToHomogeneous($src, $dst)
     ; CVAPI(void) cveConvertPointsToHomogeneous(cv::_InputArray* src, cv::_OutputArray* dst);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveConvertPointsToHomogeneous", $bSrcDllType, $src, $bDstDllType, $dst), "cveConvertPointsToHomogeneous", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveConvertPointsToHomogeneous", $sSrcDllType, $src, $sDstDllType, $dst), "cveConvertPointsToHomogeneous", @error)
 EndFunc   ;==>_cveConvertPointsToHomogeneous
 
 Func _cveConvertPointsToHomogeneousMat($matSrc, $matDst)
@@ -2279,21 +2289,21 @@ EndFunc   ;==>_cveConvertPointsToHomogeneousMat
 Func _cveConvertPointsFromHomogeneous($src, $dst)
     ; CVAPI(void) cveConvertPointsFromHomogeneous(cv::_InputArray* src, cv::_OutputArray* dst);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveConvertPointsFromHomogeneous", $bSrcDllType, $src, $bDstDllType, $dst), "cveConvertPointsFromHomogeneous", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveConvertPointsFromHomogeneous", $sSrcDllType, $src, $sDstDllType, $dst), "cveConvertPointsFromHomogeneous", @error)
 EndFunc   ;==>_cveConvertPointsFromHomogeneous
 
 Func _cveConvertPointsFromHomogeneousMat($matSrc, $matDst)
@@ -2349,42 +2359,42 @@ EndFunc   ;==>_cveConvertPointsFromHomogeneousMat
 Func _cveFindEssentialMat($points1, $points2, $cameraMatrix, $method, $prob, $threshold, $mask, $essentialMat)
     ; CVAPI(void) cveFindEssentialMat(cv::_InputArray* points1, cv::_InputArray* points2, cv::_InputArray* cameraMatrix, int method, double prob, double threshold, cv::_OutputArray* mask, cv::Mat* essentialMat);
 
-    Local $bPoints1DllType
-    If VarGetType($points1) == "DLLStruct" Then
-        $bPoints1DllType = "struct*"
+    Local $sPoints1DllType
+    If IsDllStruct($points1) Then
+        $sPoints1DllType = "struct*"
     Else
-        $bPoints1DllType = "ptr"
+        $sPoints1DllType = "ptr"
     EndIf
 
-    Local $bPoints2DllType
-    If VarGetType($points2) == "DLLStruct" Then
-        $bPoints2DllType = "struct*"
+    Local $sPoints2DllType
+    If IsDllStruct($points2) Then
+        $sPoints2DllType = "struct*"
     Else
-        $bPoints2DllType = "ptr"
+        $sPoints2DllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bMaskDllType
-    If VarGetType($mask) == "DLLStruct" Then
-        $bMaskDllType = "struct*"
+    Local $sMaskDllType
+    If IsDllStruct($mask) Then
+        $sMaskDllType = "struct*"
     Else
-        $bMaskDllType = "ptr"
+        $sMaskDllType = "ptr"
     EndIf
 
-    Local $bEssentialMatDllType
-    If VarGetType($essentialMat) == "DLLStruct" Then
-        $bEssentialMatDllType = "struct*"
+    Local $sEssentialMatDllType
+    If IsDllStruct($essentialMat) Then
+        $sEssentialMatDllType = "struct*"
     Else
-        $bEssentialMatDllType = "ptr"
+        $sEssentialMatDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFindEssentialMat", $bPoints1DllType, $points1, $bPoints2DllType, $points2, $bCameraMatrixDllType, $cameraMatrix, "int", $method, "double", $prob, "double", $threshold, $bMaskDllType, $mask, $bEssentialMatDllType, $essentialMat), "cveFindEssentialMat", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFindEssentialMat", $sPoints1DllType, $points1, $sPoints2DllType, $points2, $sCameraMatrixDllType, $cameraMatrix, "int", $method, "double", $prob, "double", $threshold, $sMaskDllType, $mask, $sEssentialMatDllType, $essentialMat), "cveFindEssentialMat", @error)
 EndFunc   ;==>_cveFindEssentialMat
 
 Func _cveFindEssentialMatMat($matPoints1, $matPoints2, $matCameraMatrix, $method, $prob, $threshold, $matMask, $essentialMat)
@@ -2484,35 +2494,35 @@ EndFunc   ;==>_cveFindEssentialMatMat
 Func _cveFindFundamentalMat($points1, $points2, $dst, $method, $param1, $param2, $mask = _cveNoArray())
     ; CVAPI(void) cveFindFundamentalMat(cv::_InputArray* points1, cv::_InputArray* points2, cv::_OutputArray* dst, int method, double param1, double param2, cv::_OutputArray* mask);
 
-    Local $bPoints1DllType
-    If VarGetType($points1) == "DLLStruct" Then
-        $bPoints1DllType = "struct*"
+    Local $sPoints1DllType
+    If IsDllStruct($points1) Then
+        $sPoints1DllType = "struct*"
     Else
-        $bPoints1DllType = "ptr"
+        $sPoints1DllType = "ptr"
     EndIf
 
-    Local $bPoints2DllType
-    If VarGetType($points2) == "DLLStruct" Then
-        $bPoints2DllType = "struct*"
+    Local $sPoints2DllType
+    If IsDllStruct($points2) Then
+        $sPoints2DllType = "struct*"
     Else
-        $bPoints2DllType = "ptr"
+        $sPoints2DllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    Local $bMaskDllType
-    If VarGetType($mask) == "DLLStruct" Then
-        $bMaskDllType = "struct*"
+    Local $sMaskDllType
+    If IsDllStruct($mask) Then
+        $sMaskDllType = "struct*"
     Else
-        $bMaskDllType = "ptr"
+        $sMaskDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFindFundamentalMat", $bPoints1DllType, $points1, $bPoints2DllType, $points2, $bDstDllType, $dst, "int", $method, "double", $param1, "double", $param2, $bMaskDllType, $mask), "cveFindFundamentalMat", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFindFundamentalMat", $sPoints1DllType, $points1, $sPoints2DllType, $points2, $sDstDllType, $dst, "int", $method, "double", $param1, "double", $param2, $sMaskDllType, $mask), "cveFindFundamentalMat", @error)
 EndFunc   ;==>_cveFindFundamentalMat
 
 Func _cveFindFundamentalMatMat($matPoints1, $matPoints2, $matDst, $method, $param1, $param2, $matMask = _cveNoArrayMat())
@@ -2612,35 +2622,35 @@ EndFunc   ;==>_cveFindFundamentalMatMat
 Func _cveFindHomography($srcPoints, $dstPoints, $dst, $method = 0, $ransacReprojThreshold = 3, $mask = _cveNoArray())
     ; CVAPI(void) cveFindHomography(cv::_InputArray* srcPoints, cv::_InputArray* dstPoints, cv::_OutputArray* dst, int method, double ransacReprojThreshold, cv::_OutputArray* mask);
 
-    Local $bSrcPointsDllType
-    If VarGetType($srcPoints) == "DLLStruct" Then
-        $bSrcPointsDllType = "struct*"
+    Local $sSrcPointsDllType
+    If IsDllStruct($srcPoints) Then
+        $sSrcPointsDllType = "struct*"
     Else
-        $bSrcPointsDllType = "ptr"
+        $sSrcPointsDllType = "ptr"
     EndIf
 
-    Local $bDstPointsDllType
-    If VarGetType($dstPoints) == "DLLStruct" Then
-        $bDstPointsDllType = "struct*"
+    Local $sDstPointsDllType
+    If IsDllStruct($dstPoints) Then
+        $sDstPointsDllType = "struct*"
     Else
-        $bDstPointsDllType = "ptr"
+        $sDstPointsDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    Local $bMaskDllType
-    If VarGetType($mask) == "DLLStruct" Then
-        $bMaskDllType = "struct*"
+    Local $sMaskDllType
+    If IsDllStruct($mask) Then
+        $sMaskDllType = "struct*"
     Else
-        $bMaskDllType = "ptr"
+        $sMaskDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFindHomography", $bSrcPointsDllType, $srcPoints, $bDstPointsDllType, $dstPoints, $bDstDllType, $dst, "int", $method, "double", $ransacReprojThreshold, $bMaskDllType, $mask), "cveFindHomography", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFindHomography", $sSrcPointsDllType, $srcPoints, $sDstPointsDllType, $dstPoints, $sDstDllType, $dst, "int", $method, "double", $ransacReprojThreshold, $sMaskDllType, $mask), "cveFindHomography", @error)
 EndFunc   ;==>_cveFindHomography
 
 Func _cveFindHomographyMat($matSrcPoints, $matDstPoints, $matDst, $method = 0, $ransacReprojThreshold = 3, $matMask = _cveNoArrayMat())
@@ -2740,28 +2750,28 @@ EndFunc   ;==>_cveFindHomographyMat
 Func _cveComputeCorrespondEpilines($points, $whichImage, $f, $lines)
     ; CVAPI(void) cveComputeCorrespondEpilines(cv::_InputArray* points, int whichImage, cv::_InputArray* f, cv::_OutputArray* lines);
 
-    Local $bPointsDllType
-    If VarGetType($points) == "DLLStruct" Then
-        $bPointsDllType = "struct*"
+    Local $sPointsDllType
+    If IsDllStruct($points) Then
+        $sPointsDllType = "struct*"
     Else
-        $bPointsDllType = "ptr"
+        $sPointsDllType = "ptr"
     EndIf
 
-    Local $bFDllType
-    If VarGetType($f) == "DLLStruct" Then
-        $bFDllType = "struct*"
+    Local $sFDllType
+    If IsDllStruct($f) Then
+        $sFDllType = "struct*"
     Else
-        $bFDllType = "ptr"
+        $sFDllType = "ptr"
     EndIf
 
-    Local $bLinesDllType
-    If VarGetType($lines) == "DLLStruct" Then
-        $bLinesDllType = "struct*"
+    Local $sLinesDllType
+    If IsDllStruct($lines) Then
+        $sLinesDllType = "struct*"
     Else
-        $bLinesDllType = "ptr"
+        $sLinesDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveComputeCorrespondEpilines", $bPointsDllType, $points, "int", $whichImage, $bFDllType, $f, $bLinesDllType, $lines), "cveComputeCorrespondEpilines", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveComputeCorrespondEpilines", $sPointsDllType, $points, "int", $whichImage, $sFDllType, $f, $sLinesDllType, $lines), "cveComputeCorrespondEpilines", @error)
 EndFunc   ;==>_cveComputeCorrespondEpilines
 
 Func _cveComputeCorrespondEpilinesMat($matPoints, $whichImage, $matF, $matLines)
@@ -2839,56 +2849,56 @@ EndFunc   ;==>_cveComputeCorrespondEpilinesMat
 Func _cveProjectPoints($objPoints, $rvec, $tvec, $cameraMatrix, $distCoeffs, $imagePoints, $jacobian = _cveNoArray(), $aspectRatio = 0)
     ; CVAPI(void) cveProjectPoints(cv::_InputArray* objPoints, cv::_InputArray* rvec, cv::_InputArray* tvec, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_OutputArray* imagePoints, cv::_OutputArray* jacobian, double aspectRatio);
 
-    Local $bObjPointsDllType
-    If VarGetType($objPoints) == "DLLStruct" Then
-        $bObjPointsDllType = "struct*"
+    Local $sObjPointsDllType
+    If IsDllStruct($objPoints) Then
+        $sObjPointsDllType = "struct*"
     Else
-        $bObjPointsDllType = "ptr"
+        $sObjPointsDllType = "ptr"
     EndIf
 
-    Local $bRvecDllType
-    If VarGetType($rvec) == "DLLStruct" Then
-        $bRvecDllType = "struct*"
+    Local $sRvecDllType
+    If IsDllStruct($rvec) Then
+        $sRvecDllType = "struct*"
     Else
-        $bRvecDllType = "ptr"
+        $sRvecDllType = "ptr"
     EndIf
 
-    Local $bTvecDllType
-    If VarGetType($tvec) == "DLLStruct" Then
-        $bTvecDllType = "struct*"
+    Local $sTvecDllType
+    If IsDllStruct($tvec) Then
+        $sTvecDllType = "struct*"
     Else
-        $bTvecDllType = "ptr"
+        $sTvecDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
 
-    Local $bImagePointsDllType
-    If VarGetType($imagePoints) == "DLLStruct" Then
-        $bImagePointsDllType = "struct*"
+    Local $sImagePointsDllType
+    If IsDllStruct($imagePoints) Then
+        $sImagePointsDllType = "struct*"
     Else
-        $bImagePointsDllType = "ptr"
+        $sImagePointsDllType = "ptr"
     EndIf
 
-    Local $bJacobianDllType
-    If VarGetType($jacobian) == "DLLStruct" Then
-        $bJacobianDllType = "struct*"
+    Local $sJacobianDllType
+    If IsDllStruct($jacobian) Then
+        $sJacobianDllType = "struct*"
     Else
-        $bJacobianDllType = "ptr"
+        $sJacobianDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveProjectPoints", $bObjPointsDllType, $objPoints, $bRvecDllType, $rvec, $bTvecDllType, $tvec, $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs, $bImagePointsDllType, $imagePoints, $bJacobianDllType, $jacobian, "double", $aspectRatio), "cveProjectPoints", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveProjectPoints", $sObjPointsDllType, $objPoints, $sRvecDllType, $rvec, $sTvecDllType, $tvec, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sImagePointsDllType, $imagePoints, $sJacobianDllType, $jacobian, "double", $aspectRatio), "cveProjectPoints", @error)
 EndFunc   ;==>_cveProjectPoints
 
 Func _cveProjectPointsMat($matObjPoints, $matRvec, $matTvec, $matCameraMatrix, $matDistCoeffs, $matImagePoints, $matJacobian = _cveNoArrayMat(), $aspectRatio = 0)
@@ -3054,56 +3064,56 @@ EndFunc   ;==>_cveProjectPointsMat
 Func _cveCalibrationMatrixValues($cameraMatrix, $imageSize, $apertureWidth, $apertureHeight, $fovx, $fovy, $focalLength, $principalPoint, $aspectRatio)
     ; CVAPI(void) cveCalibrationMatrixValues(cv::_InputArray* cameraMatrix, CvSize* imageSize, double apertureWidth, double apertureHeight, double* fovx, double* fovy, double* focalLength, CvPoint2D64f* principalPoint, double* aspectRatio);
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bImageSizeDllType
-    If VarGetType($imageSize) == "DLLStruct" Then
-        $bImageSizeDllType = "struct*"
+    Local $sImageSizeDllType
+    If IsDllStruct($imageSize) Then
+        $sImageSizeDllType = "struct*"
     Else
-        $bImageSizeDllType = "ptr"
+        $sImageSizeDllType = "ptr"
     EndIf
 
-    Local $bFovxDllType
-    If VarGetType($fovx) == "DLLStruct" Then
-        $bFovxDllType = "struct*"
+    Local $sFovxDllType
+    If IsDllStruct($fovx) Then
+        $sFovxDllType = "struct*"
     Else
-        $bFovxDllType = "double*"
+        $sFovxDllType = "double*"
     EndIf
 
-    Local $bFovyDllType
-    If VarGetType($fovy) == "DLLStruct" Then
-        $bFovyDllType = "struct*"
+    Local $sFovyDllType
+    If IsDllStruct($fovy) Then
+        $sFovyDllType = "struct*"
     Else
-        $bFovyDllType = "double*"
+        $sFovyDllType = "double*"
     EndIf
 
-    Local $bFocalLengthDllType
-    If VarGetType($focalLength) == "DLLStruct" Then
-        $bFocalLengthDllType = "struct*"
+    Local $sFocalLengthDllType
+    If IsDllStruct($focalLength) Then
+        $sFocalLengthDllType = "struct*"
     Else
-        $bFocalLengthDllType = "double*"
+        $sFocalLengthDllType = "double*"
     EndIf
 
-    Local $bPrincipalPointDllType
-    If VarGetType($principalPoint) == "DLLStruct" Then
-        $bPrincipalPointDllType = "struct*"
+    Local $sPrincipalPointDllType
+    If IsDllStruct($principalPoint) Then
+        $sPrincipalPointDllType = "struct*"
     Else
-        $bPrincipalPointDllType = "ptr"
+        $sPrincipalPointDllType = "ptr"
     EndIf
 
-    Local $bAspectRatioDllType
-    If VarGetType($aspectRatio) == "DLLStruct" Then
-        $bAspectRatioDllType = "struct*"
+    Local $sAspectRatioDllType
+    If IsDllStruct($aspectRatio) Then
+        $sAspectRatioDllType = "struct*"
     Else
-        $bAspectRatioDllType = "double*"
+        $sAspectRatioDllType = "double*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCalibrationMatrixValues", $bCameraMatrixDllType, $cameraMatrix, $bImageSizeDllType, $imageSize, "double", $apertureWidth, "double", $apertureHeight, $bFovxDllType, $fovx, $bFovyDllType, $fovy, $bFocalLengthDllType, $focalLength, $bPrincipalPointDllType, $principalPoint, $bAspectRatioDllType, $aspectRatio), "cveCalibrationMatrixValues", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCalibrationMatrixValues", $sCameraMatrixDllType, $cameraMatrix, $sImageSizeDllType, $imageSize, "double", $apertureWidth, "double", $apertureHeight, $sFovxDllType, $fovx, $sFovyDllType, $fovy, $sFocalLengthDllType, $focalLength, $sPrincipalPointDllType, $principalPoint, $sAspectRatioDllType, $aspectRatio), "cveCalibrationMatrixValues", @error)
 EndFunc   ;==>_cveCalibrationMatrixValues
 
 Func _cveCalibrationMatrixValuesMat($matCameraMatrix, $imageSize, $apertureWidth, $apertureHeight, $fovx, $fovy, $focalLength, $principalPoint, $aspectRatio)
@@ -3137,97 +3147,97 @@ EndFunc   ;==>_cveCalibrationMatrixValuesMat
 Func _cveStereoCalibrate($objectPoints, $imagePoints1, $imagePoints2, $cameraMatrix1, $distCoeffs1, $cameraMatrix2, $distCoeffs2, $imageSize, $r, $t, $e, $f, $flags = $CV_CALIB_FIX_INTRINSIC, $criteria = _cvTermCriteria($CV_TERM_CRITERIA_COUNT+$CV_TERM_CRITERIA_EPS, 30, 1e-6))
     ; CVAPI(double) cveStereoCalibrate(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints1, cv::_InputArray* imagePoints2, cv::_InputOutputArray* cameraMatrix1, cv::_InputOutputArray* distCoeffs1, cv::_InputOutputArray* cameraMatrix2, cv::_InputOutputArray* distCoeffs2, CvSize* imageSize, cv::_OutputArray* r, cv::_OutputArray* t, cv::_OutputArray* e, cv::_OutputArray* f, int flags, CvTermCriteria* criteria);
 
-    Local $bObjectPointsDllType
-    If VarGetType($objectPoints) == "DLLStruct" Then
-        $bObjectPointsDllType = "struct*"
+    Local $sObjectPointsDllType
+    If IsDllStruct($objectPoints) Then
+        $sObjectPointsDllType = "struct*"
     Else
-        $bObjectPointsDllType = "ptr"
+        $sObjectPointsDllType = "ptr"
     EndIf
 
-    Local $bImagePoints1DllType
-    If VarGetType($imagePoints1) == "DLLStruct" Then
-        $bImagePoints1DllType = "struct*"
+    Local $sImagePoints1DllType
+    If IsDllStruct($imagePoints1) Then
+        $sImagePoints1DllType = "struct*"
     Else
-        $bImagePoints1DllType = "ptr"
+        $sImagePoints1DllType = "ptr"
     EndIf
 
-    Local $bImagePoints2DllType
-    If VarGetType($imagePoints2) == "DLLStruct" Then
-        $bImagePoints2DllType = "struct*"
+    Local $sImagePoints2DllType
+    If IsDllStruct($imagePoints2) Then
+        $sImagePoints2DllType = "struct*"
     Else
-        $bImagePoints2DllType = "ptr"
+        $sImagePoints2DllType = "ptr"
     EndIf
 
-    Local $bCameraMatrix1DllType
-    If VarGetType($cameraMatrix1) == "DLLStruct" Then
-        $bCameraMatrix1DllType = "struct*"
+    Local $sCameraMatrix1DllType
+    If IsDllStruct($cameraMatrix1) Then
+        $sCameraMatrix1DllType = "struct*"
     Else
-        $bCameraMatrix1DllType = "ptr"
+        $sCameraMatrix1DllType = "ptr"
     EndIf
 
-    Local $bDistCoeffs1DllType
-    If VarGetType($distCoeffs1) == "DLLStruct" Then
-        $bDistCoeffs1DllType = "struct*"
+    Local $sDistCoeffs1DllType
+    If IsDllStruct($distCoeffs1) Then
+        $sDistCoeffs1DllType = "struct*"
     Else
-        $bDistCoeffs1DllType = "ptr"
+        $sDistCoeffs1DllType = "ptr"
     EndIf
 
-    Local $bCameraMatrix2DllType
-    If VarGetType($cameraMatrix2) == "DLLStruct" Then
-        $bCameraMatrix2DllType = "struct*"
+    Local $sCameraMatrix2DllType
+    If IsDllStruct($cameraMatrix2) Then
+        $sCameraMatrix2DllType = "struct*"
     Else
-        $bCameraMatrix2DllType = "ptr"
+        $sCameraMatrix2DllType = "ptr"
     EndIf
 
-    Local $bDistCoeffs2DllType
-    If VarGetType($distCoeffs2) == "DLLStruct" Then
-        $bDistCoeffs2DllType = "struct*"
+    Local $sDistCoeffs2DllType
+    If IsDllStruct($distCoeffs2) Then
+        $sDistCoeffs2DllType = "struct*"
     Else
-        $bDistCoeffs2DllType = "ptr"
+        $sDistCoeffs2DllType = "ptr"
     EndIf
 
-    Local $bImageSizeDllType
-    If VarGetType($imageSize) == "DLLStruct" Then
-        $bImageSizeDllType = "struct*"
+    Local $sImageSizeDllType
+    If IsDllStruct($imageSize) Then
+        $sImageSizeDllType = "struct*"
     Else
-        $bImageSizeDllType = "ptr"
+        $sImageSizeDllType = "ptr"
     EndIf
 
-    Local $bRDllType
-    If VarGetType($r) == "DLLStruct" Then
-        $bRDllType = "struct*"
+    Local $sRDllType
+    If IsDllStruct($r) Then
+        $sRDllType = "struct*"
     Else
-        $bRDllType = "ptr"
+        $sRDllType = "ptr"
     EndIf
 
-    Local $bTDllType
-    If VarGetType($t) == "DLLStruct" Then
-        $bTDllType = "struct*"
+    Local $sTDllType
+    If IsDllStruct($t) Then
+        $sTDllType = "struct*"
     Else
-        $bTDllType = "ptr"
+        $sTDllType = "ptr"
     EndIf
 
-    Local $bEDllType
-    If VarGetType($e) == "DLLStruct" Then
-        $bEDllType = "struct*"
+    Local $sEDllType
+    If IsDllStruct($e) Then
+        $sEDllType = "struct*"
     Else
-        $bEDllType = "ptr"
+        $sEDllType = "ptr"
     EndIf
 
-    Local $bFDllType
-    If VarGetType($f) == "DLLStruct" Then
-        $bFDllType = "struct*"
+    Local $sFDllType
+    If IsDllStruct($f) Then
+        $sFDllType = "struct*"
     Else
-        $bFDllType = "ptr"
+        $sFDllType = "ptr"
     EndIf
 
-    Local $bCriteriaDllType
-    If VarGetType($criteria) == "DLLStruct" Then
-        $bCriteriaDllType = "struct*"
+    Local $sCriteriaDllType
+    If IsDllStruct($criteria) Then
+        $sCriteriaDllType = "struct*"
     Else
-        $bCriteriaDllType = "ptr"
+        $sCriteriaDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveStereoCalibrate", $bObjectPointsDllType, $objectPoints, $bImagePoints1DllType, $imagePoints1, $bImagePoints2DllType, $imagePoints2, $bCameraMatrix1DllType, $cameraMatrix1, $bDistCoeffs1DllType, $distCoeffs1, $bCameraMatrix2DllType, $cameraMatrix2, $bDistCoeffs2DllType, $distCoeffs2, $bImageSizeDllType, $imageSize, $bRDllType, $r, $bTDllType, $t, $bEDllType, $e, $bFDllType, $f, "int", $flags, $bCriteriaDllType, $criteria), "cveStereoCalibrate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveStereoCalibrate", $sObjectPointsDllType, $objectPoints, $sImagePoints1DllType, $imagePoints1, $sImagePoints2DllType, $imagePoints2, $sCameraMatrix1DllType, $cameraMatrix1, $sDistCoeffs1DllType, $distCoeffs1, $sCameraMatrix2DllType, $cameraMatrix2, $sDistCoeffs2DllType, $distCoeffs2, $sImageSizeDllType, $imageSize, $sRDllType, $r, $sTDllType, $t, $sEDllType, $e, $sFDllType, $f, "int", $flags, $sCriteriaDllType, $criteria), "cveStereoCalibrate", @error)
 EndFunc   ;==>_cveStereoCalibrate
 
 Func _cveStereoCalibrateMat($matObjectPoints, $matImagePoints1, $matImagePoints2, $matCameraMatrix1, $matDistCoeffs1, $matCameraMatrix2, $matDistCoeffs2, $imageSize, $matR, $matT, $matE, $matF, $flags = $CV_CALIB_FIX_INTRINSIC, $criteria = _cvTermCriteria($CV_TERM_CRITERIA_COUNT+$CV_TERM_CRITERIA_EPS, 30, 1e-6))
@@ -3483,48 +3493,48 @@ EndFunc   ;==>_cveStereoCalibrateMat
 Func _cveSolvePnP($objectPoints, $imagePoints, $cameraMatrix, $distCoeffs, $rvec, $tvec, $useExtrinsicGuess = false, $flags = $CV_SOLVEPNP_ITERATIVE)
     ; CVAPI(bool) cveSolvePnP(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_OutputArray* rvec, cv::_OutputArray* tvec, bool useExtrinsicGuess, int flags);
 
-    Local $bObjectPointsDllType
-    If VarGetType($objectPoints) == "DLLStruct" Then
-        $bObjectPointsDllType = "struct*"
+    Local $sObjectPointsDllType
+    If IsDllStruct($objectPoints) Then
+        $sObjectPointsDllType = "struct*"
     Else
-        $bObjectPointsDllType = "ptr"
+        $sObjectPointsDllType = "ptr"
     EndIf
 
-    Local $bImagePointsDllType
-    If VarGetType($imagePoints) == "DLLStruct" Then
-        $bImagePointsDllType = "struct*"
+    Local $sImagePointsDllType
+    If IsDllStruct($imagePoints) Then
+        $sImagePointsDllType = "struct*"
     Else
-        $bImagePointsDllType = "ptr"
+        $sImagePointsDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
 
-    Local $bRvecDllType
-    If VarGetType($rvec) == "DLLStruct" Then
-        $bRvecDllType = "struct*"
+    Local $sRvecDllType
+    If IsDllStruct($rvec) Then
+        $sRvecDllType = "struct*"
     Else
-        $bRvecDllType = "ptr"
+        $sRvecDllType = "ptr"
     EndIf
 
-    Local $bTvecDllType
-    If VarGetType($tvec) == "DLLStruct" Then
-        $bTvecDllType = "struct*"
+    Local $sTvecDllType
+    If IsDllStruct($tvec) Then
+        $sTvecDllType = "struct*"
     Else
-        $bTvecDllType = "ptr"
+        $sTvecDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveSolvePnP", $bObjectPointsDllType, $objectPoints, $bImagePointsDllType, $imagePoints, $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs, $bRvecDllType, $rvec, $bTvecDllType, $tvec, "boolean", $useExtrinsicGuess, "int", $flags), "cveSolvePnP", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveSolvePnP", $sObjectPointsDllType, $objectPoints, $sImagePointsDllType, $imagePoints, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRvecDllType, $rvec, $sTvecDllType, $tvec, "boolean", $useExtrinsicGuess, "int", $flags), "cveSolvePnP", @error)
 EndFunc   ;==>_cveSolvePnP
 
 Func _cveSolvePnPMat($matObjectPoints, $matImagePoints, $matCameraMatrix, $matDistCoeffs, $matRvec, $matTvec, $useExtrinsicGuess = false, $flags = $CV_SOLVEPNP_ITERATIVE)
@@ -3670,55 +3680,55 @@ EndFunc   ;==>_cveSolvePnPMat
 Func _cveSolvePnPRansac($objectPoints, $imagePoints, $cameraMatrix, $distCoeffs, $rvec, $tvec, $useExtrinsicGuess, $iterationsCount, $reprojectionError, $confident, $inliers = _cveNoArray(), $flags = $CV_SOLVEPNP_ITERATIVE)
     ; CVAPI(bool) cveSolvePnPRansac(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_OutputArray* rvec, cv::_OutputArray* tvec, bool useExtrinsicGuess, int iterationsCount, float reprojectionError, double confident, cv::_OutputArray* inliers, int flags);
 
-    Local $bObjectPointsDllType
-    If VarGetType($objectPoints) == "DLLStruct" Then
-        $bObjectPointsDllType = "struct*"
+    Local $sObjectPointsDllType
+    If IsDllStruct($objectPoints) Then
+        $sObjectPointsDllType = "struct*"
     Else
-        $bObjectPointsDllType = "ptr"
+        $sObjectPointsDllType = "ptr"
     EndIf
 
-    Local $bImagePointsDllType
-    If VarGetType($imagePoints) == "DLLStruct" Then
-        $bImagePointsDllType = "struct*"
+    Local $sImagePointsDllType
+    If IsDllStruct($imagePoints) Then
+        $sImagePointsDllType = "struct*"
     Else
-        $bImagePointsDllType = "ptr"
+        $sImagePointsDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
 
-    Local $bRvecDllType
-    If VarGetType($rvec) == "DLLStruct" Then
-        $bRvecDllType = "struct*"
+    Local $sRvecDllType
+    If IsDllStruct($rvec) Then
+        $sRvecDllType = "struct*"
     Else
-        $bRvecDllType = "ptr"
+        $sRvecDllType = "ptr"
     EndIf
 
-    Local $bTvecDllType
-    If VarGetType($tvec) == "DLLStruct" Then
-        $bTvecDllType = "struct*"
+    Local $sTvecDllType
+    If IsDllStruct($tvec) Then
+        $sTvecDllType = "struct*"
     Else
-        $bTvecDllType = "ptr"
+        $sTvecDllType = "ptr"
     EndIf
 
-    Local $bInliersDllType
-    If VarGetType($inliers) == "DLLStruct" Then
-        $bInliersDllType = "struct*"
+    Local $sInliersDllType
+    If IsDllStruct($inliers) Then
+        $sInliersDllType = "struct*"
     Else
-        $bInliersDllType = "ptr"
+        $sInliersDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveSolvePnPRansac", $bObjectPointsDllType, $objectPoints, $bImagePointsDllType, $imagePoints, $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs, $bRvecDllType, $rvec, $bTvecDllType, $tvec, "boolean", $useExtrinsicGuess, "int", $iterationsCount, "float", $reprojectionError, "double", $confident, $bInliersDllType, $inliers, "int", $flags), "cveSolvePnPRansac", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveSolvePnPRansac", $sObjectPointsDllType, $objectPoints, $sImagePointsDllType, $imagePoints, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRvecDllType, $rvec, $sTvecDllType, $tvec, "boolean", $useExtrinsicGuess, "int", $iterationsCount, "float", $reprojectionError, "double", $confident, $sInliersDllType, $inliers, "int", $flags), "cveSolvePnPRansac", @error)
 EndFunc   ;==>_cveSolvePnPRansac
 
 Func _cveSolvePnPRansacMat($matObjectPoints, $matImagePoints, $matCameraMatrix, $matDistCoeffs, $matRvec, $matTvec, $useExtrinsicGuess, $iterationsCount, $reprojectionError, $confident, $matInliers = _cveNoArrayMat(), $flags = $CV_SOLVEPNP_ITERATIVE)
@@ -3886,48 +3896,48 @@ EndFunc   ;==>_cveSolvePnPRansacMat
 Func _cveSolveP3P($objectPoints, $imagePoints, $cameraMatrix, $distCoeffs, $rvecs, $tvecs, $flags)
     ; CVAPI(int) cveSolveP3P(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_OutputArray* rvecs, cv::_OutputArray* tvecs, int flags);
 
-    Local $bObjectPointsDllType
-    If VarGetType($objectPoints) == "DLLStruct" Then
-        $bObjectPointsDllType = "struct*"
+    Local $sObjectPointsDllType
+    If IsDllStruct($objectPoints) Then
+        $sObjectPointsDllType = "struct*"
     Else
-        $bObjectPointsDllType = "ptr"
+        $sObjectPointsDllType = "ptr"
     EndIf
 
-    Local $bImagePointsDllType
-    If VarGetType($imagePoints) == "DLLStruct" Then
-        $bImagePointsDllType = "struct*"
+    Local $sImagePointsDllType
+    If IsDllStruct($imagePoints) Then
+        $sImagePointsDllType = "struct*"
     Else
-        $bImagePointsDllType = "ptr"
+        $sImagePointsDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
 
-    Local $bRvecsDllType
-    If VarGetType($rvecs) == "DLLStruct" Then
-        $bRvecsDllType = "struct*"
+    Local $sRvecsDllType
+    If IsDllStruct($rvecs) Then
+        $sRvecsDllType = "struct*"
     Else
-        $bRvecsDllType = "ptr"
+        $sRvecsDllType = "ptr"
     EndIf
 
-    Local $bTvecsDllType
-    If VarGetType($tvecs) == "DLLStruct" Then
-        $bTvecsDllType = "struct*"
+    Local $sTvecsDllType
+    If IsDllStruct($tvecs) Then
+        $sTvecsDllType = "struct*"
     Else
-        $bTvecsDllType = "ptr"
+        $sTvecsDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveSolveP3P", $bObjectPointsDllType, $objectPoints, $bImagePointsDllType, $imagePoints, $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs, $bRvecsDllType, $rvecs, $bTvecsDllType, $tvecs, "int", $flags), "cveSolveP3P", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveSolveP3P", $sObjectPointsDllType, $objectPoints, $sImagePointsDllType, $imagePoints, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRvecsDllType, $rvecs, $sTvecsDllType, $tvecs, "int", $flags), "cveSolveP3P", @error)
 EndFunc   ;==>_cveSolveP3P
 
 Func _cveSolveP3PMat($matObjectPoints, $matImagePoints, $matCameraMatrix, $matDistCoeffs, $matRvecs, $matTvecs, $flags)
@@ -4073,56 +4083,56 @@ EndFunc   ;==>_cveSolveP3PMat
 Func _cveSolvePnPRefineLM($objectPoints, $imagePoints, $cameraMatrix, $distCoeffs, $rvec, $tvec, $criteria = _cvTermCriteria($CV_TERM_CRITERIA_EPS + $CV_TERM_CRITERIA_COUNT, 20, $CV_FLT_EPSILON))
     ; CVAPI(void) cveSolvePnPRefineLM(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_InputOutputArray* rvec, cv::_InputOutputArray* tvec, CvTermCriteria* criteria);
 
-    Local $bObjectPointsDllType
-    If VarGetType($objectPoints) == "DLLStruct" Then
-        $bObjectPointsDllType = "struct*"
+    Local $sObjectPointsDllType
+    If IsDllStruct($objectPoints) Then
+        $sObjectPointsDllType = "struct*"
     Else
-        $bObjectPointsDllType = "ptr"
+        $sObjectPointsDllType = "ptr"
     EndIf
 
-    Local $bImagePointsDllType
-    If VarGetType($imagePoints) == "DLLStruct" Then
-        $bImagePointsDllType = "struct*"
+    Local $sImagePointsDllType
+    If IsDllStruct($imagePoints) Then
+        $sImagePointsDllType = "struct*"
     Else
-        $bImagePointsDllType = "ptr"
+        $sImagePointsDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
 
-    Local $bRvecDllType
-    If VarGetType($rvec) == "DLLStruct" Then
-        $bRvecDllType = "struct*"
+    Local $sRvecDllType
+    If IsDllStruct($rvec) Then
+        $sRvecDllType = "struct*"
     Else
-        $bRvecDllType = "ptr"
+        $sRvecDllType = "ptr"
     EndIf
 
-    Local $bTvecDllType
-    If VarGetType($tvec) == "DLLStruct" Then
-        $bTvecDllType = "struct*"
+    Local $sTvecDllType
+    If IsDllStruct($tvec) Then
+        $sTvecDllType = "struct*"
     Else
-        $bTvecDllType = "ptr"
+        $sTvecDllType = "ptr"
     EndIf
 
-    Local $bCriteriaDllType
-    If VarGetType($criteria) == "DLLStruct" Then
-        $bCriteriaDllType = "struct*"
+    Local $sCriteriaDllType
+    If IsDllStruct($criteria) Then
+        $sCriteriaDllType = "struct*"
     Else
-        $bCriteriaDllType = "ptr"
+        $sCriteriaDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSolvePnPRefineLM", $bObjectPointsDllType, $objectPoints, $bImagePointsDllType, $imagePoints, $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs, $bRvecDllType, $rvec, $bTvecDllType, $tvec, $bCriteriaDllType, $criteria), "cveSolvePnPRefineLM", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSolvePnPRefineLM", $sObjectPointsDllType, $objectPoints, $sImagePointsDllType, $imagePoints, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRvecDllType, $rvec, $sTvecDllType, $tvec, $sCriteriaDllType, $criteria), "cveSolvePnPRefineLM", @error)
 EndFunc   ;==>_cveSolvePnPRefineLM
 
 Func _cveSolvePnPRefineLMMat($matObjectPoints, $matImagePoints, $matCameraMatrix, $matDistCoeffs, $matRvec, $matTvec, $criteria = _cvTermCriteria($CV_TERM_CRITERIA_EPS + $CV_TERM_CRITERIA_COUNT, 20, $CV_FLT_EPSILON))
@@ -4266,56 +4276,56 @@ EndFunc   ;==>_cveSolvePnPRefineLMMat
 Func _cveSolvePnPRefineVVS($objectPoints, $imagePoints, $cameraMatrix, $distCoeffs, $rvec, $tvec, $criteria = _cvTermCriteria($CV_TERM_CRITERIA_EPS + $CV_TERM_CRITERIA_COUNT, 20, $CV_FLT_EPSILON), $VVSlambda = 1)
     ; CVAPI(void) cveSolvePnPRefineVVS(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_InputOutputArray* rvec, cv::_InputOutputArray* tvec, CvTermCriteria* criteria, double VVSlambda);
 
-    Local $bObjectPointsDllType
-    If VarGetType($objectPoints) == "DLLStruct" Then
-        $bObjectPointsDllType = "struct*"
+    Local $sObjectPointsDllType
+    If IsDllStruct($objectPoints) Then
+        $sObjectPointsDllType = "struct*"
     Else
-        $bObjectPointsDllType = "ptr"
+        $sObjectPointsDllType = "ptr"
     EndIf
 
-    Local $bImagePointsDllType
-    If VarGetType($imagePoints) == "DLLStruct" Then
-        $bImagePointsDllType = "struct*"
+    Local $sImagePointsDllType
+    If IsDllStruct($imagePoints) Then
+        $sImagePointsDllType = "struct*"
     Else
-        $bImagePointsDllType = "ptr"
+        $sImagePointsDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
 
-    Local $bRvecDllType
-    If VarGetType($rvec) == "DLLStruct" Then
-        $bRvecDllType = "struct*"
+    Local $sRvecDllType
+    If IsDllStruct($rvec) Then
+        $sRvecDllType = "struct*"
     Else
-        $bRvecDllType = "ptr"
+        $sRvecDllType = "ptr"
     EndIf
 
-    Local $bTvecDllType
-    If VarGetType($tvec) == "DLLStruct" Then
-        $bTvecDllType = "struct*"
+    Local $sTvecDllType
+    If IsDllStruct($tvec) Then
+        $sTvecDllType = "struct*"
     Else
-        $bTvecDllType = "ptr"
+        $sTvecDllType = "ptr"
     EndIf
 
-    Local $bCriteriaDllType
-    If VarGetType($criteria) == "DLLStruct" Then
-        $bCriteriaDllType = "struct*"
+    Local $sCriteriaDllType
+    If IsDllStruct($criteria) Then
+        $sCriteriaDllType = "struct*"
     Else
-        $bCriteriaDllType = "ptr"
+        $sCriteriaDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSolvePnPRefineVVS", $bObjectPointsDllType, $objectPoints, $bImagePointsDllType, $imagePoints, $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs, $bRvecDllType, $rvec, $bTvecDllType, $tvec, $bCriteriaDllType, $criteria, "double", $VVSlambda), "cveSolvePnPRefineVVS", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSolvePnPRefineVVS", $sObjectPointsDllType, $objectPoints, $sImagePointsDllType, $imagePoints, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRvecDllType, $rvec, $sTvecDllType, $tvec, $sCriteriaDllType, $criteria, "double", $VVSlambda), "cveSolvePnPRefineVVS", @error)
 EndFunc   ;==>_cveSolvePnPRefineVVS
 
 Func _cveSolvePnPRefineVVSMat($matObjectPoints, $matImagePoints, $matCameraMatrix, $matDistCoeffs, $matRvec, $matTvec, $criteria = _cvTermCriteria($CV_TERM_CRITERIA_EPS + $CV_TERM_CRITERIA_COUNT, 20, $CV_FLT_EPSILON), $VVSlambda = 1)
@@ -4459,69 +4469,69 @@ EndFunc   ;==>_cveSolvePnPRefineVVSMat
 Func _cveSolvePnPGeneric($objectPoints, $imagePoints, $cameraMatrix, $distCoeffs, $rvecs, $tvecs, $useExtrinsicGuess = false, $flags = $CV_SOLVEPNP_ITERATIVE, $rvec = _cveNoArray(), $tvec = _cveNoArray(), $reprojectionError = _cveNoArray())
     ; CVAPI(int) cveSolvePnPGeneric(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_OutputArray* rvecs, cv::_OutputArray* tvecs, bool useExtrinsicGuess, int flags, cv::_InputArray* rvec, cv::_InputArray* tvec, cv::_OutputArray* reprojectionError);
 
-    Local $bObjectPointsDllType
-    If VarGetType($objectPoints) == "DLLStruct" Then
-        $bObjectPointsDllType = "struct*"
+    Local $sObjectPointsDllType
+    If IsDllStruct($objectPoints) Then
+        $sObjectPointsDllType = "struct*"
     Else
-        $bObjectPointsDllType = "ptr"
+        $sObjectPointsDllType = "ptr"
     EndIf
 
-    Local $bImagePointsDllType
-    If VarGetType($imagePoints) == "DLLStruct" Then
-        $bImagePointsDllType = "struct*"
+    Local $sImagePointsDllType
+    If IsDllStruct($imagePoints) Then
+        $sImagePointsDllType = "struct*"
     Else
-        $bImagePointsDllType = "ptr"
+        $sImagePointsDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
 
-    Local $bRvecsDllType
-    If VarGetType($rvecs) == "DLLStruct" Then
-        $bRvecsDllType = "struct*"
+    Local $sRvecsDllType
+    If IsDllStruct($rvecs) Then
+        $sRvecsDllType = "struct*"
     Else
-        $bRvecsDllType = "ptr"
+        $sRvecsDllType = "ptr"
     EndIf
 
-    Local $bTvecsDllType
-    If VarGetType($tvecs) == "DLLStruct" Then
-        $bTvecsDllType = "struct*"
+    Local $sTvecsDllType
+    If IsDllStruct($tvecs) Then
+        $sTvecsDllType = "struct*"
     Else
-        $bTvecsDllType = "ptr"
+        $sTvecsDllType = "ptr"
     EndIf
 
-    Local $bRvecDllType
-    If VarGetType($rvec) == "DLLStruct" Then
-        $bRvecDllType = "struct*"
+    Local $sRvecDllType
+    If IsDllStruct($rvec) Then
+        $sRvecDllType = "struct*"
     Else
-        $bRvecDllType = "ptr"
+        $sRvecDllType = "ptr"
     EndIf
 
-    Local $bTvecDllType
-    If VarGetType($tvec) == "DLLStruct" Then
-        $bTvecDllType = "struct*"
+    Local $sTvecDllType
+    If IsDllStruct($tvec) Then
+        $sTvecDllType = "struct*"
     Else
-        $bTvecDllType = "ptr"
+        $sTvecDllType = "ptr"
     EndIf
 
-    Local $bReprojectionErrorDllType
-    If VarGetType($reprojectionError) == "DLLStruct" Then
-        $bReprojectionErrorDllType = "struct*"
+    Local $sReprojectionErrorDllType
+    If IsDllStruct($reprojectionError) Then
+        $sReprojectionErrorDllType = "struct*"
     Else
-        $bReprojectionErrorDllType = "ptr"
+        $sReprojectionErrorDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveSolvePnPGeneric", $bObjectPointsDllType, $objectPoints, $bImagePointsDllType, $imagePoints, $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs, $bRvecsDllType, $rvecs, $bTvecsDllType, $tvecs, "boolean", $useExtrinsicGuess, "int", $flags, $bRvecDllType, $rvec, $bTvecDllType, $tvec, $bReprojectionErrorDllType, $reprojectionError), "cveSolvePnPGeneric", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveSolvePnPGeneric", $sObjectPointsDllType, $objectPoints, $sImagePointsDllType, $imagePoints, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRvecsDllType, $rvecs, $sTvecsDllType, $tvecs, "boolean", $useExtrinsicGuess, "int", $flags, $sRvecDllType, $rvec, $sTvecDllType, $tvec, $sReprojectionErrorDllType, $reprojectionError), "cveSolvePnPGeneric", @error)
 EndFunc   ;==>_cveSolvePnPGeneric
 
 Func _cveSolvePnPGenericMat($matObjectPoints, $matImagePoints, $matCameraMatrix, $matDistCoeffs, $matRvecs, $matTvecs, $useExtrinsicGuess = false, $flags = $CV_SOLVEPNP_ITERATIVE, $matRvec = _cveNoArrayMat(), $matTvec = _cveNoArrayMat(), $matReprojectionError = _cveNoArrayMat())
@@ -4733,49 +4743,49 @@ EndFunc   ;==>_cveSolvePnPGenericMat
 Func _cveGetOptimalNewCameraMatrix($cameraMatrix, $distCoeffs, $imageSize, $alpha, $newImgSize, $validPixROI, $centerPrincipalPoint, $newCameraMatrix)
     ; CVAPI(void) cveGetOptimalNewCameraMatrix(cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, CvSize* imageSize, double alpha, CvSize* newImgSize, CvRect* validPixROI, bool centerPrincipalPoint, cv::Mat* newCameraMatrix);
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
 
-    Local $bImageSizeDllType
-    If VarGetType($imageSize) == "DLLStruct" Then
-        $bImageSizeDllType = "struct*"
+    Local $sImageSizeDllType
+    If IsDllStruct($imageSize) Then
+        $sImageSizeDllType = "struct*"
     Else
-        $bImageSizeDllType = "ptr"
+        $sImageSizeDllType = "ptr"
     EndIf
 
-    Local $bNewImgSizeDllType
-    If VarGetType($newImgSize) == "DLLStruct" Then
-        $bNewImgSizeDllType = "struct*"
+    Local $sNewImgSizeDllType
+    If IsDllStruct($newImgSize) Then
+        $sNewImgSizeDllType = "struct*"
     Else
-        $bNewImgSizeDllType = "ptr"
+        $sNewImgSizeDllType = "ptr"
     EndIf
 
-    Local $bValidPixROIDllType
-    If VarGetType($validPixROI) == "DLLStruct" Then
-        $bValidPixROIDllType = "struct*"
+    Local $sValidPixROIDllType
+    If IsDllStruct($validPixROI) Then
+        $sValidPixROIDllType = "struct*"
     Else
-        $bValidPixROIDllType = "ptr"
+        $sValidPixROIDllType = "ptr"
     EndIf
 
-    Local $bNewCameraMatrixDllType
-    If VarGetType($newCameraMatrix) == "DLLStruct" Then
-        $bNewCameraMatrixDllType = "struct*"
+    Local $sNewCameraMatrixDllType
+    If IsDllStruct($newCameraMatrix) Then
+        $sNewCameraMatrixDllType = "struct*"
     Else
-        $bNewCameraMatrixDllType = "ptr"
+        $sNewCameraMatrixDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetOptimalNewCameraMatrix", $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs, $bImageSizeDllType, $imageSize, "double", $alpha, $bNewImgSizeDllType, $newImgSize, $bValidPixROIDllType, $validPixROI, "boolean", $centerPrincipalPoint, $bNewCameraMatrixDllType, $newCameraMatrix), "cveGetOptimalNewCameraMatrix", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetOptimalNewCameraMatrix", $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sImageSizeDllType, $imageSize, "double", $alpha, $sNewImgSizeDllType, $newImgSize, $sValidPixROIDllType, $validPixROI, "boolean", $centerPrincipalPoint, $sNewCameraMatrixDllType, $newCameraMatrix), "cveGetOptimalNewCameraMatrix", @error)
 EndFunc   ;==>_cveGetOptimalNewCameraMatrix
 
 Func _cveGetOptimalNewCameraMatrixMat($matCameraMatrix, $matDistCoeffs, $imageSize, $alpha, $newImgSize, $validPixROI, $centerPrincipalPoint, $newCameraMatrix)
@@ -4831,35 +4841,35 @@ EndFunc   ;==>_cveGetOptimalNewCameraMatrixMat
 Func _cveInitCameraMatrix2D($objectPoints, $imagePoints, $imageSize, $aspectRatio, $cameraMatrix)
     ; CVAPI(void) cveInitCameraMatrix2D(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints, CvSize* imageSize, double aspectRatio, cv::Mat* cameraMatrix);
 
-    Local $bObjectPointsDllType
-    If VarGetType($objectPoints) == "DLLStruct" Then
-        $bObjectPointsDllType = "struct*"
+    Local $sObjectPointsDllType
+    If IsDllStruct($objectPoints) Then
+        $sObjectPointsDllType = "struct*"
     Else
-        $bObjectPointsDllType = "ptr"
+        $sObjectPointsDllType = "ptr"
     EndIf
 
-    Local $bImagePointsDllType
-    If VarGetType($imagePoints) == "DLLStruct" Then
-        $bImagePointsDllType = "struct*"
+    Local $sImagePointsDllType
+    If IsDllStruct($imagePoints) Then
+        $sImagePointsDllType = "struct*"
     Else
-        $bImagePointsDllType = "ptr"
+        $sImagePointsDllType = "ptr"
     EndIf
 
-    Local $bImageSizeDllType
-    If VarGetType($imageSize) == "DLLStruct" Then
-        $bImageSizeDllType = "struct*"
+    Local $sImageSizeDllType
+    If IsDllStruct($imageSize) Then
+        $sImageSizeDllType = "struct*"
     Else
-        $bImageSizeDllType = "ptr"
+        $sImageSizeDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveInitCameraMatrix2D", $bObjectPointsDllType, $objectPoints, $bImagePointsDllType, $imagePoints, $bImageSizeDllType, $imageSize, "double", $aspectRatio, $bCameraMatrixDllType, $cameraMatrix), "cveInitCameraMatrix2D", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveInitCameraMatrix2D", $sObjectPointsDllType, $objectPoints, $sImagePointsDllType, $imagePoints, $sImageSizeDllType, $imageSize, "double", $aspectRatio, $sCameraMatrixDllType, $cameraMatrix), "cveInitCameraMatrix2D", @error)
 EndFunc   ;==>_cveInitCameraMatrix2D
 
 Func _cveInitCameraMatrix2DMat($matObjectPoints, $matImagePoints, $imageSize, $aspectRatio, $cameraMatrix)
@@ -4915,56 +4925,56 @@ EndFunc   ;==>_cveInitCameraMatrix2DMat
 Func _cveFisheyeProjectPoints($objectPoints, $imagePoints, $rvec, $tvec, $K, $D, $alpha, $jacobian)
     ; CVAPI(void) cveFisheyeProjectPoints(cv::_InputArray* objectPoints, cv::_OutputArray* imagePoints, cv::_InputArray* rvec, cv::_InputArray* tvec, cv::_InputArray* K, cv::_InputArray* D, double alpha, cv::_OutputArray* jacobian);
 
-    Local $bObjectPointsDllType
-    If VarGetType($objectPoints) == "DLLStruct" Then
-        $bObjectPointsDllType = "struct*"
+    Local $sObjectPointsDllType
+    If IsDllStruct($objectPoints) Then
+        $sObjectPointsDllType = "struct*"
     Else
-        $bObjectPointsDllType = "ptr"
+        $sObjectPointsDllType = "ptr"
     EndIf
 
-    Local $bImagePointsDllType
-    If VarGetType($imagePoints) == "DLLStruct" Then
-        $bImagePointsDllType = "struct*"
+    Local $sImagePointsDllType
+    If IsDllStruct($imagePoints) Then
+        $sImagePointsDllType = "struct*"
     Else
-        $bImagePointsDllType = "ptr"
+        $sImagePointsDllType = "ptr"
     EndIf
 
-    Local $bRvecDllType
-    If VarGetType($rvec) == "DLLStruct" Then
-        $bRvecDllType = "struct*"
+    Local $sRvecDllType
+    If IsDllStruct($rvec) Then
+        $sRvecDllType = "struct*"
     Else
-        $bRvecDllType = "ptr"
+        $sRvecDllType = "ptr"
     EndIf
 
-    Local $bTvecDllType
-    If VarGetType($tvec) == "DLLStruct" Then
-        $bTvecDllType = "struct*"
+    Local $sTvecDllType
+    If IsDllStruct($tvec) Then
+        $sTvecDllType = "struct*"
     Else
-        $bTvecDllType = "ptr"
+        $sTvecDllType = "ptr"
     EndIf
 
-    Local $bKDllType
-    If VarGetType($K) == "DLLStruct" Then
-        $bKDllType = "struct*"
+    Local $sKDllType
+    If IsDllStruct($K) Then
+        $sKDllType = "struct*"
     Else
-        $bKDllType = "ptr"
+        $sKDllType = "ptr"
     EndIf
 
-    Local $bDDllType
-    If VarGetType($D) == "DLLStruct" Then
-        $bDDllType = "struct*"
+    Local $sDDllType
+    If IsDllStruct($D) Then
+        $sDDllType = "struct*"
     Else
-        $bDDllType = "ptr"
+        $sDDllType = "ptr"
     EndIf
 
-    Local $bJacobianDllType
-    If VarGetType($jacobian) == "DLLStruct" Then
-        $bJacobianDllType = "struct*"
+    Local $sJacobianDllType
+    If IsDllStruct($jacobian) Then
+        $sJacobianDllType = "struct*"
     Else
-        $bJacobianDllType = "ptr"
+        $sJacobianDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeProjectPoints", $bObjectPointsDllType, $objectPoints, $bImagePointsDllType, $imagePoints, $bRvecDllType, $rvec, $bTvecDllType, $tvec, $bKDllType, $K, $bDDllType, $D, "double", $alpha, $bJacobianDllType, $jacobian), "cveFisheyeProjectPoints", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeProjectPoints", $sObjectPointsDllType, $objectPoints, $sImagePointsDllType, $imagePoints, $sRvecDllType, $rvec, $sTvecDllType, $tvec, $sKDllType, $K, $sDDllType, $D, "double", $alpha, $sJacobianDllType, $jacobian), "cveFisheyeProjectPoints", @error)
 EndFunc   ;==>_cveFisheyeProjectPoints
 
 Func _cveFisheyeProjectPointsMat($matObjectPoints, $matImagePoints, $matRvec, $matTvec, $matK, $matD, $alpha, $matJacobian)
@@ -5130,35 +5140,35 @@ EndFunc   ;==>_cveFisheyeProjectPointsMat
 Func _cveFisheyeDistortPoints($undistored, $distorted, $K, $D, $alpha)
     ; CVAPI(void) cveFisheyeDistortPoints(cv::_InputArray* undistored, cv::_OutputArray* distorted, cv::_InputArray* K, cv::_InputArray* D, double alpha);
 
-    Local $bUndistoredDllType
-    If VarGetType($undistored) == "DLLStruct" Then
-        $bUndistoredDllType = "struct*"
+    Local $sUndistoredDllType
+    If IsDllStruct($undistored) Then
+        $sUndistoredDllType = "struct*"
     Else
-        $bUndistoredDllType = "ptr"
+        $sUndistoredDllType = "ptr"
     EndIf
 
-    Local $bDistortedDllType
-    If VarGetType($distorted) == "DLLStruct" Then
-        $bDistortedDllType = "struct*"
+    Local $sDistortedDllType
+    If IsDllStruct($distorted) Then
+        $sDistortedDllType = "struct*"
     Else
-        $bDistortedDllType = "ptr"
+        $sDistortedDllType = "ptr"
     EndIf
 
-    Local $bKDllType
-    If VarGetType($K) == "DLLStruct" Then
-        $bKDllType = "struct*"
+    Local $sKDllType
+    If IsDllStruct($K) Then
+        $sKDllType = "struct*"
     Else
-        $bKDllType = "ptr"
+        $sKDllType = "ptr"
     EndIf
 
-    Local $bDDllType
-    If VarGetType($D) == "DLLStruct" Then
-        $bDDllType = "struct*"
+    Local $sDDllType
+    If IsDllStruct($D) Then
+        $sDDllType = "struct*"
     Else
-        $bDDllType = "ptr"
+        $sDDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeDistortPoints", $bUndistoredDllType, $undistored, $bDistortedDllType, $distorted, $bKDllType, $K, $bDDllType, $D, "double", $alpha), "cveFisheyeDistortPoints", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeDistortPoints", $sUndistoredDllType, $undistored, $sDistortedDllType, $distorted, $sKDllType, $K, $sDDllType, $D, "double", $alpha), "cveFisheyeDistortPoints", @error)
 EndFunc   ;==>_cveFisheyeDistortPoints
 
 Func _cveFisheyeDistortPointsMat($matUndistored, $matDistorted, $matK, $matD, $alpha)
@@ -5258,49 +5268,49 @@ EndFunc   ;==>_cveFisheyeDistortPointsMat
 Func _cveFisheyeUndistorPoints($distorted, $undistorted, $K, $D, $R, $P)
     ; CVAPI(void) cveFisheyeUndistorPoints(cv::_InputArray* distorted, cv::_OutputArray* undistorted, cv::_InputArray* K, cv::_InputArray* D, cv::_InputArray* R, cv::_InputArray* P);
 
-    Local $bDistortedDllType
-    If VarGetType($distorted) == "DLLStruct" Then
-        $bDistortedDllType = "struct*"
+    Local $sDistortedDllType
+    If IsDllStruct($distorted) Then
+        $sDistortedDllType = "struct*"
     Else
-        $bDistortedDllType = "ptr"
+        $sDistortedDllType = "ptr"
     EndIf
 
-    Local $bUndistortedDllType
-    If VarGetType($undistorted) == "DLLStruct" Then
-        $bUndistortedDllType = "struct*"
+    Local $sUndistortedDllType
+    If IsDllStruct($undistorted) Then
+        $sUndistortedDllType = "struct*"
     Else
-        $bUndistortedDllType = "ptr"
+        $sUndistortedDllType = "ptr"
     EndIf
 
-    Local $bKDllType
-    If VarGetType($K) == "DLLStruct" Then
-        $bKDllType = "struct*"
+    Local $sKDllType
+    If IsDllStruct($K) Then
+        $sKDllType = "struct*"
     Else
-        $bKDllType = "ptr"
+        $sKDllType = "ptr"
     EndIf
 
-    Local $bDDllType
-    If VarGetType($D) == "DLLStruct" Then
-        $bDDllType = "struct*"
+    Local $sDDllType
+    If IsDllStruct($D) Then
+        $sDDllType = "struct*"
     Else
-        $bDDllType = "ptr"
+        $sDDllType = "ptr"
     EndIf
 
-    Local $bRDllType
-    If VarGetType($R) == "DLLStruct" Then
-        $bRDllType = "struct*"
+    Local $sRDllType
+    If IsDllStruct($R) Then
+        $sRDllType = "struct*"
     Else
-        $bRDllType = "ptr"
+        $sRDllType = "ptr"
     EndIf
 
-    Local $bPDllType
-    If VarGetType($P) == "DLLStruct" Then
-        $bPDllType = "struct*"
+    Local $sPDllType
+    If IsDllStruct($P) Then
+        $sPDllType = "struct*"
     Else
-        $bPDllType = "ptr"
+        $sPDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeUndistorPoints", $bDistortedDllType, $distorted, $bUndistortedDllType, $undistorted, $bKDllType, $K, $bDDllType, $D, $bRDllType, $R, $bPDllType, $P), "cveFisheyeUndistorPoints", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeUndistorPoints", $sDistortedDllType, $distorted, $sUndistortedDllType, $undistorted, $sKDllType, $K, $sDDllType, $D, $sRDllType, $R, $sPDllType, $P), "cveFisheyeUndistorPoints", @error)
 EndFunc   ;==>_cveFisheyeUndistorPoints
 
 Func _cveFisheyeUndistorPointsMat($matDistorted, $matUndistorted, $matK, $matD, $matR, $matP)
@@ -5444,56 +5454,56 @@ EndFunc   ;==>_cveFisheyeUndistorPointsMat
 Func _cveFisheyeInitUndistorRectifyMap($K, $D, $R, $P, $size, $m1Type, $map1, $map2)
     ; CVAPI(void) cveFisheyeInitUndistorRectifyMap(cv::_InputArray* K, cv::_InputArray* D, cv::_InputArray* R, cv::_InputArray* P, CvSize* size, int m1Type, cv::_OutputArray* map1, cv::_OutputArray* map2);
 
-    Local $bKDllType
-    If VarGetType($K) == "DLLStruct" Then
-        $bKDllType = "struct*"
+    Local $sKDllType
+    If IsDllStruct($K) Then
+        $sKDllType = "struct*"
     Else
-        $bKDllType = "ptr"
+        $sKDllType = "ptr"
     EndIf
 
-    Local $bDDllType
-    If VarGetType($D) == "DLLStruct" Then
-        $bDDllType = "struct*"
+    Local $sDDllType
+    If IsDllStruct($D) Then
+        $sDDllType = "struct*"
     Else
-        $bDDllType = "ptr"
+        $sDDllType = "ptr"
     EndIf
 
-    Local $bRDllType
-    If VarGetType($R) == "DLLStruct" Then
-        $bRDllType = "struct*"
+    Local $sRDllType
+    If IsDllStruct($R) Then
+        $sRDllType = "struct*"
     Else
-        $bRDllType = "ptr"
+        $sRDllType = "ptr"
     EndIf
 
-    Local $bPDllType
-    If VarGetType($P) == "DLLStruct" Then
-        $bPDllType = "struct*"
+    Local $sPDllType
+    If IsDllStruct($P) Then
+        $sPDllType = "struct*"
     Else
-        $bPDllType = "ptr"
+        $sPDllType = "ptr"
     EndIf
 
-    Local $bSizeDllType
-    If VarGetType($size) == "DLLStruct" Then
-        $bSizeDllType = "struct*"
+    Local $sSizeDllType
+    If IsDllStruct($size) Then
+        $sSizeDllType = "struct*"
     Else
-        $bSizeDllType = "ptr"
+        $sSizeDllType = "ptr"
     EndIf
 
-    Local $bMap1DllType
-    If VarGetType($map1) == "DLLStruct" Then
-        $bMap1DllType = "struct*"
+    Local $sMap1DllType
+    If IsDllStruct($map1) Then
+        $sMap1DllType = "struct*"
     Else
-        $bMap1DllType = "ptr"
+        $sMap1DllType = "ptr"
     EndIf
 
-    Local $bMap2DllType
-    If VarGetType($map2) == "DLLStruct" Then
-        $bMap2DllType = "struct*"
+    Local $sMap2DllType
+    If IsDllStruct($map2) Then
+        $sMap2DllType = "struct*"
     Else
-        $bMap2DllType = "ptr"
+        $sMap2DllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeInitUndistorRectifyMap", $bKDllType, $K, $bDDllType, $D, $bRDllType, $R, $bPDllType, $P, $bSizeDllType, $size, "int", $m1Type, $bMap1DllType, $map1, $bMap2DllType, $map2), "cveFisheyeInitUndistorRectifyMap", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeInitUndistorRectifyMap", $sKDllType, $K, $sDDllType, $D, $sRDllType, $R, $sPDllType, $P, $sSizeDllType, $size, "int", $m1Type, $sMap1DllType, $map1, $sMap2DllType, $map2), "cveFisheyeInitUndistorRectifyMap", @error)
 EndFunc   ;==>_cveFisheyeInitUndistorRectifyMap
 
 Func _cveFisheyeInitUndistorRectifyMapMat($matK, $matD, $matR, $matP, $size, $m1Type, $matMap1, $matMap2)
@@ -5637,49 +5647,49 @@ EndFunc   ;==>_cveFisheyeInitUndistorRectifyMapMat
 Func _cveFisheyeUndistorImage($distorted, $undistored, $K, $D, $Knew, $newSize)
     ; CVAPI(void) cveFisheyeUndistorImage(cv::_InputArray* distorted, cv::_OutputArray* undistored, cv::_InputArray* K, cv::_InputArray* D, cv::_InputArray* Knew, CvSize* newSize);
 
-    Local $bDistortedDllType
-    If VarGetType($distorted) == "DLLStruct" Then
-        $bDistortedDllType = "struct*"
+    Local $sDistortedDllType
+    If IsDllStruct($distorted) Then
+        $sDistortedDllType = "struct*"
     Else
-        $bDistortedDllType = "ptr"
+        $sDistortedDllType = "ptr"
     EndIf
 
-    Local $bUndistoredDllType
-    If VarGetType($undistored) == "DLLStruct" Then
-        $bUndistoredDllType = "struct*"
+    Local $sUndistoredDllType
+    If IsDllStruct($undistored) Then
+        $sUndistoredDllType = "struct*"
     Else
-        $bUndistoredDllType = "ptr"
+        $sUndistoredDllType = "ptr"
     EndIf
 
-    Local $bKDllType
-    If VarGetType($K) == "DLLStruct" Then
-        $bKDllType = "struct*"
+    Local $sKDllType
+    If IsDllStruct($K) Then
+        $sKDllType = "struct*"
     Else
-        $bKDllType = "ptr"
+        $sKDllType = "ptr"
     EndIf
 
-    Local $bDDllType
-    If VarGetType($D) == "DLLStruct" Then
-        $bDDllType = "struct*"
+    Local $sDDllType
+    If IsDllStruct($D) Then
+        $sDDllType = "struct*"
     Else
-        $bDDllType = "ptr"
+        $sDDllType = "ptr"
     EndIf
 
-    Local $bKnewDllType
-    If VarGetType($Knew) == "DLLStruct" Then
-        $bKnewDllType = "struct*"
+    Local $sKnewDllType
+    If IsDllStruct($Knew) Then
+        $sKnewDllType = "struct*"
     Else
-        $bKnewDllType = "ptr"
+        $sKnewDllType = "ptr"
     EndIf
 
-    Local $bNewSizeDllType
-    If VarGetType($newSize) == "DLLStruct" Then
-        $bNewSizeDllType = "struct*"
+    Local $sNewSizeDllType
+    If IsDllStruct($newSize) Then
+        $sNewSizeDllType = "struct*"
     Else
-        $bNewSizeDllType = "ptr"
+        $sNewSizeDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeUndistorImage", $bDistortedDllType, $distorted, $bUndistoredDllType, $undistored, $bKDllType, $K, $bDDllType, $D, $bKnewDllType, $Knew, $bNewSizeDllType, $newSize), "cveFisheyeUndistorImage", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeUndistorImage", $sDistortedDllType, $distorted, $sUndistoredDllType, $undistored, $sKDllType, $K, $sDDllType, $D, $sKnewDllType, $Knew, $sNewSizeDllType, $newSize), "cveFisheyeUndistorImage", @error)
 EndFunc   ;==>_cveFisheyeUndistorImage
 
 Func _cveFisheyeUndistorImageMat($matDistorted, $matUndistored, $matK, $matD, $matKnew, $newSize)
@@ -5801,49 +5811,49 @@ EndFunc   ;==>_cveFisheyeUndistorImageMat
 Func _cveFisheyeEstimateNewCameraMatrixForUndistorRectify($K, $D, $imageSize, $R, $P, $balance, $newSize, $fovScale)
     ; CVAPI(void) cveFisheyeEstimateNewCameraMatrixForUndistorRectify(cv::_InputArray* K, cv::_InputArray* D, CvSize* imageSize, cv::_InputArray* R, cv::_OutputArray* P, double balance, CvSize* newSize, double fovScale);
 
-    Local $bKDllType
-    If VarGetType($K) == "DLLStruct" Then
-        $bKDllType = "struct*"
+    Local $sKDllType
+    If IsDllStruct($K) Then
+        $sKDllType = "struct*"
     Else
-        $bKDllType = "ptr"
+        $sKDllType = "ptr"
     EndIf
 
-    Local $bDDllType
-    If VarGetType($D) == "DLLStruct" Then
-        $bDDllType = "struct*"
+    Local $sDDllType
+    If IsDllStruct($D) Then
+        $sDDllType = "struct*"
     Else
-        $bDDllType = "ptr"
+        $sDDllType = "ptr"
     EndIf
 
-    Local $bImageSizeDllType
-    If VarGetType($imageSize) == "DLLStruct" Then
-        $bImageSizeDllType = "struct*"
+    Local $sImageSizeDllType
+    If IsDllStruct($imageSize) Then
+        $sImageSizeDllType = "struct*"
     Else
-        $bImageSizeDllType = "ptr"
+        $sImageSizeDllType = "ptr"
     EndIf
 
-    Local $bRDllType
-    If VarGetType($R) == "DLLStruct" Then
-        $bRDllType = "struct*"
+    Local $sRDllType
+    If IsDllStruct($R) Then
+        $sRDllType = "struct*"
     Else
-        $bRDllType = "ptr"
+        $sRDllType = "ptr"
     EndIf
 
-    Local $bPDllType
-    If VarGetType($P) == "DLLStruct" Then
-        $bPDllType = "struct*"
+    Local $sPDllType
+    If IsDllStruct($P) Then
+        $sPDllType = "struct*"
     Else
-        $bPDllType = "ptr"
+        $sPDllType = "ptr"
     EndIf
 
-    Local $bNewSizeDllType
-    If VarGetType($newSize) == "DLLStruct" Then
-        $bNewSizeDllType = "struct*"
+    Local $sNewSizeDllType
+    If IsDllStruct($newSize) Then
+        $sNewSizeDllType = "struct*"
     Else
-        $bNewSizeDllType = "ptr"
+        $sNewSizeDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeEstimateNewCameraMatrixForUndistorRectify", $bKDllType, $K, $bDDllType, $D, $bImageSizeDllType, $imageSize, $bRDllType, $R, $bPDllType, $P, "double", $balance, $bNewSizeDllType, $newSize, "double", $fovScale), "cveFisheyeEstimateNewCameraMatrixForUndistorRectify", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeEstimateNewCameraMatrixForUndistorRectify", $sKDllType, $K, $sDDllType, $D, $sImageSizeDllType, $imageSize, $sRDllType, $R, $sPDllType, $P, "double", $balance, $sNewSizeDllType, $newSize, "double", $fovScale), "cveFisheyeEstimateNewCameraMatrixForUndistorRectify", @error)
 EndFunc   ;==>_cveFisheyeEstimateNewCameraMatrixForUndistorRectify
 
 Func _cveFisheyeEstimateNewCameraMatrixForUndistorRectifyMat($matK, $matD, $imageSize, $matR, $matP, $balance, $newSize, $fovScale)
@@ -5943,98 +5953,98 @@ EndFunc   ;==>_cveFisheyeEstimateNewCameraMatrixForUndistorRectifyMat
 Func _cveFisheyeStereoRectify($K1, $D1, $K2, $D2, $imageSize, $R, $tvec, $R1, $R2, $P1, $P2, $Q, $flags, $newImageSize, $balance, $fovScale)
     ; CVAPI(void) cveFisheyeStereoRectify(cv::_InputArray* K1, cv::_InputArray* D1, cv::_InputArray* K2, cv::_InputArray* D2, CvSize* imageSize, cv::_InputArray* R, cv::_InputArray* tvec, cv::_OutputArray* R1, cv::_OutputArray* R2, cv::_OutputArray* P1, cv::_OutputArray* P2, cv::_OutputArray* Q, int flags, CvSize* newImageSize, double balance, double fovScale);
 
-    Local $bK1DllType
-    If VarGetType($K1) == "DLLStruct" Then
-        $bK1DllType = "struct*"
+    Local $sK1DllType
+    If IsDllStruct($K1) Then
+        $sK1DllType = "struct*"
     Else
-        $bK1DllType = "ptr"
+        $sK1DllType = "ptr"
     EndIf
 
-    Local $bD1DllType
-    If VarGetType($D1) == "DLLStruct" Then
-        $bD1DllType = "struct*"
+    Local $sD1DllType
+    If IsDllStruct($D1) Then
+        $sD1DllType = "struct*"
     Else
-        $bD1DllType = "ptr"
+        $sD1DllType = "ptr"
     EndIf
 
-    Local $bK2DllType
-    If VarGetType($K2) == "DLLStruct" Then
-        $bK2DllType = "struct*"
+    Local $sK2DllType
+    If IsDllStruct($K2) Then
+        $sK2DllType = "struct*"
     Else
-        $bK2DllType = "ptr"
+        $sK2DllType = "ptr"
     EndIf
 
-    Local $bD2DllType
-    If VarGetType($D2) == "DLLStruct" Then
-        $bD2DllType = "struct*"
+    Local $sD2DllType
+    If IsDllStruct($D2) Then
+        $sD2DllType = "struct*"
     Else
-        $bD2DllType = "ptr"
+        $sD2DllType = "ptr"
     EndIf
 
-    Local $bImageSizeDllType
-    If VarGetType($imageSize) == "DLLStruct" Then
-        $bImageSizeDllType = "struct*"
+    Local $sImageSizeDllType
+    If IsDllStruct($imageSize) Then
+        $sImageSizeDllType = "struct*"
     Else
-        $bImageSizeDllType = "ptr"
+        $sImageSizeDllType = "ptr"
     EndIf
 
-    Local $bRDllType
-    If VarGetType($R) == "DLLStruct" Then
-        $bRDllType = "struct*"
+    Local $sRDllType
+    If IsDllStruct($R) Then
+        $sRDllType = "struct*"
     Else
-        $bRDllType = "ptr"
+        $sRDllType = "ptr"
     EndIf
 
-    Local $bTvecDllType
-    If VarGetType($tvec) == "DLLStruct" Then
-        $bTvecDllType = "struct*"
+    Local $sTvecDllType
+    If IsDllStruct($tvec) Then
+        $sTvecDllType = "struct*"
     Else
-        $bTvecDllType = "ptr"
+        $sTvecDllType = "ptr"
     EndIf
 
-    Local $bR1DllType
-    If VarGetType($R1) == "DLLStruct" Then
-        $bR1DllType = "struct*"
+    Local $sR1DllType
+    If IsDllStruct($R1) Then
+        $sR1DllType = "struct*"
     Else
-        $bR1DllType = "ptr"
+        $sR1DllType = "ptr"
     EndIf
 
-    Local $bR2DllType
-    If VarGetType($R2) == "DLLStruct" Then
-        $bR2DllType = "struct*"
+    Local $sR2DllType
+    If IsDllStruct($R2) Then
+        $sR2DllType = "struct*"
     Else
-        $bR2DllType = "ptr"
+        $sR2DllType = "ptr"
     EndIf
 
-    Local $bP1DllType
-    If VarGetType($P1) == "DLLStruct" Then
-        $bP1DllType = "struct*"
+    Local $sP1DllType
+    If IsDllStruct($P1) Then
+        $sP1DllType = "struct*"
     Else
-        $bP1DllType = "ptr"
+        $sP1DllType = "ptr"
     EndIf
 
-    Local $bP2DllType
-    If VarGetType($P2) == "DLLStruct" Then
-        $bP2DllType = "struct*"
+    Local $sP2DllType
+    If IsDllStruct($P2) Then
+        $sP2DllType = "struct*"
     Else
-        $bP2DllType = "ptr"
+        $sP2DllType = "ptr"
     EndIf
 
-    Local $bQDllType
-    If VarGetType($Q) == "DLLStruct" Then
-        $bQDllType = "struct*"
+    Local $sQDllType
+    If IsDllStruct($Q) Then
+        $sQDllType = "struct*"
     Else
-        $bQDllType = "ptr"
+        $sQDllType = "ptr"
     EndIf
 
-    Local $bNewImageSizeDllType
-    If VarGetType($newImageSize) == "DLLStruct" Then
-        $bNewImageSizeDllType = "struct*"
+    Local $sNewImageSizeDllType
+    If IsDllStruct($newImageSize) Then
+        $sNewImageSizeDllType = "struct*"
     Else
-        $bNewImageSizeDllType = "ptr"
+        $sNewImageSizeDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeStereoRectify", $bK1DllType, $K1, $bD1DllType, $D1, $bK2DllType, $K2, $bD2DllType, $D2, $bImageSizeDllType, $imageSize, $bRDllType, $R, $bTvecDllType, $tvec, $bR1DllType, $R1, $bR2DllType, $R2, $bP1DllType, $P1, $bP2DllType, $P2, $bQDllType, $Q, "int", $flags, $bNewImageSizeDllType, $newImageSize, "double", $balance, "double", $fovScale), "cveFisheyeStereoRectify", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeStereoRectify", $sK1DllType, $K1, $sD1DllType, $D1, $sK2DllType, $K2, $sD2DllType, $D2, $sImageSizeDllType, $imageSize, $sRDllType, $R, $sTvecDllType, $tvec, $sR1DllType, $R1, $sR2DllType, $R2, $sP1DllType, $P1, $sP2DllType, $P2, $sQDllType, $Q, "int", $flags, $sNewImageSizeDllType, $newImageSize, "double", $balance, "double", $fovScale), "cveFisheyeStereoRectify", @error)
 EndFunc   ;==>_cveFisheyeStereoRectify
 
 Func _cveFisheyeStereoRectifyMat($matK1, $matD1, $matK2, $matD2, $imageSize, $matR, $matTvec, $matR1, $matR2, $matP1, $matP2, $matQ, $flags, $newImageSize, $balance, $fovScale)
@@ -6288,63 +6298,63 @@ EndFunc   ;==>_cveFisheyeStereoRectifyMat
 Func _cveFisheyeCalibrate($objectPoints, $imagePoints, $imageSize, $K, $D, $rvecs, $tvecs, $flags, $criteria)
     ; CVAPI(void) cveFisheyeCalibrate(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints, CvSize* imageSize, cv::_InputOutputArray* K, cv::_InputOutputArray* D, cv::_OutputArray* rvecs, cv::_OutputArray* tvecs, int flags, CvTermCriteria* criteria);
 
-    Local $bObjectPointsDllType
-    If VarGetType($objectPoints) == "DLLStruct" Then
-        $bObjectPointsDllType = "struct*"
+    Local $sObjectPointsDllType
+    If IsDllStruct($objectPoints) Then
+        $sObjectPointsDllType = "struct*"
     Else
-        $bObjectPointsDllType = "ptr"
+        $sObjectPointsDllType = "ptr"
     EndIf
 
-    Local $bImagePointsDllType
-    If VarGetType($imagePoints) == "DLLStruct" Then
-        $bImagePointsDllType = "struct*"
+    Local $sImagePointsDllType
+    If IsDllStruct($imagePoints) Then
+        $sImagePointsDllType = "struct*"
     Else
-        $bImagePointsDllType = "ptr"
+        $sImagePointsDllType = "ptr"
     EndIf
 
-    Local $bImageSizeDllType
-    If VarGetType($imageSize) == "DLLStruct" Then
-        $bImageSizeDllType = "struct*"
+    Local $sImageSizeDllType
+    If IsDllStruct($imageSize) Then
+        $sImageSizeDllType = "struct*"
     Else
-        $bImageSizeDllType = "ptr"
+        $sImageSizeDllType = "ptr"
     EndIf
 
-    Local $bKDllType
-    If VarGetType($K) == "DLLStruct" Then
-        $bKDllType = "struct*"
+    Local $sKDllType
+    If IsDllStruct($K) Then
+        $sKDllType = "struct*"
     Else
-        $bKDllType = "ptr"
+        $sKDllType = "ptr"
     EndIf
 
-    Local $bDDllType
-    If VarGetType($D) == "DLLStruct" Then
-        $bDDllType = "struct*"
+    Local $sDDllType
+    If IsDllStruct($D) Then
+        $sDDllType = "struct*"
     Else
-        $bDDllType = "ptr"
+        $sDDllType = "ptr"
     EndIf
 
-    Local $bRvecsDllType
-    If VarGetType($rvecs) == "DLLStruct" Then
-        $bRvecsDllType = "struct*"
+    Local $sRvecsDllType
+    If IsDllStruct($rvecs) Then
+        $sRvecsDllType = "struct*"
     Else
-        $bRvecsDllType = "ptr"
+        $sRvecsDllType = "ptr"
     EndIf
 
-    Local $bTvecsDllType
-    If VarGetType($tvecs) == "DLLStruct" Then
-        $bTvecsDllType = "struct*"
+    Local $sTvecsDllType
+    If IsDllStruct($tvecs) Then
+        $sTvecsDllType = "struct*"
     Else
-        $bTvecsDllType = "ptr"
+        $sTvecsDllType = "ptr"
     EndIf
 
-    Local $bCriteriaDllType
-    If VarGetType($criteria) == "DLLStruct" Then
-        $bCriteriaDllType = "struct*"
+    Local $sCriteriaDllType
+    If IsDllStruct($criteria) Then
+        $sCriteriaDllType = "struct*"
     Else
-        $bCriteriaDllType = "ptr"
+        $sCriteriaDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeCalibrate", $bObjectPointsDllType, $objectPoints, $bImagePointsDllType, $imagePoints, $bImageSizeDllType, $imageSize, $bKDllType, $K, $bDDllType, $D, $bRvecsDllType, $rvecs, $bTvecsDllType, $tvecs, "int", $flags, $bCriteriaDllType, $criteria), "cveFisheyeCalibrate", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeCalibrate", $sObjectPointsDllType, $objectPoints, $sImagePointsDllType, $imagePoints, $sImageSizeDllType, $imageSize, $sKDllType, $K, $sDDllType, $D, $sRvecsDllType, $rvecs, $sTvecsDllType, $tvecs, "int", $flags, $sCriteriaDllType, $criteria), "cveFisheyeCalibrate", @error)
 EndFunc   ;==>_cveFisheyeCalibrate
 
 Func _cveFisheyeCalibrateMat($matObjectPoints, $matImagePoints, $imageSize, $matK, $matD, $matRvecs, $matTvecs, $flags, $criteria)
@@ -6488,84 +6498,84 @@ EndFunc   ;==>_cveFisheyeCalibrateMat
 Func _cveFisheyeStereoCalibrate($objectPoints, $imagePoints1, $imagePoints2, $K1, $D1, $K2, $D2, $imageSize, $R, $T, $flags, $criteria)
     ; CVAPI(void) cveFisheyeStereoCalibrate(cv::_InputArray* objectPoints, cv::_InputArray* imagePoints1, cv::_InputArray* imagePoints2, cv::_InputOutputArray* K1, cv::_InputOutputArray* D1, cv::_InputOutputArray* K2, cv::_InputOutputArray* D2, CvSize* imageSize, cv::_OutputArray* R, cv::_OutputArray* T, int flags, CvTermCriteria* criteria);
 
-    Local $bObjectPointsDllType
-    If VarGetType($objectPoints) == "DLLStruct" Then
-        $bObjectPointsDllType = "struct*"
+    Local $sObjectPointsDllType
+    If IsDllStruct($objectPoints) Then
+        $sObjectPointsDllType = "struct*"
     Else
-        $bObjectPointsDllType = "ptr"
+        $sObjectPointsDllType = "ptr"
     EndIf
 
-    Local $bImagePoints1DllType
-    If VarGetType($imagePoints1) == "DLLStruct" Then
-        $bImagePoints1DllType = "struct*"
+    Local $sImagePoints1DllType
+    If IsDllStruct($imagePoints1) Then
+        $sImagePoints1DllType = "struct*"
     Else
-        $bImagePoints1DllType = "ptr"
+        $sImagePoints1DllType = "ptr"
     EndIf
 
-    Local $bImagePoints2DllType
-    If VarGetType($imagePoints2) == "DLLStruct" Then
-        $bImagePoints2DllType = "struct*"
+    Local $sImagePoints2DllType
+    If IsDllStruct($imagePoints2) Then
+        $sImagePoints2DllType = "struct*"
     Else
-        $bImagePoints2DllType = "ptr"
+        $sImagePoints2DllType = "ptr"
     EndIf
 
-    Local $bK1DllType
-    If VarGetType($K1) == "DLLStruct" Then
-        $bK1DllType = "struct*"
+    Local $sK1DllType
+    If IsDllStruct($K1) Then
+        $sK1DllType = "struct*"
     Else
-        $bK1DllType = "ptr"
+        $sK1DllType = "ptr"
     EndIf
 
-    Local $bD1DllType
-    If VarGetType($D1) == "DLLStruct" Then
-        $bD1DllType = "struct*"
+    Local $sD1DllType
+    If IsDllStruct($D1) Then
+        $sD1DllType = "struct*"
     Else
-        $bD1DllType = "ptr"
+        $sD1DllType = "ptr"
     EndIf
 
-    Local $bK2DllType
-    If VarGetType($K2) == "DLLStruct" Then
-        $bK2DllType = "struct*"
+    Local $sK2DllType
+    If IsDllStruct($K2) Then
+        $sK2DllType = "struct*"
     Else
-        $bK2DllType = "ptr"
+        $sK2DllType = "ptr"
     EndIf
 
-    Local $bD2DllType
-    If VarGetType($D2) == "DLLStruct" Then
-        $bD2DllType = "struct*"
+    Local $sD2DllType
+    If IsDllStruct($D2) Then
+        $sD2DllType = "struct*"
     Else
-        $bD2DllType = "ptr"
+        $sD2DllType = "ptr"
     EndIf
 
-    Local $bImageSizeDllType
-    If VarGetType($imageSize) == "DLLStruct" Then
-        $bImageSizeDllType = "struct*"
+    Local $sImageSizeDllType
+    If IsDllStruct($imageSize) Then
+        $sImageSizeDllType = "struct*"
     Else
-        $bImageSizeDllType = "ptr"
+        $sImageSizeDllType = "ptr"
     EndIf
 
-    Local $bRDllType
-    If VarGetType($R) == "DLLStruct" Then
-        $bRDllType = "struct*"
+    Local $sRDllType
+    If IsDllStruct($R) Then
+        $sRDllType = "struct*"
     Else
-        $bRDllType = "ptr"
+        $sRDllType = "ptr"
     EndIf
 
-    Local $bTDllType
-    If VarGetType($T) == "DLLStruct" Then
-        $bTDllType = "struct*"
+    Local $sTDllType
+    If IsDllStruct($T) Then
+        $sTDllType = "struct*"
     Else
-        $bTDllType = "ptr"
+        $sTDllType = "ptr"
     EndIf
 
-    Local $bCriteriaDllType
-    If VarGetType($criteria) == "DLLStruct" Then
-        $bCriteriaDllType = "struct*"
+    Local $sCriteriaDllType
+    If IsDllStruct($criteria) Then
+        $sCriteriaDllType = "struct*"
     Else
-        $bCriteriaDllType = "ptr"
+        $sCriteriaDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeStereoCalibrate", $bObjectPointsDllType, $objectPoints, $bImagePoints1DllType, $imagePoints1, $bImagePoints2DllType, $imagePoints2, $bK1DllType, $K1, $bD1DllType, $D1, $bK2DllType, $K2, $bD2DllType, $D2, $bImageSizeDllType, $imageSize, $bRDllType, $R, $bTDllType, $T, "int", $flags, $bCriteriaDllType, $criteria), "cveFisheyeStereoCalibrate", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFisheyeStereoCalibrate", $sObjectPointsDllType, $objectPoints, $sImagePoints1DllType, $imagePoints1, $sImagePoints2DllType, $imagePoints2, $sK1DllType, $K1, $sD1DllType, $D1, $sK2DllType, $K2, $sD2DllType, $D2, $sImageSizeDllType, $imageSize, $sRDllType, $R, $sTDllType, $T, "int", $flags, $sCriteriaDllType, $criteria), "cveFisheyeStereoCalibrate", @error)
 EndFunc   ;==>_cveFisheyeStereoCalibrate
 
 Func _cveFisheyeStereoCalibrateMat($matObjectPoints, $matImagePoints1, $matImagePoints2, $matK1, $matD1, $matK2, $matD2, $imageSize, $matR, $matT, $flags, $criteria)
@@ -6775,56 +6785,56 @@ EndFunc   ;==>_cveFisheyeStereoCalibrateMat
 Func _cveInitUndistortRectifyMap($cameraMatrix, $distCoeffs, $r, $newCameraMatrix, $size, $m1type, $map1, $map2)
     ; CVAPI(void) cveInitUndistortRectifyMap(cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_InputArray* r, cv::_InputArray* newCameraMatrix, CvSize* size, int m1type, cv::_OutputArray* map1, cv::_OutputArray* map2);
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
 
-    Local $bRDllType
-    If VarGetType($r) == "DLLStruct" Then
-        $bRDllType = "struct*"
+    Local $sRDllType
+    If IsDllStruct($r) Then
+        $sRDllType = "struct*"
     Else
-        $bRDllType = "ptr"
+        $sRDllType = "ptr"
     EndIf
 
-    Local $bNewCameraMatrixDllType
-    If VarGetType($newCameraMatrix) == "DLLStruct" Then
-        $bNewCameraMatrixDllType = "struct*"
+    Local $sNewCameraMatrixDllType
+    If IsDllStruct($newCameraMatrix) Then
+        $sNewCameraMatrixDllType = "struct*"
     Else
-        $bNewCameraMatrixDllType = "ptr"
+        $sNewCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bSizeDllType
-    If VarGetType($size) == "DLLStruct" Then
-        $bSizeDllType = "struct*"
+    Local $sSizeDllType
+    If IsDllStruct($size) Then
+        $sSizeDllType = "struct*"
     Else
-        $bSizeDllType = "ptr"
+        $sSizeDllType = "ptr"
     EndIf
 
-    Local $bMap1DllType
-    If VarGetType($map1) == "DLLStruct" Then
-        $bMap1DllType = "struct*"
+    Local $sMap1DllType
+    If IsDllStruct($map1) Then
+        $sMap1DllType = "struct*"
     Else
-        $bMap1DllType = "ptr"
+        $sMap1DllType = "ptr"
     EndIf
 
-    Local $bMap2DllType
-    If VarGetType($map2) == "DLLStruct" Then
-        $bMap2DllType = "struct*"
+    Local $sMap2DllType
+    If IsDllStruct($map2) Then
+        $sMap2DllType = "struct*"
     Else
-        $bMap2DllType = "ptr"
+        $sMap2DllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveInitUndistortRectifyMap", $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs, $bRDllType, $r, $bNewCameraMatrixDllType, $newCameraMatrix, $bSizeDllType, $size, "int", $m1type, $bMap1DllType, $map1, $bMap2DllType, $map2), "cveInitUndistortRectifyMap", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveInitUndistortRectifyMap", $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRDllType, $r, $sNewCameraMatrixDllType, $newCameraMatrix, $sSizeDllType, $size, "int", $m1type, $sMap1DllType, $map1, $sMap2DllType, $map2), "cveInitUndistortRectifyMap", @error)
 EndFunc   ;==>_cveInitUndistortRectifyMap
 
 Func _cveInitUndistortRectifyMapMat($matCameraMatrix, $matDistCoeffs, $matR, $matNewCameraMatrix, $size, $m1type, $matMap1, $matMap2)
@@ -6968,42 +6978,42 @@ EndFunc   ;==>_cveInitUndistortRectifyMapMat
 Func _cveUndistort($src, $dst, $cameraMatrix, $distorCoeffs, $newCameraMatrix = _cveNoArray())
     ; CVAPI(void) cveUndistort(cv::_InputArray* src, cv::_OutputArray* dst, cv::_InputArray* cameraMatrix, cv::_InputArray* distorCoeffs, cv::_InputArray* newCameraMatrix);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistorCoeffsDllType
-    If VarGetType($distorCoeffs) == "DLLStruct" Then
-        $bDistorCoeffsDllType = "struct*"
+    Local $sDistorCoeffsDllType
+    If IsDllStruct($distorCoeffs) Then
+        $sDistorCoeffsDllType = "struct*"
     Else
-        $bDistorCoeffsDllType = "ptr"
+        $sDistorCoeffsDllType = "ptr"
     EndIf
 
-    Local $bNewCameraMatrixDllType
-    If VarGetType($newCameraMatrix) == "DLLStruct" Then
-        $bNewCameraMatrixDllType = "struct*"
+    Local $sNewCameraMatrixDllType
+    If IsDllStruct($newCameraMatrix) Then
+        $sNewCameraMatrixDllType = "struct*"
     Else
-        $bNewCameraMatrixDllType = "ptr"
+        $sNewCameraMatrixDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUndistort", $bSrcDllType, $src, $bDstDllType, $dst, $bCameraMatrixDllType, $cameraMatrix, $bDistorCoeffsDllType, $distorCoeffs, $bNewCameraMatrixDllType, $newCameraMatrix), "cveUndistort", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUndistort", $sSrcDllType, $src, $sDstDllType, $dst, $sCameraMatrixDllType, $cameraMatrix, $sDistorCoeffsDllType, $distorCoeffs, $sNewCameraMatrixDllType, $newCameraMatrix), "cveUndistort", @error)
 EndFunc   ;==>_cveUndistort
 
 Func _cveUndistortMat($matSrc, $matDst, $matCameraMatrix, $matDistorCoeffs, $matNewCameraMatrix = _cveNoArrayMat())
@@ -7125,49 +7135,49 @@ EndFunc   ;==>_cveUndistortMat
 Func _cveUndistortPoints($src, $dst, $cameraMatrix, $distCoeffs, $r, $p)
     ; CVAPI(void) cveUndistortPoints(cv::_InputArray* src, cv::_OutputArray* dst, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_InputArray* r, cv::_InputArray* p);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
 
-    Local $bRDllType
-    If VarGetType($r) == "DLLStruct" Then
-        $bRDllType = "struct*"
+    Local $sRDllType
+    If IsDllStruct($r) Then
+        $sRDllType = "struct*"
     Else
-        $bRDllType = "ptr"
+        $sRDllType = "ptr"
     EndIf
 
-    Local $bPDllType
-    If VarGetType($p) == "DLLStruct" Then
-        $bPDllType = "struct*"
+    Local $sPDllType
+    If IsDllStruct($p) Then
+        $sPDllType = "struct*"
     Else
-        $bPDllType = "ptr"
+        $sPDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUndistortPoints", $bSrcDllType, $src, $bDstDllType, $dst, $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs, $bRDllType, $r, $bPDllType, $p), "cveUndistortPoints", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUndistortPoints", $sSrcDllType, $src, $sDstDllType, $dst, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRDllType, $r, $sPDllType, $p), "cveUndistortPoints", @error)
 EndFunc   ;==>_cveUndistortPoints
 
 Func _cveUndistortPointsMat($matSrc, $matDst, $matCameraMatrix, $matDistCoeffs, $matR, $matP)
@@ -7311,28 +7321,28 @@ EndFunc   ;==>_cveUndistortPointsMat
 Func _cveGetDefaultNewCameraMatrix($cameraMatrix, $imgsize, $centerPrincipalPoint, $cm)
     ; CVAPI(void) cveGetDefaultNewCameraMatrix(cv::_InputArray* cameraMatrix, CvSize* imgsize, bool centerPrincipalPoint, cv::Mat* cm);
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bImgsizeDllType
-    If VarGetType($imgsize) == "DLLStruct" Then
-        $bImgsizeDllType = "struct*"
+    Local $sImgsizeDllType
+    If IsDllStruct($imgsize) Then
+        $sImgsizeDllType = "struct*"
     Else
-        $bImgsizeDllType = "ptr"
+        $sImgsizeDllType = "ptr"
     EndIf
 
-    Local $bCmDllType
-    If VarGetType($cm) == "DLLStruct" Then
-        $bCmDllType = "struct*"
+    Local $sCmDllType
+    If IsDllStruct($cm) Then
+        $sCmDllType = "struct*"
     Else
-        $bCmDllType = "ptr"
+        $sCmDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetDefaultNewCameraMatrix", $bCameraMatrixDllType, $cameraMatrix, $bImgsizeDllType, $imgsize, "boolean", $centerPrincipalPoint, $bCmDllType, $cm), "cveGetDefaultNewCameraMatrix", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveGetDefaultNewCameraMatrix", $sCameraMatrixDllType, $cameraMatrix, $sImgsizeDllType, $imgsize, "boolean", $centerPrincipalPoint, $sCmDllType, $cm), "cveGetDefaultNewCameraMatrix", @error)
 EndFunc   ;==>_cveGetDefaultNewCameraMatrix
 
 Func _cveGetDefaultNewCameraMatrixMat($matCameraMatrix, $imgsize, $centerPrincipalPoint, $cm)
@@ -7366,35 +7376,35 @@ EndFunc   ;==>_cveGetDefaultNewCameraMatrixMat
 Func _cveEstimateAffine2D($from, $to, $inliers, $method, $ransacReprojThreshold, $maxIters, $confidence, $refineIters, $affine)
     ; CVAPI(void) cveEstimateAffine2D(cv::_InputArray* from, cv::_InputArray* to, cv::_OutputArray* inliers, int method, double ransacReprojThreshold, int maxIters, double confidence, int refineIters, cv::Mat* affine);
 
-    Local $bFromDllType
-    If VarGetType($from) == "DLLStruct" Then
-        $bFromDllType = "struct*"
+    Local $sFromDllType
+    If IsDllStruct($from) Then
+        $sFromDllType = "struct*"
     Else
-        $bFromDllType = "ptr"
+        $sFromDllType = "ptr"
     EndIf
 
-    Local $bToDllType
-    If VarGetType($to) == "DLLStruct" Then
-        $bToDllType = "struct*"
+    Local $sToDllType
+    If IsDllStruct($to) Then
+        $sToDllType = "struct*"
     Else
-        $bToDllType = "ptr"
+        $sToDllType = "ptr"
     EndIf
 
-    Local $bInliersDllType
-    If VarGetType($inliers) == "DLLStruct" Then
-        $bInliersDllType = "struct*"
+    Local $sInliersDllType
+    If IsDllStruct($inliers) Then
+        $sInliersDllType = "struct*"
     Else
-        $bInliersDllType = "ptr"
+        $sInliersDllType = "ptr"
     EndIf
 
-    Local $bAffineDllType
-    If VarGetType($affine) == "DLLStruct" Then
-        $bAffineDllType = "struct*"
+    Local $sAffineDllType
+    If IsDllStruct($affine) Then
+        $sAffineDllType = "struct*"
     Else
-        $bAffineDllType = "ptr"
+        $sAffineDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEstimateAffine2D", $bFromDllType, $from, $bToDllType, $to, $bInliersDllType, $inliers, "int", $method, "double", $ransacReprojThreshold, "int", $maxIters, "double", $confidence, "int", $refineIters, $bAffineDllType, $affine), "cveEstimateAffine2D", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEstimateAffine2D", $sFromDllType, $from, $sToDllType, $to, $sInliersDllType, $inliers, "int", $method, "double", $ransacReprojThreshold, "int", $maxIters, "double", $confidence, "int", $refineIters, $sAffineDllType, $affine), "cveEstimateAffine2D", @error)
 EndFunc   ;==>_cveEstimateAffine2D
 
 Func _cveEstimateAffine2DMat($matFrom, $matTo, $matInliers, $method, $ransacReprojThreshold, $maxIters, $confidence, $refineIters, $affine)
@@ -7472,35 +7482,35 @@ EndFunc   ;==>_cveEstimateAffine2DMat
 Func _cveEstimateAffinePartial2D($from, $to, $inliers, $method, $ransacReprojThreshold, $maxIters, $confidence, $refineIters, $affine)
     ; CVAPI(void) cveEstimateAffinePartial2D(cv::_InputArray* from, cv::_InputArray* to, cv::_OutputArray* inliers, int method, double ransacReprojThreshold, int maxIters, double confidence, int refineIters, cv::Mat* affine);
 
-    Local $bFromDllType
-    If VarGetType($from) == "DLLStruct" Then
-        $bFromDllType = "struct*"
+    Local $sFromDllType
+    If IsDllStruct($from) Then
+        $sFromDllType = "struct*"
     Else
-        $bFromDllType = "ptr"
+        $sFromDllType = "ptr"
     EndIf
 
-    Local $bToDllType
-    If VarGetType($to) == "DLLStruct" Then
-        $bToDllType = "struct*"
+    Local $sToDllType
+    If IsDllStruct($to) Then
+        $sToDllType = "struct*"
     Else
-        $bToDllType = "ptr"
+        $sToDllType = "ptr"
     EndIf
 
-    Local $bInliersDllType
-    If VarGetType($inliers) == "DLLStruct" Then
-        $bInliersDllType = "struct*"
+    Local $sInliersDllType
+    If IsDllStruct($inliers) Then
+        $sInliersDllType = "struct*"
     Else
-        $bInliersDllType = "ptr"
+        $sInliersDllType = "ptr"
     EndIf
 
-    Local $bAffineDllType
-    If VarGetType($affine) == "DLLStruct" Then
-        $bAffineDllType = "struct*"
+    Local $sAffineDllType
+    If IsDllStruct($affine) Then
+        $sAffineDllType = "struct*"
     Else
-        $bAffineDllType = "ptr"
+        $sAffineDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEstimateAffinePartial2D", $bFromDllType, $from, $bToDllType, $to, $bInliersDllType, $inliers, "int", $method, "double", $ransacReprojThreshold, "int", $maxIters, "double", $confidence, "int", $refineIters, $bAffineDllType, $affine), "cveEstimateAffinePartial2D", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEstimateAffinePartial2D", $sFromDllType, $from, $sToDllType, $to, $sInliersDllType, $inliers, "int", $method, "double", $ransacReprojThreshold, "int", $maxIters, "double", $confidence, "int", $refineIters, $sAffineDllType, $affine), "cveEstimateAffinePartial2D", @error)
 EndFunc   ;==>_cveEstimateAffinePartial2D
 
 Func _cveEstimateAffinePartial2DMat($matFrom, $matTo, $matInliers, $method, $ransacReprojThreshold, $maxIters, $confidence, $refineIters, $affine)
@@ -7578,49 +7588,49 @@ EndFunc   ;==>_cveEstimateAffinePartial2DMat
 Func _cveCalibrateHandEye($R_gripper2base, $t_gripper2base, $R_target2cam, $t_target2cam, $R_cam2gripper, $t_cam2gripper, $method = $CV_CALIB_HAND_EYE_TSAI)
     ; CVAPI(void) cveCalibrateHandEye(cv::_InputArray* R_gripper2base, cv::_InputArray* t_gripper2base, cv::_InputArray* R_target2cam, cv::_InputArray* t_target2cam, cv::_OutputArray* R_cam2gripper, cv::_OutputArray* t_cam2gripper, int method);
 
-    Local $bR_gripper2baseDllType
-    If VarGetType($R_gripper2base) == "DLLStruct" Then
-        $bR_gripper2baseDllType = "struct*"
+    Local $sR_gripper2baseDllType
+    If IsDllStruct($R_gripper2base) Then
+        $sR_gripper2baseDllType = "struct*"
     Else
-        $bR_gripper2baseDllType = "ptr"
+        $sR_gripper2baseDllType = "ptr"
     EndIf
 
-    Local $bT_gripper2baseDllType
-    If VarGetType($t_gripper2base) == "DLLStruct" Then
-        $bT_gripper2baseDllType = "struct*"
+    Local $sT_gripper2baseDllType
+    If IsDllStruct($t_gripper2base) Then
+        $sT_gripper2baseDllType = "struct*"
     Else
-        $bT_gripper2baseDllType = "ptr"
+        $sT_gripper2baseDllType = "ptr"
     EndIf
 
-    Local $bR_target2camDllType
-    If VarGetType($R_target2cam) == "DLLStruct" Then
-        $bR_target2camDllType = "struct*"
+    Local $sR_target2camDllType
+    If IsDllStruct($R_target2cam) Then
+        $sR_target2camDllType = "struct*"
     Else
-        $bR_target2camDllType = "ptr"
+        $sR_target2camDllType = "ptr"
     EndIf
 
-    Local $bT_target2camDllType
-    If VarGetType($t_target2cam) == "DLLStruct" Then
-        $bT_target2camDllType = "struct*"
+    Local $sT_target2camDllType
+    If IsDllStruct($t_target2cam) Then
+        $sT_target2camDllType = "struct*"
     Else
-        $bT_target2camDllType = "ptr"
+        $sT_target2camDllType = "ptr"
     EndIf
 
-    Local $bR_cam2gripperDllType
-    If VarGetType($R_cam2gripper) == "DLLStruct" Then
-        $bR_cam2gripperDllType = "struct*"
+    Local $sR_cam2gripperDllType
+    If IsDllStruct($R_cam2gripper) Then
+        $sR_cam2gripperDllType = "struct*"
     Else
-        $bR_cam2gripperDllType = "ptr"
+        $sR_cam2gripperDllType = "ptr"
     EndIf
 
-    Local $bT_cam2gripperDllType
-    If VarGetType($t_cam2gripper) == "DLLStruct" Then
-        $bT_cam2gripperDllType = "struct*"
+    Local $sT_cam2gripperDllType
+    If IsDllStruct($t_cam2gripper) Then
+        $sT_cam2gripperDllType = "struct*"
     Else
-        $bT_cam2gripperDllType = "ptr"
+        $sT_cam2gripperDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCalibrateHandEye", $bR_gripper2baseDllType, $R_gripper2base, $bT_gripper2baseDllType, $t_gripper2base, $bR_target2camDllType, $R_target2cam, $bT_target2camDllType, $t_target2cam, $bR_cam2gripperDllType, $R_cam2gripper, $bT_cam2gripperDllType, $t_cam2gripper, "int", $method), "cveCalibrateHandEye", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCalibrateHandEye", $sR_gripper2baseDllType, $R_gripper2base, $sT_gripper2baseDllType, $t_gripper2base, $sR_target2camDllType, $R_target2cam, $sT_target2camDllType, $t_target2cam, $sR_cam2gripperDllType, $R_cam2gripper, $sT_cam2gripperDllType, $t_cam2gripper, "int", $method), "cveCalibrateHandEye", @error)
 EndFunc   ;==>_cveCalibrateHandEye
 
 Func _cveCalibrateHandEyeMat($matR_gripper2base, $matT_gripper2base, $matR_target2cam, $matT_target2cam, $matR_cam2gripper, $matT_cam2gripper, $method = $CV_CALIB_HAND_EYE_TSAI)
@@ -7764,56 +7774,56 @@ EndFunc   ;==>_cveCalibrateHandEyeMat
 Func _cveRQDecomp3x3($src, $out, $mtxR, $mtxQ, $Qx = _cveNoArray(), $Qy = _cveNoArray(), $Qz = _cveNoArray())
     ; CVAPI(void) cveRQDecomp3x3(cv::_InputArray* src, CvPoint3D64f* out, cv::_OutputArray* mtxR, cv::_OutputArray* mtxQ, cv::_OutputArray* Qx, cv::_OutputArray* Qy, cv::_OutputArray* Qz);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
 
-    Local $bOutDllType
-    If VarGetType($out) == "DLLStruct" Then
-        $bOutDllType = "struct*"
+    Local $sOutDllType
+    If IsDllStruct($out) Then
+        $sOutDllType = "struct*"
     Else
-        $bOutDllType = "ptr"
+        $sOutDllType = "ptr"
     EndIf
 
-    Local $bMtxRDllType
-    If VarGetType($mtxR) == "DLLStruct" Then
-        $bMtxRDllType = "struct*"
+    Local $sMtxRDllType
+    If IsDllStruct($mtxR) Then
+        $sMtxRDllType = "struct*"
     Else
-        $bMtxRDllType = "ptr"
+        $sMtxRDllType = "ptr"
     EndIf
 
-    Local $bMtxQDllType
-    If VarGetType($mtxQ) == "DLLStruct" Then
-        $bMtxQDllType = "struct*"
+    Local $sMtxQDllType
+    If IsDllStruct($mtxQ) Then
+        $sMtxQDllType = "struct*"
     Else
-        $bMtxQDllType = "ptr"
+        $sMtxQDllType = "ptr"
     EndIf
 
-    Local $bQxDllType
-    If VarGetType($Qx) == "DLLStruct" Then
-        $bQxDllType = "struct*"
+    Local $sQxDllType
+    If IsDllStruct($Qx) Then
+        $sQxDllType = "struct*"
     Else
-        $bQxDllType = "ptr"
+        $sQxDllType = "ptr"
     EndIf
 
-    Local $bQyDllType
-    If VarGetType($Qy) == "DLLStruct" Then
-        $bQyDllType = "struct*"
+    Local $sQyDllType
+    If IsDllStruct($Qy) Then
+        $sQyDllType = "struct*"
     Else
-        $bQyDllType = "ptr"
+        $sQyDllType = "ptr"
     EndIf
 
-    Local $bQzDllType
-    If VarGetType($Qz) == "DLLStruct" Then
-        $bQzDllType = "struct*"
+    Local $sQzDllType
+    If IsDllStruct($Qz) Then
+        $sQzDllType = "struct*"
     Else
-        $bQzDllType = "ptr"
+        $sQzDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRQDecomp3x3", $bSrcDllType, $src, $bOutDllType, $out, $bMtxRDllType, $mtxR, $bMtxQDllType, $mtxQ, $bQxDllType, $Qx, $bQyDllType, $Qy, $bQzDllType, $Qz), "cveRQDecomp3x3", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRQDecomp3x3", $sSrcDllType, $src, $sOutDllType, $out, $sMtxRDllType, $mtxR, $sMtxQDllType, $mtxQ, $sQxDllType, $Qx, $sQyDllType, $Qy, $sQzDllType, $Qz), "cveRQDecomp3x3", @error)
 EndFunc   ;==>_cveRQDecomp3x3
 
 Func _cveRQDecomp3x3Mat($matSrc, $out, $matMtxR, $matMtxQ, $matQx = _cveNoArrayMat(), $matQy = _cveNoArrayMat(), $matQz = _cveNoArrayMat())
@@ -7957,63 +7967,63 @@ EndFunc   ;==>_cveRQDecomp3x3Mat
 Func _cveDecomposeProjectionMatrix($projMatrix, $cameraMatrix, $rotMatrix, $transVect, $rotMatrixX = _cveNoArray(), $rotMatrixY = _cveNoArray(), $rotMatrixZ = _cveNoArray(), $eulerAngles = _cveNoArray())
     ; CVAPI(void) cveDecomposeProjectionMatrix(cv::_InputArray* projMatrix, cv::_OutputArray* cameraMatrix, cv::_OutputArray* rotMatrix, cv::_OutputArray* transVect, cv::_OutputArray* rotMatrixX, cv::_OutputArray* rotMatrixY, cv::_OutputArray* rotMatrixZ, cv::_OutputArray* eulerAngles);
 
-    Local $bProjMatrixDllType
-    If VarGetType($projMatrix) == "DLLStruct" Then
-        $bProjMatrixDllType = "struct*"
+    Local $sProjMatrixDllType
+    If IsDllStruct($projMatrix) Then
+        $sProjMatrixDllType = "struct*"
     Else
-        $bProjMatrixDllType = "ptr"
+        $sProjMatrixDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bRotMatrixDllType
-    If VarGetType($rotMatrix) == "DLLStruct" Then
-        $bRotMatrixDllType = "struct*"
+    Local $sRotMatrixDllType
+    If IsDllStruct($rotMatrix) Then
+        $sRotMatrixDllType = "struct*"
     Else
-        $bRotMatrixDllType = "ptr"
+        $sRotMatrixDllType = "ptr"
     EndIf
 
-    Local $bTransVectDllType
-    If VarGetType($transVect) == "DLLStruct" Then
-        $bTransVectDllType = "struct*"
+    Local $sTransVectDllType
+    If IsDllStruct($transVect) Then
+        $sTransVectDllType = "struct*"
     Else
-        $bTransVectDllType = "ptr"
+        $sTransVectDllType = "ptr"
     EndIf
 
-    Local $bRotMatrixXDllType
-    If VarGetType($rotMatrixX) == "DLLStruct" Then
-        $bRotMatrixXDllType = "struct*"
+    Local $sRotMatrixXDllType
+    If IsDllStruct($rotMatrixX) Then
+        $sRotMatrixXDllType = "struct*"
     Else
-        $bRotMatrixXDllType = "ptr"
+        $sRotMatrixXDllType = "ptr"
     EndIf
 
-    Local $bRotMatrixYDllType
-    If VarGetType($rotMatrixY) == "DLLStruct" Then
-        $bRotMatrixYDllType = "struct*"
+    Local $sRotMatrixYDllType
+    If IsDllStruct($rotMatrixY) Then
+        $sRotMatrixYDllType = "struct*"
     Else
-        $bRotMatrixYDllType = "ptr"
+        $sRotMatrixYDllType = "ptr"
     EndIf
 
-    Local $bRotMatrixZDllType
-    If VarGetType($rotMatrixZ) == "DLLStruct" Then
-        $bRotMatrixZDllType = "struct*"
+    Local $sRotMatrixZDllType
+    If IsDllStruct($rotMatrixZ) Then
+        $sRotMatrixZDllType = "struct*"
     Else
-        $bRotMatrixZDllType = "ptr"
+        $sRotMatrixZDllType = "ptr"
     EndIf
 
-    Local $bEulerAnglesDllType
-    If VarGetType($eulerAngles) == "DLLStruct" Then
-        $bEulerAnglesDllType = "struct*"
+    Local $sEulerAnglesDllType
+    If IsDllStruct($eulerAngles) Then
+        $sEulerAnglesDllType = "struct*"
     Else
-        $bEulerAnglesDllType = "ptr"
+        $sEulerAnglesDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDecomposeProjectionMatrix", $bProjMatrixDllType, $projMatrix, $bCameraMatrixDllType, $cameraMatrix, $bRotMatrixDllType, $rotMatrix, $bTransVectDllType, $transVect, $bRotMatrixXDllType, $rotMatrixX, $bRotMatrixYDllType, $rotMatrixY, $bRotMatrixZDllType, $rotMatrixZ, $bEulerAnglesDllType, $eulerAngles), "cveDecomposeProjectionMatrix", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDecomposeProjectionMatrix", $sProjMatrixDllType, $projMatrix, $sCameraMatrixDllType, $cameraMatrix, $sRotMatrixDllType, $rotMatrix, $sTransVectDllType, $transVect, $sRotMatrixXDllType, $rotMatrixX, $sRotMatrixYDllType, $rotMatrixY, $sRotMatrixZDllType, $rotMatrixZ, $sEulerAnglesDllType, $eulerAngles), "cveDecomposeProjectionMatrix", @error)
 EndFunc   ;==>_cveDecomposeProjectionMatrix
 
 Func _cveDecomposeProjectionMatrixMat($matProjMatrix, $matCameraMatrix, $matRotMatrix, $matTransVect, $matRotMatrixX = _cveNoArrayMat(), $matRotMatrixY = _cveNoArrayMat(), $matRotMatrixZ = _cveNoArrayMat(), $matEulerAngles = _cveNoArrayMat())

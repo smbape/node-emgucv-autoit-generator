@@ -4,25 +4,25 @@
 Func _cveSolveLP($Func, $Constr, $z)
     ; CVAPI(int) cveSolveLP(const cv::Mat* Func, const cv::Mat* Constr, cv::Mat* z);
 
-    Local $bFuncDllType
-    If VarGetType($Func) == "DLLStruct" Then
-        $bFuncDllType = "struct*"
+    Local $sFuncDllType
+    If IsDllStruct($Func) Then
+        $sFuncDllType = "struct*"
     Else
-        $bFuncDllType = "ptr"
+        $sFuncDllType = "ptr"
     EndIf
 
-    Local $bConstrDllType
-    If VarGetType($Constr) == "DLLStruct" Then
-        $bConstrDllType = "struct*"
+    Local $sConstrDllType
+    If IsDllStruct($Constr) Then
+        $sConstrDllType = "struct*"
     Else
-        $bConstrDllType = "ptr"
+        $sConstrDllType = "ptr"
     EndIf
 
-    Local $bZDllType
-    If VarGetType($z) == "DLLStruct" Then
-        $bZDllType = "struct*"
+    Local $sZDllType
+    If IsDllStruct($z) Then
+        $sZDllType = "struct*"
     Else
-        $bZDllType = "ptr"
+        $sZDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveSolveLP", $bFuncDllType, $Func, $bConstrDllType, $Constr, $bZDllType, $z), "cveSolveLP", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveSolveLP", $sFuncDllType, $Func, $sConstrDllType, $Constr, $sZDllType, $z), "cveSolveLP", @error)
 EndFunc   ;==>_cveSolveLP

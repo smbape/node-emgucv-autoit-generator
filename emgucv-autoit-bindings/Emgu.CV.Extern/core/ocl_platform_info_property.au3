@@ -4,11 +4,11 @@
 Func _cvePlatformInfoName($obj, $str)
     ; CVAPI(void) cvePlatformInfoName(cv::ocl::PlatformInfo* obj, cv::String* str);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
     Local $bStrIsString = VarGetType($str) == "String"
@@ -16,14 +16,14 @@ Func _cvePlatformInfoName($obj, $str)
         $str = _cveStringCreateFromStr($str)
     EndIf
 
-    Local $bStrDllType
-    If VarGetType($str) == "DLLStruct" Then
-        $bStrDllType = "struct*"
+    Local $sStrDllType
+    If IsDllStruct($str) Then
+        $sStrDllType = "struct*"
     Else
-        $bStrDllType = "ptr"
+        $sStrDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlatformInfoName", $bObjDllType, $obj, $bStrDllType, $str), "cvePlatformInfoName", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlatformInfoName", $sObjDllType, $obj, $sStrDllType, $str), "cvePlatformInfoName", @error)
 
     If $bStrIsString Then
         _cveStringRelease($str)
@@ -33,11 +33,11 @@ EndFunc   ;==>_cvePlatformInfoName
 Func _cvePlatformInfoVersion($obj, $str)
     ; CVAPI(void) cvePlatformInfoVersion(cv::ocl::PlatformInfo* obj, cv::String* str);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
     Local $bStrIsString = VarGetType($str) == "String"
@@ -45,14 +45,14 @@ Func _cvePlatformInfoVersion($obj, $str)
         $str = _cveStringCreateFromStr($str)
     EndIf
 
-    Local $bStrDllType
-    If VarGetType($str) == "DLLStruct" Then
-        $bStrDllType = "struct*"
+    Local $sStrDllType
+    If IsDllStruct($str) Then
+        $sStrDllType = "struct*"
     Else
-        $bStrDllType = "ptr"
+        $sStrDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlatformInfoVersion", $bObjDllType, $obj, $bStrDllType, $str), "cvePlatformInfoVersion", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlatformInfoVersion", $sObjDllType, $obj, $sStrDllType, $str), "cvePlatformInfoVersion", @error)
 
     If $bStrIsString Then
         _cveStringRelease($str)
@@ -62,11 +62,11 @@ EndFunc   ;==>_cvePlatformInfoVersion
 Func _cvePlatformInfoVendor($obj, $str)
     ; CVAPI(void) cvePlatformInfoVendor(cv::ocl::PlatformInfo* obj, cv::String* str);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
     Local $bStrIsString = VarGetType($str) == "String"
@@ -74,14 +74,14 @@ Func _cvePlatformInfoVendor($obj, $str)
         $str = _cveStringCreateFromStr($str)
     EndIf
 
-    Local $bStrDllType
-    If VarGetType($str) == "DLLStruct" Then
-        $bStrDllType = "struct*"
+    Local $sStrDllType
+    If IsDllStruct($str) Then
+        $sStrDllType = "struct*"
     Else
-        $bStrDllType = "ptr"
+        $sStrDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlatformInfoVendor", $bObjDllType, $obj, $bStrDllType, $str), "cvePlatformInfoVendor", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlatformInfoVendor", $sObjDllType, $obj, $sStrDllType, $str), "cvePlatformInfoVendor", @error)
 
     If $bStrIsString Then
         _cveStringRelease($str)
@@ -91,11 +91,11 @@ EndFunc   ;==>_cvePlatformInfoVendor
 Func _cvePlatformInfoDeviceNumber($obj)
     ; CVAPI(int) cvePlatformInfoDeviceNumber(cv::ocl::PlatformInfo* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cvePlatformInfoDeviceNumber", $bObjDllType, $obj), "cvePlatformInfoDeviceNumber", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cvePlatformInfoDeviceNumber", $sObjDllType, $obj), "cvePlatformInfoDeviceNumber", @error)
 EndFunc   ;==>_cvePlatformInfoDeviceNumber

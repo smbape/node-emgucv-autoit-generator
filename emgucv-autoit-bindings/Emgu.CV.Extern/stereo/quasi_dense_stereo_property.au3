@@ -4,24 +4,24 @@
 Func _cveQuasiDenseStereoGetParam($obj)
     ; CVAPI(cv::stereo::PropagationParameters) cveQuasiDenseStereoGetParam(cv::stereo::QuasiDenseStereo* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveQuasiDenseStereoGetParam", $bObjDllType, $obj), "cveQuasiDenseStereoGetParam", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveQuasiDenseStereoGetParam", $sObjDllType, $obj), "cveQuasiDenseStereoGetParam", @error)
 EndFunc   ;==>_cveQuasiDenseStereoGetParam
 
 Func _cveQuasiDenseStereoSetParam($obj, $value)
     ; CVAPI(void) cveQuasiDenseStereoSetParam(cv::stereo::QuasiDenseStereo* obj, cv::stereo::PropagationParameters value);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQuasiDenseStereoSetParam", $bObjDllType, $obj, "int", $value), "cveQuasiDenseStereoSetParam", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQuasiDenseStereoSetParam", $sObjDllType, $obj, "int", $value), "cveQuasiDenseStereoSetParam", @error)
 EndFunc   ;==>_cveQuasiDenseStereoSetParam

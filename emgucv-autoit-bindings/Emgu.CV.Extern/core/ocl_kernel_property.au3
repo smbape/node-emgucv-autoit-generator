@@ -4,23 +4,23 @@
 Func _cveOclKernelEmpty($obj)
     ; CVAPI(bool) cveOclKernelEmpty(cv::ocl::Kernel* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveOclKernelEmpty", $bObjDllType, $obj), "cveOclKernelEmpty", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveOclKernelEmpty", $sObjDllType, $obj), "cveOclKernelEmpty", @error)
 EndFunc   ;==>_cveOclKernelEmpty
 
 Func _cveOclKernelNativeKernelPtr($obj)
     ; CVAPI(void*) cveOclKernelNativeKernelPtr(cv::ocl::Kernel* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOclKernelNativeKernelPtr", $bObjDllType, $obj), "cveOclKernelNativeKernelPtr", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveOclKernelNativeKernelPtr", $sObjDllType, $obj), "cveOclKernelNativeKernelPtr", @error)
 EndFunc   ;==>_cveOclKernelNativeKernelPtr

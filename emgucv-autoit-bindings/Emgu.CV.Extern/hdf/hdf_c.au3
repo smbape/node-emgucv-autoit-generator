@@ -9,21 +9,23 @@ Func _cveHDF5Create($fileName, $sharedPtr)
         $fileName = _cveStringCreateFromStr($fileName)
     EndIf
 
-    Local $bFileNameDllType
-    If VarGetType($fileName) == "DLLStruct" Then
-        $bFileNameDllType = "struct*"
+    Local $sFileNameDllType
+    If IsDllStruct($fileName) Then
+        $sFileNameDllType = "struct*"
     Else
-        $bFileNameDllType = "ptr"
+        $sFileNameDllType = "ptr"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHDF5Create", $bFileNameDllType, $fileName, $bSharedPtrDllType, $sharedPtr), "cveHDF5Create", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHDF5Create", $sFileNameDllType, $fileName, $sSharedPtrDllType, $sharedPtr), "cveHDF5Create", @error)
 
     If $bFileNameIsString Then
         _cveStringRelease($fileName)
@@ -35,24 +37,26 @@ EndFunc   ;==>_cveHDF5Create
 Func _cveHDF5Release($hdfPtr)
     ; CVAPI(void) cveHDF5Release(cv::Ptr<cv::hdf::HDF5>** hdfPtr);
 
-    Local $bHdfPtrDllType
-    If VarGetType($hdfPtr) == "DLLStruct" Then
-        $bHdfPtrDllType = "struct*"
+    Local $sHdfPtrDllType
+    If IsDllStruct($hdfPtr) Then
+        $sHdfPtrDllType = "struct*"
+    ElseIf $hdfPtr == Null Then
+        $sHdfPtrDllType = "ptr"
     Else
-        $bHdfPtrDllType = "ptr*"
+        $sHdfPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5Release", $bHdfPtrDllType, $hdfPtr), "cveHDF5Release", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5Release", $sHdfPtrDllType, $hdfPtr), "cveHDF5Release", @error)
 EndFunc   ;==>_cveHDF5Release
 
 Func _cveHDF5GrCreate($hdf, $grlabel)
     ; CVAPI(void) cveHDF5GrCreate(cv::hdf::HDF5* hdf, cv::String* grlabel);
 
-    Local $bHdfDllType
-    If VarGetType($hdf) == "DLLStruct" Then
-        $bHdfDllType = "struct*"
+    Local $sHdfDllType
+    If IsDllStruct($hdf) Then
+        $sHdfDllType = "struct*"
     Else
-        $bHdfDllType = "ptr"
+        $sHdfDllType = "ptr"
     EndIf
 
     Local $bGrlabelIsString = VarGetType($grlabel) == "String"
@@ -60,14 +64,14 @@ Func _cveHDF5GrCreate($hdf, $grlabel)
         $grlabel = _cveStringCreateFromStr($grlabel)
     EndIf
 
-    Local $bGrlabelDllType
-    If VarGetType($grlabel) == "DLLStruct" Then
-        $bGrlabelDllType = "struct*"
+    Local $sGrlabelDllType
+    If IsDllStruct($grlabel) Then
+        $sGrlabelDllType = "struct*"
     Else
-        $bGrlabelDllType = "ptr"
+        $sGrlabelDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5GrCreate", $bHdfDllType, $hdf, $bGrlabelDllType, $grlabel), "cveHDF5GrCreate", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5GrCreate", $sHdfDllType, $hdf, $sGrlabelDllType, $grlabel), "cveHDF5GrCreate", @error)
 
     If $bGrlabelIsString Then
         _cveStringRelease($grlabel)
@@ -77,11 +81,11 @@ EndFunc   ;==>_cveHDF5GrCreate
 Func _cveHDF5HlExists($hdf, $label)
     ; CVAPI(bool) cveHDF5HlExists(cv::hdf::HDF5* hdf, cv::String* label);
 
-    Local $bHdfDllType
-    If VarGetType($hdf) == "DLLStruct" Then
-        $bHdfDllType = "struct*"
+    Local $sHdfDllType
+    If IsDllStruct($hdf) Then
+        $sHdfDllType = "struct*"
     Else
-        $bHdfDllType = "ptr"
+        $sHdfDllType = "ptr"
     EndIf
 
     Local $bLabelIsString = VarGetType($label) == "String"
@@ -89,14 +93,14 @@ Func _cveHDF5HlExists($hdf, $label)
         $label = _cveStringCreateFromStr($label)
     EndIf
 
-    Local $bLabelDllType
-    If VarGetType($label) == "DLLStruct" Then
-        $bLabelDllType = "struct*"
+    Local $sLabelDllType
+    If IsDllStruct($label) Then
+        $sLabelDllType = "struct*"
     Else
-        $bLabelDllType = "ptr"
+        $sLabelDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveHDF5HlExists", $bHdfDllType, $hdf, $bLabelDllType, $label), "cveHDF5HlExists", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveHDF5HlExists", $sHdfDllType, $hdf, $sLabelDllType, $label), "cveHDF5HlExists", @error)
 
     If $bLabelIsString Then
         _cveStringRelease($label)
@@ -108,11 +112,11 @@ EndFunc   ;==>_cveHDF5HlExists
 Func _cveHDF5DsCreate($hdf, $rows, $cols, $type, $dslabel, $compresslevel, $dims_chunks)
     ; CVAPI(void) cveHDF5DsCreate(cv::hdf::HDF5* hdf, int rows, int cols, int type, cv::String* dslabel, int compresslevel, std::vector<int>* dims_chunks);
 
-    Local $bHdfDllType
-    If VarGetType($hdf) == "DLLStruct" Then
-        $bHdfDllType = "struct*"
+    Local $sHdfDllType
+    If IsDllStruct($hdf) Then
+        $sHdfDllType = "struct*"
     Else
-        $bHdfDllType = "ptr"
+        $sHdfDllType = "ptr"
     EndIf
 
     Local $bDslabelIsString = VarGetType($dslabel) == "String"
@@ -120,11 +124,11 @@ Func _cveHDF5DsCreate($hdf, $rows, $cols, $type, $dslabel, $compresslevel, $dims
         $dslabel = _cveStringCreateFromStr($dslabel)
     EndIf
 
-    Local $bDslabelDllType
-    If VarGetType($dslabel) == "DLLStruct" Then
-        $bDslabelDllType = "struct*"
+    Local $sDslabelDllType
+    If IsDllStruct($dslabel) Then
+        $sDslabelDllType = "struct*"
     Else
-        $bDslabelDllType = "ptr"
+        $sDslabelDllType = "ptr"
     EndIf
 
     Local $vecDims_chunks, $iArrDims_chunksSize
@@ -141,14 +145,14 @@ Func _cveHDF5DsCreate($hdf, $rows, $cols, $type, $dslabel, $compresslevel, $dims
         $vecDims_chunks = $dims_chunks
     EndIf
 
-    Local $bDims_chunksDllType
-    If VarGetType($dims_chunks) == "DLLStruct" Then
-        $bDims_chunksDllType = "struct*"
+    Local $sDims_chunksDllType
+    If IsDllStruct($dims_chunks) Then
+        $sDims_chunksDllType = "struct*"
     Else
-        $bDims_chunksDllType = "ptr"
+        $sDims_chunksDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5DsCreate", $bHdfDllType, $hdf, "int", $rows, "int", $cols, "int", $type, $bDslabelDllType, $dslabel, "int", $compresslevel, $bDims_chunksDllType, $vecDims_chunks), "cveHDF5DsCreate", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5DsCreate", $sHdfDllType, $hdf, "int", $rows, "int", $cols, "int", $type, $sDslabelDllType, $dslabel, "int", $compresslevel, $sDims_chunksDllType, $vecDims_chunks), "cveHDF5DsCreate", @error)
 
     If $bDims_chunksIsArray Then
         _VectorOfIntRelease($vecDims_chunks)
@@ -162,18 +166,18 @@ EndFunc   ;==>_cveHDF5DsCreate
 Func _cveHDF5DsWrite($hdf, $Array, $dslabel)
     ; CVAPI(void) cveHDF5DsWrite(cv::hdf::HDF5* hdf, cv::_InputArray* Array, cv::String* dslabel);
 
-    Local $bHdfDllType
-    If VarGetType($hdf) == "DLLStruct" Then
-        $bHdfDllType = "struct*"
+    Local $sHdfDllType
+    If IsDllStruct($hdf) Then
+        $sHdfDllType = "struct*"
     Else
-        $bHdfDllType = "ptr"
+        $sHdfDllType = "ptr"
     EndIf
 
-    Local $bArrayDllType
-    If VarGetType($Array) == "DLLStruct" Then
-        $bArrayDllType = "struct*"
+    Local $sArrayDllType
+    If IsDllStruct($Array) Then
+        $sArrayDllType = "struct*"
     Else
-        $bArrayDllType = "ptr"
+        $sArrayDllType = "ptr"
     EndIf
 
     Local $bDslabelIsString = VarGetType($dslabel) == "String"
@@ -181,14 +185,14 @@ Func _cveHDF5DsWrite($hdf, $Array, $dslabel)
         $dslabel = _cveStringCreateFromStr($dslabel)
     EndIf
 
-    Local $bDslabelDllType
-    If VarGetType($dslabel) == "DLLStruct" Then
-        $bDslabelDllType = "struct*"
+    Local $sDslabelDllType
+    If IsDllStruct($dslabel) Then
+        $sDslabelDllType = "struct*"
     Else
-        $bDslabelDllType = "ptr"
+        $sDslabelDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5DsWrite", $bHdfDllType, $hdf, $bArrayDllType, $Array, $bDslabelDllType, $dslabel), "cveHDF5DsWrite", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5DsWrite", $sHdfDllType, $hdf, $sArrayDllType, $Array, $sDslabelDllType, $dslabel), "cveHDF5DsWrite", @error)
 
     If $bDslabelIsString Then
         _cveStringRelease($dslabel)
@@ -226,18 +230,18 @@ EndFunc   ;==>_cveHDF5DsWriteMat
 Func _cveHDF5DsRead($hdf, $Array, $dslabel)
     ; CVAPI(void) cveHDF5DsRead(cv::hdf::HDF5* hdf, cv::_OutputArray* Array, cv::String* dslabel);
 
-    Local $bHdfDllType
-    If VarGetType($hdf) == "DLLStruct" Then
-        $bHdfDllType = "struct*"
+    Local $sHdfDllType
+    If IsDllStruct($hdf) Then
+        $sHdfDllType = "struct*"
     Else
-        $bHdfDllType = "ptr"
+        $sHdfDllType = "ptr"
     EndIf
 
-    Local $bArrayDllType
-    If VarGetType($Array) == "DLLStruct" Then
-        $bArrayDllType = "struct*"
+    Local $sArrayDllType
+    If IsDllStruct($Array) Then
+        $sArrayDllType = "struct*"
     Else
-        $bArrayDllType = "ptr"
+        $sArrayDllType = "ptr"
     EndIf
 
     Local $bDslabelIsString = VarGetType($dslabel) == "String"
@@ -245,14 +249,14 @@ Func _cveHDF5DsRead($hdf, $Array, $dslabel)
         $dslabel = _cveStringCreateFromStr($dslabel)
     EndIf
 
-    Local $bDslabelDllType
-    If VarGetType($dslabel) == "DLLStruct" Then
-        $bDslabelDllType = "struct*"
+    Local $sDslabelDllType
+    If IsDllStruct($dslabel) Then
+        $sDslabelDllType = "struct*"
     Else
-        $bDslabelDllType = "ptr"
+        $sDslabelDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5DsRead", $bHdfDllType, $hdf, $bArrayDllType, $Array, $bDslabelDllType, $dslabel), "cveHDF5DsRead", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5DsRead", $sHdfDllType, $hdf, $sArrayDllType, $Array, $sDslabelDllType, $dslabel), "cveHDF5DsRead", @error)
 
     If $bDslabelIsString Then
         _cveStringRelease($dslabel)
@@ -290,11 +294,11 @@ EndFunc   ;==>_cveHDF5DsReadMat
 Func _cveHDF5AtExists($hdf, $atlabel)
     ; CVAPI(bool) cveHDF5AtExists(cv::hdf::HDF5* hdf, cv::String* atlabel);
 
-    Local $bHdfDllType
-    If VarGetType($hdf) == "DLLStruct" Then
-        $bHdfDllType = "struct*"
+    Local $sHdfDllType
+    If IsDllStruct($hdf) Then
+        $sHdfDllType = "struct*"
     Else
-        $bHdfDllType = "ptr"
+        $sHdfDllType = "ptr"
     EndIf
 
     Local $bAtlabelIsString = VarGetType($atlabel) == "String"
@@ -302,14 +306,14 @@ Func _cveHDF5AtExists($hdf, $atlabel)
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
 
-    Local $bAtlabelDllType
-    If VarGetType($atlabel) == "DLLStruct" Then
-        $bAtlabelDllType = "struct*"
+    Local $sAtlabelDllType
+    If IsDllStruct($atlabel) Then
+        $sAtlabelDllType = "struct*"
     Else
-        $bAtlabelDllType = "ptr"
+        $sAtlabelDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveHDF5AtExists", $bHdfDllType, $hdf, $bAtlabelDllType, $atlabel), "cveHDF5AtExists", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveHDF5AtExists", $sHdfDllType, $hdf, $sAtlabelDllType, $atlabel), "cveHDF5AtExists", @error)
 
     If $bAtlabelIsString Then
         _cveStringRelease($atlabel)
@@ -321,11 +325,11 @@ EndFunc   ;==>_cveHDF5AtExists
 Func _cveHDF5AtDelete($hdf, $atlabel)
     ; CVAPI(void) cveHDF5AtDelete(cv::hdf::HDF5* hdf, cv::String* atlabel);
 
-    Local $bHdfDllType
-    If VarGetType($hdf) == "DLLStruct" Then
-        $bHdfDllType = "struct*"
+    Local $sHdfDllType
+    If IsDllStruct($hdf) Then
+        $sHdfDllType = "struct*"
     Else
-        $bHdfDllType = "ptr"
+        $sHdfDllType = "ptr"
     EndIf
 
     Local $bAtlabelIsString = VarGetType($atlabel) == "String"
@@ -333,14 +337,14 @@ Func _cveHDF5AtDelete($hdf, $atlabel)
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
 
-    Local $bAtlabelDllType
-    If VarGetType($atlabel) == "DLLStruct" Then
-        $bAtlabelDllType = "struct*"
+    Local $sAtlabelDllType
+    If IsDllStruct($atlabel) Then
+        $sAtlabelDllType = "struct*"
     Else
-        $bAtlabelDllType = "ptr"
+        $sAtlabelDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5AtDelete", $bHdfDllType, $hdf, $bAtlabelDllType, $atlabel), "cveHDF5AtDelete", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5AtDelete", $sHdfDllType, $hdf, $sAtlabelDllType, $atlabel), "cveHDF5AtDelete", @error)
 
     If $bAtlabelIsString Then
         _cveStringRelease($atlabel)
@@ -350,11 +354,11 @@ EndFunc   ;==>_cveHDF5AtDelete
 Func _cveHDF5AtWriteInt($hdf, $value, $atlabel)
     ; CVAPI(void) cveHDF5AtWriteInt(cv::hdf::HDF5* hdf, int value, cv::String* atlabel);
 
-    Local $bHdfDllType
-    If VarGetType($hdf) == "DLLStruct" Then
-        $bHdfDllType = "struct*"
+    Local $sHdfDllType
+    If IsDllStruct($hdf) Then
+        $sHdfDllType = "struct*"
     Else
-        $bHdfDllType = "ptr"
+        $sHdfDllType = "ptr"
     EndIf
 
     Local $bAtlabelIsString = VarGetType($atlabel) == "String"
@@ -362,14 +366,14 @@ Func _cveHDF5AtWriteInt($hdf, $value, $atlabel)
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
 
-    Local $bAtlabelDllType
-    If VarGetType($atlabel) == "DLLStruct" Then
-        $bAtlabelDllType = "struct*"
+    Local $sAtlabelDllType
+    If IsDllStruct($atlabel) Then
+        $sAtlabelDllType = "struct*"
     Else
-        $bAtlabelDllType = "ptr"
+        $sAtlabelDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5AtWriteInt", $bHdfDllType, $hdf, "int", $value, $bAtlabelDllType, $atlabel), "cveHDF5AtWriteInt", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5AtWriteInt", $sHdfDllType, $hdf, "int", $value, $sAtlabelDllType, $atlabel), "cveHDF5AtWriteInt", @error)
 
     If $bAtlabelIsString Then
         _cveStringRelease($atlabel)
@@ -379,18 +383,18 @@ EndFunc   ;==>_cveHDF5AtWriteInt
 Func _cveHDF5AtReadInt($hdf, $value, $atlabel)
     ; CVAPI(void) cveHDF5AtReadInt(cv::hdf::HDF5* hdf, int* value, cv::String* atlabel);
 
-    Local $bHdfDllType
-    If VarGetType($hdf) == "DLLStruct" Then
-        $bHdfDllType = "struct*"
+    Local $sHdfDllType
+    If IsDllStruct($hdf) Then
+        $sHdfDllType = "struct*"
     Else
-        $bHdfDllType = "ptr"
+        $sHdfDllType = "ptr"
     EndIf
 
-    Local $bValueDllType
-    If VarGetType($value) == "DLLStruct" Then
-        $bValueDllType = "struct*"
+    Local $sValueDllType
+    If IsDllStruct($value) Then
+        $sValueDllType = "struct*"
     Else
-        $bValueDllType = "int*"
+        $sValueDllType = "int*"
     EndIf
 
     Local $bAtlabelIsString = VarGetType($atlabel) == "String"
@@ -398,14 +402,14 @@ Func _cveHDF5AtReadInt($hdf, $value, $atlabel)
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
 
-    Local $bAtlabelDllType
-    If VarGetType($atlabel) == "DLLStruct" Then
-        $bAtlabelDllType = "struct*"
+    Local $sAtlabelDllType
+    If IsDllStruct($atlabel) Then
+        $sAtlabelDllType = "struct*"
     Else
-        $bAtlabelDllType = "ptr"
+        $sAtlabelDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5AtReadInt", $bHdfDllType, $hdf, $bValueDllType, $value, $bAtlabelDllType, $atlabel), "cveHDF5AtReadInt", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5AtReadInt", $sHdfDllType, $hdf, $sValueDllType, $value, $sAtlabelDllType, $atlabel), "cveHDF5AtReadInt", @error)
 
     If $bAtlabelIsString Then
         _cveStringRelease($atlabel)
@@ -415,11 +419,11 @@ EndFunc   ;==>_cveHDF5AtReadInt
 Func _cveHDF5AtWriteDouble($hdf, $value, $atlabel)
     ; CVAPI(void) cveHDF5AtWriteDouble(cv::hdf::HDF5* hdf, double value, cv::String* atlabel);
 
-    Local $bHdfDllType
-    If VarGetType($hdf) == "DLLStruct" Then
-        $bHdfDllType = "struct*"
+    Local $sHdfDllType
+    If IsDllStruct($hdf) Then
+        $sHdfDllType = "struct*"
     Else
-        $bHdfDllType = "ptr"
+        $sHdfDllType = "ptr"
     EndIf
 
     Local $bAtlabelIsString = VarGetType($atlabel) == "String"
@@ -427,14 +431,14 @@ Func _cveHDF5AtWriteDouble($hdf, $value, $atlabel)
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
 
-    Local $bAtlabelDllType
-    If VarGetType($atlabel) == "DLLStruct" Then
-        $bAtlabelDllType = "struct*"
+    Local $sAtlabelDllType
+    If IsDllStruct($atlabel) Then
+        $sAtlabelDllType = "struct*"
     Else
-        $bAtlabelDllType = "ptr"
+        $sAtlabelDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5AtWriteDouble", $bHdfDllType, $hdf, "double", $value, $bAtlabelDllType, $atlabel), "cveHDF5AtWriteDouble", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5AtWriteDouble", $sHdfDllType, $hdf, "double", $value, $sAtlabelDllType, $atlabel), "cveHDF5AtWriteDouble", @error)
 
     If $bAtlabelIsString Then
         _cveStringRelease($atlabel)
@@ -444,18 +448,18 @@ EndFunc   ;==>_cveHDF5AtWriteDouble
 Func _cveHDF5AtReadDouble($hdf, $value, $atlabel)
     ; CVAPI(void) cveHDF5AtReadDouble(cv::hdf::HDF5* hdf, double* value, cv::String* atlabel);
 
-    Local $bHdfDllType
-    If VarGetType($hdf) == "DLLStruct" Then
-        $bHdfDllType = "struct*"
+    Local $sHdfDllType
+    If IsDllStruct($hdf) Then
+        $sHdfDllType = "struct*"
     Else
-        $bHdfDllType = "ptr"
+        $sHdfDllType = "ptr"
     EndIf
 
-    Local $bValueDllType
-    If VarGetType($value) == "DLLStruct" Then
-        $bValueDllType = "struct*"
+    Local $sValueDllType
+    If IsDllStruct($value) Then
+        $sValueDllType = "struct*"
     Else
-        $bValueDllType = "double*"
+        $sValueDllType = "double*"
     EndIf
 
     Local $bAtlabelIsString = VarGetType($atlabel) == "String"
@@ -463,14 +467,14 @@ Func _cveHDF5AtReadDouble($hdf, $value, $atlabel)
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
 
-    Local $bAtlabelDllType
-    If VarGetType($atlabel) == "DLLStruct" Then
-        $bAtlabelDllType = "struct*"
+    Local $sAtlabelDllType
+    If IsDllStruct($atlabel) Then
+        $sAtlabelDllType = "struct*"
     Else
-        $bAtlabelDllType = "ptr"
+        $sAtlabelDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5AtReadDouble", $bHdfDllType, $hdf, $bValueDllType, $value, $bAtlabelDllType, $atlabel), "cveHDF5AtReadDouble", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5AtReadDouble", $sHdfDllType, $hdf, $sValueDllType, $value, $sAtlabelDllType, $atlabel), "cveHDF5AtReadDouble", @error)
 
     If $bAtlabelIsString Then
         _cveStringRelease($atlabel)
@@ -480,11 +484,11 @@ EndFunc   ;==>_cveHDF5AtReadDouble
 Func _cveHDF5AtWriteString($hdf, $value, $atlabel)
     ; CVAPI(void) cveHDF5AtWriteString(cv::hdf::HDF5* hdf, cv::String* value, cv::String* atlabel);
 
-    Local $bHdfDllType
-    If VarGetType($hdf) == "DLLStruct" Then
-        $bHdfDllType = "struct*"
+    Local $sHdfDllType
+    If IsDllStruct($hdf) Then
+        $sHdfDllType = "struct*"
     Else
-        $bHdfDllType = "ptr"
+        $sHdfDllType = "ptr"
     EndIf
 
     Local $bValueIsString = VarGetType($value) == "String"
@@ -492,11 +496,11 @@ Func _cveHDF5AtWriteString($hdf, $value, $atlabel)
         $value = _cveStringCreateFromStr($value)
     EndIf
 
-    Local $bValueDllType
-    If VarGetType($value) == "DLLStruct" Then
-        $bValueDllType = "struct*"
+    Local $sValueDllType
+    If IsDllStruct($value) Then
+        $sValueDllType = "struct*"
     Else
-        $bValueDllType = "ptr"
+        $sValueDllType = "ptr"
     EndIf
 
     Local $bAtlabelIsString = VarGetType($atlabel) == "String"
@@ -504,14 +508,14 @@ Func _cveHDF5AtWriteString($hdf, $value, $atlabel)
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
 
-    Local $bAtlabelDllType
-    If VarGetType($atlabel) == "DLLStruct" Then
-        $bAtlabelDllType = "struct*"
+    Local $sAtlabelDllType
+    If IsDllStruct($atlabel) Then
+        $sAtlabelDllType = "struct*"
     Else
-        $bAtlabelDllType = "ptr"
+        $sAtlabelDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5AtWriteString", $bHdfDllType, $hdf, $bValueDllType, $value, $bAtlabelDllType, $atlabel), "cveHDF5AtWriteString", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5AtWriteString", $sHdfDllType, $hdf, $sValueDllType, $value, $sAtlabelDllType, $atlabel), "cveHDF5AtWriteString", @error)
 
     If $bAtlabelIsString Then
         _cveStringRelease($atlabel)
@@ -525,11 +529,11 @@ EndFunc   ;==>_cveHDF5AtWriteString
 Func _cveHDF5AtReadString($hdf, $value, $atlabel)
     ; CVAPI(void) cveHDF5AtReadString(cv::hdf::HDF5* hdf, cv::String* value, cv::String* atlabel);
 
-    Local $bHdfDllType
-    If VarGetType($hdf) == "DLLStruct" Then
-        $bHdfDllType = "struct*"
+    Local $sHdfDllType
+    If IsDllStruct($hdf) Then
+        $sHdfDllType = "struct*"
     Else
-        $bHdfDllType = "ptr"
+        $sHdfDllType = "ptr"
     EndIf
 
     Local $bValueIsString = VarGetType($value) == "String"
@@ -537,11 +541,11 @@ Func _cveHDF5AtReadString($hdf, $value, $atlabel)
         $value = _cveStringCreateFromStr($value)
     EndIf
 
-    Local $bValueDllType
-    If VarGetType($value) == "DLLStruct" Then
-        $bValueDllType = "struct*"
+    Local $sValueDllType
+    If IsDllStruct($value) Then
+        $sValueDllType = "struct*"
     Else
-        $bValueDllType = "ptr"
+        $sValueDllType = "ptr"
     EndIf
 
     Local $bAtlabelIsString = VarGetType($atlabel) == "String"
@@ -549,14 +553,14 @@ Func _cveHDF5AtReadString($hdf, $value, $atlabel)
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
 
-    Local $bAtlabelDllType
-    If VarGetType($atlabel) == "DLLStruct" Then
-        $bAtlabelDllType = "struct*"
+    Local $sAtlabelDllType
+    If IsDllStruct($atlabel) Then
+        $sAtlabelDllType = "struct*"
     Else
-        $bAtlabelDllType = "ptr"
+        $sAtlabelDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5AtReadString", $bHdfDllType, $hdf, $bValueDllType, $value, $bAtlabelDllType, $atlabel), "cveHDF5AtReadString", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5AtReadString", $sHdfDllType, $hdf, $sValueDllType, $value, $sAtlabelDllType, $atlabel), "cveHDF5AtReadString", @error)
 
     If $bAtlabelIsString Then
         _cveStringRelease($atlabel)
@@ -570,18 +574,18 @@ EndFunc   ;==>_cveHDF5AtReadString
 Func _cveHDF5AtReadArray($hdf, $value, $atlabel)
     ; CVAPI(void) cveHDF5AtReadArray(cv::hdf::HDF5* hdf, cv::_OutputArray* value, cv::String* atlabel);
 
-    Local $bHdfDllType
-    If VarGetType($hdf) == "DLLStruct" Then
-        $bHdfDllType = "struct*"
+    Local $sHdfDllType
+    If IsDllStruct($hdf) Then
+        $sHdfDllType = "struct*"
     Else
-        $bHdfDllType = "ptr"
+        $sHdfDllType = "ptr"
     EndIf
 
-    Local $bValueDllType
-    If VarGetType($value) == "DLLStruct" Then
-        $bValueDllType = "struct*"
+    Local $sValueDllType
+    If IsDllStruct($value) Then
+        $sValueDllType = "struct*"
     Else
-        $bValueDllType = "ptr"
+        $sValueDllType = "ptr"
     EndIf
 
     Local $bAtlabelIsString = VarGetType($atlabel) == "String"
@@ -589,14 +593,14 @@ Func _cveHDF5AtReadArray($hdf, $value, $atlabel)
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
 
-    Local $bAtlabelDllType
-    If VarGetType($atlabel) == "DLLStruct" Then
-        $bAtlabelDllType = "struct*"
+    Local $sAtlabelDllType
+    If IsDllStruct($atlabel) Then
+        $sAtlabelDllType = "struct*"
     Else
-        $bAtlabelDllType = "ptr"
+        $sAtlabelDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5AtReadArray", $bHdfDllType, $hdf, $bValueDllType, $value, $bAtlabelDllType, $atlabel), "cveHDF5AtReadArray", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5AtReadArray", $sHdfDllType, $hdf, $sValueDllType, $value, $sAtlabelDllType, $atlabel), "cveHDF5AtReadArray", @error)
 
     If $bAtlabelIsString Then
         _cveStringRelease($atlabel)
@@ -634,18 +638,18 @@ EndFunc   ;==>_cveHDF5AtReadArrayMat
 Func _cveHDF5AtWriteArray($hdf, $value, $atlabel)
     ; CVAPI(void) cveHDF5AtWriteArray(cv::hdf::HDF5* hdf, cv::_InputArray* value, cv::String* atlabel);
 
-    Local $bHdfDllType
-    If VarGetType($hdf) == "DLLStruct" Then
-        $bHdfDllType = "struct*"
+    Local $sHdfDllType
+    If IsDllStruct($hdf) Then
+        $sHdfDllType = "struct*"
     Else
-        $bHdfDllType = "ptr"
+        $sHdfDllType = "ptr"
     EndIf
 
-    Local $bValueDllType
-    If VarGetType($value) == "DLLStruct" Then
-        $bValueDllType = "struct*"
+    Local $sValueDllType
+    If IsDllStruct($value) Then
+        $sValueDllType = "struct*"
     Else
-        $bValueDllType = "ptr"
+        $sValueDllType = "ptr"
     EndIf
 
     Local $bAtlabelIsString = VarGetType($atlabel) == "String"
@@ -653,14 +657,14 @@ Func _cveHDF5AtWriteArray($hdf, $value, $atlabel)
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
 
-    Local $bAtlabelDllType
-    If VarGetType($atlabel) == "DLLStruct" Then
-        $bAtlabelDllType = "struct*"
+    Local $sAtlabelDllType
+    If IsDllStruct($atlabel) Then
+        $sAtlabelDllType = "struct*"
     Else
-        $bAtlabelDllType = "ptr"
+        $sAtlabelDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5AtWriteArray", $bHdfDllType, $hdf, $bValueDllType, $value, $bAtlabelDllType, $atlabel), "cveHDF5AtWriteArray", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5AtWriteArray", $sHdfDllType, $hdf, $sValueDllType, $value, $sAtlabelDllType, $atlabel), "cveHDF5AtWriteArray", @error)
 
     If $bAtlabelIsString Then
         _cveStringRelease($atlabel)
@@ -698,11 +702,11 @@ EndFunc   ;==>_cveHDF5AtWriteArrayMat
 Func _cveHDF5KpRead($hdf, $keypoints, $kplabel, $offset, $counts)
     ; CVAPI(void) cveHDF5KpRead(cv::hdf::HDF5* hdf, std::vector<cv::KeyPoint>* keypoints, cv::String* kplabel, int offset, int counts);
 
-    Local $bHdfDllType
-    If VarGetType($hdf) == "DLLStruct" Then
-        $bHdfDllType = "struct*"
+    Local $sHdfDllType
+    If IsDllStruct($hdf) Then
+        $sHdfDllType = "struct*"
     Else
-        $bHdfDllType = "ptr"
+        $sHdfDllType = "ptr"
     EndIf
 
     Local $vecKeypoints, $iArrKeypointsSize
@@ -719,11 +723,11 @@ Func _cveHDF5KpRead($hdf, $keypoints, $kplabel, $offset, $counts)
         $vecKeypoints = $keypoints
     EndIf
 
-    Local $bKeypointsDllType
-    If VarGetType($keypoints) == "DLLStruct" Then
-        $bKeypointsDllType = "struct*"
+    Local $sKeypointsDllType
+    If IsDllStruct($keypoints) Then
+        $sKeypointsDllType = "struct*"
     Else
-        $bKeypointsDllType = "ptr"
+        $sKeypointsDllType = "ptr"
     EndIf
 
     Local $bKplabelIsString = VarGetType($kplabel) == "String"
@@ -731,14 +735,14 @@ Func _cveHDF5KpRead($hdf, $keypoints, $kplabel, $offset, $counts)
         $kplabel = _cveStringCreateFromStr($kplabel)
     EndIf
 
-    Local $bKplabelDllType
-    If VarGetType($kplabel) == "DLLStruct" Then
-        $bKplabelDllType = "struct*"
+    Local $sKplabelDllType
+    If IsDllStruct($kplabel) Then
+        $sKplabelDllType = "struct*"
     Else
-        $bKplabelDllType = "ptr"
+        $sKplabelDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5KpRead", $bHdfDllType, $hdf, $bKeypointsDllType, $vecKeypoints, $bKplabelDllType, $kplabel, "int", $offset, "int", $counts), "cveHDF5KpRead", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5KpRead", $sHdfDllType, $hdf, $sKeypointsDllType, $vecKeypoints, $sKplabelDllType, $kplabel, "int", $offset, "int", $counts), "cveHDF5KpRead", @error)
 
     If $bKplabelIsString Then
         _cveStringRelease($kplabel)
@@ -752,11 +756,11 @@ EndFunc   ;==>_cveHDF5KpRead
 Func _cveHDF5KpWrite($hdf, $keypoints, $kplabel, $offset, $counts)
     ; CVAPI(void) cveHDF5KpWrite(cv::hdf::HDF5* hdf, std::vector<cv::KeyPoint>* keypoints, cv::String* kplabel, int offset, int counts);
 
-    Local $bHdfDllType
-    If VarGetType($hdf) == "DLLStruct" Then
-        $bHdfDllType = "struct*"
+    Local $sHdfDllType
+    If IsDllStruct($hdf) Then
+        $sHdfDllType = "struct*"
     Else
-        $bHdfDllType = "ptr"
+        $sHdfDllType = "ptr"
     EndIf
 
     Local $vecKeypoints, $iArrKeypointsSize
@@ -773,11 +777,11 @@ Func _cveHDF5KpWrite($hdf, $keypoints, $kplabel, $offset, $counts)
         $vecKeypoints = $keypoints
     EndIf
 
-    Local $bKeypointsDllType
-    If VarGetType($keypoints) == "DLLStruct" Then
-        $bKeypointsDllType = "struct*"
+    Local $sKeypointsDllType
+    If IsDllStruct($keypoints) Then
+        $sKeypointsDllType = "struct*"
     Else
-        $bKeypointsDllType = "ptr"
+        $sKeypointsDllType = "ptr"
     EndIf
 
     Local $bKplabelIsString = VarGetType($kplabel) == "String"
@@ -785,14 +789,14 @@ Func _cveHDF5KpWrite($hdf, $keypoints, $kplabel, $offset, $counts)
         $kplabel = _cveStringCreateFromStr($kplabel)
     EndIf
 
-    Local $bKplabelDllType
-    If VarGetType($kplabel) == "DLLStruct" Then
-        $bKplabelDllType = "struct*"
+    Local $sKplabelDllType
+    If IsDllStruct($kplabel) Then
+        $sKplabelDllType = "struct*"
     Else
-        $bKplabelDllType = "ptr"
+        $sKplabelDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5KpWrite", $bHdfDllType, $hdf, $bKeypointsDllType, $vecKeypoints, $bKplabelDllType, $kplabel, "int", $offset, "int", $counts), "cveHDF5KpWrite", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5KpWrite", $sHdfDllType, $hdf, $sKeypointsDllType, $vecKeypoints, $sKplabelDllType, $kplabel, "int", $offset, "int", $counts), "cveHDF5KpWrite", @error)
 
     If $bKplabelIsString Then
         _cveStringRelease($kplabel)
@@ -806,12 +810,12 @@ EndFunc   ;==>_cveHDF5KpWrite
 Func _cveHDF5Close($hdf)
     ; CVAPI(void) cveHDF5Close(cv::hdf::HDF5* hdf);
 
-    Local $bHdfDllType
-    If VarGetType($hdf) == "DLLStruct" Then
-        $bHdfDllType = "struct*"
+    Local $sHdfDllType
+    If IsDllStruct($hdf) Then
+        $sHdfDllType = "struct*"
     Else
-        $bHdfDllType = "ptr"
+        $sHdfDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5Close", $bHdfDllType, $hdf), "cveHDF5Close", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHDF5Close", $sHdfDllType, $hdf), "cveHDF5Close", @error)
 EndFunc   ;==>_cveHDF5Close

@@ -4,62 +4,62 @@
 Func _cveNetSetPreferableBackend($obj, $value)
     ; CVAPI(void) cveNetSetPreferableBackend(cv::dnn::Net* obj, int value);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveNetSetPreferableBackend", $bObjDllType, $obj, "int", $value), "cveNetSetPreferableBackend", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveNetSetPreferableBackend", $sObjDllType, $obj, "int", $value), "cveNetSetPreferableBackend", @error)
 EndFunc   ;==>_cveNetSetPreferableBackend
 
 Func _cveNetSetPreferableTarget($obj, $value)
     ; CVAPI(void) cveNetSetPreferableTarget(cv::dnn::Net* obj, int value);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveNetSetPreferableTarget", $bObjDllType, $obj, "int", $value), "cveNetSetPreferableTarget", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveNetSetPreferableTarget", $sObjDllType, $obj, "int", $value), "cveNetSetPreferableTarget", @error)
 EndFunc   ;==>_cveNetSetPreferableTarget
 
 Func _cveNetEnableFusion($obj, $value)
     ; CVAPI(void) cveNetEnableFusion(cv::dnn::Net* obj, bool value);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveNetEnableFusion", $bObjDllType, $obj, "boolean", $value), "cveNetEnableFusion", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveNetEnableFusion", $sObjDllType, $obj, "boolean", $value), "cveNetEnableFusion", @error)
 EndFunc   ;==>_cveNetEnableFusion
 
 Func _cveNetEmpty($obj)
     ; CVAPI(bool) cveNetEmpty(cv::dnn::Net* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveNetEmpty", $bObjDllType, $obj), "cveNetEmpty", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveNetEmpty", $sObjDllType, $obj), "cveNetEmpty", @error)
 EndFunc   ;==>_cveNetEmpty
 
 Func _cveNetSetHalideScheduler($obj, $str)
     ; CVAPI(void) cveNetSetHalideScheduler(cv::dnn::Net* obj, cv::String* str);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
     Local $bStrIsString = VarGetType($str) == "String"
@@ -67,14 +67,14 @@ Func _cveNetSetHalideScheduler($obj, $str)
         $str = _cveStringCreateFromStr($str)
     EndIf
 
-    Local $bStrDllType
-    If VarGetType($str) == "DLLStruct" Then
-        $bStrDllType = "struct*"
+    Local $sStrDllType
+    If IsDllStruct($str) Then
+        $sStrDllType = "struct*"
     Else
-        $bStrDllType = "ptr"
+        $sStrDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveNetSetHalideScheduler", $bObjDllType, $obj, $bStrDllType, $str), "cveNetSetHalideScheduler", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveNetSetHalideScheduler", $sObjDllType, $obj, $sStrDllType, $str), "cveNetSetHalideScheduler", @error)
 
     If $bStrIsString Then
         _cveStringRelease($str)

@@ -18,14 +18,14 @@ Func _oclGetPlatformsInfo($oclPlatforms)
         $vecOclPlatforms = $oclPlatforms
     EndIf
 
-    Local $bOclPlatformsDllType
-    If VarGetType($oclPlatforms) == "DLLStruct" Then
-        $bOclPlatformsDllType = "struct*"
+    Local $sOclPlatformsDllType
+    If IsDllStruct($oclPlatforms) Then
+        $sOclPlatformsDllType = "struct*"
     Else
-        $bOclPlatformsDllType = "ptr"
+        $sOclPlatformsDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclGetPlatformsInfo", $bOclPlatformsDllType, $vecOclPlatforms), "oclGetPlatformsInfo", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclGetPlatformsInfo", $sOclPlatformsDllType, $vecOclPlatforms), "oclGetPlatformsInfo", @error)
 
     If $bOclPlatformsIsArray Then
         _VectorOfOclPlatformInfoRelease($vecOclPlatforms)
@@ -55,45 +55,51 @@ EndFunc   ;==>_cveOclFinish
 Func _oclPlatformInfoGetProperties($oclPlatformInfo, $platformVersion, $platformName, $platformVendor)
     ; CVAPI(void) oclPlatformInfoGetProperties(cv::ocl::PlatformInfo* oclPlatformInfo, const char** platformVersion, const char** platformName, const char** platformVendor);
 
-    Local $bOclPlatformInfoDllType
-    If VarGetType($oclPlatformInfo) == "DLLStruct" Then
-        $bOclPlatformInfoDllType = "struct*"
+    Local $sOclPlatformInfoDllType
+    If IsDllStruct($oclPlatformInfo) Then
+        $sOclPlatformInfoDllType = "struct*"
     Else
-        $bOclPlatformInfoDllType = "ptr"
+        $sOclPlatformInfoDllType = "ptr"
     EndIf
 
-    Local $bPlatformVersionDllType
-    If VarGetType($platformVersion) == "DLLStruct" Then
-        $bPlatformVersionDllType = "struct*"
+    Local $sPlatformVersionDllType
+    If IsDllStruct($platformVersion) Then
+        $sPlatformVersionDllType = "struct*"
+    ElseIf $platformVersion == Null Then
+        $sPlatformVersionDllType = "ptr"
     Else
-        $bPlatformVersionDllType = "ptr*"
+        $sPlatformVersionDllType = "ptr*"
     EndIf
 
-    Local $bPlatformNameDllType
-    If VarGetType($platformName) == "DLLStruct" Then
-        $bPlatformNameDllType = "struct*"
+    Local $sPlatformNameDllType
+    If IsDllStruct($platformName) Then
+        $sPlatformNameDllType = "struct*"
+    ElseIf $platformName == Null Then
+        $sPlatformNameDllType = "ptr"
     Else
-        $bPlatformNameDllType = "ptr*"
+        $sPlatformNameDllType = "ptr*"
     EndIf
 
-    Local $bPlatformVendorDllType
-    If VarGetType($platformVendor) == "DLLStruct" Then
-        $bPlatformVendorDllType = "struct*"
+    Local $sPlatformVendorDllType
+    If IsDllStruct($platformVendor) Then
+        $sPlatformVendorDllType = "struct*"
+    ElseIf $platformVendor == Null Then
+        $sPlatformVendorDllType = "ptr"
     Else
-        $bPlatformVendorDllType = "ptr*"
+        $sPlatformVendorDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclPlatformInfoGetProperties", $bOclPlatformInfoDllType, $oclPlatformInfo, $bPlatformVersionDllType, $platformVersion, $bPlatformNameDllType, $platformName, $bPlatformVendorDllType, $platformVendor), "oclPlatformInfoGetProperties", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclPlatformInfoGetProperties", $sOclPlatformInfoDllType, $oclPlatformInfo, $sPlatformVersionDllType, $platformVersion, $sPlatformNameDllType, $platformName, $sPlatformVendorDllType, $platformVendor), "oclPlatformInfoGetProperties", @error)
 EndFunc   ;==>_oclPlatformInfoGetProperties
 
 Func _oclPlatformInfoGetVersion($oclPlatformInfo, $platformVersion)
     ; CVAPI(void) oclPlatformInfoGetVersion(cv::ocl::PlatformInfo* oclPlatformInfo, cv::String* platformVersion);
 
-    Local $bOclPlatformInfoDllType
-    If VarGetType($oclPlatformInfo) == "DLLStruct" Then
-        $bOclPlatformInfoDllType = "struct*"
+    Local $sOclPlatformInfoDllType
+    If IsDllStruct($oclPlatformInfo) Then
+        $sOclPlatformInfoDllType = "struct*"
     Else
-        $bOclPlatformInfoDllType = "ptr"
+        $sOclPlatformInfoDllType = "ptr"
     EndIf
 
     Local $bPlatformVersionIsString = VarGetType($platformVersion) == "String"
@@ -101,14 +107,14 @@ Func _oclPlatformInfoGetVersion($oclPlatformInfo, $platformVersion)
         $platformVersion = _cveStringCreateFromStr($platformVersion)
     EndIf
 
-    Local $bPlatformVersionDllType
-    If VarGetType($platformVersion) == "DLLStruct" Then
-        $bPlatformVersionDllType = "struct*"
+    Local $sPlatformVersionDllType
+    If IsDllStruct($platformVersion) Then
+        $sPlatformVersionDllType = "struct*"
     Else
-        $bPlatformVersionDllType = "ptr"
+        $sPlatformVersionDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclPlatformInfoGetVersion", $bOclPlatformInfoDllType, $oclPlatformInfo, $bPlatformVersionDllType, $platformVersion), "oclPlatformInfoGetVersion", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclPlatformInfoGetVersion", $sOclPlatformInfoDllType, $oclPlatformInfo, $sPlatformVersionDllType, $platformVersion), "oclPlatformInfoGetVersion", @error)
 
     If $bPlatformVersionIsString Then
         _cveStringRelease($platformVersion)
@@ -118,11 +124,11 @@ EndFunc   ;==>_oclPlatformInfoGetVersion
 Func _oclPlatformInfoGetName($oclPlatformInfo, $platformName)
     ; CVAPI(void) oclPlatformInfoGetName(cv::ocl::PlatformInfo* oclPlatformInfo, cv::String* platformName);
 
-    Local $bOclPlatformInfoDllType
-    If VarGetType($oclPlatformInfo) == "DLLStruct" Then
-        $bOclPlatformInfoDllType = "struct*"
+    Local $sOclPlatformInfoDllType
+    If IsDllStruct($oclPlatformInfo) Then
+        $sOclPlatformInfoDllType = "struct*"
     Else
-        $bOclPlatformInfoDllType = "ptr"
+        $sOclPlatformInfoDllType = "ptr"
     EndIf
 
     Local $bPlatformNameIsString = VarGetType($platformName) == "String"
@@ -130,14 +136,14 @@ Func _oclPlatformInfoGetName($oclPlatformInfo, $platformName)
         $platformName = _cveStringCreateFromStr($platformName)
     EndIf
 
-    Local $bPlatformNameDllType
-    If VarGetType($platformName) == "DLLStruct" Then
-        $bPlatformNameDllType = "struct*"
+    Local $sPlatformNameDllType
+    If IsDllStruct($platformName) Then
+        $sPlatformNameDllType = "struct*"
     Else
-        $bPlatformNameDllType = "ptr"
+        $sPlatformNameDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclPlatformInfoGetName", $bOclPlatformInfoDllType, $oclPlatformInfo, $bPlatformNameDllType, $platformName), "oclPlatformInfoGetName", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclPlatformInfoGetName", $sOclPlatformInfoDllType, $oclPlatformInfo, $sPlatformNameDllType, $platformName), "oclPlatformInfoGetName", @error)
 
     If $bPlatformNameIsString Then
         _cveStringRelease($platformName)
@@ -147,11 +153,11 @@ EndFunc   ;==>_oclPlatformInfoGetName
 Func _oclPlatformInfoGetVender($oclPlatformInfo, $platformVender)
     ; CVAPI(void) oclPlatformInfoGetVender(cv::ocl::PlatformInfo* oclPlatformInfo, cv::String* platformVender);
 
-    Local $bOclPlatformInfoDllType
-    If VarGetType($oclPlatformInfo) == "DLLStruct" Then
-        $bOclPlatformInfoDllType = "struct*"
+    Local $sOclPlatformInfoDllType
+    If IsDllStruct($oclPlatformInfo) Then
+        $sOclPlatformInfoDllType = "struct*"
     Else
-        $bOclPlatformInfoDllType = "ptr"
+        $sOclPlatformInfoDllType = "ptr"
     EndIf
 
     Local $bPlatformVenderIsString = VarGetType($platformVender) == "String"
@@ -159,14 +165,14 @@ Func _oclPlatformInfoGetVender($oclPlatformInfo, $platformVender)
         $platformVender = _cveStringCreateFromStr($platformVender)
     EndIf
 
-    Local $bPlatformVenderDllType
-    If VarGetType($platformVender) == "DLLStruct" Then
-        $bPlatformVenderDllType = "struct*"
+    Local $sPlatformVenderDllType
+    If IsDllStruct($platformVender) Then
+        $sPlatformVenderDllType = "struct*"
     Else
-        $bPlatformVenderDllType = "ptr"
+        $sPlatformVenderDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclPlatformInfoGetVender", $bOclPlatformInfoDllType, $oclPlatformInfo, $bPlatformVenderDllType, $platformVender), "oclPlatformInfoGetVender", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclPlatformInfoGetVender", $sOclPlatformInfoDllType, $oclPlatformInfo, $sPlatformVenderDllType, $platformVender), "oclPlatformInfoGetVender", @error)
 
     If $bPlatformVenderIsString Then
         _cveStringRelease($platformVender)
@@ -176,46 +182,48 @@ EndFunc   ;==>_oclPlatformInfoGetVender
 Func _oclPlatformInfoDeviceNumber($platformInfo)
     ; CVAPI(int) oclPlatformInfoDeviceNumber(cv::ocl::PlatformInfo* platformInfo);
 
-    Local $bPlatformInfoDllType
-    If VarGetType($platformInfo) == "DLLStruct" Then
-        $bPlatformInfoDllType = "struct*"
+    Local $sPlatformInfoDllType
+    If IsDllStruct($platformInfo) Then
+        $sPlatformInfoDllType = "struct*"
     Else
-        $bPlatformInfoDllType = "ptr"
+        $sPlatformInfoDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "oclPlatformInfoDeviceNumber", $bPlatformInfoDllType, $platformInfo), "oclPlatformInfoDeviceNumber", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "oclPlatformInfoDeviceNumber", $sPlatformInfoDllType, $platformInfo), "oclPlatformInfoDeviceNumber", @error)
 EndFunc   ;==>_oclPlatformInfoDeviceNumber
 
 Func _oclPlatformInfoGetDevice($platformInfo, $device, $d)
     ; CVAPI(void) oclPlatformInfoGetDevice(cv::ocl::PlatformInfo* platformInfo, cv::ocl::Device* device, int d);
 
-    Local $bPlatformInfoDllType
-    If VarGetType($platformInfo) == "DLLStruct" Then
-        $bPlatformInfoDllType = "struct*"
+    Local $sPlatformInfoDllType
+    If IsDllStruct($platformInfo) Then
+        $sPlatformInfoDllType = "struct*"
     Else
-        $bPlatformInfoDllType = "ptr"
+        $sPlatformInfoDllType = "ptr"
     EndIf
 
-    Local $bDeviceDllType
-    If VarGetType($device) == "DLLStruct" Then
-        $bDeviceDllType = "struct*"
+    Local $sDeviceDllType
+    If IsDllStruct($device) Then
+        $sDeviceDllType = "struct*"
     Else
-        $bDeviceDllType = "ptr"
+        $sDeviceDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclPlatformInfoGetDevice", $bPlatformInfoDllType, $platformInfo, $bDeviceDllType, $device, "int", $d), "oclPlatformInfoGetDevice", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclPlatformInfoGetDevice", $sPlatformInfoDllType, $platformInfo, $sDeviceDllType, $device, "int", $d), "oclPlatformInfoGetDevice", @error)
 EndFunc   ;==>_oclPlatformInfoGetDevice
 
 Func _oclPlatformInfoRelease($platformInfo)
     ; CVAPI(void) oclPlatformInfoRelease(cv::ocl::PlatformInfo** platformInfo);
 
-    Local $bPlatformInfoDllType
-    If VarGetType($platformInfo) == "DLLStruct" Then
-        $bPlatformInfoDllType = "struct*"
+    Local $sPlatformInfoDllType
+    If IsDllStruct($platformInfo) Then
+        $sPlatformInfoDllType = "struct*"
+    ElseIf $platformInfo == Null Then
+        $sPlatformInfoDllType = "ptr"
     Else
-        $bPlatformInfoDllType = "ptr*"
+        $sPlatformInfoDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclPlatformInfoRelease", $bPlatformInfoDllType, $platformInfo), "oclPlatformInfoRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclPlatformInfoRelease", $sPlatformInfoDllType, $platformInfo), "oclPlatformInfoRelease", @error)
 EndFunc   ;==>_oclPlatformInfoRelease
 
 Func _oclDeviceCreate()
@@ -226,21 +234,21 @@ EndFunc   ;==>_oclDeviceCreate
 Func _oclDeviceSet($device, $p)
     ; CVAPI(void) oclDeviceSet(cv::ocl::Device* device, void* p);
 
-    Local $bDeviceDllType
-    If VarGetType($device) == "DLLStruct" Then
-        $bDeviceDllType = "struct*"
+    Local $sDeviceDllType
+    If IsDllStruct($device) Then
+        $sDeviceDllType = "struct*"
     Else
-        $bDeviceDllType = "ptr"
+        $sDeviceDllType = "ptr"
     EndIf
 
-    Local $bPDllType
-    If VarGetType($p) == "DLLStruct" Then
-        $bPDllType = "struct*"
+    Local $sPDllType
+    If IsDllStruct($p) Then
+        $sPDllType = "struct*"
     Else
-        $bPDllType = "ptr"
+        $sPDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclDeviceSet", $bDeviceDllType, $device, $bPDllType, $p), "oclDeviceSet", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclDeviceSet", $sDeviceDllType, $device, $sPDllType, $p), "oclDeviceSet", @error)
 EndFunc   ;==>_oclDeviceSet
 
 Func _oclDeviceGetDefault()
@@ -251,26 +259,28 @@ EndFunc   ;==>_oclDeviceGetDefault
 Func _oclDeviceRelease($device)
     ; CVAPI(void) oclDeviceRelease(cv::ocl::Device** device);
 
-    Local $bDeviceDllType
-    If VarGetType($device) == "DLLStruct" Then
-        $bDeviceDllType = "struct*"
+    Local $sDeviceDllType
+    If IsDllStruct($device) Then
+        $sDeviceDllType = "struct*"
+    ElseIf $device == Null Then
+        $sDeviceDllType = "ptr"
     Else
-        $bDeviceDllType = "ptr*"
+        $sDeviceDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclDeviceRelease", $bDeviceDllType, $device), "oclDeviceRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclDeviceRelease", $sDeviceDllType, $device), "oclDeviceRelease", @error)
 EndFunc   ;==>_oclDeviceRelease
 
 Func _oclDeviceGetPtr($device)
     ; CVAPI(void*) oclDeviceGetPtr(cv::ocl::Device* device);
 
-    Local $bDeviceDllType
-    If VarGetType($device) == "DLLStruct" Then
-        $bDeviceDllType = "struct*"
+    Local $sDeviceDllType
+    If IsDllStruct($device) Then
+        $sDeviceDllType = "struct*"
     Else
-        $bDeviceDllType = "ptr"
+        $sDeviceDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "oclDeviceGetPtr", $bDeviceDllType, $device), "oclDeviceGetPtr", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "oclDeviceGetPtr", $sDeviceDllType, $device), "oclDeviceGetPtr", @error)
 EndFunc   ;==>_oclDeviceGetPtr
 
 Func _oclContextCreate()
@@ -286,31 +296,33 @@ EndFunc   ;==>_oclContextGetDefault
 Func _oclContextRelease($context)
     ; CVAPI(void) oclContextRelease(cv::ocl::Context** context);
 
-    Local $bContextDllType
-    If VarGetType($context) == "DLLStruct" Then
-        $bContextDllType = "struct*"
+    Local $sContextDllType
+    If IsDllStruct($context) Then
+        $sContextDllType = "struct*"
+    ElseIf $context == Null Then
+        $sContextDllType = "ptr"
     Else
-        $bContextDllType = "ptr*"
+        $sContextDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclContextRelease", $bContextDllType, $context), "oclContextRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclContextRelease", $sContextDllType, $context), "oclContextRelease", @error)
 EndFunc   ;==>_oclContextRelease
 
 Func _oclContextGetProg($context, $prog, $buildopt, $errmsg)
     ; CVAPI(const cv::ocl::Program*) oclContextGetProg(cv::ocl::Context* context, cv::ocl::ProgramSource* prog, cv::String* buildopt, cv::String* errmsg);
 
-    Local $bContextDllType
-    If VarGetType($context) == "DLLStruct" Then
-        $bContextDllType = "struct*"
+    Local $sContextDllType
+    If IsDllStruct($context) Then
+        $sContextDllType = "struct*"
     Else
-        $bContextDllType = "ptr"
+        $sContextDllType = "ptr"
     EndIf
 
-    Local $bProgDllType
-    If VarGetType($prog) == "DLLStruct" Then
-        $bProgDllType = "struct*"
+    Local $sProgDllType
+    If IsDllStruct($prog) Then
+        $sProgDllType = "struct*"
     Else
-        $bProgDllType = "ptr"
+        $sProgDllType = "ptr"
     EndIf
 
     Local $bBuildoptIsString = VarGetType($buildopt) == "String"
@@ -318,11 +330,11 @@ Func _oclContextGetProg($context, $prog, $buildopt, $errmsg)
         $buildopt = _cveStringCreateFromStr($buildopt)
     EndIf
 
-    Local $bBuildoptDllType
-    If VarGetType($buildopt) == "DLLStruct" Then
-        $bBuildoptDllType = "struct*"
+    Local $sBuildoptDllType
+    If IsDllStruct($buildopt) Then
+        $sBuildoptDllType = "struct*"
     Else
-        $bBuildoptDllType = "ptr"
+        $sBuildoptDllType = "ptr"
     EndIf
 
     Local $bErrmsgIsString = VarGetType($errmsg) == "String"
@@ -330,14 +342,14 @@ Func _oclContextGetProg($context, $prog, $buildopt, $errmsg)
         $errmsg = _cveStringCreateFromStr($errmsg)
     EndIf
 
-    Local $bErrmsgDllType
-    If VarGetType($errmsg) == "DLLStruct" Then
-        $bErrmsgDllType = "struct*"
+    Local $sErrmsgDllType
+    If IsDllStruct($errmsg) Then
+        $sErrmsgDllType = "struct*"
     Else
-        $bErrmsgDllType = "ptr"
+        $sErrmsgDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "oclContextGetProg", $bContextDllType, $context, $bProgDllType, $prog, $bBuildoptDllType, $buildopt, $bErrmsgDllType, $errmsg), "oclContextGetProg", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "oclContextGetProg", $sContextDllType, $context, $sProgDllType, $prog, $sBuildoptDllType, $buildopt, $sErrmsgDllType, $errmsg), "oclContextGetProg", @error)
 
     If $bErrmsgIsString Then
         _cveStringRelease($errmsg)
@@ -358,34 +370,36 @@ EndFunc   ;==>_oclProgramCreate
 Func _oclProgramRelease($program)
     ; CVAPI(void) oclProgramRelease(cv::ocl::Program** program);
 
-    Local $bProgramDllType
-    If VarGetType($program) == "DLLStruct" Then
-        $bProgramDllType = "struct*"
+    Local $sProgramDllType
+    If IsDllStruct($program) Then
+        $sProgramDllType = "struct*"
+    ElseIf $program == Null Then
+        $sProgramDllType = "ptr"
     Else
-        $bProgramDllType = "ptr*"
+        $sProgramDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclProgramRelease", $bProgramDllType, $program), "oclProgramRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclProgramRelease", $sProgramDllType, $program), "oclProgramRelease", @error)
 EndFunc   ;==>_oclProgramRelease
 
 Func _oclProgramGetBinary($program, $binary)
     ; CVAPI(void) oclProgramGetBinary(cv::ocl::Program* program, std::vector<char>* binary);
 
-    Local $bProgramDllType
-    If VarGetType($program) == "DLLStruct" Then
-        $bProgramDllType = "struct*"
+    Local $sProgramDllType
+    If IsDllStruct($program) Then
+        $sProgramDllType = "struct*"
     Else
-        $bProgramDllType = "ptr"
+        $sProgramDllType = "ptr"
     EndIf
 
-    Local $bBinaryDllType
-    If VarGetType($binary) == "DLLStruct" Then
-        $bBinaryDllType = "struct*"
+    Local $sBinaryDllType
+    If IsDllStruct($binary) Then
+        $sBinaryDllType = "struct*"
     Else
-        $bBinaryDllType = "ptr"
+        $sBinaryDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclProgramGetBinary", $bProgramDllType, $program, $bBinaryDllType, $binary), "oclProgramGetBinary", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclProgramGetBinary", $sProgramDllType, $program, $sBinaryDllType, $binary), "oclProgramGetBinary", @error)
 EndFunc   ;==>_oclProgramGetBinary
 
 Func _oclProgramSourceCreate($source)
@@ -396,14 +410,14 @@ Func _oclProgramSourceCreate($source)
         $source = _cveStringCreateFromStr($source)
     EndIf
 
-    Local $bSourceDllType
-    If VarGetType($source) == "DLLStruct" Then
-        $bSourceDllType = "struct*"
+    Local $sSourceDllType
+    If IsDllStruct($source) Then
+        $sSourceDllType = "struct*"
     Else
-        $bSourceDllType = "ptr"
+        $sSourceDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "oclProgramSourceCreate", $bSourceDllType, $source), "oclProgramSourceCreate", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "oclProgramSourceCreate", $sSourceDllType, $source), "oclProgramSourceCreate", @error)
 
     If $bSourceIsString Then
         _cveStringRelease($source)
@@ -415,26 +429,28 @@ EndFunc   ;==>_oclProgramSourceCreate
 Func _oclProgramSourceRelease($programSource)
     ; CVAPI(void) oclProgramSourceRelease(cv::ocl::ProgramSource** programSource);
 
-    Local $bProgramSourceDllType
-    If VarGetType($programSource) == "DLLStruct" Then
-        $bProgramSourceDllType = "struct*"
+    Local $sProgramSourceDllType
+    If IsDllStruct($programSource) Then
+        $sProgramSourceDllType = "struct*"
+    ElseIf $programSource == Null Then
+        $sProgramSourceDllType = "ptr"
     Else
-        $bProgramSourceDllType = "ptr*"
+        $sProgramSourceDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclProgramSourceRelease", $bProgramSourceDllType, $programSource), "oclProgramSourceRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclProgramSourceRelease", $sProgramSourceDllType, $programSource), "oclProgramSourceRelease", @error)
 EndFunc   ;==>_oclProgramSourceRelease
 
 Func _oclProgramSourceGetSource($programSource)
     ; CVAPI(const cv::String*) oclProgramSourceGetSource(cv::ocl::ProgramSource* programSource);
 
-    Local $bProgramSourceDllType
-    If VarGetType($programSource) == "DLLStruct" Then
-        $bProgramSourceDllType = "struct*"
+    Local $sProgramSourceDllType
+    If IsDllStruct($programSource) Then
+        $sProgramSourceDllType = "struct*"
     Else
-        $bProgramSourceDllType = "ptr"
+        $sProgramSourceDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "oclProgramSourceGetSource", $bProgramSourceDllType, $programSource), "oclProgramSourceGetSource", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "oclProgramSourceGetSource", $sProgramSourceDllType, $programSource), "oclProgramSourceGetSource", @error)
 EndFunc   ;==>_oclProgramSourceGetSource
 
 Func _oclKernelCreateDefault()
@@ -445,11 +461,11 @@ EndFunc   ;==>_oclKernelCreateDefault
 Func _oclKernelCreate($kernel, $kname, $source, $buildOpts, $errmsg)
     ; CVAPI(bool) oclKernelCreate(cv::ocl::Kernel* kernel, cv::String* kname, cv::ocl::ProgramSource* source, cv::String* buildOpts, cv::String* errmsg);
 
-    Local $bKernelDllType
-    If VarGetType($kernel) == "DLLStruct" Then
-        $bKernelDllType = "struct*"
+    Local $sKernelDllType
+    If IsDllStruct($kernel) Then
+        $sKernelDllType = "struct*"
     Else
-        $bKernelDllType = "ptr"
+        $sKernelDllType = "ptr"
     EndIf
 
     Local $bKnameIsString = VarGetType($kname) == "String"
@@ -457,18 +473,18 @@ Func _oclKernelCreate($kernel, $kname, $source, $buildOpts, $errmsg)
         $kname = _cveStringCreateFromStr($kname)
     EndIf
 
-    Local $bKnameDllType
-    If VarGetType($kname) == "DLLStruct" Then
-        $bKnameDllType = "struct*"
+    Local $sKnameDllType
+    If IsDllStruct($kname) Then
+        $sKnameDllType = "struct*"
     Else
-        $bKnameDllType = "ptr"
+        $sKnameDllType = "ptr"
     EndIf
 
-    Local $bSourceDllType
-    If VarGetType($source) == "DLLStruct" Then
-        $bSourceDllType = "struct*"
+    Local $sSourceDllType
+    If IsDllStruct($source) Then
+        $sSourceDllType = "struct*"
     Else
-        $bSourceDllType = "ptr"
+        $sSourceDllType = "ptr"
     EndIf
 
     Local $bBuildOptsIsString = VarGetType($buildOpts) == "String"
@@ -476,11 +492,11 @@ Func _oclKernelCreate($kernel, $kname, $source, $buildOpts, $errmsg)
         $buildOpts = _cveStringCreateFromStr($buildOpts)
     EndIf
 
-    Local $bBuildOptsDllType
-    If VarGetType($buildOpts) == "DLLStruct" Then
-        $bBuildOptsDllType = "struct*"
+    Local $sBuildOptsDllType
+    If IsDllStruct($buildOpts) Then
+        $sBuildOptsDllType = "struct*"
     Else
-        $bBuildOptsDllType = "ptr"
+        $sBuildOptsDllType = "ptr"
     EndIf
 
     Local $bErrmsgIsString = VarGetType($errmsg) == "String"
@@ -488,14 +504,14 @@ Func _oclKernelCreate($kernel, $kname, $source, $buildOpts, $errmsg)
         $errmsg = _cveStringCreateFromStr($errmsg)
     EndIf
 
-    Local $bErrmsgDllType
-    If VarGetType($errmsg) == "DLLStruct" Then
-        $bErrmsgDllType = "struct*"
+    Local $sErrmsgDllType
+    If IsDllStruct($errmsg) Then
+        $sErrmsgDllType = "struct*"
     Else
-        $bErrmsgDllType = "ptr"
+        $sErrmsgDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "oclKernelCreate", $bKernelDllType, $kernel, $bKnameDllType, $kname, $bSourceDllType, $source, $bBuildOptsDllType, $buildOpts, $bErrmsgDllType, $errmsg), "oclKernelCreate", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "oclKernelCreate", $sKernelDllType, $kernel, $sKnameDllType, $kname, $sSourceDllType, $source, $sBuildOptsDllType, $buildOpts, $sErrmsgDllType, $errmsg), "oclKernelCreate", @error)
 
     If $bErrmsgIsString Then
         _cveStringRelease($errmsg)
@@ -515,180 +531,186 @@ EndFunc   ;==>_oclKernelCreate
 Func _oclKernelRelease($kernel)
     ; CVAPI(void) oclKernelRelease(cv::ocl::Kernel** kernel);
 
-    Local $bKernelDllType
-    If VarGetType($kernel) == "DLLStruct" Then
-        $bKernelDllType = "struct*"
+    Local $sKernelDllType
+    If IsDllStruct($kernel) Then
+        $sKernelDllType = "struct*"
+    ElseIf $kernel == Null Then
+        $sKernelDllType = "ptr"
     Else
-        $bKernelDllType = "ptr*"
+        $sKernelDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclKernelRelease", $bKernelDllType, $kernel), "oclKernelRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclKernelRelease", $sKernelDllType, $kernel), "oclKernelRelease", @error)
 EndFunc   ;==>_oclKernelRelease
 
 Func _oclKernelSetImage2D($kernel, $i, $image2D)
     ; CVAPI(int) oclKernelSetImage2D(cv::ocl::Kernel* kernel, int i, cv::ocl::Image2D* image2D);
 
-    Local $bKernelDllType
-    If VarGetType($kernel) == "DLLStruct" Then
-        $bKernelDllType = "struct*"
+    Local $sKernelDllType
+    If IsDllStruct($kernel) Then
+        $sKernelDllType = "struct*"
     Else
-        $bKernelDllType = "ptr"
+        $sKernelDllType = "ptr"
     EndIf
 
-    Local $bImage2DDllType
-    If VarGetType($image2D) == "DLLStruct" Then
-        $bImage2DDllType = "struct*"
+    Local $sImage2DDllType
+    If IsDllStruct($image2D) Then
+        $sImage2DDllType = "struct*"
     Else
-        $bImage2DDllType = "ptr"
+        $sImage2DDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "oclKernelSetImage2D", $bKernelDllType, $kernel, "int", $i, $bImage2DDllType, $image2D), "oclKernelSetImage2D", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "oclKernelSetImage2D", $sKernelDllType, $kernel, "int", $i, $sImage2DDllType, $image2D), "oclKernelSetImage2D", @error)
 EndFunc   ;==>_oclKernelSetImage2D
 
 Func _oclKernelSetUMat($kernel, $i, $umat)
     ; CVAPI(int) oclKernelSetUMat(cv::ocl::Kernel* kernel, int i, cv::UMat* umat);
 
-    Local $bKernelDllType
-    If VarGetType($kernel) == "DLLStruct" Then
-        $bKernelDllType = "struct*"
+    Local $sKernelDllType
+    If IsDllStruct($kernel) Then
+        $sKernelDllType = "struct*"
     Else
-        $bKernelDllType = "ptr"
+        $sKernelDllType = "ptr"
     EndIf
 
-    Local $bUmatDllType
-    If VarGetType($umat) == "DLLStruct" Then
-        $bUmatDllType = "struct*"
+    Local $sUmatDllType
+    If IsDllStruct($umat) Then
+        $sUmatDllType = "struct*"
     Else
-        $bUmatDllType = "ptr"
+        $sUmatDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "oclKernelSetUMat", $bKernelDllType, $kernel, "int", $i, $bUmatDllType, $umat), "oclKernelSetUMat", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "oclKernelSetUMat", $sKernelDllType, $kernel, "int", $i, $sUmatDllType, $umat), "oclKernelSetUMat", @error)
 EndFunc   ;==>_oclKernelSetUMat
 
 Func _oclKernelSet($kernel, $i, $value, $size)
     ; CVAPI(int) oclKernelSet(cv::ocl::Kernel* kernel, int i, void* value, int size);
 
-    Local $bKernelDllType
-    If VarGetType($kernel) == "DLLStruct" Then
-        $bKernelDllType = "struct*"
+    Local $sKernelDllType
+    If IsDllStruct($kernel) Then
+        $sKernelDllType = "struct*"
     Else
-        $bKernelDllType = "ptr"
+        $sKernelDllType = "ptr"
     EndIf
 
-    Local $bValueDllType
-    If VarGetType($value) == "DLLStruct" Then
-        $bValueDllType = "struct*"
+    Local $sValueDllType
+    If IsDllStruct($value) Then
+        $sValueDllType = "struct*"
     Else
-        $bValueDllType = "ptr"
+        $sValueDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "oclKernelSet", $bKernelDllType, $kernel, "int", $i, $bValueDllType, $value, "int", $size), "oclKernelSet", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "oclKernelSet", $sKernelDllType, $kernel, "int", $i, $sValueDllType, $value, "int", $size), "oclKernelSet", @error)
 EndFunc   ;==>_oclKernelSet
 
 Func _oclKernelSetKernelArg($kernel, $i, $kernelArg)
     ; CVAPI(int) oclKernelSetKernelArg(cv::ocl::Kernel* kernel, int i, cv::ocl::KernelArg* kernelArg);
 
-    Local $bKernelDllType
-    If VarGetType($kernel) == "DLLStruct" Then
-        $bKernelDllType = "struct*"
+    Local $sKernelDllType
+    If IsDllStruct($kernel) Then
+        $sKernelDllType = "struct*"
     Else
-        $bKernelDllType = "ptr"
+        $sKernelDllType = "ptr"
     EndIf
 
-    Local $bKernelArgDllType
-    If VarGetType($kernelArg) == "DLLStruct" Then
-        $bKernelArgDllType = "struct*"
+    Local $sKernelArgDllType
+    If IsDllStruct($kernelArg) Then
+        $sKernelArgDllType = "struct*"
     Else
-        $bKernelArgDllType = "ptr"
+        $sKernelArgDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "oclKernelSetKernelArg", $bKernelDllType, $kernel, "int", $i, $bKernelArgDllType, $kernelArg), "oclKernelSetKernelArg", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "oclKernelSetKernelArg", $sKernelDllType, $kernel, "int", $i, $sKernelArgDllType, $kernelArg), "oclKernelSetKernelArg", @error)
 EndFunc   ;==>_oclKernelSetKernelArg
 
 Func _oclKernelRun($kernel, $dims, $globalsize, $localsize, $sync, $q)
     ; CVAPI(bool) oclKernelRun(cv::ocl::Kernel* kernel, int dims, size_t* globalsize, size_t* localsize, bool sync, cv::ocl::Queue* q);
 
-    Local $bKernelDllType
-    If VarGetType($kernel) == "DLLStruct" Then
-        $bKernelDllType = "struct*"
+    Local $sKernelDllType
+    If IsDllStruct($kernel) Then
+        $sKernelDllType = "struct*"
     Else
-        $bKernelDllType = "ptr"
+        $sKernelDllType = "ptr"
     EndIf
 
-    Local $bGlobalsizeDllType
-    If VarGetType($globalsize) == "DLLStruct" Then
-        $bGlobalsizeDllType = "struct*"
+    Local $sGlobalsizeDllType
+    If IsDllStruct($globalsize) Then
+        $sGlobalsizeDllType = "struct*"
     Else
-        $bGlobalsizeDllType = "ptr"
+        $sGlobalsizeDllType = "ptr"
     EndIf
 
-    Local $bLocalsizeDllType
-    If VarGetType($localsize) == "DLLStruct" Then
-        $bLocalsizeDllType = "struct*"
+    Local $sLocalsizeDllType
+    If IsDllStruct($localsize) Then
+        $sLocalsizeDllType = "struct*"
     Else
-        $bLocalsizeDllType = "ptr"
+        $sLocalsizeDllType = "ptr"
     EndIf
 
-    Local $bQDllType
-    If VarGetType($q) == "DLLStruct" Then
-        $bQDllType = "struct*"
+    Local $sQDllType
+    If IsDllStruct($q) Then
+        $sQDllType = "struct*"
     Else
-        $bQDllType = "ptr"
+        $sQDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "oclKernelRun", $bKernelDllType, $kernel, "int", $dims, $bGlobalsizeDllType, $globalsize, $bLocalsizeDllType, $localsize, "boolean", $sync, $bQDllType, $q), "oclKernelRun", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "oclKernelRun", $sKernelDllType, $kernel, "int", $dims, $sGlobalsizeDllType, $globalsize, $sLocalsizeDllType, $localsize, "boolean", $sync, $sQDllType, $q), "oclKernelRun", @error)
 EndFunc   ;==>_oclKernelRun
 
 Func _oclImage2DFromUMat($src, $norm, $alias)
     ; CVAPI(cv::ocl::Image2D*) oclImage2DFromUMat(cv::UMat* src, bool norm, bool alias);
 
-    Local $bSrcDllType
-    If VarGetType($src) == "DLLStruct" Then
-        $bSrcDllType = "struct*"
+    Local $sSrcDllType
+    If IsDllStruct($src) Then
+        $sSrcDllType = "struct*"
     Else
-        $bSrcDllType = "ptr"
+        $sSrcDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "oclImage2DFromUMat", $bSrcDllType, $src, "boolean", $norm, "boolean", $alias), "oclImage2DFromUMat", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "oclImage2DFromUMat", $sSrcDllType, $src, "boolean", $norm, "boolean", $alias), "oclImage2DFromUMat", @error)
 EndFunc   ;==>_oclImage2DFromUMat
 
 Func _oclImage2DRelease($image2D)
     ; CVAPI(void) oclImage2DRelease(cv::ocl::Image2D** image2D);
 
-    Local $bImage2DDllType
-    If VarGetType($image2D) == "DLLStruct" Then
-        $bImage2DDllType = "struct*"
+    Local $sImage2DDllType
+    If IsDllStruct($image2D) Then
+        $sImage2DDllType = "struct*"
+    ElseIf $image2D == Null Then
+        $sImage2DDllType = "ptr"
     Else
-        $bImage2DDllType = "ptr*"
+        $sImage2DDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclImage2DRelease", $bImage2DDllType, $image2D), "oclImage2DRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclImage2DRelease", $sImage2DDllType, $image2D), "oclImage2DRelease", @error)
 EndFunc   ;==>_oclImage2DRelease
 
 Func _oclKernelArgCreate($flags, $m, $wscale, $iwscale, $obj, $sz)
     ; CVAPI(cv::ocl::KernelArg*) oclKernelArgCreate(int flags, cv::UMat* m, int wscale, int iwscale, const void* obj, size_t sz);
 
-    Local $bMDllType
-    If VarGetType($m) == "DLLStruct" Then
-        $bMDllType = "struct*"
+    Local $sMDllType
+    If IsDllStruct($m) Then
+        $sMDllType = "struct*"
     Else
-        $bMDllType = "ptr"
+        $sMDllType = "ptr"
     EndIf
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "oclKernelArgCreate", "int", $flags, $bMDllType, $m, "int", $wscale, "int", $iwscale, $bObjDllType, $obj, "ulong_ptr", $sz), "oclKernelArgCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "oclKernelArgCreate", "int", $flags, $sMDllType, $m, "int", $wscale, "int", $iwscale, $sObjDllType, $obj, "ulong_ptr", $sz), "oclKernelArgCreate", @error)
 EndFunc   ;==>_oclKernelArgCreate
 
 Func _oclKernelArgRelease($k)
     ; CVAPI(void) oclKernelArgRelease(cv::ocl::KernelArg** k);
 
-    Local $bKDllType
-    If VarGetType($k) == "DLLStruct" Then
-        $bKDllType = "struct*"
+    Local $sKDllType
+    If IsDllStruct($k) Then
+        $sKDllType = "struct*"
+    ElseIf $k == Null Then
+        $sKDllType = "ptr"
     Else
-        $bKDllType = "ptr*"
+        $sKDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclKernelArgRelease", $bKDllType, $k), "oclKernelArgRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclKernelArgRelease", $sKDllType, $k), "oclKernelArgRelease", @error)
 EndFunc   ;==>_oclKernelArgRelease
 
 Func _oclQueueCreate()
@@ -699,27 +721,29 @@ EndFunc   ;==>_oclQueueCreate
 Func _oclQueueFinish($queue)
     ; CVAPI(void) oclQueueFinish(cv::ocl::Queue* queue);
 
-    Local $bQueueDllType
-    If VarGetType($queue) == "DLLStruct" Then
-        $bQueueDllType = "struct*"
+    Local $sQueueDllType
+    If IsDllStruct($queue) Then
+        $sQueueDllType = "struct*"
     Else
-        $bQueueDllType = "ptr"
+        $sQueueDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclQueueFinish", $bQueueDllType, $queue), "oclQueueFinish", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclQueueFinish", $sQueueDllType, $queue), "oclQueueFinish", @error)
 EndFunc   ;==>_oclQueueFinish
 
 Func _oclQueueRelease($queue)
     ; CVAPI(void) oclQueueRelease(cv::ocl::Queue** queue);
 
-    Local $bQueueDllType
-    If VarGetType($queue) == "DLLStruct" Then
-        $bQueueDllType = "struct*"
+    Local $sQueueDllType
+    If IsDllStruct($queue) Then
+        $sQueueDllType = "struct*"
+    ElseIf $queue == Null Then
+        $sQueueDllType = "ptr"
     Else
-        $bQueueDllType = "ptr*"
+        $sQueueDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclQueueRelease", $bQueueDllType, $queue), "oclQueueRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclQueueRelease", $sQueueDllType, $queue), "oclQueueRelease", @error)
 EndFunc   ;==>_oclQueueRelease
 
 Func _oclTypeToString($type, $str)
@@ -730,14 +754,14 @@ Func _oclTypeToString($type, $str)
         $str = _cveStringCreateFromStr($str)
     EndIf
 
-    Local $bStrDllType
-    If VarGetType($str) == "DLLStruct" Then
-        $bStrDllType = "struct*"
+    Local $sStrDllType
+    If IsDllStruct($str) Then
+        $sStrDllType = "struct*"
     Else
-        $bStrDllType = "ptr"
+        $sStrDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclTypeToString", "int", $type, $bStrDllType, $str), "oclTypeToString", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "oclTypeToString", "int", $type, $sStrDllType, $str), "oclTypeToString", @error)
 
     If $bStrIsString Then
         _cveStringRelease($str)

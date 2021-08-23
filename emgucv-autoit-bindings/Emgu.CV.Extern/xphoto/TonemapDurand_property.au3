@@ -4,99 +4,99 @@
 Func _cveTonemapDurandGetSaturation($obj)
     ; CVAPI(float) cveTonemapDurandGetSaturation(cv::xphoto::TonemapDurand* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveTonemapDurandGetSaturation", $bObjDllType, $obj), "cveTonemapDurandGetSaturation", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveTonemapDurandGetSaturation", $sObjDllType, $obj), "cveTonemapDurandGetSaturation", @error)
 EndFunc   ;==>_cveTonemapDurandGetSaturation
 
 Func _cveTonemapDurandSetSaturation($obj, $value)
     ; CVAPI(void) cveTonemapDurandSetSaturation(cv::xphoto::TonemapDurand* obj, float value);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTonemapDurandSetSaturation", $bObjDllType, $obj, "float", $value), "cveTonemapDurandSetSaturation", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTonemapDurandSetSaturation", $sObjDllType, $obj, "float", $value), "cveTonemapDurandSetSaturation", @error)
 EndFunc   ;==>_cveTonemapDurandSetSaturation
 
 Func _cveTonemapDurandGetContrast($obj)
     ; CVAPI(float) cveTonemapDurandGetContrast(cv::xphoto::TonemapDurand* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveTonemapDurandGetContrast", $bObjDllType, $obj), "cveTonemapDurandGetContrast", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveTonemapDurandGetContrast", $sObjDllType, $obj), "cveTonemapDurandGetContrast", @error)
 EndFunc   ;==>_cveTonemapDurandGetContrast
 
 Func _cveTonemapDurandSetContrast($obj, $value)
     ; CVAPI(void) cveTonemapDurandSetContrast(cv::xphoto::TonemapDurand* obj, float value);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTonemapDurandSetContrast", $bObjDllType, $obj, "float", $value), "cveTonemapDurandSetContrast", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTonemapDurandSetContrast", $sObjDllType, $obj, "float", $value), "cveTonemapDurandSetContrast", @error)
 EndFunc   ;==>_cveTonemapDurandSetContrast
 
 Func _cveTonemapDurandGetSigmaSpace($obj)
     ; CVAPI(float) cveTonemapDurandGetSigmaSpace(cv::xphoto::TonemapDurand* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveTonemapDurandGetSigmaSpace", $bObjDllType, $obj), "cveTonemapDurandGetSigmaSpace", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveTonemapDurandGetSigmaSpace", $sObjDllType, $obj), "cveTonemapDurandGetSigmaSpace", @error)
 EndFunc   ;==>_cveTonemapDurandGetSigmaSpace
 
 Func _cveTonemapDurandSetSigmaSpace($obj, $value)
     ; CVAPI(void) cveTonemapDurandSetSigmaSpace(cv::xphoto::TonemapDurand* obj, float value);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTonemapDurandSetSigmaSpace", $bObjDllType, $obj, "float", $value), "cveTonemapDurandSetSigmaSpace", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTonemapDurandSetSigmaSpace", $sObjDllType, $obj, "float", $value), "cveTonemapDurandSetSigmaSpace", @error)
 EndFunc   ;==>_cveTonemapDurandSetSigmaSpace
 
 Func _cveTonemapDurandGetSigmaColor($obj)
     ; CVAPI(float) cveTonemapDurandGetSigmaColor(cv::xphoto::TonemapDurand* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveTonemapDurandGetSigmaColor", $bObjDllType, $obj), "cveTonemapDurandGetSigmaColor", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveTonemapDurandGetSigmaColor", $sObjDllType, $obj), "cveTonemapDurandGetSigmaColor", @error)
 EndFunc   ;==>_cveTonemapDurandGetSigmaColor
 
 Func _cveTonemapDurandSetSigmaColor($obj, $value)
     ; CVAPI(void) cveTonemapDurandSetSigmaColor(cv::xphoto::TonemapDurand* obj, float value);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTonemapDurandSetSigmaColor", $bObjDllType, $obj, "float", $value), "cveTonemapDurandSetSigmaColor", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveTonemapDurandSetSigmaColor", $sObjDllType, $obj, "float", $value), "cveTonemapDurandSetSigmaColor", @error)
 EndFunc   ;==>_cveTonemapDurandSetSigmaColor

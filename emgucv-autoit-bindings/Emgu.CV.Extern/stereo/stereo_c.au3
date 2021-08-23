@@ -4,11 +4,11 @@
 Func _cveQuasiDenseStereoCreate($monoImgSize, $paramFilepath, $sharedPtr)
     ; CVAPI(cv::stereo::QuasiDenseStereo*) cveQuasiDenseStereoCreate(CvSize* monoImgSize, cv::String* paramFilepath, cv::Ptr<cv::stereo::QuasiDenseStereo>** sharedPtr);
 
-    Local $bMonoImgSizeDllType
-    If VarGetType($monoImgSize) == "DLLStruct" Then
-        $bMonoImgSizeDllType = "struct*"
+    Local $sMonoImgSizeDllType
+    If IsDllStruct($monoImgSize) Then
+        $sMonoImgSizeDllType = "struct*"
     Else
-        $bMonoImgSizeDllType = "ptr"
+        $sMonoImgSizeDllType = "ptr"
     EndIf
 
     Local $bParamFilepathIsString = VarGetType($paramFilepath) == "String"
@@ -16,21 +16,23 @@ Func _cveQuasiDenseStereoCreate($monoImgSize, $paramFilepath, $sharedPtr)
         $paramFilepath = _cveStringCreateFromStr($paramFilepath)
     EndIf
 
-    Local $bParamFilepathDllType
-    If VarGetType($paramFilepath) == "DLLStruct" Then
-        $bParamFilepathDllType = "struct*"
+    Local $sParamFilepathDllType
+    If IsDllStruct($paramFilepath) Then
+        $sParamFilepathDllType = "struct*"
     Else
-        $bParamFilepathDllType = "ptr"
+        $sParamFilepathDllType = "ptr"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveQuasiDenseStereoCreate", $bMonoImgSizeDllType, $monoImgSize, $bParamFilepathDllType, $paramFilepath, $bSharedPtrDllType, $sharedPtr), "cveQuasiDenseStereoCreate", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveQuasiDenseStereoCreate", $sMonoImgSizeDllType, $monoImgSize, $sParamFilepathDllType, $paramFilepath, $sSharedPtrDllType, $sharedPtr), "cveQuasiDenseStereoCreate", @error)
 
     If $bParamFilepathIsString Then
         _cveStringRelease($paramFilepath)
@@ -42,59 +44,61 @@ EndFunc   ;==>_cveQuasiDenseStereoCreate
 Func _cveQuasiDenseStereoRelease($sharedPtr)
     ; CVAPI(void) cveQuasiDenseStereoRelease(cv::Ptr<cv::stereo::QuasiDenseStereo>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQuasiDenseStereoRelease", $bSharedPtrDllType, $sharedPtr), "cveQuasiDenseStereoRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQuasiDenseStereoRelease", $sSharedPtrDllType, $sharedPtr), "cveQuasiDenseStereoRelease", @error)
 EndFunc   ;==>_cveQuasiDenseStereoRelease
 
 Func _cveQuasiDenseStereoProcess($stereo, $imgLeft, $imgRight)
     ; CVAPI(void) cveQuasiDenseStereoProcess(cv::stereo::QuasiDenseStereo* stereo, cv::Mat* imgLeft, cv::Mat* imgRight);
 
-    Local $bStereoDllType
-    If VarGetType($stereo) == "DLLStruct" Then
-        $bStereoDllType = "struct*"
+    Local $sStereoDllType
+    If IsDllStruct($stereo) Then
+        $sStereoDllType = "struct*"
     Else
-        $bStereoDllType = "ptr"
+        $sStereoDllType = "ptr"
     EndIf
 
-    Local $bImgLeftDllType
-    If VarGetType($imgLeft) == "DLLStruct" Then
-        $bImgLeftDllType = "struct*"
+    Local $sImgLeftDllType
+    If IsDllStruct($imgLeft) Then
+        $sImgLeftDllType = "struct*"
     Else
-        $bImgLeftDllType = "ptr"
+        $sImgLeftDllType = "ptr"
     EndIf
 
-    Local $bImgRightDllType
-    If VarGetType($imgRight) == "DLLStruct" Then
-        $bImgRightDllType = "struct*"
+    Local $sImgRightDllType
+    If IsDllStruct($imgRight) Then
+        $sImgRightDllType = "struct*"
     Else
-        $bImgRightDllType = "ptr"
+        $sImgRightDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQuasiDenseStereoProcess", $bStereoDllType, $stereo, $bImgLeftDllType, $imgLeft, $bImgRightDllType, $imgRight), "cveQuasiDenseStereoProcess", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQuasiDenseStereoProcess", $sStereoDllType, $stereo, $sImgLeftDllType, $imgLeft, $sImgRightDllType, $imgRight), "cveQuasiDenseStereoProcess", @error)
 EndFunc   ;==>_cveQuasiDenseStereoProcess
 
 Func _cveQuasiDenseStereoGetDisparity($stereo, $disparity)
     ; CVAPI(void) cveQuasiDenseStereoGetDisparity(cv::stereo::QuasiDenseStereo* stereo, cv::Mat* disparity);
 
-    Local $bStereoDllType
-    If VarGetType($stereo) == "DLLStruct" Then
-        $bStereoDllType = "struct*"
+    Local $sStereoDllType
+    If IsDllStruct($stereo) Then
+        $sStereoDllType = "struct*"
     Else
-        $bStereoDllType = "ptr"
+        $sStereoDllType = "ptr"
     EndIf
 
-    Local $bDisparityDllType
-    If VarGetType($disparity) == "DLLStruct" Then
-        $bDisparityDllType = "struct*"
+    Local $sDisparityDllType
+    If IsDllStruct($disparity) Then
+        $sDisparityDllType = "struct*"
     Else
-        $bDisparityDllType = "ptr"
+        $sDisparityDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQuasiDenseStereoGetDisparity", $bStereoDllType, $stereo, $bDisparityDllType, $disparity), "cveQuasiDenseStereoGetDisparity", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQuasiDenseStereoGetDisparity", $sStereoDllType, $stereo, $sDisparityDllType, $disparity), "cveQuasiDenseStereoGetDisparity", @error)
 EndFunc   ;==>_cveQuasiDenseStereoGetDisparity

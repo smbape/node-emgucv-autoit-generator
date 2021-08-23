@@ -4,13 +4,13 @@
 Func _cveInputArrayIsMat($obj)
     ; CVAPI(bool) cveInputArrayIsMat(cv::_InputArray* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsMat", $bObjDllType, $obj), "cveInputArrayIsMat", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsMat", $sObjDllType, $obj), "cveInputArrayIsMat", @error)
 EndFunc   ;==>_cveInputArrayIsMat
 
 Func _cveInputArrayIsMatMat($matObj)
@@ -46,13 +46,13 @@ EndFunc   ;==>_cveInputArrayIsMatMat
 Func _cveInputArrayIsUMat($obj)
     ; CVAPI(bool) cveInputArrayIsUMat(cv::_InputArray* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsUMat", $bObjDllType, $obj), "cveInputArrayIsUMat", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsUMat", $sObjDllType, $obj), "cveInputArrayIsUMat", @error)
 EndFunc   ;==>_cveInputArrayIsUMat
 
 Func _cveInputArrayIsUMatMat($matObj)
@@ -88,13 +88,13 @@ EndFunc   ;==>_cveInputArrayIsUMatMat
 Func _cveInputArrayIsMatVector($obj)
     ; CVAPI(bool) cveInputArrayIsMatVector(cv::_InputArray* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsMatVector", $bObjDllType, $obj), "cveInputArrayIsMatVector", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsMatVector", $sObjDllType, $obj), "cveInputArrayIsMatVector", @error)
 EndFunc   ;==>_cveInputArrayIsMatVector
 
 Func _cveInputArrayIsMatVectorMat($matObj)
@@ -130,13 +130,13 @@ EndFunc   ;==>_cveInputArrayIsMatVectorMat
 Func _cveInputArrayIsUMatVector($obj)
     ; CVAPI(bool) cveInputArrayIsUMatVector(cv::_InputArray* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsUMatVector", $bObjDllType, $obj), "cveInputArrayIsUMatVector", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsUMatVector", $sObjDllType, $obj), "cveInputArrayIsUMatVector", @error)
 EndFunc   ;==>_cveInputArrayIsUMatVector
 
 Func _cveInputArrayIsUMatVectorMat($matObj)
@@ -172,13 +172,13 @@ EndFunc   ;==>_cveInputArrayIsUMatVectorMat
 Func _cveInputArrayIsMatx($obj)
     ; CVAPI(bool) cveInputArrayIsMatx(cv::_InputArray* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsMatx", $bObjDllType, $obj), "cveInputArrayIsMatx", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsMatx", $sObjDllType, $obj), "cveInputArrayIsMatx", @error)
 EndFunc   ;==>_cveInputArrayIsMatx
 
 Func _cveInputArrayIsMatxMat($matObj)
@@ -214,13 +214,13 @@ EndFunc   ;==>_cveInputArrayIsMatxMat
 Func _cveInputArrayKind($obj)
     ; CVAPI(int) cveInputArrayKind(cv::_InputArray* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveInputArrayKind", $bObjDllType, $obj), "cveInputArrayKind", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveInputArrayKind", $sObjDllType, $obj), "cveInputArrayKind", @error)
 EndFunc   ;==>_cveInputArrayKind
 
 Func _cveInputArrayKindMat($matObj)

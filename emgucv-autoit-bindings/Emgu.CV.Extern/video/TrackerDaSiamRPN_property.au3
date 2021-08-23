@@ -4,11 +4,11 @@
 Func _cveTrackerDaSiamRPNGetTrackingScore($obj)
     ; CVAPI(float) cveTrackerDaSiamRPNGetTrackingScore(cv::TrackerDaSiamRPN* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveTrackerDaSiamRPNGetTrackingScore", $bObjDllType, $obj), "cveTrackerDaSiamRPNGetTrackingScore", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveTrackerDaSiamRPNGetTrackingScore", $sObjDllType, $obj), "cveTrackerDaSiamRPNGetTrackingScore", @error)
 EndFunc   ;==>_cveTrackerDaSiamRPNGetTrackingScore

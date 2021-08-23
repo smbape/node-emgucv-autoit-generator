@@ -4,28 +4,28 @@
 Func _cveQualityBaseCompute($qualityBase, $cmpImgs, $score)
     ; CVAPI(void) cveQualityBaseCompute(cv::quality::QualityBase* qualityBase, cv::_InputArray* cmpImgs, CvScalar* score);
 
-    Local $bQualityBaseDllType
-    If VarGetType($qualityBase) == "DLLStruct" Then
-        $bQualityBaseDllType = "struct*"
+    Local $sQualityBaseDllType
+    If IsDllStruct($qualityBase) Then
+        $sQualityBaseDllType = "struct*"
     Else
-        $bQualityBaseDllType = "ptr"
+        $sQualityBaseDllType = "ptr"
     EndIf
 
-    Local $bCmpImgsDllType
-    If VarGetType($cmpImgs) == "DLLStruct" Then
-        $bCmpImgsDllType = "struct*"
+    Local $sCmpImgsDllType
+    If IsDllStruct($cmpImgs) Then
+        $sCmpImgsDllType = "struct*"
     Else
-        $bCmpImgsDllType = "ptr"
+        $sCmpImgsDllType = "ptr"
     EndIf
 
-    Local $bScoreDllType
-    If VarGetType($score) == "DLLStruct" Then
-        $bScoreDllType = "struct*"
+    Local $sScoreDllType
+    If IsDllStruct($score) Then
+        $sScoreDllType = "struct*"
     Else
-        $bScoreDllType = "ptr"
+        $sScoreDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQualityBaseCompute", $bQualityBaseDllType, $qualityBase, $bCmpImgsDllType, $cmpImgs, $bScoreDllType, $score), "cveQualityBaseCompute", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQualityBaseCompute", $sQualityBaseDllType, $qualityBase, $sCmpImgsDllType, $cmpImgs, $sScoreDllType, $score), "cveQualityBaseCompute", @error)
 EndFunc   ;==>_cveQualityBaseCompute
 
 Func _cveQualityBaseComputeMat($qualityBase, $matCmpImgs, $score)
@@ -59,21 +59,21 @@ EndFunc   ;==>_cveQualityBaseComputeMat
 Func _cveQualityBaseGetQualityMap($qualityBase, $dst)
     ; CVAPI(void) cveQualityBaseGetQualityMap(cv::quality::QualityBase* qualityBase, cv::_OutputArray* dst);
 
-    Local $bQualityBaseDllType
-    If VarGetType($qualityBase) == "DLLStruct" Then
-        $bQualityBaseDllType = "struct*"
+    Local $sQualityBaseDllType
+    If IsDllStruct($qualityBase) Then
+        $sQualityBaseDllType = "struct*"
     Else
-        $bQualityBaseDllType = "ptr"
+        $sQualityBaseDllType = "ptr"
     EndIf
 
-    Local $bDstDllType
-    If VarGetType($dst) == "DLLStruct" Then
-        $bDstDllType = "struct*"
+    Local $sDstDllType
+    If IsDllStruct($dst) Then
+        $sDstDllType = "struct*"
     Else
-        $bDstDllType = "ptr"
+        $sDstDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQualityBaseGetQualityMap", $bQualityBaseDllType, $qualityBase, $bDstDllType, $dst), "cveQualityBaseGetQualityMap", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQualityBaseGetQualityMap", $sQualityBaseDllType, $qualityBase, $sDstDllType, $dst), "cveQualityBaseGetQualityMap", @error)
 EndFunc   ;==>_cveQualityBaseGetQualityMap
 
 Func _cveQualityBaseGetQualityMapMat($qualityBase, $matDst)
@@ -107,34 +107,40 @@ EndFunc   ;==>_cveQualityBaseGetQualityMapMat
 Func _cveQualityMSECreate($refImgs, $qualityBase, $algorithm, $sharedPtr)
     ; CVAPI(cv::quality::QualityMSE*) cveQualityMSECreate(cv::_InputArray* refImgs, cv::quality::QualityBase** qualityBase, cv::Algorithm** algorithm, cv::Ptr<cv::quality::QualityMSE>** sharedPtr);
 
-    Local $bRefImgsDllType
-    If VarGetType($refImgs) == "DLLStruct" Then
-        $bRefImgsDllType = "struct*"
+    Local $sRefImgsDllType
+    If IsDllStruct($refImgs) Then
+        $sRefImgsDllType = "struct*"
     Else
-        $bRefImgsDllType = "ptr"
+        $sRefImgsDllType = "ptr"
     EndIf
 
-    Local $bQualityBaseDllType
-    If VarGetType($qualityBase) == "DLLStruct" Then
-        $bQualityBaseDllType = "struct*"
+    Local $sQualityBaseDllType
+    If IsDllStruct($qualityBase) Then
+        $sQualityBaseDllType = "struct*"
+    ElseIf $qualityBase == Null Then
+        $sQualityBaseDllType = "ptr"
     Else
-        $bQualityBaseDllType = "ptr*"
+        $sQualityBaseDllType = "ptr*"
     EndIf
 
-    Local $bAlgorithmDllType
-    If VarGetType($algorithm) == "DLLStruct" Then
-        $bAlgorithmDllType = "struct*"
+    Local $sAlgorithmDllType
+    If IsDllStruct($algorithm) Then
+        $sAlgorithmDllType = "struct*"
+    ElseIf $algorithm == Null Then
+        $sAlgorithmDllType = "ptr"
     Else
-        $bAlgorithmDllType = "ptr*"
+        $sAlgorithmDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveQualityMSECreate", $bRefImgsDllType, $refImgs, $bQualityBaseDllType, $qualityBase, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveQualityMSECreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveQualityMSECreate", $sRefImgsDllType, $refImgs, $sQualityBaseDllType, $qualityBase, $sAlgorithmDllType, $algorithm, $sSharedPtrDllType, $sharedPtr), "cveQualityMSECreate", @error)
 EndFunc   ;==>_cveQualityMSECreate
 
 Func _cveQualityMSECreateMat($matRefImgs, $qualityBase, $algorithm, $sharedPtr)
@@ -170,14 +176,16 @@ EndFunc   ;==>_cveQualityMSECreateMat
 Func _cveQualityMSERelease($sharedPtr)
     ; CVAPI(void) cveQualityMSERelease(cv::Ptr<cv::quality::QualityMSE>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQualityMSERelease", $bSharedPtrDllType, $sharedPtr), "cveQualityMSERelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQualityMSERelease", $sSharedPtrDllType, $sharedPtr), "cveQualityMSERelease", @error)
 EndFunc   ;==>_cveQualityMSERelease
 
 Func _cveQualityBRISQUECreate($modelFilePath, $rangeFilePath, $qualityBase, $algorithm, $sharedPtr)
@@ -188,11 +196,11 @@ Func _cveQualityBRISQUECreate($modelFilePath, $rangeFilePath, $qualityBase, $alg
         $modelFilePath = _cveStringCreateFromStr($modelFilePath)
     EndIf
 
-    Local $bModelFilePathDllType
-    If VarGetType($modelFilePath) == "DLLStruct" Then
-        $bModelFilePathDllType = "struct*"
+    Local $sModelFilePathDllType
+    If IsDllStruct($modelFilePath) Then
+        $sModelFilePathDllType = "struct*"
     Else
-        $bModelFilePathDllType = "ptr"
+        $sModelFilePathDllType = "ptr"
     EndIf
 
     Local $bRangeFilePathIsString = VarGetType($rangeFilePath) == "String"
@@ -200,35 +208,41 @@ Func _cveQualityBRISQUECreate($modelFilePath, $rangeFilePath, $qualityBase, $alg
         $rangeFilePath = _cveStringCreateFromStr($rangeFilePath)
     EndIf
 
-    Local $bRangeFilePathDllType
-    If VarGetType($rangeFilePath) == "DLLStruct" Then
-        $bRangeFilePathDllType = "struct*"
+    Local $sRangeFilePathDllType
+    If IsDllStruct($rangeFilePath) Then
+        $sRangeFilePathDllType = "struct*"
     Else
-        $bRangeFilePathDllType = "ptr"
+        $sRangeFilePathDllType = "ptr"
     EndIf
 
-    Local $bQualityBaseDllType
-    If VarGetType($qualityBase) == "DLLStruct" Then
-        $bQualityBaseDllType = "struct*"
+    Local $sQualityBaseDllType
+    If IsDllStruct($qualityBase) Then
+        $sQualityBaseDllType = "struct*"
+    ElseIf $qualityBase == Null Then
+        $sQualityBaseDllType = "ptr"
     Else
-        $bQualityBaseDllType = "ptr*"
+        $sQualityBaseDllType = "ptr*"
     EndIf
 
-    Local $bAlgorithmDllType
-    If VarGetType($algorithm) == "DLLStruct" Then
-        $bAlgorithmDllType = "struct*"
+    Local $sAlgorithmDllType
+    If IsDllStruct($algorithm) Then
+        $sAlgorithmDllType = "struct*"
+    ElseIf $algorithm == Null Then
+        $sAlgorithmDllType = "ptr"
     Else
-        $bAlgorithmDllType = "ptr*"
+        $sAlgorithmDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveQualityBRISQUECreate", $bModelFilePathDllType, $modelFilePath, $bRangeFilePathDllType, $rangeFilePath, $bQualityBaseDllType, $qualityBase, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveQualityBRISQUECreate", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveQualityBRISQUECreate", $sModelFilePathDllType, $modelFilePath, $sRangeFilePathDllType, $rangeFilePath, $sQualityBaseDllType, $qualityBase, $sAlgorithmDllType, $algorithm, $sSharedPtrDllType, $sharedPtr), "cveQualityBRISQUECreate", @error)
 
     If $bRangeFilePathIsString Then
         _cveStringRelease($rangeFilePath)
@@ -244,47 +258,55 @@ EndFunc   ;==>_cveQualityBRISQUECreate
 Func _cveQualityBRISQUERelease($sharedPtr)
     ; CVAPI(void) cveQualityBRISQUERelease(cv::Ptr<cv::quality::QualityBRISQUE>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQualityBRISQUERelease", $bSharedPtrDllType, $sharedPtr), "cveQualityBRISQUERelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQualityBRISQUERelease", $sSharedPtrDllType, $sharedPtr), "cveQualityBRISQUERelease", @error)
 EndFunc   ;==>_cveQualityBRISQUERelease
 
 Func _cveQualityPSNRCreate($refImgs, $maxPixelValue, $qualityBase, $algorithm, $sharedPtr)
     ; CVAPI(cv::quality::QualityPSNR*) cveQualityPSNRCreate(cv::_InputArray* refImgs, double maxPixelValue, cv::quality::QualityBase** qualityBase, cv::Algorithm** algorithm, cv::Ptr<cv::quality::QualityPSNR>** sharedPtr);
 
-    Local $bRefImgsDllType
-    If VarGetType($refImgs) == "DLLStruct" Then
-        $bRefImgsDllType = "struct*"
+    Local $sRefImgsDllType
+    If IsDllStruct($refImgs) Then
+        $sRefImgsDllType = "struct*"
     Else
-        $bRefImgsDllType = "ptr"
+        $sRefImgsDllType = "ptr"
     EndIf
 
-    Local $bQualityBaseDllType
-    If VarGetType($qualityBase) == "DLLStruct" Then
-        $bQualityBaseDllType = "struct*"
+    Local $sQualityBaseDllType
+    If IsDllStruct($qualityBase) Then
+        $sQualityBaseDllType = "struct*"
+    ElseIf $qualityBase == Null Then
+        $sQualityBaseDllType = "ptr"
     Else
-        $bQualityBaseDllType = "ptr*"
+        $sQualityBaseDllType = "ptr*"
     EndIf
 
-    Local $bAlgorithmDllType
-    If VarGetType($algorithm) == "DLLStruct" Then
-        $bAlgorithmDllType = "struct*"
+    Local $sAlgorithmDllType
+    If IsDllStruct($algorithm) Then
+        $sAlgorithmDllType = "struct*"
+    ElseIf $algorithm == Null Then
+        $sAlgorithmDllType = "ptr"
     Else
-        $bAlgorithmDllType = "ptr*"
+        $sAlgorithmDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveQualityPSNRCreate", $bRefImgsDllType, $refImgs, "double", $maxPixelValue, $bQualityBaseDllType, $qualityBase, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveQualityPSNRCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveQualityPSNRCreate", $sRefImgsDllType, $refImgs, "double", $maxPixelValue, $sQualityBaseDllType, $qualityBase, $sAlgorithmDllType, $algorithm, $sSharedPtrDllType, $sharedPtr), "cveQualityPSNRCreate", @error)
 EndFunc   ;==>_cveQualityPSNRCreate
 
 Func _cveQualityPSNRCreateMat($matRefImgs, $maxPixelValue, $qualityBase, $algorithm, $sharedPtr)
@@ -320,47 +342,55 @@ EndFunc   ;==>_cveQualityPSNRCreateMat
 Func _cveQualityPSNRRelease($sharedPtr)
     ; CVAPI(void) cveQualityPSNRRelease(cv::Ptr<cv::quality::QualityPSNR>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQualityPSNRRelease", $bSharedPtrDllType, $sharedPtr), "cveQualityPSNRRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQualityPSNRRelease", $sSharedPtrDllType, $sharedPtr), "cveQualityPSNRRelease", @error)
 EndFunc   ;==>_cveQualityPSNRRelease
 
 Func _cveQualitySSIMCreate($refImgs, $qualityBase, $algorithm, $sharedPtr)
     ; CVAPI(cv::quality::QualitySSIM*) cveQualitySSIMCreate(cv::_InputArray* refImgs, cv::quality::QualityBase** qualityBase, cv::Algorithm** algorithm, cv::Ptr<cv::quality::QualitySSIM>** sharedPtr);
 
-    Local $bRefImgsDllType
-    If VarGetType($refImgs) == "DLLStruct" Then
-        $bRefImgsDllType = "struct*"
+    Local $sRefImgsDllType
+    If IsDllStruct($refImgs) Then
+        $sRefImgsDllType = "struct*"
     Else
-        $bRefImgsDllType = "ptr"
+        $sRefImgsDllType = "ptr"
     EndIf
 
-    Local $bQualityBaseDllType
-    If VarGetType($qualityBase) == "DLLStruct" Then
-        $bQualityBaseDllType = "struct*"
+    Local $sQualityBaseDllType
+    If IsDllStruct($qualityBase) Then
+        $sQualityBaseDllType = "struct*"
+    ElseIf $qualityBase == Null Then
+        $sQualityBaseDllType = "ptr"
     Else
-        $bQualityBaseDllType = "ptr*"
+        $sQualityBaseDllType = "ptr*"
     EndIf
 
-    Local $bAlgorithmDllType
-    If VarGetType($algorithm) == "DLLStruct" Then
-        $bAlgorithmDllType = "struct*"
+    Local $sAlgorithmDllType
+    If IsDllStruct($algorithm) Then
+        $sAlgorithmDllType = "struct*"
+    ElseIf $algorithm == Null Then
+        $sAlgorithmDllType = "ptr"
     Else
-        $bAlgorithmDllType = "ptr*"
+        $sAlgorithmDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveQualitySSIMCreate", $bRefImgsDllType, $refImgs, $bQualityBaseDllType, $qualityBase, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveQualitySSIMCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveQualitySSIMCreate", $sRefImgsDllType, $refImgs, $sQualityBaseDllType, $qualityBase, $sAlgorithmDllType, $algorithm, $sSharedPtrDllType, $sharedPtr), "cveQualitySSIMCreate", @error)
 EndFunc   ;==>_cveQualitySSIMCreate
 
 Func _cveQualitySSIMCreateMat($matRefImgs, $qualityBase, $algorithm, $sharedPtr)
@@ -396,47 +426,55 @@ EndFunc   ;==>_cveQualitySSIMCreateMat
 Func _cveQualitySSIMRelease($sharedPtr)
     ; CVAPI(void) cveQualitySSIMRelease(cv::Ptr<cv::quality::QualitySSIM>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQualitySSIMRelease", $bSharedPtrDllType, $sharedPtr), "cveQualitySSIMRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQualitySSIMRelease", $sSharedPtrDllType, $sharedPtr), "cveQualitySSIMRelease", @error)
 EndFunc   ;==>_cveQualitySSIMRelease
 
 Func _cveQualityGMSDCreate($refImgs, $qualityBase, $algorithm, $sharedPtr)
     ; CVAPI(cv::quality::QualityGMSD*) cveQualityGMSDCreate(cv::_InputArray* refImgs, cv::quality::QualityBase** qualityBase, cv::Algorithm** algorithm, cv::Ptr<cv::quality::QualityGMSD>** sharedPtr);
 
-    Local $bRefImgsDllType
-    If VarGetType($refImgs) == "DLLStruct" Then
-        $bRefImgsDllType = "struct*"
+    Local $sRefImgsDllType
+    If IsDllStruct($refImgs) Then
+        $sRefImgsDllType = "struct*"
     Else
-        $bRefImgsDllType = "ptr"
+        $sRefImgsDllType = "ptr"
     EndIf
 
-    Local $bQualityBaseDllType
-    If VarGetType($qualityBase) == "DLLStruct" Then
-        $bQualityBaseDllType = "struct*"
+    Local $sQualityBaseDllType
+    If IsDllStruct($qualityBase) Then
+        $sQualityBaseDllType = "struct*"
+    ElseIf $qualityBase == Null Then
+        $sQualityBaseDllType = "ptr"
     Else
-        $bQualityBaseDllType = "ptr*"
+        $sQualityBaseDllType = "ptr*"
     EndIf
 
-    Local $bAlgorithmDllType
-    If VarGetType($algorithm) == "DLLStruct" Then
-        $bAlgorithmDllType = "struct*"
+    Local $sAlgorithmDllType
+    If IsDllStruct($algorithm) Then
+        $sAlgorithmDllType = "struct*"
+    ElseIf $algorithm == Null Then
+        $sAlgorithmDllType = "ptr"
     Else
-        $bAlgorithmDllType = "ptr*"
+        $sAlgorithmDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveQualityGMSDCreate", $bRefImgsDllType, $refImgs, $bQualityBaseDllType, $qualityBase, $bAlgorithmDllType, $algorithm, $bSharedPtrDllType, $sharedPtr), "cveQualityGMSDCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveQualityGMSDCreate", $sRefImgsDllType, $refImgs, $sQualityBaseDllType, $qualityBase, $sAlgorithmDllType, $algorithm, $sSharedPtrDllType, $sharedPtr), "cveQualityGMSDCreate", @error)
 EndFunc   ;==>_cveQualityGMSDCreate
 
 Func _cveQualityGMSDCreateMat($matRefImgs, $qualityBase, $algorithm, $sharedPtr)
@@ -472,12 +510,14 @@ EndFunc   ;==>_cveQualityGMSDCreateMat
 Func _cveQualityGMSDRelease($sharedPtr)
     ; CVAPI(void) cveQualityGMSDRelease(cv::Ptr<cv::quality::QualityGMSD>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQualityGMSDRelease", $bSharedPtrDllType, $sharedPtr), "cveQualityGMSDRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQualityGMSDRelease", $sSharedPtrDllType, $sharedPtr), "cveQualityGMSDRelease", @error)
 EndFunc   ;==>_cveQualityGMSDRelease

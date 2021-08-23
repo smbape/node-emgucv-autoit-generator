@@ -4,24 +4,24 @@
 Func _cveDetectionModelGetNmsAcrossClasses($obj)
     ; CVAPI(bool) cveDetectionModelGetNmsAcrossClasses(cv::dnn::DetectionModel* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveDetectionModelGetNmsAcrossClasses", $bObjDllType, $obj), "cveDetectionModelGetNmsAcrossClasses", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveDetectionModelGetNmsAcrossClasses", $sObjDllType, $obj), "cveDetectionModelGetNmsAcrossClasses", @error)
 EndFunc   ;==>_cveDetectionModelGetNmsAcrossClasses
 
 Func _cveDetectionModelSetNmsAcrossClasses($obj, $value)
     ; CVAPI(void) cveDetectionModelSetNmsAcrossClasses(cv::dnn::DetectionModel* obj, bool value);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetectionModelSetNmsAcrossClasses", $bObjDllType, $obj, "boolean", $value), "cveDetectionModelSetNmsAcrossClasses", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDetectionModelSetNmsAcrossClasses", $sObjDllType, $obj, "boolean", $value), "cveDetectionModelSetNmsAcrossClasses", @error)
 EndFunc   ;==>_cveDetectionModelSetNmsAcrossClasses

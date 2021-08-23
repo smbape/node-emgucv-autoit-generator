@@ -4,227 +4,227 @@
 Func _eulerToQuaternions($x, $y, $z, $quaternions)
     ; CVAPI(void) eulerToQuaternions(double x, double y, double z, Quaternions* quaternions);
 
-    Local $bQuaternionsDllType
-    If VarGetType($quaternions) == "DLLStruct" Then
-        $bQuaternionsDllType = "struct*"
+    Local $sQuaternionsDllType
+    If IsDllStruct($quaternions) Then
+        $sQuaternionsDllType = "struct*"
     Else
-        $bQuaternionsDllType = "ptr"
+        $sQuaternionsDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "eulerToQuaternions", "double", $x, "double", $y, "double", $z, $bQuaternionsDllType, $quaternions), "eulerToQuaternions", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "eulerToQuaternions", "double", $x, "double", $y, "double", $z, $sQuaternionsDllType, $quaternions), "eulerToQuaternions", @error)
 EndFunc   ;==>_eulerToQuaternions
 
 Func _quaternionsToEuler($quaternions, $x, $y, $z)
     ; CVAPI(void) quaternionsToEuler(const Quaternions* quaternions, double* x, double* y, double* z);
 
-    Local $bQuaternionsDllType
-    If VarGetType($quaternions) == "DLLStruct" Then
-        $bQuaternionsDllType = "struct*"
+    Local $sQuaternionsDllType
+    If IsDllStruct($quaternions) Then
+        $sQuaternionsDllType = "struct*"
     Else
-        $bQuaternionsDllType = "ptr"
+        $sQuaternionsDllType = "ptr"
     EndIf
 
-    Local $bXDllType
-    If VarGetType($x) == "DLLStruct" Then
-        $bXDllType = "struct*"
+    Local $sXDllType
+    If IsDllStruct($x) Then
+        $sXDllType = "struct*"
     Else
-        $bXDllType = "double*"
+        $sXDllType = "double*"
     EndIf
 
-    Local $bYDllType
-    If VarGetType($y) == "DLLStruct" Then
-        $bYDllType = "struct*"
+    Local $sYDllType
+    If IsDllStruct($y) Then
+        $sYDllType = "struct*"
     Else
-        $bYDllType = "double*"
+        $sYDllType = "double*"
     EndIf
 
-    Local $bZDllType
-    If VarGetType($z) == "DLLStruct" Then
-        $bZDllType = "struct*"
+    Local $sZDllType
+    If IsDllStruct($z) Then
+        $sZDllType = "struct*"
     Else
-        $bZDllType = "double*"
+        $sZDllType = "double*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "quaternionsToEuler", $bQuaternionsDllType, $quaternions, $bXDllType, $x, $bYDllType, $y, $bZDllType, $z), "quaternionsToEuler", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "quaternionsToEuler", $sQuaternionsDllType, $quaternions, $sXDllType, $x, $sYDllType, $y, $sZDllType, $z), "quaternionsToEuler", @error)
 EndFunc   ;==>_quaternionsToEuler
 
 Func _quaternionsToRotationMatrix($quaternions, $rotation)
     ; CVAPI(void) quaternionsToRotationMatrix(const Quaternions* quaternions, CvMat* rotation);
 
-    Local $bQuaternionsDllType
-    If VarGetType($quaternions) == "DLLStruct" Then
-        $bQuaternionsDllType = "struct*"
+    Local $sQuaternionsDllType
+    If IsDllStruct($quaternions) Then
+        $sQuaternionsDllType = "struct*"
     Else
-        $bQuaternionsDllType = "ptr"
+        $sQuaternionsDllType = "ptr"
     EndIf
 
-    Local $bRotationDllType
-    If VarGetType($rotation) == "DLLStruct" Then
-        $bRotationDllType = "struct*"
+    Local $sRotationDllType
+    If IsDllStruct($rotation) Then
+        $sRotationDllType = "struct*"
     Else
-        $bRotationDllType = "ptr"
+        $sRotationDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "quaternionsToRotationMatrix", $bQuaternionsDllType, $quaternions, $bRotationDllType, $rotation), "quaternionsToRotationMatrix", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "quaternionsToRotationMatrix", $sQuaternionsDllType, $quaternions, $sRotationDllType, $rotation), "quaternionsToRotationMatrix", @error)
 EndFunc   ;==>_quaternionsToRotationMatrix
 
 Func _quaternionsRotatePoint($quaternions, $point, $pointDst)
     ; CVAPI(void) quaternionsRotatePoint(const Quaternions* quaternions, const CvPoint3D64f* point, CvPoint3D64f* pointDst);
 
-    Local $bQuaternionsDllType
-    If VarGetType($quaternions) == "DLLStruct" Then
-        $bQuaternionsDllType = "struct*"
+    Local $sQuaternionsDllType
+    If IsDllStruct($quaternions) Then
+        $sQuaternionsDllType = "struct*"
     Else
-        $bQuaternionsDllType = "ptr"
+        $sQuaternionsDllType = "ptr"
     EndIf
 
-    Local $bPointDllType
-    If VarGetType($point) == "DLLStruct" Then
-        $bPointDllType = "struct*"
+    Local $sPointDllType
+    If IsDllStruct($point) Then
+        $sPointDllType = "struct*"
     Else
-        $bPointDllType = "ptr"
+        $sPointDllType = "ptr"
     EndIf
 
-    Local $bPointDstDllType
-    If VarGetType($pointDst) == "DLLStruct" Then
-        $bPointDstDllType = "struct*"
+    Local $sPointDstDllType
+    If IsDllStruct($pointDst) Then
+        $sPointDstDllType = "struct*"
     Else
-        $bPointDstDllType = "ptr"
+        $sPointDstDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "quaternionsRotatePoint", $bQuaternionsDllType, $quaternions, $bPointDllType, $point, $bPointDstDllType, $pointDst), "quaternionsRotatePoint", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "quaternionsRotatePoint", $sQuaternionsDllType, $quaternions, $sPointDllType, $point, $sPointDstDllType, $pointDst), "quaternionsRotatePoint", @error)
 EndFunc   ;==>_quaternionsRotatePoint
 
 Func _quaternionsRotatePoints($quaternions, $pointSrc, $pointDst)
     ; CVAPI(void) quaternionsRotatePoints(const Quaternions* quaternions, const CvMat* pointSrc, CvMat* pointDst);
 
-    Local $bQuaternionsDllType
-    If VarGetType($quaternions) == "DLLStruct" Then
-        $bQuaternionsDllType = "struct*"
+    Local $sQuaternionsDllType
+    If IsDllStruct($quaternions) Then
+        $sQuaternionsDllType = "struct*"
     Else
-        $bQuaternionsDllType = "ptr"
+        $sQuaternionsDllType = "ptr"
     EndIf
 
-    Local $bPointSrcDllType
-    If VarGetType($pointSrc) == "DLLStruct" Then
-        $bPointSrcDllType = "struct*"
+    Local $sPointSrcDllType
+    If IsDllStruct($pointSrc) Then
+        $sPointSrcDllType = "struct*"
     Else
-        $bPointSrcDllType = "ptr"
+        $sPointSrcDllType = "ptr"
     EndIf
 
-    Local $bPointDstDllType
-    If VarGetType($pointDst) == "DLLStruct" Then
-        $bPointDstDllType = "struct*"
+    Local $sPointDstDllType
+    If IsDllStruct($pointDst) Then
+        $sPointDstDllType = "struct*"
     Else
-        $bPointDstDllType = "ptr"
+        $sPointDstDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "quaternionsRotatePoints", $bQuaternionsDllType, $quaternions, $bPointSrcDllType, $pointSrc, $bPointDstDllType, $pointDst), "quaternionsRotatePoints", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "quaternionsRotatePoints", $sQuaternionsDllType, $quaternions, $sPointSrcDllType, $pointSrc, $sPointDstDllType, $pointDst), "quaternionsRotatePoints", @error)
 EndFunc   ;==>_quaternionsRotatePoints
 
 Func _quaternionsMultiply($quaternions1, $quaternions2, $quaternionsDst)
     ; CVAPI(void) quaternionsMultiply(const Quaternions* quaternions1, const Quaternions* quaternions2, Quaternions* quaternionsDst);
 
-    Local $bQuaternions1DllType
-    If VarGetType($quaternions1) == "DLLStruct" Then
-        $bQuaternions1DllType = "struct*"
+    Local $sQuaternions1DllType
+    If IsDllStruct($quaternions1) Then
+        $sQuaternions1DllType = "struct*"
     Else
-        $bQuaternions1DllType = "ptr"
+        $sQuaternions1DllType = "ptr"
     EndIf
 
-    Local $bQuaternions2DllType
-    If VarGetType($quaternions2) == "DLLStruct" Then
-        $bQuaternions2DllType = "struct*"
+    Local $sQuaternions2DllType
+    If IsDllStruct($quaternions2) Then
+        $sQuaternions2DllType = "struct*"
     Else
-        $bQuaternions2DllType = "ptr"
+        $sQuaternions2DllType = "ptr"
     EndIf
 
-    Local $bQuaternionsDstDllType
-    If VarGetType($quaternionsDst) == "DLLStruct" Then
-        $bQuaternionsDstDllType = "struct*"
+    Local $sQuaternionsDstDllType
+    If IsDllStruct($quaternionsDst) Then
+        $sQuaternionsDstDllType = "struct*"
     Else
-        $bQuaternionsDstDllType = "ptr"
+        $sQuaternionsDstDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "quaternionsMultiply", $bQuaternions1DllType, $quaternions1, $bQuaternions2DllType, $quaternions2, $bQuaternionsDstDllType, $quaternionsDst), "quaternionsMultiply", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "quaternionsMultiply", $sQuaternions1DllType, $quaternions1, $sQuaternions2DllType, $quaternions2, $sQuaternionsDstDllType, $quaternionsDst), "quaternionsMultiply", @error)
 EndFunc   ;==>_quaternionsMultiply
 
 Func _axisAngleToQuaternions($axisAngle, $quaternions)
     ; CVAPI(void) axisAngleToQuaternions(const CvPoint3D64f* axisAngle, Quaternions* quaternions);
 
-    Local $bAxisAngleDllType
-    If VarGetType($axisAngle) == "DLLStruct" Then
-        $bAxisAngleDllType = "struct*"
+    Local $sAxisAngleDllType
+    If IsDllStruct($axisAngle) Then
+        $sAxisAngleDllType = "struct*"
     Else
-        $bAxisAngleDllType = "ptr"
+        $sAxisAngleDllType = "ptr"
     EndIf
 
-    Local $bQuaternionsDllType
-    If VarGetType($quaternions) == "DLLStruct" Then
-        $bQuaternionsDllType = "struct*"
+    Local $sQuaternionsDllType
+    If IsDllStruct($quaternions) Then
+        $sQuaternionsDllType = "struct*"
     Else
-        $bQuaternionsDllType = "ptr"
+        $sQuaternionsDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "axisAngleToQuaternions", $bAxisAngleDllType, $axisAngle, $bQuaternionsDllType, $quaternions), "axisAngleToQuaternions", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "axisAngleToQuaternions", $sAxisAngleDllType, $axisAngle, $sQuaternionsDllType, $quaternions), "axisAngleToQuaternions", @error)
 EndFunc   ;==>_axisAngleToQuaternions
 
 Func _quaternionsToAxisAngle($quaternions, $axisAngle)
     ; CVAPI(void) quaternionsToAxisAngle(const Quaternions* quaternions, CvPoint3D64f* axisAngle);
 
-    Local $bQuaternionsDllType
-    If VarGetType($quaternions) == "DLLStruct" Then
-        $bQuaternionsDllType = "struct*"
+    Local $sQuaternionsDllType
+    If IsDllStruct($quaternions) Then
+        $sQuaternionsDllType = "struct*"
     Else
-        $bQuaternionsDllType = "ptr"
+        $sQuaternionsDllType = "ptr"
     EndIf
 
-    Local $bAxisAngleDllType
-    If VarGetType($axisAngle) == "DLLStruct" Then
-        $bAxisAngleDllType = "struct*"
+    Local $sAxisAngleDllType
+    If IsDllStruct($axisAngle) Then
+        $sAxisAngleDllType = "struct*"
     Else
-        $bAxisAngleDllType = "ptr"
+        $sAxisAngleDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "quaternionsToAxisAngle", $bQuaternionsDllType, $quaternions, $bAxisAngleDllType, $axisAngle), "quaternionsToAxisAngle", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "quaternionsToAxisAngle", $sQuaternionsDllType, $quaternions, $sAxisAngleDllType, $axisAngle), "quaternionsToAxisAngle", @error)
 EndFunc   ;==>_quaternionsToAxisAngle
 
 Func _quaternionsRenorm($quaternions)
     ; CVAPI(void) quaternionsRenorm(Quaternions* quaternions);
 
-    Local $bQuaternionsDllType
-    If VarGetType($quaternions) == "DLLStruct" Then
-        $bQuaternionsDllType = "struct*"
+    Local $sQuaternionsDllType
+    If IsDllStruct($quaternions) Then
+        $sQuaternionsDllType = "struct*"
     Else
-        $bQuaternionsDllType = "ptr"
+        $sQuaternionsDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "quaternionsRenorm", $bQuaternionsDllType, $quaternions), "quaternionsRenorm", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "quaternionsRenorm", $sQuaternionsDllType, $quaternions), "quaternionsRenorm", @error)
 EndFunc   ;==>_quaternionsRenorm
 
 Func _quaternionsSlerp($qa, $qb, $t, $qm)
     ; CVAPI(void) quaternionsSlerp(const Quaternions* qa, const Quaternions* qb, double t, Quaternions* qm);
 
-    Local $bQaDllType
-    If VarGetType($qa) == "DLLStruct" Then
-        $bQaDllType = "struct*"
+    Local $sQaDllType
+    If IsDllStruct($qa) Then
+        $sQaDllType = "struct*"
     Else
-        $bQaDllType = "ptr"
+        $sQaDllType = "ptr"
     EndIf
 
-    Local $bQbDllType
-    If VarGetType($qb) == "DLLStruct" Then
-        $bQbDllType = "struct*"
+    Local $sQbDllType
+    If IsDllStruct($qb) Then
+        $sQbDllType = "struct*"
     Else
-        $bQbDllType = "ptr"
+        $sQbDllType = "ptr"
     EndIf
 
-    Local $bQmDllType
-    If VarGetType($qm) == "DLLStruct" Then
-        $bQmDllType = "struct*"
+    Local $sQmDllType
+    If IsDllStruct($qm) Then
+        $sQmDllType = "struct*"
     Else
-        $bQmDllType = "ptr"
+        $sQmDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "quaternionsSlerp", $bQaDllType, $qa, $bQbDllType, $qb, "double", $t, $bQmDllType, $qm), "quaternionsSlerp", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "quaternionsSlerp", $sQaDllType, $qa, $sQbDllType, $qb, "double", $t, $sQmDllType, $qm), "quaternionsSlerp", @error)
 EndFunc   ;==>_quaternionsSlerp

@@ -4,11 +4,11 @@
 Func _cveHostDataPacketGetStreamName($obj, $str)
     ; CVAPI(void) cveHostDataPacketGetStreamName(HostDataPacket* obj, cv::String* str);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
     Local $bStrIsString = VarGetType($str) == "String"
@@ -16,14 +16,14 @@ Func _cveHostDataPacketGetStreamName($obj, $str)
         $str = _cveStringCreateFromStr($str)
     EndIf
 
-    Local $bStrDllType
-    If VarGetType($str) == "DLLStruct" Then
-        $bStrDllType = "struct*"
+    Local $sStrDllType
+    If IsDllStruct($str) Then
+        $sStrDllType = "struct*"
     Else
-        $bStrDllType = "ptr"
+        $sStrDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHostDataPacketGetStreamName", $bObjDllType, $obj, $bStrDllType, $str), "cveHostDataPacketGetStreamName", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHostDataPacketGetStreamName", $sObjDllType, $obj, $sStrDllType, $str), "cveHostDataPacketGetStreamName", @error)
 
     If $bStrIsString Then
         _cveStringRelease($str)
@@ -33,35 +33,35 @@ EndFunc   ;==>_cveHostDataPacketGetStreamName
 Func _cveHostDataPacketSize($obj)
     ; CVAPI(int) cveHostDataPacketSize(HostDataPacket* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveHostDataPacketSize", $bObjDllType, $obj), "cveHostDataPacketSize", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveHostDataPacketSize", $sObjDllType, $obj), "cveHostDataPacketSize", @error)
 EndFunc   ;==>_cveHostDataPacketSize
 
 Func _cveHostDataPacketGetData($obj)
     ; CVAPI(const unsigned char*) cveHostDataPacketGetData(HostDataPacket* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHostDataPacketGetData", $bObjDllType, $obj), "cveHostDataPacketGetData", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveHostDataPacketGetData", $sObjDllType, $obj), "cveHostDataPacketGetData", @error)
 EndFunc   ;==>_cveHostDataPacketGetData
 
 Func _cveHostDataPacketGetElemSize($obj)
     ; CVAPI(int) cveHostDataPacketGetElemSize(HostDataPacket* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveHostDataPacketGetElemSize", $bObjDllType, $obj), "cveHostDataPacketGetElemSize", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveHostDataPacketGetElemSize", $sObjDllType, $obj), "cveHostDataPacketGetElemSize", @error)
 EndFunc   ;==>_cveHostDataPacketGetElemSize

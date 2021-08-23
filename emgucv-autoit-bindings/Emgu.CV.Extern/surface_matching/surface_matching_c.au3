@@ -9,52 +9,54 @@ EndFunc   ;==>_cveICPCreate
 Func _cveICPRegisterModelToScene($icp, $srcPC, $dstPC, $residual, $pose)
     ; CVAPI(int) cveICPRegisterModelToScene(cv::ppf_match_3d::ICP* icp, cv::Mat* srcPC, cv::Mat* dstPC, double* residual, cv::Mat* pose);
 
-    Local $bIcpDllType
-    If VarGetType($icp) == "DLLStruct" Then
-        $bIcpDllType = "struct*"
+    Local $sIcpDllType
+    If IsDllStruct($icp) Then
+        $sIcpDllType = "struct*"
     Else
-        $bIcpDllType = "ptr"
+        $sIcpDllType = "ptr"
     EndIf
 
-    Local $bSrcPCDllType
-    If VarGetType($srcPC) == "DLLStruct" Then
-        $bSrcPCDllType = "struct*"
+    Local $sSrcPCDllType
+    If IsDllStruct($srcPC) Then
+        $sSrcPCDllType = "struct*"
     Else
-        $bSrcPCDllType = "ptr"
+        $sSrcPCDllType = "ptr"
     EndIf
 
-    Local $bDstPCDllType
-    If VarGetType($dstPC) == "DLLStruct" Then
-        $bDstPCDllType = "struct*"
+    Local $sDstPCDllType
+    If IsDllStruct($dstPC) Then
+        $sDstPCDllType = "struct*"
     Else
-        $bDstPCDllType = "ptr"
+        $sDstPCDllType = "ptr"
     EndIf
 
-    Local $bResidualDllType
-    If VarGetType($residual) == "DLLStruct" Then
-        $bResidualDllType = "struct*"
+    Local $sResidualDllType
+    If IsDllStruct($residual) Then
+        $sResidualDllType = "struct*"
     Else
-        $bResidualDllType = "double*"
+        $sResidualDllType = "double*"
     EndIf
 
-    Local $bPoseDllType
-    If VarGetType($pose) == "DLLStruct" Then
-        $bPoseDllType = "struct*"
+    Local $sPoseDllType
+    If IsDllStruct($pose) Then
+        $sPoseDllType = "struct*"
     Else
-        $bPoseDllType = "ptr"
+        $sPoseDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveICPRegisterModelToScene", $bIcpDllType, $icp, $bSrcPCDllType, $srcPC, $bDstPCDllType, $dstPC, $bResidualDllType, $residual, $bPoseDllType, $pose), "cveICPRegisterModelToScene", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveICPRegisterModelToScene", $sIcpDllType, $icp, $sSrcPCDllType, $srcPC, $sDstPCDllType, $dstPC, $sResidualDllType, $residual, $sPoseDllType, $pose), "cveICPRegisterModelToScene", @error)
 EndFunc   ;==>_cveICPRegisterModelToScene
 
 Func _cveICPRelease($icp)
     ; CVAPI(void) cveICPRelease(cv::ppf_match_3d::ICP** icp);
 
-    Local $bIcpDllType
-    If VarGetType($icp) == "DLLStruct" Then
-        $bIcpDllType = "struct*"
+    Local $sIcpDllType
+    If IsDllStruct($icp) Then
+        $sIcpDllType = "struct*"
+    ElseIf $icp == Null Then
+        $sIcpDllType = "ptr"
     Else
-        $bIcpDllType = "ptr*"
+        $sIcpDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveICPRelease", $bIcpDllType, $icp), "cveICPRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveICPRelease", $sIcpDllType, $icp), "cveICPRelease", @error)
 EndFunc   ;==>_cveICPRelease

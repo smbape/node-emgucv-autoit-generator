@@ -4,13 +4,13 @@
 Func _cveOutputArrayFixedSize($obj)
     ; CVAPI(bool) cveOutputArrayFixedSize(cv::_OutputArray* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveOutputArrayFixedSize", $bObjDllType, $obj), "cveOutputArrayFixedSize", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveOutputArrayFixedSize", $sObjDllType, $obj), "cveOutputArrayFixedSize", @error)
 EndFunc   ;==>_cveOutputArrayFixedSize
 
 Func _cveOutputArrayFixedSizeMat($matObj)
@@ -46,13 +46,13 @@ EndFunc   ;==>_cveOutputArrayFixedSizeMat
 Func _cveOutputArrayFixedType($obj)
     ; CVAPI(bool) cveOutputArrayFixedType(cv::_OutputArray* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveOutputArrayFixedType", $bObjDllType, $obj), "cveOutputArrayFixedType", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveOutputArrayFixedType", $sObjDllType, $obj), "cveOutputArrayFixedType", @error)
 EndFunc   ;==>_cveOutputArrayFixedType
 
 Func _cveOutputArrayFixedTypeMat($matObj)
@@ -88,13 +88,13 @@ EndFunc   ;==>_cveOutputArrayFixedTypeMat
 Func _cveOutputArrayNeeded($obj)
     ; CVAPI(bool) cveOutputArrayNeeded(cv::_OutputArray* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveOutputArrayNeeded", $bObjDllType, $obj), "cveOutputArrayNeeded", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveOutputArrayNeeded", $sObjDllType, $obj), "cveOutputArrayNeeded", @error)
 EndFunc   ;==>_cveOutputArrayNeeded
 
 Func _cveOutputArrayNeededMat($matObj)

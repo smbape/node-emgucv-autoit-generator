@@ -4,168 +4,170 @@
 Func _tiffWriterOpen($fileName)
     ; CVAPI(TIFF*) tiffWriterOpen(char* fileName);
 
-    Local $bFileNameDllType
-    If VarGetType($fileName) == "DLLStruct" Then
-        $bFileNameDllType = "struct*"
+    Local $sFileNameDllType
+    If IsDllStruct($fileName) Then
+        $sFileNameDllType = "struct*"
     Else
-        $bFileNameDllType = "ptr"
+        $sFileNameDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "tiffWriterOpen", $bFileNameDllType, $fileName), "tiffWriterOpen", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "tiffWriterOpen", $sFileNameDllType, $fileName), "tiffWriterOpen", @error)
 EndFunc   ;==>_tiffWriterOpen
 
 Func _tiffTileRowSize($pTiff)
     ; CVAPI(int) tiffTileRowSize(TIFF* pTiff);
 
-    Local $bPTiffDllType
-    If VarGetType($pTiff) == "DLLStruct" Then
-        $bPTiffDllType = "struct*"
+    Local $sPTiffDllType
+    If IsDllStruct($pTiff) Then
+        $sPTiffDllType = "struct*"
     Else
-        $bPTiffDllType = "ptr"
+        $sPTiffDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "tiffTileRowSize", $bPTiffDllType, $pTiff), "tiffTileRowSize", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "tiffTileRowSize", $sPTiffDllType, $pTiff), "tiffTileRowSize", @error)
 EndFunc   ;==>_tiffTileRowSize
 
 Func _tiffTileSize($pTiff)
     ; CVAPI(int) tiffTileSize(TIFF* pTiff);
 
-    Local $bPTiffDllType
-    If VarGetType($pTiff) == "DLLStruct" Then
-        $bPTiffDllType = "struct*"
+    Local $sPTiffDllType
+    If IsDllStruct($pTiff) Then
+        $sPTiffDllType = "struct*"
     Else
-        $bPTiffDllType = "ptr"
+        $sPTiffDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "tiffTileSize", $bPTiffDllType, $pTiff), "tiffTileSize", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "tiffTileSize", $sPTiffDllType, $pTiff), "tiffTileSize", @error)
 EndFunc   ;==>_tiffTileSize
 
 Func _tiffWriteImageSize($pTiff, $imageSize)
     ; CVAPI(void) tiffWriteImageSize(TIFF* pTiff, CvSize* imageSize);
 
-    Local $bPTiffDllType
-    If VarGetType($pTiff) == "DLLStruct" Then
-        $bPTiffDllType = "struct*"
+    Local $sPTiffDllType
+    If IsDllStruct($pTiff) Then
+        $sPTiffDllType = "struct*"
     Else
-        $bPTiffDllType = "ptr"
+        $sPTiffDllType = "ptr"
     EndIf
 
-    Local $bImageSizeDllType
-    If VarGetType($imageSize) == "DLLStruct" Then
-        $bImageSizeDllType = "struct*"
+    Local $sImageSizeDllType
+    If IsDllStruct($imageSize) Then
+        $sImageSizeDllType = "struct*"
     Else
-        $bImageSizeDllType = "ptr"
+        $sImageSizeDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "tiffWriteImageSize", $bPTiffDllType, $pTiff, $bImageSizeDllType, $imageSize), "tiffWriteImageSize", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "tiffWriteImageSize", $sPTiffDllType, $pTiff, $sImageSizeDllType, $imageSize), "tiffWriteImageSize", @error)
 EndFunc   ;==>_tiffWriteImageSize
 
 Func _tiffWriteImageInfo($pTiff, $bitsPerSample, $samplesPerPixel)
     ; CVAPI(void) tiffWriteImageInfo(TIFF* pTiff, int bitsPerSample, int samplesPerPixel);
 
-    Local $bPTiffDllType
-    If VarGetType($pTiff) == "DLLStruct" Then
-        $bPTiffDllType = "struct*"
+    Local $sPTiffDllType
+    If IsDllStruct($pTiff) Then
+        $sPTiffDllType = "struct*"
     Else
-        $bPTiffDllType = "ptr"
+        $sPTiffDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "tiffWriteImageInfo", $bPTiffDllType, $pTiff, "int", $bitsPerSample, "int", $samplesPerPixel), "tiffWriteImageInfo", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "tiffWriteImageInfo", $sPTiffDllType, $pTiff, "int", $bitsPerSample, "int", $samplesPerPixel), "tiffWriteImageInfo", @error)
 EndFunc   ;==>_tiffWriteImageInfo
 
 Func _tiffWriteImage($pTiff, $image)
     ; CVAPI(void) tiffWriteImage(TIFF* pTiff, IplImage* image);
 
-    Local $bPTiffDllType
-    If VarGetType($pTiff) == "DLLStruct" Then
-        $bPTiffDllType = "struct*"
+    Local $sPTiffDllType
+    If IsDllStruct($pTiff) Then
+        $sPTiffDllType = "struct*"
     Else
-        $bPTiffDllType = "ptr"
+        $sPTiffDllType = "ptr"
     EndIf
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "tiffWriteImage", $bPTiffDllType, $pTiff, $bImageDllType, $image), "tiffWriteImage", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "tiffWriteImage", $sPTiffDllType, $pTiff, $sImageDllType, $image), "tiffWriteImage", @error)
 EndFunc   ;==>_tiffWriteImage
 
 Func _tiffWriteTile($pTiff, $row, $col, $tileImage)
     ; CVAPI(void) tiffWriteTile(TIFF* pTiff, int row, int col, IplImage* tileImage);
 
-    Local $bPTiffDllType
-    If VarGetType($pTiff) == "DLLStruct" Then
-        $bPTiffDllType = "struct*"
+    Local $sPTiffDllType
+    If IsDllStruct($pTiff) Then
+        $sPTiffDllType = "struct*"
     Else
-        $bPTiffDllType = "ptr"
+        $sPTiffDllType = "ptr"
     EndIf
 
-    Local $bTileImageDllType
-    If VarGetType($tileImage) == "DLLStruct" Then
-        $bTileImageDllType = "struct*"
+    Local $sTileImageDllType
+    If IsDllStruct($tileImage) Then
+        $sTileImageDllType = "struct*"
     Else
-        $bTileImageDllType = "ptr"
+        $sTileImageDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "tiffWriteTile", $bPTiffDllType, $pTiff, "int", $row, "int", $col, $bTileImageDllType, $tileImage), "tiffWriteTile", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "tiffWriteTile", $sPTiffDllType, $pTiff, "int", $row, "int", $col, $sTileImageDllType, $tileImage), "tiffWriteTile", @error)
 EndFunc   ;==>_tiffWriteTile
 
 Func _tiffWriteTileInfo($pTiff, $tileSize)
     ; CVAPI(void) tiffWriteTileInfo(TIFF* pTiff, CvSize* tileSize);
 
-    Local $bPTiffDllType
-    If VarGetType($pTiff) == "DLLStruct" Then
-        $bPTiffDllType = "struct*"
+    Local $sPTiffDllType
+    If IsDllStruct($pTiff) Then
+        $sPTiffDllType = "struct*"
     Else
-        $bPTiffDllType = "ptr"
+        $sPTiffDllType = "ptr"
     EndIf
 
-    Local $bTileSizeDllType
-    If VarGetType($tileSize) == "DLLStruct" Then
-        $bTileSizeDllType = "struct*"
+    Local $sTileSizeDllType
+    If IsDllStruct($tileSize) Then
+        $sTileSizeDllType = "struct*"
     Else
-        $bTileSizeDllType = "ptr"
+        $sTileSizeDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "tiffWriteTileInfo", $bPTiffDllType, $pTiff, $bTileSizeDllType, $tileSize), "tiffWriteTileInfo", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "tiffWriteTileInfo", $sPTiffDllType, $pTiff, $sTileSizeDllType, $tileSize), "tiffWriteTileInfo", @error)
 EndFunc   ;==>_tiffWriteTileInfo
 
 Func _tiffWriterClose($pTiff)
     ; CVAPI(void) tiffWriterClose(TIFF** pTiff);
 
-    Local $bPTiffDllType
-    If VarGetType($pTiff) == "DLLStruct" Then
-        $bPTiffDllType = "struct*"
+    Local $sPTiffDllType
+    If IsDllStruct($pTiff) Then
+        $sPTiffDllType = "struct*"
+    ElseIf $pTiff == Null Then
+        $sPTiffDllType = "ptr"
     Else
-        $bPTiffDllType = "ptr*"
+        $sPTiffDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "tiffWriterClose", $bPTiffDllType, $pTiff), "tiffWriterClose", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "tiffWriterClose", $sPTiffDllType, $pTiff), "tiffWriterClose", @error)
 EndFunc   ;==>_tiffWriterClose
 
 Func _tiffWriteGeoTag($pTiff, $ModelTiepoint, $ModelPixelScale)
     ; CVAPI(void) tiffWriteGeoTag(TIFF* pTiff, double* ModelTiepoint, double* ModelPixelScale);
 
-    Local $bPTiffDllType
-    If VarGetType($pTiff) == "DLLStruct" Then
-        $bPTiffDllType = "struct*"
+    Local $sPTiffDllType
+    If IsDllStruct($pTiff) Then
+        $sPTiffDllType = "struct*"
     Else
-        $bPTiffDllType = "ptr"
+        $sPTiffDllType = "ptr"
     EndIf
 
-    Local $bModelTiepointDllType
-    If VarGetType($ModelTiepoint) == "DLLStruct" Then
-        $bModelTiepointDllType = "struct*"
+    Local $sModelTiepointDllType
+    If IsDllStruct($ModelTiepoint) Then
+        $sModelTiepointDllType = "struct*"
     Else
-        $bModelTiepointDllType = "double*"
+        $sModelTiepointDllType = "double*"
     EndIf
 
-    Local $bModelPixelScaleDllType
-    If VarGetType($ModelPixelScale) == "DLLStruct" Then
-        $bModelPixelScaleDllType = "struct*"
+    Local $sModelPixelScaleDllType
+    If IsDllStruct($ModelPixelScale) Then
+        $sModelPixelScaleDllType = "struct*"
     Else
-        $bModelPixelScaleDllType = "double*"
+        $sModelPixelScaleDllType = "double*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "tiffWriteGeoTag", $bPTiffDllType, $pTiff, $bModelTiepointDllType, $ModelTiepoint, $bModelPixelScaleDllType, $ModelPixelScale), "tiffWriteGeoTag", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "tiffWriteGeoTag", $sPTiffDllType, $pTiff, $sModelTiepointDllType, $ModelTiepoint, $sModelPixelScaleDllType, $ModelPixelScale), "tiffWriteGeoTag", @error)
 EndFunc   ;==>_tiffWriteGeoTag

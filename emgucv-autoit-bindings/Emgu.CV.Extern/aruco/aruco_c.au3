@@ -4,84 +4,94 @@
 Func _cveArucoGetPredefinedDictionary($name, $sharedPtr)
     ; CVAPI(cv::aruco::Dictionary*) cveArucoGetPredefinedDictionary(int name, cv::Ptr<cv::aruco::Dictionary>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveArucoGetPredefinedDictionary", "int", $name, $bSharedPtrDllType, $sharedPtr), "cveArucoGetPredefinedDictionary", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveArucoGetPredefinedDictionary", "int", $name, $sSharedPtrDllType, $sharedPtr), "cveArucoGetPredefinedDictionary", @error)
 EndFunc   ;==>_cveArucoGetPredefinedDictionary
 
 Func _cveArucoDictionaryCreate1($nMarkers, $markerSize, $sharedPtr)
     ; CVAPI(cv::aruco::Dictionary*) cveArucoDictionaryCreate1(int nMarkers, int markerSize, cv::Ptr<cv::aruco::Dictionary>** sharedPtr);
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveArucoDictionaryCreate1", "int", $nMarkers, "int", $markerSize, $bSharedPtrDllType, $sharedPtr), "cveArucoDictionaryCreate1", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveArucoDictionaryCreate1", "int", $nMarkers, "int", $markerSize, $sSharedPtrDllType, $sharedPtr), "cveArucoDictionaryCreate1", @error)
 EndFunc   ;==>_cveArucoDictionaryCreate1
 
 Func _cveArucoDictionaryCreate2($nMarkers, $markerSize, $baseDictionary, $sharedPtr)
     ; CVAPI(cv::aruco::Dictionary*) cveArucoDictionaryCreate2(int nMarkers, int markerSize, cv::Ptr<cv::aruco::Dictionary>* baseDictionary, cv::Ptr<cv::aruco::Dictionary>** sharedPtr);
 
-    Local $bBaseDictionaryDllType
-    If VarGetType($baseDictionary) == "DLLStruct" Then
-        $bBaseDictionaryDllType = "struct*"
+    Local $sBaseDictionaryDllType
+    If IsDllStruct($baseDictionary) Then
+        $sBaseDictionaryDllType = "struct*"
     Else
-        $bBaseDictionaryDllType = "ptr"
+        $sBaseDictionaryDllType = "ptr"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveArucoDictionaryCreate2", "int", $nMarkers, "int", $markerSize, $bBaseDictionaryDllType, $baseDictionary, $bSharedPtrDllType, $sharedPtr), "cveArucoDictionaryCreate2", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveArucoDictionaryCreate2", "int", $nMarkers, "int", $markerSize, $sBaseDictionaryDllType, $baseDictionary, $sSharedPtrDllType, $sharedPtr), "cveArucoDictionaryCreate2", @error)
 EndFunc   ;==>_cveArucoDictionaryCreate2
 
 Func _cveArucoDictionaryRelease($dict, $sharedPtr)
     ; CVAPI(void) cveArucoDictionaryRelease(cv::aruco::Dictionary** dict, cv::Ptr<cv::aruco::Dictionary>** sharedPtr);
 
-    Local $bDictDllType
-    If VarGetType($dict) == "DLLStruct" Then
-        $bDictDllType = "struct*"
+    Local $sDictDllType
+    If IsDllStruct($dict) Then
+        $sDictDllType = "struct*"
+    ElseIf $dict == Null Then
+        $sDictDllType = "ptr"
     Else
-        $bDictDllType = "ptr*"
+        $sDictDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDictionaryRelease", $bDictDllType, $dict, $bSharedPtrDllType, $sharedPtr), "cveArucoDictionaryRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDictionaryRelease", $sDictDllType, $dict, $sSharedPtrDllType, $sharedPtr), "cveArucoDictionaryRelease", @error)
 EndFunc   ;==>_cveArucoDictionaryRelease
 
 Func _cveArucoDrawMarker($dictionary, $id, $sidePixels, $img, $borderBits)
     ; CVAPI(void) cveArucoDrawMarker(cv::aruco::Dictionary* dictionary, int id, int sidePixels, cv::_OutputArray* img, int borderBits);
 
-    Local $bDictionaryDllType
-    If VarGetType($dictionary) == "DLLStruct" Then
-        $bDictionaryDllType = "struct*"
+    Local $sDictionaryDllType
+    If IsDllStruct($dictionary) Then
+        $sDictionaryDllType = "struct*"
     Else
-        $bDictionaryDllType = "ptr"
+        $sDictionaryDllType = "ptr"
     EndIf
 
-    Local $bImgDllType
-    If VarGetType($img) == "DLLStruct" Then
-        $bImgDllType = "struct*"
+    Local $sImgDllType
+    If IsDllStruct($img) Then
+        $sImgDllType = "struct*"
     Else
-        $bImgDllType = "ptr"
+        $sImgDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawMarker", $bDictionaryDllType, $dictionary, "int", $id, "int", $sidePixels, $bImgDllType, $img, "int", $borderBits), "cveArucoDrawMarker", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawMarker", $sDictionaryDllType, $dictionary, "int", $id, "int", $sidePixels, $sImgDllType, $img, "int", $borderBits), "cveArucoDrawMarker", @error)
 EndFunc   ;==>_cveArucoDrawMarker
 
 Func _cveArucoDrawMarkerMat($dictionary, $id, $sidePixels, $matImg, $borderBits)
@@ -115,42 +125,42 @@ EndFunc   ;==>_cveArucoDrawMarkerMat
 Func _cveArucoDrawAxis($image, $cameraMatrix, $distCoeffs, $rvec, $tvec, $length)
     ; CVAPI(void) cveArucoDrawAxis(cv::_InputOutputArray* image, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_InputArray* rvec, cv::_InputArray* tvec, float length);
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
 
-    Local $bRvecDllType
-    If VarGetType($rvec) == "DLLStruct" Then
-        $bRvecDllType = "struct*"
+    Local $sRvecDllType
+    If IsDllStruct($rvec) Then
+        $sRvecDllType = "struct*"
     Else
-        $bRvecDllType = "ptr"
+        $sRvecDllType = "ptr"
     EndIf
 
-    Local $bTvecDllType
-    If VarGetType($tvec) == "DLLStruct" Then
-        $bTvecDllType = "struct*"
+    Local $sTvecDllType
+    If IsDllStruct($tvec) Then
+        $sTvecDllType = "struct*"
     Else
-        $bTvecDllType = "ptr"
+        $sTvecDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawAxis", $bImageDllType, $image, $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs, $bRvecDllType, $rvec, $bTvecDllType, $tvec, "float", $length), "cveArucoDrawAxis", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawAxis", $sImageDllType, $image, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRvecDllType, $rvec, $sTvecDllType, $tvec, "float", $length), "cveArucoDrawAxis", @error)
 EndFunc   ;==>_cveArucoDrawAxis
 
 Func _cveArucoDrawAxisMat($matImage, $matCameraMatrix, $matDistCoeffs, $matRvec, $matTvec, $length)
@@ -272,49 +282,49 @@ EndFunc   ;==>_cveArucoDrawAxisMat
 Func _cveArucoDetectMarkers($image, $dictionary, $corners, $ids, $parameters, $rejectedImgPoints)
     ; CVAPI(void) cveArucoDetectMarkers(cv::_InputArray* image, cv::aruco::Dictionary* dictionary, cv::_OutputArray* corners, cv::_OutputArray* ids, cv::aruco::DetectorParameters* parameters, cv::_OutputArray* rejectedImgPoints);
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bDictionaryDllType
-    If VarGetType($dictionary) == "DLLStruct" Then
-        $bDictionaryDllType = "struct*"
+    Local $sDictionaryDllType
+    If IsDllStruct($dictionary) Then
+        $sDictionaryDllType = "struct*"
     Else
-        $bDictionaryDllType = "ptr"
+        $sDictionaryDllType = "ptr"
     EndIf
 
-    Local $bCornersDllType
-    If VarGetType($corners) == "DLLStruct" Then
-        $bCornersDllType = "struct*"
+    Local $sCornersDllType
+    If IsDllStruct($corners) Then
+        $sCornersDllType = "struct*"
     Else
-        $bCornersDllType = "ptr"
+        $sCornersDllType = "ptr"
     EndIf
 
-    Local $bIdsDllType
-    If VarGetType($ids) == "DLLStruct" Then
-        $bIdsDllType = "struct*"
+    Local $sIdsDllType
+    If IsDllStruct($ids) Then
+        $sIdsDllType = "struct*"
     Else
-        $bIdsDllType = "ptr"
+        $sIdsDllType = "ptr"
     EndIf
 
-    Local $bParametersDllType
-    If VarGetType($parameters) == "DLLStruct" Then
-        $bParametersDllType = "struct*"
+    Local $sParametersDllType
+    If IsDllStruct($parameters) Then
+        $sParametersDllType = "struct*"
     Else
-        $bParametersDllType = "ptr"
+        $sParametersDllType = "ptr"
     EndIf
 
-    Local $bRejectedImgPointsDllType
-    If VarGetType($rejectedImgPoints) == "DLLStruct" Then
-        $bRejectedImgPointsDllType = "struct*"
+    Local $sRejectedImgPointsDllType
+    If IsDllStruct($rejectedImgPoints) Then
+        $sRejectedImgPointsDllType = "struct*"
     Else
-        $bRejectedImgPointsDllType = "ptr"
+        $sRejectedImgPointsDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDetectMarkers", $bImageDllType, $image, $bDictionaryDllType, $dictionary, $bCornersDllType, $corners, $bIdsDllType, $ids, $bParametersDllType, $parameters, $bRejectedImgPointsDllType, $rejectedImgPoints), "cveArucoDetectMarkers", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDetectMarkers", $sImageDllType, $image, $sDictionaryDllType, $dictionary, $sCornersDllType, $corners, $sIdsDllType, $ids, $sParametersDllType, $parameters, $sRejectedImgPointsDllType, $rejectedImgPoints), "cveArucoDetectMarkers", @error)
 EndFunc   ;==>_cveArucoDetectMarkers
 
 Func _cveArucoDetectMarkersMat($matImage, $dictionary, $matCorners, $matIds, $parameters, $matRejectedImgPoints)
@@ -414,42 +424,42 @@ EndFunc   ;==>_cveArucoDetectMarkersMat
 Func _cveArucoEstimatePoseSingleMarkers($corners, $markerLength, $cameraMatrix, $distCoeffs, $rvecs, $tvecs)
     ; CVAPI(void) cveArucoEstimatePoseSingleMarkers(cv::_InputArray* corners, float markerLength, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_OutputArray* rvecs, cv::_OutputArray* tvecs);
 
-    Local $bCornersDllType
-    If VarGetType($corners) == "DLLStruct" Then
-        $bCornersDllType = "struct*"
+    Local $sCornersDllType
+    If IsDllStruct($corners) Then
+        $sCornersDllType = "struct*"
     Else
-        $bCornersDllType = "ptr"
+        $sCornersDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
 
-    Local $bRvecsDllType
-    If VarGetType($rvecs) == "DLLStruct" Then
-        $bRvecsDllType = "struct*"
+    Local $sRvecsDllType
+    If IsDllStruct($rvecs) Then
+        $sRvecsDllType = "struct*"
     Else
-        $bRvecsDllType = "ptr"
+        $sRvecsDllType = "ptr"
     EndIf
 
-    Local $bTvecsDllType
-    If VarGetType($tvecs) == "DLLStruct" Then
-        $bTvecsDllType = "struct*"
+    Local $sTvecsDllType
+    If IsDllStruct($tvecs) Then
+        $sTvecsDllType = "struct*"
     Else
-        $bTvecsDllType = "ptr"
+        $sTvecsDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoEstimatePoseSingleMarkers", $bCornersDllType, $corners, "float", $markerLength, $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs, $bRvecsDllType, $rvecs, $bTvecsDllType, $tvecs), "cveArucoEstimatePoseSingleMarkers", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoEstimatePoseSingleMarkers", $sCornersDllType, $corners, "float", $markerLength, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRvecsDllType, $rvecs, $sTvecsDllType, $tvecs), "cveArucoEstimatePoseSingleMarkers", @error)
 EndFunc   ;==>_cveArucoEstimatePoseSingleMarkers
 
 Func _cveArucoEstimatePoseSingleMarkersMat($matCorners, $markerLength, $matCameraMatrix, $matDistCoeffs, $matRvecs, $matTvecs)
@@ -571,54 +581,58 @@ EndFunc   ;==>_cveArucoEstimatePoseSingleMarkersMat
 Func _cveArucoGridBoardCreate($markersX, $markersY, $markerLength, $markerSeparation, $dictionary, $firstMarker, $boardPtr, $sharedPtr)
     ; CVAPI(cv::aruco::GridBoard*) cveArucoGridBoardCreate(int markersX, int markersY, float markerLength, float markerSeparation, cv::aruco::Dictionary* dictionary, int firstMarker, cv::aruco::Board** boardPtr, cv::Ptr<cv::aruco::GridBoard>** sharedPtr);
 
-    Local $bDictionaryDllType
-    If VarGetType($dictionary) == "DLLStruct" Then
-        $bDictionaryDllType = "struct*"
+    Local $sDictionaryDllType
+    If IsDllStruct($dictionary) Then
+        $sDictionaryDllType = "struct*"
     Else
-        $bDictionaryDllType = "ptr"
+        $sDictionaryDllType = "ptr"
     EndIf
 
-    Local $bBoardPtrDllType
-    If VarGetType($boardPtr) == "DLLStruct" Then
-        $bBoardPtrDllType = "struct*"
+    Local $sBoardPtrDllType
+    If IsDllStruct($boardPtr) Then
+        $sBoardPtrDllType = "struct*"
+    ElseIf $boardPtr == Null Then
+        $sBoardPtrDllType = "ptr"
     Else
-        $bBoardPtrDllType = "ptr*"
+        $sBoardPtrDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveArucoGridBoardCreate", "int", $markersX, "int", $markersY, "float", $markerLength, "float", $markerSeparation, $bDictionaryDllType, $dictionary, "int", $firstMarker, $bBoardPtrDllType, $boardPtr, $bSharedPtrDllType, $sharedPtr), "cveArucoGridBoardCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveArucoGridBoardCreate", "int", $markersX, "int", $markersY, "float", $markerLength, "float", $markerSeparation, $sDictionaryDllType, $dictionary, "int", $firstMarker, $sBoardPtrDllType, $boardPtr, $sSharedPtrDllType, $sharedPtr), "cveArucoGridBoardCreate", @error)
 EndFunc   ;==>_cveArucoGridBoardCreate
 
 Func _cveArucoGridBoardDraw($gridBoard, $outSize, $img, $marginSize, $borderBits)
     ; CVAPI(void) cveArucoGridBoardDraw(cv::aruco::GridBoard* gridBoard, CvSize* outSize, cv::_OutputArray* img, int marginSize, int borderBits);
 
-    Local $bGridBoardDllType
-    If VarGetType($gridBoard) == "DLLStruct" Then
-        $bGridBoardDllType = "struct*"
+    Local $sGridBoardDllType
+    If IsDllStruct($gridBoard) Then
+        $sGridBoardDllType = "struct*"
     Else
-        $bGridBoardDllType = "ptr"
+        $sGridBoardDllType = "ptr"
     EndIf
 
-    Local $bOutSizeDllType
-    If VarGetType($outSize) == "DLLStruct" Then
-        $bOutSizeDllType = "struct*"
+    Local $sOutSizeDllType
+    If IsDllStruct($outSize) Then
+        $sOutSizeDllType = "struct*"
     Else
-        $bOutSizeDllType = "ptr"
+        $sOutSizeDllType = "ptr"
     EndIf
 
-    Local $bImgDllType
-    If VarGetType($img) == "DLLStruct" Then
-        $bImgDllType = "struct*"
+    Local $sImgDllType
+    If IsDllStruct($img) Then
+        $sImgDllType = "struct*"
     Else
-        $bImgDllType = "ptr"
+        $sImgDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoGridBoardDraw", $bGridBoardDllType, $gridBoard, $bOutSizeDllType, $outSize, $bImgDllType, $img, "int", $marginSize, "int", $borderBits), "cveArucoGridBoardDraw", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoGridBoardDraw", $sGridBoardDllType, $gridBoard, $sOutSizeDllType, $outSize, $sImgDllType, $img, "int", $marginSize, "int", $borderBits), "cveArucoGridBoardDraw", @error)
 EndFunc   ;==>_cveArucoGridBoardDraw
 
 Func _cveArucoGridBoardDrawMat($gridBoard, $outSize, $matImg, $marginSize, $borderBits)
@@ -652,74 +666,82 @@ EndFunc   ;==>_cveArucoGridBoardDrawMat
 Func _cveArucoGridBoardRelease($gridBoard, $sharedPtr)
     ; CVAPI(void) cveArucoGridBoardRelease(cv::aruco::GridBoard** gridBoard, cv::Ptr<cv::aruco::GridBoard>** sharedPtr);
 
-    Local $bGridBoardDllType
-    If VarGetType($gridBoard) == "DLLStruct" Then
-        $bGridBoardDllType = "struct*"
+    Local $sGridBoardDllType
+    If IsDllStruct($gridBoard) Then
+        $sGridBoardDllType = "struct*"
+    ElseIf $gridBoard == Null Then
+        $sGridBoardDllType = "ptr"
     Else
-        $bGridBoardDllType = "ptr*"
+        $sGridBoardDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoGridBoardRelease", $bGridBoardDllType, $gridBoard, $bSharedPtrDllType, $sharedPtr), "cveArucoGridBoardRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoGridBoardRelease", $sGridBoardDllType, $gridBoard, $sSharedPtrDllType, $sharedPtr), "cveArucoGridBoardRelease", @error)
 EndFunc   ;==>_cveArucoGridBoardRelease
 
 Func _cveCharucoBoardCreate($squaresX, $squaresY, $squareLength, $markerLength, $dictionary, $boardPtr, $sharedPtr)
     ; CVAPI(cv::aruco::CharucoBoard*) cveCharucoBoardCreate(int squaresX, int squaresY, float squareLength, float markerLength, cv::aruco::Dictionary* dictionary, cv::aruco::Board** boardPtr, cv::Ptr<cv::aruco::CharucoBoard>** sharedPtr);
 
-    Local $bDictionaryDllType
-    If VarGetType($dictionary) == "DLLStruct" Then
-        $bDictionaryDllType = "struct*"
+    Local $sDictionaryDllType
+    If IsDllStruct($dictionary) Then
+        $sDictionaryDllType = "struct*"
     Else
-        $bDictionaryDllType = "ptr"
+        $sDictionaryDllType = "ptr"
     EndIf
 
-    Local $bBoardPtrDllType
-    If VarGetType($boardPtr) == "DLLStruct" Then
-        $bBoardPtrDllType = "struct*"
+    Local $sBoardPtrDllType
+    If IsDllStruct($boardPtr) Then
+        $sBoardPtrDllType = "struct*"
+    ElseIf $boardPtr == Null Then
+        $sBoardPtrDllType = "ptr"
     Else
-        $bBoardPtrDllType = "ptr*"
+        $sBoardPtrDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCharucoBoardCreate", "int", $squaresX, "int", $squaresY, "float", $squareLength, "float", $markerLength, $bDictionaryDllType, $dictionary, $bBoardPtrDllType, $boardPtr, $bSharedPtrDllType, $sharedPtr), "cveCharucoBoardCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveCharucoBoardCreate", "int", $squaresX, "int", $squaresY, "float", $squareLength, "float", $markerLength, $sDictionaryDllType, $dictionary, $sBoardPtrDllType, $boardPtr, $sSharedPtrDllType, $sharedPtr), "cveCharucoBoardCreate", @error)
 EndFunc   ;==>_cveCharucoBoardCreate
 
 Func _cveCharucoBoardDraw($charucoBoard, $outSize, $img, $marginSize, $borderBits)
     ; CVAPI(void) cveCharucoBoardDraw(cv::aruco::CharucoBoard* charucoBoard, CvSize* outSize, cv::_OutputArray* img, int marginSize, int borderBits);
 
-    Local $bCharucoBoardDllType
-    If VarGetType($charucoBoard) == "DLLStruct" Then
-        $bCharucoBoardDllType = "struct*"
+    Local $sCharucoBoardDllType
+    If IsDllStruct($charucoBoard) Then
+        $sCharucoBoardDllType = "struct*"
     Else
-        $bCharucoBoardDllType = "ptr"
+        $sCharucoBoardDllType = "ptr"
     EndIf
 
-    Local $bOutSizeDllType
-    If VarGetType($outSize) == "DLLStruct" Then
-        $bOutSizeDllType = "struct*"
+    Local $sOutSizeDllType
+    If IsDllStruct($outSize) Then
+        $sOutSizeDllType = "struct*"
     Else
-        $bOutSizeDllType = "ptr"
+        $sOutSizeDllType = "ptr"
     EndIf
 
-    Local $bImgDllType
-    If VarGetType($img) == "DLLStruct" Then
-        $bImgDllType = "struct*"
+    Local $sImgDllType
+    If IsDllStruct($img) Then
+        $sImgDllType = "struct*"
     Else
-        $bImgDllType = "ptr"
+        $sImgDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCharucoBoardDraw", $bCharucoBoardDllType, $charucoBoard, $bOutSizeDllType, $outSize, $bImgDllType, $img, "int", $marginSize, "int", $borderBits), "cveCharucoBoardDraw", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCharucoBoardDraw", $sCharucoBoardDllType, $charucoBoard, $sOutSizeDllType, $outSize, $sImgDllType, $img, "int", $marginSize, "int", $borderBits), "cveCharucoBoardDraw", @error)
 EndFunc   ;==>_cveCharucoBoardDraw
 
 Func _cveCharucoBoardDrawMat($charucoBoard, $outSize, $matImg, $marginSize, $borderBits)
@@ -753,90 +775,94 @@ EndFunc   ;==>_cveCharucoBoardDrawMat
 Func _cveCharucoBoardRelease($charucoBoard, $sharedPtr)
     ; CVAPI(void) cveCharucoBoardRelease(cv::aruco::CharucoBoard** charucoBoard, cv::Ptr<cv::aruco::CharucoBoard>** sharedPtr);
 
-    Local $bCharucoBoardDllType
-    If VarGetType($charucoBoard) == "DLLStruct" Then
-        $bCharucoBoardDllType = "struct*"
+    Local $sCharucoBoardDllType
+    If IsDllStruct($charucoBoard) Then
+        $sCharucoBoardDllType = "struct*"
+    ElseIf $charucoBoard == Null Then
+        $sCharucoBoardDllType = "ptr"
     Else
-        $bCharucoBoardDllType = "ptr*"
+        $sCharucoBoardDllType = "ptr*"
     EndIf
 
-    Local $bSharedPtrDllType
-    If VarGetType($sharedPtr) == "DLLStruct" Then
-        $bSharedPtrDllType = "struct*"
+    Local $sSharedPtrDllType
+    If IsDllStruct($sharedPtr) Then
+        $sSharedPtrDllType = "struct*"
+    ElseIf $sharedPtr == Null Then
+        $sSharedPtrDllType = "ptr"
     Else
-        $bSharedPtrDllType = "ptr*"
+        $sSharedPtrDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCharucoBoardRelease", $bCharucoBoardDllType, $charucoBoard, $bSharedPtrDllType, $sharedPtr), "cveCharucoBoardRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCharucoBoardRelease", $sCharucoBoardDllType, $charucoBoard, $sSharedPtrDllType, $sharedPtr), "cveCharucoBoardRelease", @error)
 EndFunc   ;==>_cveCharucoBoardRelease
 
 Func _cveArucoRefineDetectedMarkers($image, $board, $detectedCorners, $detectedIds, $rejectedCorners, $cameraMatrix, $distCoeffs, $minRepDistance, $errorCorrectionRate, $checkAllOrders, $recoveredIdxs, $parameters)
     ; CVAPI(void) cveArucoRefineDetectedMarkers(cv::_InputArray* image, cv::aruco::Board* board, cv::_InputOutputArray* detectedCorners, cv::_InputOutputArray* detectedIds, cv::_InputOutputArray* rejectedCorners, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, float minRepDistance, float errorCorrectionRate, bool checkAllOrders, cv::_OutputArray* recoveredIdxs, cv::aruco::DetectorParameters* parameters);
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bBoardDllType
-    If VarGetType($board) == "DLLStruct" Then
-        $bBoardDllType = "struct*"
+    Local $sBoardDllType
+    If IsDllStruct($board) Then
+        $sBoardDllType = "struct*"
     Else
-        $bBoardDllType = "ptr"
+        $sBoardDllType = "ptr"
     EndIf
 
-    Local $bDetectedCornersDllType
-    If VarGetType($detectedCorners) == "DLLStruct" Then
-        $bDetectedCornersDllType = "struct*"
+    Local $sDetectedCornersDllType
+    If IsDllStruct($detectedCorners) Then
+        $sDetectedCornersDllType = "struct*"
     Else
-        $bDetectedCornersDllType = "ptr"
+        $sDetectedCornersDllType = "ptr"
     EndIf
 
-    Local $bDetectedIdsDllType
-    If VarGetType($detectedIds) == "DLLStruct" Then
-        $bDetectedIdsDllType = "struct*"
+    Local $sDetectedIdsDllType
+    If IsDllStruct($detectedIds) Then
+        $sDetectedIdsDllType = "struct*"
     Else
-        $bDetectedIdsDllType = "ptr"
+        $sDetectedIdsDllType = "ptr"
     EndIf
 
-    Local $bRejectedCornersDllType
-    If VarGetType($rejectedCorners) == "DLLStruct" Then
-        $bRejectedCornersDllType = "struct*"
+    Local $sRejectedCornersDllType
+    If IsDllStruct($rejectedCorners) Then
+        $sRejectedCornersDllType = "struct*"
     Else
-        $bRejectedCornersDllType = "ptr"
+        $sRejectedCornersDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
 
-    Local $bRecoveredIdxsDllType
-    If VarGetType($recoveredIdxs) == "DLLStruct" Then
-        $bRecoveredIdxsDllType = "struct*"
+    Local $sRecoveredIdxsDllType
+    If IsDllStruct($recoveredIdxs) Then
+        $sRecoveredIdxsDllType = "struct*"
     Else
-        $bRecoveredIdxsDllType = "ptr"
+        $sRecoveredIdxsDllType = "ptr"
     EndIf
 
-    Local $bParametersDllType
-    If VarGetType($parameters) == "DLLStruct" Then
-        $bParametersDllType = "struct*"
+    Local $sParametersDllType
+    If IsDllStruct($parameters) Then
+        $sParametersDllType = "struct*"
     Else
-        $bParametersDllType = "ptr"
+        $sParametersDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoRefineDetectedMarkers", $bImageDllType, $image, $bBoardDllType, $board, $bDetectedCornersDllType, $detectedCorners, $bDetectedIdsDllType, $detectedIds, $bRejectedCornersDllType, $rejectedCorners, $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs, "float", $minRepDistance, "float", $errorCorrectionRate, "boolean", $checkAllOrders, $bRecoveredIdxsDllType, $recoveredIdxs, $bParametersDllType, $parameters), "cveArucoRefineDetectedMarkers", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoRefineDetectedMarkers", $sImageDllType, $image, $sBoardDllType, $board, $sDetectedCornersDllType, $detectedCorners, $sDetectedIdsDllType, $detectedIds, $sRejectedCornersDllType, $rejectedCorners, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, "float", $minRepDistance, "float", $errorCorrectionRate, "boolean", $checkAllOrders, $sRecoveredIdxsDllType, $recoveredIdxs, $sParametersDllType, $parameters), "cveArucoRefineDetectedMarkers", @error)
 EndFunc   ;==>_cveArucoRefineDetectedMarkers
 
 Func _cveArucoRefineDetectedMarkersMat($matImage, $board, $matDetectedCorners, $matDetectedIds, $matRejectedCorners, $matCameraMatrix, $matDistCoeffs, $minRepDistance, $errorCorrectionRate, $checkAllOrders, $matRecoveredIdxs, $parameters)
@@ -1002,35 +1028,35 @@ EndFunc   ;==>_cveArucoRefineDetectedMarkersMat
 Func _cveArucoDrawDetectedMarkers($image, $corners, $ids, $borderColor)
     ; CVAPI(void) cveArucoDrawDetectedMarkers(cv::_InputOutputArray* image, cv::_InputArray* corners, cv::_InputArray* ids, CvScalar* borderColor);
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bCornersDllType
-    If VarGetType($corners) == "DLLStruct" Then
-        $bCornersDllType = "struct*"
+    Local $sCornersDllType
+    If IsDllStruct($corners) Then
+        $sCornersDllType = "struct*"
     Else
-        $bCornersDllType = "ptr"
+        $sCornersDllType = "ptr"
     EndIf
 
-    Local $bIdsDllType
-    If VarGetType($ids) == "DLLStruct" Then
-        $bIdsDllType = "struct*"
+    Local $sIdsDllType
+    If IsDllStruct($ids) Then
+        $sIdsDllType = "struct*"
     Else
-        $bIdsDllType = "ptr"
+        $sIdsDllType = "ptr"
     EndIf
 
-    Local $bBorderColorDllType
-    If VarGetType($borderColor) == "DLLStruct" Then
-        $bBorderColorDllType = "struct*"
+    Local $sBorderColorDllType
+    If IsDllStruct($borderColor) Then
+        $sBorderColorDllType = "struct*"
     Else
-        $bBorderColorDllType = "ptr"
+        $sBorderColorDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawDetectedMarkers", $bImageDllType, $image, $bCornersDllType, $corners, $bIdsDllType, $ids, $bBorderColorDllType, $borderColor), "cveArucoDrawDetectedMarkers", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawDetectedMarkers", $sImageDllType, $image, $sCornersDllType, $corners, $sIdsDllType, $ids, $sBorderColorDllType, $borderColor), "cveArucoDrawDetectedMarkers", @error)
 EndFunc   ;==>_cveArucoDrawDetectedMarkers
 
 Func _cveArucoDrawDetectedMarkersMat($matImage, $matCorners, $matIds, $borderColor)
@@ -1108,97 +1134,97 @@ EndFunc   ;==>_cveArucoDrawDetectedMarkersMat
 Func _cveArucoCalibrateCameraAruco($corners, $ids, $counter, $board, $imageSize, $cameraMatrix, $distCoeffs, $rvecs, $tvecs, $stdDeviationsIntrinsics, $stdDeviationsExtrinsics, $perViewErrors, $flags, $criteria)
     ; CVAPI(double) cveArucoCalibrateCameraAruco(cv::_InputArray* corners, cv::_InputArray* ids, cv::_InputArray* counter, cv::aruco::Board* board, CvSize* imageSize, cv::_InputOutputArray* cameraMatrix, cv::_InputOutputArray* distCoeffs, cv::_OutputArray* rvecs, cv::_OutputArray* tvecs, cv::_OutputArray* stdDeviationsIntrinsics, cv::_OutputArray* stdDeviationsExtrinsics, cv::_OutputArray* perViewErrors, int flags, CvTermCriteria* criteria);
 
-    Local $bCornersDllType
-    If VarGetType($corners) == "DLLStruct" Then
-        $bCornersDllType = "struct*"
+    Local $sCornersDllType
+    If IsDllStruct($corners) Then
+        $sCornersDllType = "struct*"
     Else
-        $bCornersDllType = "ptr"
+        $sCornersDllType = "ptr"
     EndIf
 
-    Local $bIdsDllType
-    If VarGetType($ids) == "DLLStruct" Then
-        $bIdsDllType = "struct*"
+    Local $sIdsDllType
+    If IsDllStruct($ids) Then
+        $sIdsDllType = "struct*"
     Else
-        $bIdsDllType = "ptr"
+        $sIdsDllType = "ptr"
     EndIf
 
-    Local $bCounterDllType
-    If VarGetType($counter) == "DLLStruct" Then
-        $bCounterDllType = "struct*"
+    Local $sCounterDllType
+    If IsDllStruct($counter) Then
+        $sCounterDllType = "struct*"
     Else
-        $bCounterDllType = "ptr"
+        $sCounterDllType = "ptr"
     EndIf
 
-    Local $bBoardDllType
-    If VarGetType($board) == "DLLStruct" Then
-        $bBoardDllType = "struct*"
+    Local $sBoardDllType
+    If IsDllStruct($board) Then
+        $sBoardDllType = "struct*"
     Else
-        $bBoardDllType = "ptr"
+        $sBoardDllType = "ptr"
     EndIf
 
-    Local $bImageSizeDllType
-    If VarGetType($imageSize) == "DLLStruct" Then
-        $bImageSizeDllType = "struct*"
+    Local $sImageSizeDllType
+    If IsDllStruct($imageSize) Then
+        $sImageSizeDllType = "struct*"
     Else
-        $bImageSizeDllType = "ptr"
+        $sImageSizeDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
 
-    Local $bRvecsDllType
-    If VarGetType($rvecs) == "DLLStruct" Then
-        $bRvecsDllType = "struct*"
+    Local $sRvecsDllType
+    If IsDllStruct($rvecs) Then
+        $sRvecsDllType = "struct*"
     Else
-        $bRvecsDllType = "ptr"
+        $sRvecsDllType = "ptr"
     EndIf
 
-    Local $bTvecsDllType
-    If VarGetType($tvecs) == "DLLStruct" Then
-        $bTvecsDllType = "struct*"
+    Local $sTvecsDllType
+    If IsDllStruct($tvecs) Then
+        $sTvecsDllType = "struct*"
     Else
-        $bTvecsDllType = "ptr"
+        $sTvecsDllType = "ptr"
     EndIf
 
-    Local $bStdDeviationsIntrinsicsDllType
-    If VarGetType($stdDeviationsIntrinsics) == "DLLStruct" Then
-        $bStdDeviationsIntrinsicsDllType = "struct*"
+    Local $sStdDeviationsIntrinsicsDllType
+    If IsDllStruct($stdDeviationsIntrinsics) Then
+        $sStdDeviationsIntrinsicsDllType = "struct*"
     Else
-        $bStdDeviationsIntrinsicsDllType = "ptr"
+        $sStdDeviationsIntrinsicsDllType = "ptr"
     EndIf
 
-    Local $bStdDeviationsExtrinsicsDllType
-    If VarGetType($stdDeviationsExtrinsics) == "DLLStruct" Then
-        $bStdDeviationsExtrinsicsDllType = "struct*"
+    Local $sStdDeviationsExtrinsicsDllType
+    If IsDllStruct($stdDeviationsExtrinsics) Then
+        $sStdDeviationsExtrinsicsDllType = "struct*"
     Else
-        $bStdDeviationsExtrinsicsDllType = "ptr"
+        $sStdDeviationsExtrinsicsDllType = "ptr"
     EndIf
 
-    Local $bPerViewErrorsDllType
-    If VarGetType($perViewErrors) == "DLLStruct" Then
-        $bPerViewErrorsDllType = "struct*"
+    Local $sPerViewErrorsDllType
+    If IsDllStruct($perViewErrors) Then
+        $sPerViewErrorsDllType = "struct*"
     Else
-        $bPerViewErrorsDllType = "ptr"
+        $sPerViewErrorsDllType = "ptr"
     EndIf
 
-    Local $bCriteriaDllType
-    If VarGetType($criteria) == "DLLStruct" Then
-        $bCriteriaDllType = "struct*"
+    Local $sCriteriaDllType
+    If IsDllStruct($criteria) Then
+        $sCriteriaDllType = "struct*"
     Else
-        $bCriteriaDllType = "ptr"
+        $sCriteriaDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveArucoCalibrateCameraAruco", $bCornersDllType, $corners, $bIdsDllType, $ids, $bCounterDllType, $counter, $bBoardDllType, $board, $bImageSizeDllType, $imageSize, $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs, $bRvecsDllType, $rvecs, $bTvecsDllType, $tvecs, $bStdDeviationsIntrinsicsDllType, $stdDeviationsIntrinsics, $bStdDeviationsExtrinsicsDllType, $stdDeviationsExtrinsics, $bPerViewErrorsDllType, $perViewErrors, "int", $flags, $bCriteriaDllType, $criteria), "cveArucoCalibrateCameraAruco", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveArucoCalibrateCameraAruco", $sCornersDllType, $corners, $sIdsDllType, $ids, $sCounterDllType, $counter, $sBoardDllType, $board, $sImageSizeDllType, $imageSize, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRvecsDllType, $rvecs, $sTvecsDllType, $tvecs, $sStdDeviationsIntrinsicsDllType, $stdDeviationsIntrinsics, $sStdDeviationsExtrinsicsDllType, $stdDeviationsExtrinsics, $sPerViewErrorsDllType, $perViewErrors, "int", $flags, $sCriteriaDllType, $criteria), "cveArucoCalibrateCameraAruco", @error)
 EndFunc   ;==>_cveArucoCalibrateCameraAruco
 
 Func _cveArucoCalibrateCameraArucoMat($matCorners, $matIds, $matCounter, $board, $imageSize, $matCameraMatrix, $matDistCoeffs, $matRvecs, $matTvecs, $matStdDeviationsIntrinsics, $matStdDeviationsExtrinsics, $matPerViewErrors, $flags, $criteria)
@@ -1432,90 +1458,90 @@ EndFunc   ;==>_cveArucoCalibrateCameraArucoMat
 Func _cveArucoCalibrateCameraCharuco($charucoCorners, $charucoIds, $board, $imageSize, $cameraMatrix, $distCoeffs, $rvecs, $tvecs, $stdDeviationsIntrinsics, $stdDeviationsExtrinsics, $perViewErrors, $flags, $criteria)
     ; CVAPI(double) cveArucoCalibrateCameraCharuco(cv::_InputArray* charucoCorners, cv::_InputArray* charucoIds, cv::aruco::CharucoBoard* board, CvSize* imageSize, cv::_InputOutputArray* cameraMatrix, cv::_InputOutputArray* distCoeffs, cv::_OutputArray* rvecs, cv::_OutputArray* tvecs, cv::_OutputArray* stdDeviationsIntrinsics, cv::_OutputArray* stdDeviationsExtrinsics, cv::_OutputArray* perViewErrors, int flags, CvTermCriteria* criteria);
 
-    Local $bCharucoCornersDllType
-    If VarGetType($charucoCorners) == "DLLStruct" Then
-        $bCharucoCornersDllType = "struct*"
+    Local $sCharucoCornersDllType
+    If IsDllStruct($charucoCorners) Then
+        $sCharucoCornersDllType = "struct*"
     Else
-        $bCharucoCornersDllType = "ptr"
+        $sCharucoCornersDllType = "ptr"
     EndIf
 
-    Local $bCharucoIdsDllType
-    If VarGetType($charucoIds) == "DLLStruct" Then
-        $bCharucoIdsDllType = "struct*"
+    Local $sCharucoIdsDllType
+    If IsDllStruct($charucoIds) Then
+        $sCharucoIdsDllType = "struct*"
     Else
-        $bCharucoIdsDllType = "ptr"
+        $sCharucoIdsDllType = "ptr"
     EndIf
 
-    Local $bBoardDllType
-    If VarGetType($board) == "DLLStruct" Then
-        $bBoardDllType = "struct*"
+    Local $sBoardDllType
+    If IsDllStruct($board) Then
+        $sBoardDllType = "struct*"
     Else
-        $bBoardDllType = "ptr"
+        $sBoardDllType = "ptr"
     EndIf
 
-    Local $bImageSizeDllType
-    If VarGetType($imageSize) == "DLLStruct" Then
-        $bImageSizeDllType = "struct*"
+    Local $sImageSizeDllType
+    If IsDllStruct($imageSize) Then
+        $sImageSizeDllType = "struct*"
     Else
-        $bImageSizeDllType = "ptr"
+        $sImageSizeDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
 
-    Local $bRvecsDllType
-    If VarGetType($rvecs) == "DLLStruct" Then
-        $bRvecsDllType = "struct*"
+    Local $sRvecsDllType
+    If IsDllStruct($rvecs) Then
+        $sRvecsDllType = "struct*"
     Else
-        $bRvecsDllType = "ptr"
+        $sRvecsDllType = "ptr"
     EndIf
 
-    Local $bTvecsDllType
-    If VarGetType($tvecs) == "DLLStruct" Then
-        $bTvecsDllType = "struct*"
+    Local $sTvecsDllType
+    If IsDllStruct($tvecs) Then
+        $sTvecsDllType = "struct*"
     Else
-        $bTvecsDllType = "ptr"
+        $sTvecsDllType = "ptr"
     EndIf
 
-    Local $bStdDeviationsIntrinsicsDllType
-    If VarGetType($stdDeviationsIntrinsics) == "DLLStruct" Then
-        $bStdDeviationsIntrinsicsDllType = "struct*"
+    Local $sStdDeviationsIntrinsicsDllType
+    If IsDllStruct($stdDeviationsIntrinsics) Then
+        $sStdDeviationsIntrinsicsDllType = "struct*"
     Else
-        $bStdDeviationsIntrinsicsDllType = "ptr"
+        $sStdDeviationsIntrinsicsDllType = "ptr"
     EndIf
 
-    Local $bStdDeviationsExtrinsicsDllType
-    If VarGetType($stdDeviationsExtrinsics) == "DLLStruct" Then
-        $bStdDeviationsExtrinsicsDllType = "struct*"
+    Local $sStdDeviationsExtrinsicsDllType
+    If IsDllStruct($stdDeviationsExtrinsics) Then
+        $sStdDeviationsExtrinsicsDllType = "struct*"
     Else
-        $bStdDeviationsExtrinsicsDllType = "ptr"
+        $sStdDeviationsExtrinsicsDllType = "ptr"
     EndIf
 
-    Local $bPerViewErrorsDllType
-    If VarGetType($perViewErrors) == "DLLStruct" Then
-        $bPerViewErrorsDllType = "struct*"
+    Local $sPerViewErrorsDllType
+    If IsDllStruct($perViewErrors) Then
+        $sPerViewErrorsDllType = "struct*"
     Else
-        $bPerViewErrorsDllType = "ptr"
+        $sPerViewErrorsDllType = "ptr"
     EndIf
 
-    Local $bCriteriaDllType
-    If VarGetType($criteria) == "DLLStruct" Then
-        $bCriteriaDllType = "struct*"
+    Local $sCriteriaDllType
+    If IsDllStruct($criteria) Then
+        $sCriteriaDllType = "struct*"
     Else
-        $bCriteriaDllType = "ptr"
+        $sCriteriaDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveArucoCalibrateCameraCharuco", $bCharucoCornersDllType, $charucoCorners, $bCharucoIdsDllType, $charucoIds, $bBoardDllType, $board, $bImageSizeDllType, $imageSize, $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs, $bRvecsDllType, $rvecs, $bTvecsDllType, $tvecs, $bStdDeviationsIntrinsicsDllType, $stdDeviationsIntrinsics, $bStdDeviationsExtrinsicsDllType, $stdDeviationsExtrinsics, $bPerViewErrorsDllType, $perViewErrors, "int", $flags, $bCriteriaDllType, $criteria), "cveArucoCalibrateCameraCharuco", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveArucoCalibrateCameraCharuco", $sCharucoCornersDllType, $charucoCorners, $sCharucoIdsDllType, $charucoIds, $sBoardDllType, $board, $sImageSizeDllType, $imageSize, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRvecsDllType, $rvecs, $sTvecsDllType, $tvecs, $sStdDeviationsIntrinsicsDllType, $stdDeviationsIntrinsics, $sStdDeviationsExtrinsicsDllType, $stdDeviationsExtrinsics, $sPerViewErrorsDllType, $perViewErrors, "int", $flags, $sCriteriaDllType, $criteria), "cveArucoCalibrateCameraCharuco", @error)
 EndFunc   ;==>_cveArucoCalibrateCameraCharuco
 
 Func _cveArucoCalibrateCameraCharucoMat($matCharucoCorners, $matCharucoIds, $board, $imageSize, $matCameraMatrix, $matDistCoeffs, $matRvecs, $matTvecs, $matStdDeviationsIntrinsics, $matStdDeviationsExtrinsics, $matPerViewErrors, $flags, $criteria)
@@ -1727,75 +1753,75 @@ EndFunc   ;==>_cveArucoCalibrateCameraCharucoMat
 Func _cveArucoDetectorParametersGetDefault($parameters)
     ; CVAPI(void) cveArucoDetectorParametersGetDefault(cv::aruco::DetectorParameters* parameters);
 
-    Local $bParametersDllType
-    If VarGetType($parameters) == "DLLStruct" Then
-        $bParametersDllType = "struct*"
+    Local $sParametersDllType
+    If IsDllStruct($parameters) Then
+        $sParametersDllType = "struct*"
     Else
-        $bParametersDllType = "ptr"
+        $sParametersDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDetectorParametersGetDefault", $bParametersDllType, $parameters), "cveArucoDetectorParametersGetDefault", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDetectorParametersGetDefault", $sParametersDllType, $parameters), "cveArucoDetectorParametersGetDefault", @error)
 EndFunc   ;==>_cveArucoDetectorParametersGetDefault
 
 Func _cveArucoInterpolateCornersCharuco($markerCorners, $markerIds, $image, $board, $charucoCorners, $charucoIds, $cameraMatrix, $distCoeffs, $minMarkers)
     ; CVAPI(int) cveArucoInterpolateCornersCharuco(cv::_InputArray* markerCorners, cv::_InputArray* markerIds, cv::_InputArray* image, cv::aruco::CharucoBoard* board, cv::_OutputArray* charucoCorners, cv::_OutputArray* charucoIds, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, int minMarkers);
 
-    Local $bMarkerCornersDllType
-    If VarGetType($markerCorners) == "DLLStruct" Then
-        $bMarkerCornersDllType = "struct*"
+    Local $sMarkerCornersDllType
+    If IsDllStruct($markerCorners) Then
+        $sMarkerCornersDllType = "struct*"
     Else
-        $bMarkerCornersDllType = "ptr"
+        $sMarkerCornersDllType = "ptr"
     EndIf
 
-    Local $bMarkerIdsDllType
-    If VarGetType($markerIds) == "DLLStruct" Then
-        $bMarkerIdsDllType = "struct*"
+    Local $sMarkerIdsDllType
+    If IsDllStruct($markerIds) Then
+        $sMarkerIdsDllType = "struct*"
     Else
-        $bMarkerIdsDllType = "ptr"
+        $sMarkerIdsDllType = "ptr"
     EndIf
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bBoardDllType
-    If VarGetType($board) == "DLLStruct" Then
-        $bBoardDllType = "struct*"
+    Local $sBoardDllType
+    If IsDllStruct($board) Then
+        $sBoardDllType = "struct*"
     Else
-        $bBoardDllType = "ptr"
+        $sBoardDllType = "ptr"
     EndIf
 
-    Local $bCharucoCornersDllType
-    If VarGetType($charucoCorners) == "DLLStruct" Then
-        $bCharucoCornersDllType = "struct*"
+    Local $sCharucoCornersDllType
+    If IsDllStruct($charucoCorners) Then
+        $sCharucoCornersDllType = "struct*"
     Else
-        $bCharucoCornersDllType = "ptr"
+        $sCharucoCornersDllType = "ptr"
     EndIf
 
-    Local $bCharucoIdsDllType
-    If VarGetType($charucoIds) == "DLLStruct" Then
-        $bCharucoIdsDllType = "struct*"
+    Local $sCharucoIdsDllType
+    If IsDllStruct($charucoIds) Then
+        $sCharucoIdsDllType = "struct*"
     Else
-        $bCharucoIdsDllType = "ptr"
+        $sCharucoIdsDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveArucoInterpolateCornersCharuco", $bMarkerCornersDllType, $markerCorners, $bMarkerIdsDllType, $markerIds, $bImageDllType, $image, $bBoardDllType, $board, $bCharucoCornersDllType, $charucoCorners, $bCharucoIdsDllType, $charucoIds, $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs, "int", $minMarkers), "cveArucoInterpolateCornersCharuco", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveArucoInterpolateCornersCharuco", $sMarkerCornersDllType, $markerCorners, $sMarkerIdsDllType, $markerIds, $sImageDllType, $image, $sBoardDllType, $board, $sCharucoCornersDllType, $charucoCorners, $sCharucoIdsDllType, $charucoIds, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, "int", $minMarkers), "cveArucoInterpolateCornersCharuco", @error)
 EndFunc   ;==>_cveArucoInterpolateCornersCharuco
 
 Func _cveArucoInterpolateCornersCharucoMat($matMarkerCorners, $matMarkerIds, $matImage, $board, $matCharucoCorners, $matCharucoIds, $matCameraMatrix, $matDistCoeffs, $minMarkers)
@@ -1963,35 +1989,35 @@ EndFunc   ;==>_cveArucoInterpolateCornersCharucoMat
 Func _cveArucoDrawDetectedCornersCharuco($image, $charucoCorners, $charucoIds, $cornerColor)
     ; CVAPI(void) cveArucoDrawDetectedCornersCharuco(cv::_InputOutputArray* image, cv::_InputArray* charucoCorners, cv::_InputArray* charucoIds, CvScalar* cornerColor);
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bCharucoCornersDllType
-    If VarGetType($charucoCorners) == "DLLStruct" Then
-        $bCharucoCornersDllType = "struct*"
+    Local $sCharucoCornersDllType
+    If IsDllStruct($charucoCorners) Then
+        $sCharucoCornersDllType = "struct*"
     Else
-        $bCharucoCornersDllType = "ptr"
+        $sCharucoCornersDllType = "ptr"
     EndIf
 
-    Local $bCharucoIdsDllType
-    If VarGetType($charucoIds) == "DLLStruct" Then
-        $bCharucoIdsDllType = "struct*"
+    Local $sCharucoIdsDllType
+    If IsDllStruct($charucoIds) Then
+        $sCharucoIdsDllType = "struct*"
     Else
-        $bCharucoIdsDllType = "ptr"
+        $sCharucoIdsDllType = "ptr"
     EndIf
 
-    Local $bCornerColorDllType
-    If VarGetType($cornerColor) == "DLLStruct" Then
-        $bCornerColorDllType = "struct*"
+    Local $sCornerColorDllType
+    If IsDllStruct($cornerColor) Then
+        $sCornerColorDllType = "struct*"
     Else
-        $bCornerColorDllType = "ptr"
+        $sCornerColorDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawDetectedCornersCharuco", $bImageDllType, $image, $bCharucoCornersDllType, $charucoCorners, $bCharucoIdsDllType, $charucoIds, $bCornerColorDllType, $cornerColor), "cveArucoDrawDetectedCornersCharuco", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawDetectedCornersCharuco", $sImageDllType, $image, $sCharucoCornersDllType, $charucoCorners, $sCharucoIdsDllType, $charucoIds, $sCornerColorDllType, $cornerColor), "cveArucoDrawDetectedCornersCharuco", @error)
 EndFunc   ;==>_cveArucoDrawDetectedCornersCharuco
 
 Func _cveArucoDrawDetectedCornersCharucoMat($matImage, $matCharucoCorners, $matCharucoIds, $cornerColor)
@@ -2069,55 +2095,55 @@ EndFunc   ;==>_cveArucoDrawDetectedCornersCharucoMat
 Func _cveArucoEstimatePoseCharucoBoard($charucoCorners, $charucoIds, $board, $cameraMatrix, $distCoeffs, $rvec, $tvec, $useExtrinsicGuess)
     ; CVAPI(bool) cveArucoEstimatePoseCharucoBoard(cv::_InputArray* charucoCorners, cv::_InputArray* charucoIds, cv::aruco::CharucoBoard* board, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_InputOutputArray* rvec, cv::_InputOutputArray* tvec, bool useExtrinsicGuess);
 
-    Local $bCharucoCornersDllType
-    If VarGetType($charucoCorners) == "DLLStruct" Then
-        $bCharucoCornersDllType = "struct*"
+    Local $sCharucoCornersDllType
+    If IsDllStruct($charucoCorners) Then
+        $sCharucoCornersDllType = "struct*"
     Else
-        $bCharucoCornersDllType = "ptr"
+        $sCharucoCornersDllType = "ptr"
     EndIf
 
-    Local $bCharucoIdsDllType
-    If VarGetType($charucoIds) == "DLLStruct" Then
-        $bCharucoIdsDllType = "struct*"
+    Local $sCharucoIdsDllType
+    If IsDllStruct($charucoIds) Then
+        $sCharucoIdsDllType = "struct*"
     Else
-        $bCharucoIdsDllType = "ptr"
+        $sCharucoIdsDllType = "ptr"
     EndIf
 
-    Local $bBoardDllType
-    If VarGetType($board) == "DLLStruct" Then
-        $bBoardDllType = "struct*"
+    Local $sBoardDllType
+    If IsDllStruct($board) Then
+        $sBoardDllType = "struct*"
     Else
-        $bBoardDllType = "ptr"
+        $sBoardDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
 
-    Local $bRvecDllType
-    If VarGetType($rvec) == "DLLStruct" Then
-        $bRvecDllType = "struct*"
+    Local $sRvecDllType
+    If IsDllStruct($rvec) Then
+        $sRvecDllType = "struct*"
     Else
-        $bRvecDllType = "ptr"
+        $sRvecDllType = "ptr"
     EndIf
 
-    Local $bTvecDllType
-    If VarGetType($tvec) == "DLLStruct" Then
-        $bTvecDllType = "struct*"
+    Local $sTvecDllType
+    If IsDllStruct($tvec) Then
+        $sTvecDllType = "struct*"
     Else
-        $bTvecDllType = "ptr"
+        $sTvecDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveArucoEstimatePoseCharucoBoard", $bCharucoCornersDllType, $charucoCorners, $bCharucoIdsDllType, $charucoIds, $bBoardDllType, $board, $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs, $bRvecDllType, $rvec, $bTvecDllType, $tvec, "boolean", $useExtrinsicGuess), "cveArucoEstimatePoseCharucoBoard", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveArucoEstimatePoseCharucoBoard", $sCharucoCornersDllType, $charucoCorners, $sCharucoIdsDllType, $charucoIds, $sBoardDllType, $board, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRvecDllType, $rvec, $sTvecDllType, $tvec, "boolean", $useExtrinsicGuess), "cveArucoEstimatePoseCharucoBoard", @error)
 EndFunc   ;==>_cveArucoEstimatePoseCharucoBoard
 
 Func _cveArucoEstimatePoseCharucoBoardMat($matCharucoCorners, $matCharucoIds, $board, $matCameraMatrix, $matDistCoeffs, $matRvec, $matTvec, $useExtrinsicGuess)
@@ -2263,56 +2289,56 @@ EndFunc   ;==>_cveArucoEstimatePoseCharucoBoardMat
 Func _cveArucoDetectCharucoDiamond($image, $markerCorners, $markerIds, $squareMarkerLengthRate, $diamondCorners, $diamondIds, $cameraMatrix, $distCoeffs)
     ; CVAPI(void) cveArucoDetectCharucoDiamond(cv::_InputArray* image, cv::_InputArray* markerCorners, cv::_InputArray* markerIds, float squareMarkerLengthRate, cv::_OutputArray* diamondCorners, cv::_OutputArray* diamondIds, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs);
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bMarkerCornersDllType
-    If VarGetType($markerCorners) == "DLLStruct" Then
-        $bMarkerCornersDllType = "struct*"
+    Local $sMarkerCornersDllType
+    If IsDllStruct($markerCorners) Then
+        $sMarkerCornersDllType = "struct*"
     Else
-        $bMarkerCornersDllType = "ptr"
+        $sMarkerCornersDllType = "ptr"
     EndIf
 
-    Local $bMarkerIdsDllType
-    If VarGetType($markerIds) == "DLLStruct" Then
-        $bMarkerIdsDllType = "struct*"
+    Local $sMarkerIdsDllType
+    If IsDllStruct($markerIds) Then
+        $sMarkerIdsDllType = "struct*"
     Else
-        $bMarkerIdsDllType = "ptr"
+        $sMarkerIdsDllType = "ptr"
     EndIf
 
-    Local $bDiamondCornersDllType
-    If VarGetType($diamondCorners) == "DLLStruct" Then
-        $bDiamondCornersDllType = "struct*"
+    Local $sDiamondCornersDllType
+    If IsDllStruct($diamondCorners) Then
+        $sDiamondCornersDllType = "struct*"
     Else
-        $bDiamondCornersDllType = "ptr"
+        $sDiamondCornersDllType = "ptr"
     EndIf
 
-    Local $bDiamondIdsDllType
-    If VarGetType($diamondIds) == "DLLStruct" Then
-        $bDiamondIdsDllType = "struct*"
+    Local $sDiamondIdsDllType
+    If IsDllStruct($diamondIds) Then
+        $sDiamondIdsDllType = "struct*"
     Else
-        $bDiamondIdsDllType = "ptr"
+        $sDiamondIdsDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDetectCharucoDiamond", $bImageDllType, $image, $bMarkerCornersDllType, $markerCorners, $bMarkerIdsDllType, $markerIds, "float", $squareMarkerLengthRate, $bDiamondCornersDllType, $diamondCorners, $bDiamondIdsDllType, $diamondIds, $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs), "cveArucoDetectCharucoDiamond", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDetectCharucoDiamond", $sImageDllType, $image, $sMarkerCornersDllType, $markerCorners, $sMarkerIdsDllType, $markerIds, "float", $squareMarkerLengthRate, $sDiamondCornersDllType, $diamondCorners, $sDiamondIdsDllType, $diamondIds, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs), "cveArucoDetectCharucoDiamond", @error)
 EndFunc   ;==>_cveArucoDetectCharucoDiamond
 
 Func _cveArucoDetectCharucoDiamondMat($matImage, $matMarkerCorners, $matMarkerIds, $squareMarkerLengthRate, $matDiamondCorners, $matDiamondIds, $matCameraMatrix, $matDistCoeffs)
@@ -2478,35 +2504,35 @@ EndFunc   ;==>_cveArucoDetectCharucoDiamondMat
 Func _cveArucoDrawDetectedDiamonds($image, $diamondCorners, $diamondIds, $borderColor)
     ; CVAPI(void) cveArucoDrawDetectedDiamonds(cv::_InputOutputArray* image, cv::_InputArray* diamondCorners, cv::_InputArray* diamondIds, CvScalar* borderColor);
 
-    Local $bImageDllType
-    If VarGetType($image) == "DLLStruct" Then
-        $bImageDllType = "struct*"
+    Local $sImageDllType
+    If IsDllStruct($image) Then
+        $sImageDllType = "struct*"
     Else
-        $bImageDllType = "ptr"
+        $sImageDllType = "ptr"
     EndIf
 
-    Local $bDiamondCornersDllType
-    If VarGetType($diamondCorners) == "DLLStruct" Then
-        $bDiamondCornersDllType = "struct*"
+    Local $sDiamondCornersDllType
+    If IsDllStruct($diamondCorners) Then
+        $sDiamondCornersDllType = "struct*"
     Else
-        $bDiamondCornersDllType = "ptr"
+        $sDiamondCornersDllType = "ptr"
     EndIf
 
-    Local $bDiamondIdsDllType
-    If VarGetType($diamondIds) == "DLLStruct" Then
-        $bDiamondIdsDllType = "struct*"
+    Local $sDiamondIdsDllType
+    If IsDllStruct($diamondIds) Then
+        $sDiamondIdsDllType = "struct*"
     Else
-        $bDiamondIdsDllType = "ptr"
+        $sDiamondIdsDllType = "ptr"
     EndIf
 
-    Local $bBorderColorDllType
-    If VarGetType($borderColor) == "DLLStruct" Then
-        $bBorderColorDllType = "struct*"
+    Local $sBorderColorDllType
+    If IsDllStruct($borderColor) Then
+        $sBorderColorDllType = "struct*"
     Else
-        $bBorderColorDllType = "ptr"
+        $sBorderColorDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawDetectedDiamonds", $bImageDllType, $image, $bDiamondCornersDllType, $diamondCorners, $bDiamondIdsDllType, $diamondIds, $bBorderColorDllType, $borderColor), "cveArucoDrawDetectedDiamonds", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawDetectedDiamonds", $sImageDllType, $image, $sDiamondCornersDllType, $diamondCorners, $sDiamondIdsDllType, $diamondIds, $sBorderColorDllType, $borderColor), "cveArucoDrawDetectedDiamonds", @error)
 EndFunc   ;==>_cveArucoDrawDetectedDiamonds
 
 Func _cveArucoDrawDetectedDiamondsMat($matImage, $matDiamondCorners, $matDiamondIds, $borderColor)
@@ -2584,28 +2610,28 @@ EndFunc   ;==>_cveArucoDrawDetectedDiamondsMat
 Func _cveArucoDrawCharucoDiamond($dictionary, $ids, $squareLength, $markerLength, $img, $marginSize, $borderBits)
     ; CVAPI(void) cveArucoDrawCharucoDiamond(cv::aruco::Dictionary* dictionary, int* ids, int squareLength, int markerLength, cv::_OutputArray* img, int marginSize, int borderBits);
 
-    Local $bDictionaryDllType
-    If VarGetType($dictionary) == "DLLStruct" Then
-        $bDictionaryDllType = "struct*"
+    Local $sDictionaryDllType
+    If IsDllStruct($dictionary) Then
+        $sDictionaryDllType = "struct*"
     Else
-        $bDictionaryDllType = "ptr"
+        $sDictionaryDllType = "ptr"
     EndIf
 
-    Local $bIdsDllType
-    If VarGetType($ids) == "DLLStruct" Then
-        $bIdsDllType = "struct*"
+    Local $sIdsDllType
+    If IsDllStruct($ids) Then
+        $sIdsDllType = "struct*"
     Else
-        $bIdsDllType = "int*"
+        $sIdsDllType = "int*"
     EndIf
 
-    Local $bImgDllType
-    If VarGetType($img) == "DLLStruct" Then
-        $bImgDllType = "struct*"
+    Local $sImgDllType
+    If IsDllStruct($img) Then
+        $sImgDllType = "struct*"
     Else
-        $bImgDllType = "ptr"
+        $sImgDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawCharucoDiamond", $bDictionaryDllType, $dictionary, $bIdsDllType, $ids, "int", $squareLength, "int", $markerLength, $bImgDllType, $img, "int", $marginSize, "int", $borderBits), "cveArucoDrawCharucoDiamond", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawCharucoDiamond", $sDictionaryDllType, $dictionary, $sIdsDllType, $ids, "int", $squareLength, "int", $markerLength, $sImgDllType, $img, "int", $marginSize, "int", $borderBits), "cveArucoDrawCharucoDiamond", @error)
 EndFunc   ;==>_cveArucoDrawCharucoDiamond
 
 Func _cveArucoDrawCharucoDiamondMat($dictionary, $ids, $squareLength, $markerLength, $matImg, $marginSize, $borderBits)
@@ -2639,28 +2665,28 @@ EndFunc   ;==>_cveArucoDrawCharucoDiamondMat
 Func _cveArucoDrawPlanarBoard($board, $outSize, $img, $marginSize, $borderBits)
     ; CVAPI(void) cveArucoDrawPlanarBoard(cv::aruco::Board* board, CvSize* outSize, cv::_OutputArray* img, int marginSize, int borderBits);
 
-    Local $bBoardDllType
-    If VarGetType($board) == "DLLStruct" Then
-        $bBoardDllType = "struct*"
+    Local $sBoardDllType
+    If IsDllStruct($board) Then
+        $sBoardDllType = "struct*"
     Else
-        $bBoardDllType = "ptr"
+        $sBoardDllType = "ptr"
     EndIf
 
-    Local $bOutSizeDllType
-    If VarGetType($outSize) == "DLLStruct" Then
-        $bOutSizeDllType = "struct*"
+    Local $sOutSizeDllType
+    If IsDllStruct($outSize) Then
+        $sOutSizeDllType = "struct*"
     Else
-        $bOutSizeDllType = "ptr"
+        $sOutSizeDllType = "ptr"
     EndIf
 
-    Local $bImgDllType
-    If VarGetType($img) == "DLLStruct" Then
-        $bImgDllType = "struct*"
+    Local $sImgDllType
+    If IsDllStruct($img) Then
+        $sImgDllType = "struct*"
     Else
-        $bImgDllType = "ptr"
+        $sImgDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawPlanarBoard", $bBoardDllType, $board, $bOutSizeDllType, $outSize, $bImgDllType, $img, "int", $marginSize, "int", $borderBits), "cveArucoDrawPlanarBoard", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawPlanarBoard", $sBoardDllType, $board, $sOutSizeDllType, $outSize, $sImgDllType, $img, "int", $marginSize, "int", $borderBits), "cveArucoDrawPlanarBoard", @error)
 EndFunc   ;==>_cveArucoDrawPlanarBoard
 
 Func _cveArucoDrawPlanarBoardMat($board, $outSize, $matImg, $marginSize, $borderBits)
@@ -2694,55 +2720,55 @@ EndFunc   ;==>_cveArucoDrawPlanarBoardMat
 Func _cveArucoEstimatePoseBoard($corners, $ids, $board, $cameraMatrix, $distCoeffs, $rvec, $tvec, $useExtrinsicGuess)
     ; CVAPI(int) cveArucoEstimatePoseBoard(cv::_InputArray* corners, cv::_InputArray* ids, cv::aruco::Board* board, cv::_InputArray* cameraMatrix, cv::_InputArray* distCoeffs, cv::_InputOutputArray* rvec, cv::_InputOutputArray* tvec, bool useExtrinsicGuess);
 
-    Local $bCornersDllType
-    If VarGetType($corners) == "DLLStruct" Then
-        $bCornersDllType = "struct*"
+    Local $sCornersDllType
+    If IsDllStruct($corners) Then
+        $sCornersDllType = "struct*"
     Else
-        $bCornersDllType = "ptr"
+        $sCornersDllType = "ptr"
     EndIf
 
-    Local $bIdsDllType
-    If VarGetType($ids) == "DLLStruct" Then
-        $bIdsDllType = "struct*"
+    Local $sIdsDllType
+    If IsDllStruct($ids) Then
+        $sIdsDllType = "struct*"
     Else
-        $bIdsDllType = "ptr"
+        $sIdsDllType = "ptr"
     EndIf
 
-    Local $bBoardDllType
-    If VarGetType($board) == "DLLStruct" Then
-        $bBoardDllType = "struct*"
+    Local $sBoardDllType
+    If IsDllStruct($board) Then
+        $sBoardDllType = "struct*"
     Else
-        $bBoardDllType = "ptr"
+        $sBoardDllType = "ptr"
     EndIf
 
-    Local $bCameraMatrixDllType
-    If VarGetType($cameraMatrix) == "DLLStruct" Then
-        $bCameraMatrixDllType = "struct*"
+    Local $sCameraMatrixDllType
+    If IsDllStruct($cameraMatrix) Then
+        $sCameraMatrixDllType = "struct*"
     Else
-        $bCameraMatrixDllType = "ptr"
+        $sCameraMatrixDllType = "ptr"
     EndIf
 
-    Local $bDistCoeffsDllType
-    If VarGetType($distCoeffs) == "DLLStruct" Then
-        $bDistCoeffsDllType = "struct*"
+    Local $sDistCoeffsDllType
+    If IsDllStruct($distCoeffs) Then
+        $sDistCoeffsDllType = "struct*"
     Else
-        $bDistCoeffsDllType = "ptr"
+        $sDistCoeffsDllType = "ptr"
     EndIf
 
-    Local $bRvecDllType
-    If VarGetType($rvec) == "DLLStruct" Then
-        $bRvecDllType = "struct*"
+    Local $sRvecDllType
+    If IsDllStruct($rvec) Then
+        $sRvecDllType = "struct*"
     Else
-        $bRvecDllType = "ptr"
+        $sRvecDllType = "ptr"
     EndIf
 
-    Local $bTvecDllType
-    If VarGetType($tvec) == "DLLStruct" Then
-        $bTvecDllType = "struct*"
+    Local $sTvecDllType
+    If IsDllStruct($tvec) Then
+        $sTvecDllType = "struct*"
     Else
-        $bTvecDllType = "ptr"
+        $sTvecDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveArucoEstimatePoseBoard", $bCornersDllType, $corners, $bIdsDllType, $ids, $bBoardDllType, $board, $bCameraMatrixDllType, $cameraMatrix, $bDistCoeffsDllType, $distCoeffs, $bRvecDllType, $rvec, $bTvecDllType, $tvec, "boolean", $useExtrinsicGuess), "cveArucoEstimatePoseBoard", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveArucoEstimatePoseBoard", $sCornersDllType, $corners, $sIdsDllType, $ids, $sBoardDllType, $board, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRvecDllType, $rvec, $sTvecDllType, $tvec, "boolean", $useExtrinsicGuess), "cveArucoEstimatePoseBoard", @error)
 EndFunc   ;==>_cveArucoEstimatePoseBoard
 
 Func _cveArucoEstimatePoseBoardMat($matCorners, $matIds, $board, $matCameraMatrix, $matDistCoeffs, $matRvec, $matTvec, $useExtrinsicGuess)
@@ -2888,42 +2914,42 @@ EndFunc   ;==>_cveArucoEstimatePoseBoardMat
 Func _cveArucoGetBoardObjectAndImagePoints($board, $detectedCorners, $detectedIds, $objPoints, $imgPoints)
     ; CVAPI(void) cveArucoGetBoardObjectAndImagePoints(cv::aruco::Board* board, cv::_InputArray* detectedCorners, cv::_InputArray* detectedIds, cv::_OutputArray* objPoints, cv::_OutputArray* imgPoints);
 
-    Local $bBoardDllType
-    If VarGetType($board) == "DLLStruct" Then
-        $bBoardDllType = "struct*"
+    Local $sBoardDllType
+    If IsDllStruct($board) Then
+        $sBoardDllType = "struct*"
     Else
-        $bBoardDllType = "ptr"
+        $sBoardDllType = "ptr"
     EndIf
 
-    Local $bDetectedCornersDllType
-    If VarGetType($detectedCorners) == "DLLStruct" Then
-        $bDetectedCornersDllType = "struct*"
+    Local $sDetectedCornersDllType
+    If IsDllStruct($detectedCorners) Then
+        $sDetectedCornersDllType = "struct*"
     Else
-        $bDetectedCornersDllType = "ptr"
+        $sDetectedCornersDllType = "ptr"
     EndIf
 
-    Local $bDetectedIdsDllType
-    If VarGetType($detectedIds) == "DLLStruct" Then
-        $bDetectedIdsDllType = "struct*"
+    Local $sDetectedIdsDllType
+    If IsDllStruct($detectedIds) Then
+        $sDetectedIdsDllType = "struct*"
     Else
-        $bDetectedIdsDllType = "ptr"
+        $sDetectedIdsDllType = "ptr"
     EndIf
 
-    Local $bObjPointsDllType
-    If VarGetType($objPoints) == "DLLStruct" Then
-        $bObjPointsDllType = "struct*"
+    Local $sObjPointsDllType
+    If IsDllStruct($objPoints) Then
+        $sObjPointsDllType = "struct*"
     Else
-        $bObjPointsDllType = "ptr"
+        $sObjPointsDllType = "ptr"
     EndIf
 
-    Local $bImgPointsDllType
-    If VarGetType($imgPoints) == "DLLStruct" Then
-        $bImgPointsDllType = "struct*"
+    Local $sImgPointsDllType
+    If IsDllStruct($imgPoints) Then
+        $sImgPointsDllType = "struct*"
     Else
-        $bImgPointsDllType = "ptr"
+        $sImgPointsDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoGetBoardObjectAndImagePoints", $bBoardDllType, $board, $bDetectedCornersDllType, $detectedCorners, $bDetectedIdsDllType, $detectedIds, $bObjPointsDllType, $objPoints, $bImgPointsDllType, $imgPoints), "cveArucoGetBoardObjectAndImagePoints", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoGetBoardObjectAndImagePoints", $sBoardDllType, $board, $sDetectedCornersDllType, $detectedCorners, $sDetectedIdsDllType, $detectedIds, $sObjPointsDllType, $objPoints, $sImgPointsDllType, $imgPoints), "cveArucoGetBoardObjectAndImagePoints", @error)
 EndFunc   ;==>_cveArucoGetBoardObjectAndImagePoints
 
 Func _cveArucoGetBoardObjectAndImagePointsMat($board, $matDetectedCorners, $matDetectedIds, $matObjPoints, $matImgPoints)

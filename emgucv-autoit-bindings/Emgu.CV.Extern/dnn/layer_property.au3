@@ -4,11 +4,11 @@
 Func _cveLayerGetName($obj, $str)
     ; CVAPI(void) cveLayerGetName(cv::dnn::Layer* obj, cv::String* str);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
     Local $bStrIsString = VarGetType($str) == "String"
@@ -16,14 +16,14 @@ Func _cveLayerGetName($obj, $str)
         $str = _cveStringCreateFromStr($str)
     EndIf
 
-    Local $bStrDllType
-    If VarGetType($str) == "DLLStruct" Then
-        $bStrDllType = "struct*"
+    Local $sStrDllType
+    If IsDllStruct($str) Then
+        $sStrDllType = "struct*"
     Else
-        $bStrDllType = "ptr"
+        $sStrDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLayerGetName", $bObjDllType, $obj, $bStrDllType, $str), "cveLayerGetName", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLayerGetName", $sObjDllType, $obj, $sStrDllType, $str), "cveLayerGetName", @error)
 
     If $bStrIsString Then
         _cveStringRelease($str)
@@ -33,11 +33,11 @@ EndFunc   ;==>_cveLayerGetName
 Func _cveLayerGetType($obj, $str)
     ; CVAPI(void) cveLayerGetType(cv::dnn::Layer* obj, cv::String* str);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
 
     Local $bStrIsString = VarGetType($str) == "String"
@@ -45,14 +45,14 @@ Func _cveLayerGetType($obj, $str)
         $str = _cveStringCreateFromStr($str)
     EndIf
 
-    Local $bStrDllType
-    If VarGetType($str) == "DLLStruct" Then
-        $bStrDllType = "struct*"
+    Local $sStrDllType
+    If IsDllStruct($str) Then
+        $sStrDllType = "struct*"
     Else
-        $bStrDllType = "ptr"
+        $sStrDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLayerGetType", $bObjDllType, $obj, $bStrDllType, $str), "cveLayerGetType", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveLayerGetType", $sObjDllType, $obj, $sStrDllType, $str), "cveLayerGetType", @error)
 
     If $bStrIsString Then
         _cveStringRelease($str)
@@ -62,11 +62,11 @@ EndFunc   ;==>_cveLayerGetType
 Func _cveLayerGetPreferableTarget($obj)
     ; CVAPI(int) cveLayerGetPreferableTarget(cv::dnn::Layer* obj);
 
-    Local $bObjDllType
-    If VarGetType($obj) == "DLLStruct" Then
-        $bObjDllType = "struct*"
+    Local $sObjDllType
+    If IsDllStruct($obj) Then
+        $sObjDllType = "struct*"
     Else
-        $bObjDllType = "ptr"
+        $sObjDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveLayerGetPreferableTarget", $bObjDllType, $obj), "cveLayerGetPreferableTarget", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveLayerGetPreferableTarget", $sObjDllType, $obj), "cveLayerGetPreferableTarget", @error)
 EndFunc   ;==>_cveLayerGetPreferableTarget

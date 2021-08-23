@@ -9,14 +9,14 @@ Func _cveViz3dCreate($s)
         $s = _cveStringCreateFromStr($s)
     EndIf
 
-    Local $bSDllType
-    If VarGetType($s) == "DLLStruct" Then
-        $bSDllType = "struct*"
+    Local $sSDllType
+    If IsDllStruct($s) Then
+        $sSDllType = "struct*"
     Else
-        $bSDllType = "ptr"
+        $sSDllType = "ptr"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveViz3dCreate", $bSDllType, $s), "cveViz3dCreate", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveViz3dCreate", $sSDllType, $s), "cveViz3dCreate", @error)
 
     If $bSIsString Then
         _cveStringRelease($s)
@@ -28,11 +28,11 @@ EndFunc   ;==>_cveViz3dCreate
 Func _cveViz3dShowWidget($viz, $id, $widget, $pose)
     ; CVAPI(void) cveViz3dShowWidget(cv::viz::Viz3d* viz, cv::String* id, cv::viz::Widget* widget, cv::Affine3d* pose);
 
-    Local $bVizDllType
-    If VarGetType($viz) == "DLLStruct" Then
-        $bVizDllType = "struct*"
+    Local $sVizDllType
+    If IsDllStruct($viz) Then
+        $sVizDllType = "struct*"
     Else
-        $bVizDllType = "ptr"
+        $sVizDllType = "ptr"
     EndIf
 
     Local $bIdIsString = VarGetType($id) == "String"
@@ -40,28 +40,28 @@ Func _cveViz3dShowWidget($viz, $id, $widget, $pose)
         $id = _cveStringCreateFromStr($id)
     EndIf
 
-    Local $bIdDllType
-    If VarGetType($id) == "DLLStruct" Then
-        $bIdDllType = "struct*"
+    Local $sIdDllType
+    If IsDllStruct($id) Then
+        $sIdDllType = "struct*"
     Else
-        $bIdDllType = "ptr"
+        $sIdDllType = "ptr"
     EndIf
 
-    Local $bWidgetDllType
-    If VarGetType($widget) == "DLLStruct" Then
-        $bWidgetDllType = "struct*"
+    Local $sWidgetDllType
+    If IsDllStruct($widget) Then
+        $sWidgetDllType = "struct*"
     Else
-        $bWidgetDllType = "ptr"
+        $sWidgetDllType = "ptr"
     EndIf
 
-    Local $bPoseDllType
-    If VarGetType($pose) == "DLLStruct" Then
-        $bPoseDllType = "struct*"
+    Local $sPoseDllType
+    If IsDllStruct($pose) Then
+        $sPoseDllType = "struct*"
     Else
-        $bPoseDllType = "ptr"
+        $sPoseDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveViz3dShowWidget", $bVizDllType, $viz, $bIdDllType, $id, $bWidgetDllType, $widget, $bPoseDllType, $pose), "cveViz3dShowWidget", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveViz3dShowWidget", $sVizDllType, $viz, $sIdDllType, $id, $sWidgetDllType, $widget, $sPoseDllType, $pose), "cveViz3dShowWidget", @error)
 
     If $bIdIsString Then
         _cveStringRelease($id)
@@ -71,11 +71,11 @@ EndFunc   ;==>_cveViz3dShowWidget
 Func _cveViz3dSetWidgetPose($viz, $id, $pose)
     ; CVAPI(void) cveViz3dSetWidgetPose(cv::viz::Viz3d* viz, cv::String* id, cv::Affine3d* pose);
 
-    Local $bVizDllType
-    If VarGetType($viz) == "DLLStruct" Then
-        $bVizDllType = "struct*"
+    Local $sVizDllType
+    If IsDllStruct($viz) Then
+        $sVizDllType = "struct*"
     Else
-        $bVizDllType = "ptr"
+        $sVizDllType = "ptr"
     EndIf
 
     Local $bIdIsString = VarGetType($id) == "String"
@@ -83,21 +83,21 @@ Func _cveViz3dSetWidgetPose($viz, $id, $pose)
         $id = _cveStringCreateFromStr($id)
     EndIf
 
-    Local $bIdDllType
-    If VarGetType($id) == "DLLStruct" Then
-        $bIdDllType = "struct*"
+    Local $sIdDllType
+    If IsDllStruct($id) Then
+        $sIdDllType = "struct*"
     Else
-        $bIdDllType = "ptr"
+        $sIdDllType = "ptr"
     EndIf
 
-    Local $bPoseDllType
-    If VarGetType($pose) == "DLLStruct" Then
-        $bPoseDllType = "struct*"
+    Local $sPoseDllType
+    If IsDllStruct($pose) Then
+        $sPoseDllType = "struct*"
     Else
-        $bPoseDllType = "ptr"
+        $sPoseDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveViz3dSetWidgetPose", $bVizDllType, $viz, $bIdDllType, $id, $bPoseDllType, $pose), "cveViz3dSetWidgetPose", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveViz3dSetWidgetPose", $sVizDllType, $viz, $sIdDllType, $id, $sPoseDllType, $pose), "cveViz3dSetWidgetPose", @error)
 
     If $bIdIsString Then
         _cveStringRelease($id)
@@ -107,11 +107,11 @@ EndFunc   ;==>_cveViz3dSetWidgetPose
 Func _cveViz3dRemoveWidget($viz, $id)
     ; CVAPI(void) cveViz3dRemoveWidget(cv::viz::Viz3d* viz, cv::String* id);
 
-    Local $bVizDllType
-    If VarGetType($viz) == "DLLStruct" Then
-        $bVizDllType = "struct*"
+    Local $sVizDllType
+    If IsDllStruct($viz) Then
+        $sVizDllType = "struct*"
     Else
-        $bVizDllType = "ptr"
+        $sVizDllType = "ptr"
     EndIf
 
     Local $bIdIsString = VarGetType($id) == "String"
@@ -119,14 +119,14 @@ Func _cveViz3dRemoveWidget($viz, $id)
         $id = _cveStringCreateFromStr($id)
     EndIf
 
-    Local $bIdDllType
-    If VarGetType($id) == "DLLStruct" Then
-        $bIdDllType = "struct*"
+    Local $sIdDllType
+    If IsDllStruct($id) Then
+        $sIdDllType = "struct*"
     Else
-        $bIdDllType = "ptr"
+        $sIdDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveViz3dRemoveWidget", $bVizDllType, $viz, $bIdDllType, $id), "cveViz3dRemoveWidget", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveViz3dRemoveWidget", $sVizDllType, $viz, $sIdDllType, $id), "cveViz3dRemoveWidget", @error)
 
     If $bIdIsString Then
         _cveStringRelease($id)
@@ -136,65 +136,67 @@ EndFunc   ;==>_cveViz3dRemoveWidget
 Func _cveViz3dSetBackgroundMeshLab($viz)
     ; CVAPI(void) cveViz3dSetBackgroundMeshLab(cv::viz::Viz3d* viz);
 
-    Local $bVizDllType
-    If VarGetType($viz) == "DLLStruct" Then
-        $bVizDllType = "struct*"
+    Local $sVizDllType
+    If IsDllStruct($viz) Then
+        $sVizDllType = "struct*"
     Else
-        $bVizDllType = "ptr"
+        $sVizDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveViz3dSetBackgroundMeshLab", $bVizDllType, $viz), "cveViz3dSetBackgroundMeshLab", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveViz3dSetBackgroundMeshLab", $sVizDllType, $viz), "cveViz3dSetBackgroundMeshLab", @error)
 EndFunc   ;==>_cveViz3dSetBackgroundMeshLab
 
 Func _cveViz3dSpin($viz)
     ; CVAPI(void) cveViz3dSpin(cv::viz::Viz3d* viz);
 
-    Local $bVizDllType
-    If VarGetType($viz) == "DLLStruct" Then
-        $bVizDllType = "struct*"
+    Local $sVizDllType
+    If IsDllStruct($viz) Then
+        $sVizDllType = "struct*"
     Else
-        $bVizDllType = "ptr"
+        $sVizDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveViz3dSpin", $bVizDllType, $viz), "cveViz3dSpin", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveViz3dSpin", $sVizDllType, $viz), "cveViz3dSpin", @error)
 EndFunc   ;==>_cveViz3dSpin
 
 Func _cveViz3dSpinOnce($viz, $time, $forceRedraw)
     ; CVAPI(void) cveViz3dSpinOnce(cv::viz::Viz3d* viz, int time, bool forceRedraw);
 
-    Local $bVizDllType
-    If VarGetType($viz) == "DLLStruct" Then
-        $bVizDllType = "struct*"
+    Local $sVizDllType
+    If IsDllStruct($viz) Then
+        $sVizDllType = "struct*"
     Else
-        $bVizDllType = "ptr"
+        $sVizDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveViz3dSpinOnce", $bVizDllType, $viz, "int", $time, "boolean", $forceRedraw), "cveViz3dSpinOnce", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveViz3dSpinOnce", $sVizDllType, $viz, "int", $time, "boolean", $forceRedraw), "cveViz3dSpinOnce", @error)
 EndFunc   ;==>_cveViz3dSpinOnce
 
 Func _cveViz3dWasStopped($viz)
     ; CVAPI(bool) cveViz3dWasStopped(cv::viz::Viz3d* viz);
 
-    Local $bVizDllType
-    If VarGetType($viz) == "DLLStruct" Then
-        $bVizDllType = "struct*"
+    Local $sVizDllType
+    If IsDllStruct($viz) Then
+        $sVizDllType = "struct*"
     Else
-        $bVizDllType = "ptr"
+        $sVizDllType = "ptr"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveViz3dWasStopped", $bVizDllType, $viz), "cveViz3dWasStopped", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveViz3dWasStopped", $sVizDllType, $viz), "cveViz3dWasStopped", @error)
 EndFunc   ;==>_cveViz3dWasStopped
 
 Func _cveViz3dRelease($viz)
     ; CVAPI(void) cveViz3dRelease(cv::viz::Viz3d** viz);
 
-    Local $bVizDllType
-    If VarGetType($viz) == "DLLStruct" Then
-        $bVizDllType = "struct*"
+    Local $sVizDllType
+    If IsDllStruct($viz) Then
+        $sVizDllType = "struct*"
+    ElseIf $viz == Null Then
+        $sVizDllType = "ptr"
     Else
-        $bVizDllType = "ptr*"
+        $sVizDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveViz3dRelease", $bVizDllType, $viz), "cveViz3dRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveViz3dRelease", $sVizDllType, $viz), "cveViz3dRelease", @error)
 EndFunc   ;==>_cveViz3dRelease
 
 Func _cveWTextCreate($text, $pos, $fontSize, $color, $widget2D, $widget)
@@ -205,42 +207,46 @@ Func _cveWTextCreate($text, $pos, $fontSize, $color, $widget2D, $widget)
         $text = _cveStringCreateFromStr($text)
     EndIf
 
-    Local $bTextDllType
-    If VarGetType($text) == "DLLStruct" Then
-        $bTextDllType = "struct*"
+    Local $sTextDllType
+    If IsDllStruct($text) Then
+        $sTextDllType = "struct*"
     Else
-        $bTextDllType = "ptr"
+        $sTextDllType = "ptr"
     EndIf
 
-    Local $bPosDllType
-    If VarGetType($pos) == "DLLStruct" Then
-        $bPosDllType = "struct*"
+    Local $sPosDllType
+    If IsDllStruct($pos) Then
+        $sPosDllType = "struct*"
     Else
-        $bPosDllType = "ptr"
+        $sPosDllType = "ptr"
     EndIf
 
-    Local $bColorDllType
-    If VarGetType($color) == "DLLStruct" Then
-        $bColorDllType = "struct*"
+    Local $sColorDllType
+    If IsDllStruct($color) Then
+        $sColorDllType = "struct*"
     Else
-        $bColorDllType = "ptr"
+        $sColorDllType = "ptr"
     EndIf
 
-    Local $bWidget2DDllType
-    If VarGetType($widget2D) == "DLLStruct" Then
-        $bWidget2DDllType = "struct*"
+    Local $sWidget2DDllType
+    If IsDllStruct($widget2D) Then
+        $sWidget2DDllType = "struct*"
+    ElseIf $widget2D == Null Then
+        $sWidget2DDllType = "ptr"
     Else
-        $bWidget2DDllType = "ptr*"
+        $sWidget2DDllType = "ptr*"
     EndIf
 
-    Local $bWidgetDllType
-    If VarGetType($widget) == "DLLStruct" Then
-        $bWidgetDllType = "struct*"
+    Local $sWidgetDllType
+    If IsDllStruct($widget) Then
+        $sWidgetDllType = "struct*"
+    ElseIf $widget == Null Then
+        $sWidgetDllType = "ptr"
     Else
-        $bWidgetDllType = "ptr*"
+        $sWidgetDllType = "ptr*"
     EndIf
 
-    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWTextCreate", $bTextDllType, $text, $bPosDllType, $pos, "int", $fontSize, $bColorDllType, $color, $bWidget2DDllType, $widget2D, $bWidgetDllType, $widget), "cveWTextCreate", @error)
+    Local $retval = CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWTextCreate", $sTextDllType, $text, $sPosDllType, $pos, "int", $fontSize, $sColorDllType, $color, $sWidget2DDllType, $widget2D, $sWidgetDllType, $widget), "cveWTextCreate", @error)
 
     If $bTextIsString Then
         _cveStringRelease($text)
@@ -252,79 +258,91 @@ EndFunc   ;==>_cveWTextCreate
 Func _cveWTextRelease($text)
     ; CVAPI(void) cveWTextRelease(cv::viz::WText** text);
 
-    Local $bTextDllType
-    If VarGetType($text) == "DLLStruct" Then
-        $bTextDllType = "struct*"
+    Local $sTextDllType
+    If IsDllStruct($text) Then
+        $sTextDllType = "struct*"
+    ElseIf $text == Null Then
+        $sTextDllType = "ptr"
     Else
-        $bTextDllType = "ptr*"
+        $sTextDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWTextRelease", $bTextDllType, $text), "cveWTextRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWTextRelease", $sTextDllType, $text), "cveWTextRelease", @error)
 EndFunc   ;==>_cveWTextRelease
 
 Func _cveWCoordinateSystemCreate($scale, $widget3d, $widget)
     ; CVAPI(cv::viz::WCoordinateSystem*) cveWCoordinateSystemCreate(double scale, cv::viz::Widget3D** widget3d, cv::viz::Widget** widget);
 
-    Local $bWidget3dDllType
-    If VarGetType($widget3d) == "DLLStruct" Then
-        $bWidget3dDllType = "struct*"
+    Local $sWidget3dDllType
+    If IsDllStruct($widget3d) Then
+        $sWidget3dDllType = "struct*"
+    ElseIf $widget3d == Null Then
+        $sWidget3dDllType = "ptr"
     Else
-        $bWidget3dDllType = "ptr*"
+        $sWidget3dDllType = "ptr*"
     EndIf
 
-    Local $bWidgetDllType
-    If VarGetType($widget) == "DLLStruct" Then
-        $bWidgetDllType = "struct*"
+    Local $sWidgetDllType
+    If IsDllStruct($widget) Then
+        $sWidgetDllType = "struct*"
+    ElseIf $widget == Null Then
+        $sWidgetDllType = "ptr"
     Else
-        $bWidgetDllType = "ptr*"
+        $sWidgetDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWCoordinateSystemCreate", "double", $scale, $bWidget3dDllType, $widget3d, $bWidgetDllType, $widget), "cveWCoordinateSystemCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWCoordinateSystemCreate", "double", $scale, $sWidget3dDllType, $widget3d, $sWidgetDllType, $widget), "cveWCoordinateSystemCreate", @error)
 EndFunc   ;==>_cveWCoordinateSystemCreate
 
 Func _cveWCoordinateSystemRelease($system)
     ; CVAPI(void) cveWCoordinateSystemRelease(cv::viz::WCoordinateSystem** system);
 
-    Local $bSystemDllType
-    If VarGetType($system) == "DLLStruct" Then
-        $bSystemDllType = "struct*"
+    Local $sSystemDllType
+    If IsDllStruct($system) Then
+        $sSystemDllType = "struct*"
+    ElseIf $system == Null Then
+        $sSystemDllType = "ptr"
     Else
-        $bSystemDllType = "ptr*"
+        $sSystemDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWCoordinateSystemRelease", $bSystemDllType, $system), "cveWCoordinateSystemRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWCoordinateSystemRelease", $sSystemDllType, $system), "cveWCoordinateSystemRelease", @error)
 EndFunc   ;==>_cveWCoordinateSystemRelease
 
 Func _cveWCloudCreateWithColorArray($cloud, $color, $widget3d, $widget)
     ; CVAPI(cv::viz::WCloud*) cveWCloudCreateWithColorArray(cv::_InputArray* cloud, cv::_InputArray* color, cv::viz::Widget3D** widget3d, cv::viz::Widget** widget);
 
-    Local $bCloudDllType
-    If VarGetType($cloud) == "DLLStruct" Then
-        $bCloudDllType = "struct*"
+    Local $sCloudDllType
+    If IsDllStruct($cloud) Then
+        $sCloudDllType = "struct*"
     Else
-        $bCloudDllType = "ptr"
+        $sCloudDllType = "ptr"
     EndIf
 
-    Local $bColorDllType
-    If VarGetType($color) == "DLLStruct" Then
-        $bColorDllType = "struct*"
+    Local $sColorDllType
+    If IsDllStruct($color) Then
+        $sColorDllType = "struct*"
     Else
-        $bColorDllType = "ptr"
+        $sColorDllType = "ptr"
     EndIf
 
-    Local $bWidget3dDllType
-    If VarGetType($widget3d) == "DLLStruct" Then
-        $bWidget3dDllType = "struct*"
+    Local $sWidget3dDllType
+    If IsDllStruct($widget3d) Then
+        $sWidget3dDllType = "struct*"
+    ElseIf $widget3d == Null Then
+        $sWidget3dDllType = "ptr"
     Else
-        $bWidget3dDllType = "ptr*"
+        $sWidget3dDllType = "ptr*"
     EndIf
 
-    Local $bWidgetDllType
-    If VarGetType($widget) == "DLLStruct" Then
-        $bWidgetDllType = "struct*"
+    Local $sWidgetDllType
+    If IsDllStruct($widget) Then
+        $sWidgetDllType = "struct*"
+    ElseIf $widget == Null Then
+        $sWidgetDllType = "ptr"
     Else
-        $bWidgetDllType = "ptr*"
+        $sWidgetDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWCloudCreateWithColorArray", $bCloudDllType, $cloud, $bColorDllType, $color, $bWidget3dDllType, $widget3d, $bWidgetDllType, $widget), "cveWCloudCreateWithColorArray", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWCloudCreateWithColorArray", $sCloudDllType, $cloud, $sColorDllType, $color, $sWidget3dDllType, $widget3d, $sWidgetDllType, $widget), "cveWCloudCreateWithColorArray", @error)
 EndFunc   ;==>_cveWCloudCreateWithColorArray
 
 Func _cveWCloudCreateWithColorArrayMat($matCloud, $matColor, $widget3d, $widget)
@@ -382,34 +400,38 @@ EndFunc   ;==>_cveWCloudCreateWithColorArrayMat
 Func _cveWCloudCreateWithColor($cloud, $color, $widget3d, $widget)
     ; CVAPI(cv::viz::WCloud*) cveWCloudCreateWithColor(cv::_InputArray* cloud, CvScalar* color, cv::viz::Widget3D** widget3d, cv::viz::Widget** widget);
 
-    Local $bCloudDllType
-    If VarGetType($cloud) == "DLLStruct" Then
-        $bCloudDllType = "struct*"
+    Local $sCloudDllType
+    If IsDllStruct($cloud) Then
+        $sCloudDllType = "struct*"
     Else
-        $bCloudDllType = "ptr"
+        $sCloudDllType = "ptr"
     EndIf
 
-    Local $bColorDllType
-    If VarGetType($color) == "DLLStruct" Then
-        $bColorDllType = "struct*"
+    Local $sColorDllType
+    If IsDllStruct($color) Then
+        $sColorDllType = "struct*"
     Else
-        $bColorDllType = "ptr"
+        $sColorDllType = "ptr"
     EndIf
 
-    Local $bWidget3dDllType
-    If VarGetType($widget3d) == "DLLStruct" Then
-        $bWidget3dDllType = "struct*"
+    Local $sWidget3dDllType
+    If IsDllStruct($widget3d) Then
+        $sWidget3dDllType = "struct*"
+    ElseIf $widget3d == Null Then
+        $sWidget3dDllType = "ptr"
     Else
-        $bWidget3dDllType = "ptr*"
+        $sWidget3dDllType = "ptr*"
     EndIf
 
-    Local $bWidgetDllType
-    If VarGetType($widget) == "DLLStruct" Then
-        $bWidgetDllType = "struct*"
+    Local $sWidgetDllType
+    If IsDllStruct($widget) Then
+        $sWidgetDllType = "struct*"
+    ElseIf $widget == Null Then
+        $sWidgetDllType = "ptr"
     Else
-        $bWidgetDllType = "ptr*"
+        $sWidgetDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWCloudCreateWithColor", $bCloudDllType, $cloud, $bColorDllType, $color, $bWidget3dDllType, $widget3d, $bWidgetDllType, $widget), "cveWCloudCreateWithColor", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWCloudCreateWithColor", $sCloudDllType, $cloud, $sColorDllType, $color, $sWidget3dDllType, $widget3d, $sWidgetDllType, $widget), "cveWCloudCreateWithColor", @error)
 EndFunc   ;==>_cveWCloudCreateWithColor
 
 Func _cveWCloudCreateWithColorMat($matCloud, $color, $widget3d, $widget)
@@ -445,14 +467,16 @@ EndFunc   ;==>_cveWCloudCreateWithColorMat
 Func _cveWCloudRelease($cloud)
     ; CVAPI(void) cveWCloudRelease(cv::viz::WCloud** cloud);
 
-    Local $bCloudDllType
-    If VarGetType($cloud) == "DLLStruct" Then
-        $bCloudDllType = "struct*"
+    Local $sCloudDllType
+    If IsDllStruct($cloud) Then
+        $sCloudDllType = "struct*"
+    ElseIf $cloud == Null Then
+        $sCloudDllType = "ptr"
     Else
-        $bCloudDllType = "ptr*"
+        $sCloudDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWCloudRelease", $bCloudDllType, $cloud), "cveWCloudRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWCloudRelease", $sCloudDllType, $cloud), "cveWCloudRelease", @error)
 EndFunc   ;==>_cveWCloudRelease
 
 Func _cveWriteCloud($file, $cloud, $colors, $normals, $binary)
@@ -463,35 +487,35 @@ Func _cveWriteCloud($file, $cloud, $colors, $normals, $binary)
         $file = _cveStringCreateFromStr($file)
     EndIf
 
-    Local $bFileDllType
-    If VarGetType($file) == "DLLStruct" Then
-        $bFileDllType = "struct*"
+    Local $sFileDllType
+    If IsDllStruct($file) Then
+        $sFileDllType = "struct*"
     Else
-        $bFileDllType = "ptr"
+        $sFileDllType = "ptr"
     EndIf
 
-    Local $bCloudDllType
-    If VarGetType($cloud) == "DLLStruct" Then
-        $bCloudDllType = "struct*"
+    Local $sCloudDllType
+    If IsDllStruct($cloud) Then
+        $sCloudDllType = "struct*"
     Else
-        $bCloudDllType = "ptr"
+        $sCloudDllType = "ptr"
     EndIf
 
-    Local $bColorsDllType
-    If VarGetType($colors) == "DLLStruct" Then
-        $bColorsDllType = "struct*"
+    Local $sColorsDllType
+    If IsDllStruct($colors) Then
+        $sColorsDllType = "struct*"
     Else
-        $bColorsDllType = "ptr"
+        $sColorsDllType = "ptr"
     EndIf
 
-    Local $bNormalsDllType
-    If VarGetType($normals) == "DLLStruct" Then
-        $bNormalsDllType = "struct*"
+    Local $sNormalsDllType
+    If IsDllStruct($normals) Then
+        $sNormalsDllType = "struct*"
     Else
-        $bNormalsDllType = "ptr"
+        $sNormalsDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWriteCloud", $bFileDllType, $file, $bCloudDllType, $cloud, $bColorsDllType, $colors, $bNormalsDllType, $normals, "boolean", $binary), "cveWriteCloud", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWriteCloud", $sFileDllType, $file, $sCloudDllType, $cloud, $sColorsDllType, $colors, $sNormalsDllType, $normals, "boolean", $binary), "cveWriteCloud", @error)
 
     If $bFileIsString Then
         _cveStringRelease($file)
@@ -578,35 +602,35 @@ Func _cveReadCloud($file, $cloud, $colors, $normals)
         $file = _cveStringCreateFromStr($file)
     EndIf
 
-    Local $bFileDllType
-    If VarGetType($file) == "DLLStruct" Then
-        $bFileDllType = "struct*"
+    Local $sFileDllType
+    If IsDllStruct($file) Then
+        $sFileDllType = "struct*"
     Else
-        $bFileDllType = "ptr"
+        $sFileDllType = "ptr"
     EndIf
 
-    Local $bCloudDllType
-    If VarGetType($cloud) == "DLLStruct" Then
-        $bCloudDllType = "struct*"
+    Local $sCloudDllType
+    If IsDllStruct($cloud) Then
+        $sCloudDllType = "struct*"
     Else
-        $bCloudDllType = "ptr"
+        $sCloudDllType = "ptr"
     EndIf
 
-    Local $bColorsDllType
-    If VarGetType($colors) == "DLLStruct" Then
-        $bColorsDllType = "struct*"
+    Local $sColorsDllType
+    If IsDllStruct($colors) Then
+        $sColorsDllType = "struct*"
     Else
-        $bColorsDllType = "ptr"
+        $sColorsDllType = "ptr"
     EndIf
 
-    Local $bNormalsDllType
-    If VarGetType($normals) == "DLLStruct" Then
-        $bNormalsDllType = "struct*"
+    Local $sNormalsDllType
+    If IsDllStruct($normals) Then
+        $sNormalsDllType = "struct*"
     Else
-        $bNormalsDllType = "ptr"
+        $sNormalsDllType = "ptr"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveReadCloud", $bFileDllType, $file, $bCloudDllType, $cloud, $bColorsDllType, $colors, $bNormalsDllType, $normals), "cveReadCloud", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveReadCloud", $sFileDllType, $file, $sCloudDllType, $cloud, $sColorsDllType, $colors, $sNormalsDllType, $normals), "cveReadCloud", @error)
 
     If $bFileIsString Then
         _cveStringRelease($file)
@@ -666,316 +690,354 @@ EndFunc   ;==>_cveReadCloudMat
 Func _cveWCubeCreate($minPoint, $maxPoint, $wireFrame, $color, $widget3d, $widget)
     ; CVAPI(cv::viz::WCube*) cveWCubeCreate(CvPoint3D64f* minPoint, CvPoint3D64f* maxPoint, bool wireFrame, CvScalar* color, cv::viz::Widget3D** widget3d, cv::viz::Widget** widget);
 
-    Local $bMinPointDllType
-    If VarGetType($minPoint) == "DLLStruct" Then
-        $bMinPointDllType = "struct*"
+    Local $sMinPointDllType
+    If IsDllStruct($minPoint) Then
+        $sMinPointDllType = "struct*"
     Else
-        $bMinPointDllType = "ptr"
+        $sMinPointDllType = "ptr"
     EndIf
 
-    Local $bMaxPointDllType
-    If VarGetType($maxPoint) == "DLLStruct" Then
-        $bMaxPointDllType = "struct*"
+    Local $sMaxPointDllType
+    If IsDllStruct($maxPoint) Then
+        $sMaxPointDllType = "struct*"
     Else
-        $bMaxPointDllType = "ptr"
+        $sMaxPointDllType = "ptr"
     EndIf
 
-    Local $bColorDllType
-    If VarGetType($color) == "DLLStruct" Then
-        $bColorDllType = "struct*"
+    Local $sColorDllType
+    If IsDllStruct($color) Then
+        $sColorDllType = "struct*"
     Else
-        $bColorDllType = "ptr"
+        $sColorDllType = "ptr"
     EndIf
 
-    Local $bWidget3dDllType
-    If VarGetType($widget3d) == "DLLStruct" Then
-        $bWidget3dDllType = "struct*"
+    Local $sWidget3dDllType
+    If IsDllStruct($widget3d) Then
+        $sWidget3dDllType = "struct*"
+    ElseIf $widget3d == Null Then
+        $sWidget3dDllType = "ptr"
     Else
-        $bWidget3dDllType = "ptr*"
+        $sWidget3dDllType = "ptr*"
     EndIf
 
-    Local $bWidgetDllType
-    If VarGetType($widget) == "DLLStruct" Then
-        $bWidgetDllType = "struct*"
+    Local $sWidgetDllType
+    If IsDllStruct($widget) Then
+        $sWidgetDllType = "struct*"
+    ElseIf $widget == Null Then
+        $sWidgetDllType = "ptr"
     Else
-        $bWidgetDllType = "ptr*"
+        $sWidgetDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWCubeCreate", $bMinPointDllType, $minPoint, $bMaxPointDllType, $maxPoint, "boolean", $wireFrame, $bColorDllType, $color, $bWidget3dDllType, $widget3d, $bWidgetDllType, $widget), "cveWCubeCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWCubeCreate", $sMinPointDllType, $minPoint, $sMaxPointDllType, $maxPoint, "boolean", $wireFrame, $sColorDllType, $color, $sWidget3dDllType, $widget3d, $sWidgetDllType, $widget), "cveWCubeCreate", @error)
 EndFunc   ;==>_cveWCubeCreate
 
 Func _cveWCubeRelease($cube)
     ; CVAPI(void) cveWCubeRelease(cv::viz::WCube** cube);
 
-    Local $bCubeDllType
-    If VarGetType($cube) == "DLLStruct" Then
-        $bCubeDllType = "struct*"
+    Local $sCubeDllType
+    If IsDllStruct($cube) Then
+        $sCubeDllType = "struct*"
+    ElseIf $cube == Null Then
+        $sCubeDllType = "ptr"
     Else
-        $bCubeDllType = "ptr*"
+        $sCubeDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWCubeRelease", $bCubeDllType, $cube), "cveWCubeRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWCubeRelease", $sCubeDllType, $cube), "cveWCubeRelease", @error)
 EndFunc   ;==>_cveWCubeRelease
 
 Func _cveWCylinderCreate($axisPoint1, $axisPoint2, $radius, $numsides, $color, $widget3d, $widget)
     ; CVAPI(cv::viz::WCylinder*) cveWCylinderCreate(CvPoint3D64f* axisPoint1, CvPoint3D64f* axisPoint2, double radius, int numsides, CvScalar* color, cv::viz::Widget3D** widget3d, cv::viz::Widget** widget);
 
-    Local $bAxisPoint1DllType
-    If VarGetType($axisPoint1) == "DLLStruct" Then
-        $bAxisPoint1DllType = "struct*"
+    Local $sAxisPoint1DllType
+    If IsDllStruct($axisPoint1) Then
+        $sAxisPoint1DllType = "struct*"
     Else
-        $bAxisPoint1DllType = "ptr"
+        $sAxisPoint1DllType = "ptr"
     EndIf
 
-    Local $bAxisPoint2DllType
-    If VarGetType($axisPoint2) == "DLLStruct" Then
-        $bAxisPoint2DllType = "struct*"
+    Local $sAxisPoint2DllType
+    If IsDllStruct($axisPoint2) Then
+        $sAxisPoint2DllType = "struct*"
     Else
-        $bAxisPoint2DllType = "ptr"
+        $sAxisPoint2DllType = "ptr"
     EndIf
 
-    Local $bColorDllType
-    If VarGetType($color) == "DLLStruct" Then
-        $bColorDllType = "struct*"
+    Local $sColorDllType
+    If IsDllStruct($color) Then
+        $sColorDllType = "struct*"
     Else
-        $bColorDllType = "ptr"
+        $sColorDllType = "ptr"
     EndIf
 
-    Local $bWidget3dDllType
-    If VarGetType($widget3d) == "DLLStruct" Then
-        $bWidget3dDllType = "struct*"
+    Local $sWidget3dDllType
+    If IsDllStruct($widget3d) Then
+        $sWidget3dDllType = "struct*"
+    ElseIf $widget3d == Null Then
+        $sWidget3dDllType = "ptr"
     Else
-        $bWidget3dDllType = "ptr*"
+        $sWidget3dDllType = "ptr*"
     EndIf
 
-    Local $bWidgetDllType
-    If VarGetType($widget) == "DLLStruct" Then
-        $bWidgetDllType = "struct*"
+    Local $sWidgetDllType
+    If IsDllStruct($widget) Then
+        $sWidgetDllType = "struct*"
+    ElseIf $widget == Null Then
+        $sWidgetDllType = "ptr"
     Else
-        $bWidgetDllType = "ptr*"
+        $sWidgetDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWCylinderCreate", $bAxisPoint1DllType, $axisPoint1, $bAxisPoint2DllType, $axisPoint2, "double", $radius, "int", $numsides, $bColorDllType, $color, $bWidget3dDllType, $widget3d, $bWidgetDllType, $widget), "cveWCylinderCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWCylinderCreate", $sAxisPoint1DllType, $axisPoint1, $sAxisPoint2DllType, $axisPoint2, "double", $radius, "int", $numsides, $sColorDllType, $color, $sWidget3dDllType, $widget3d, $sWidgetDllType, $widget), "cveWCylinderCreate", @error)
 EndFunc   ;==>_cveWCylinderCreate
 
 Func _cveWCylinderRelease($cylinder)
     ; CVAPI(void) cveWCylinderRelease(cv::viz::WCylinder** cylinder);
 
-    Local $bCylinderDllType
-    If VarGetType($cylinder) == "DLLStruct" Then
-        $bCylinderDllType = "struct*"
+    Local $sCylinderDllType
+    If IsDllStruct($cylinder) Then
+        $sCylinderDllType = "struct*"
+    ElseIf $cylinder == Null Then
+        $sCylinderDllType = "ptr"
     Else
-        $bCylinderDllType = "ptr*"
+        $sCylinderDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWCylinderRelease", $bCylinderDllType, $cylinder), "cveWCylinderRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWCylinderRelease", $sCylinderDllType, $cylinder), "cveWCylinderRelease", @error)
 EndFunc   ;==>_cveWCylinderRelease
 
 Func _cveWCircleCreateAtOrigin($radius, $thickness, $color, $widget3d, $widget)
     ; CVAPI(cv::viz::WCircle*) cveWCircleCreateAtOrigin(double radius, double thickness, CvScalar* color, cv::viz::Widget3D** widget3d, cv::viz::Widget** widget);
 
-    Local $bColorDllType
-    If VarGetType($color) == "DLLStruct" Then
-        $bColorDllType = "struct*"
+    Local $sColorDllType
+    If IsDllStruct($color) Then
+        $sColorDllType = "struct*"
     Else
-        $bColorDllType = "ptr"
+        $sColorDllType = "ptr"
     EndIf
 
-    Local $bWidget3dDllType
-    If VarGetType($widget3d) == "DLLStruct" Then
-        $bWidget3dDllType = "struct*"
+    Local $sWidget3dDllType
+    If IsDllStruct($widget3d) Then
+        $sWidget3dDllType = "struct*"
+    ElseIf $widget3d == Null Then
+        $sWidget3dDllType = "ptr"
     Else
-        $bWidget3dDllType = "ptr*"
+        $sWidget3dDllType = "ptr*"
     EndIf
 
-    Local $bWidgetDllType
-    If VarGetType($widget) == "DLLStruct" Then
-        $bWidgetDllType = "struct*"
+    Local $sWidgetDllType
+    If IsDllStruct($widget) Then
+        $sWidgetDllType = "struct*"
+    ElseIf $widget == Null Then
+        $sWidgetDllType = "ptr"
     Else
-        $bWidgetDllType = "ptr*"
+        $sWidgetDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWCircleCreateAtOrigin", "double", $radius, "double", $thickness, $bColorDllType, $color, $bWidget3dDllType, $widget3d, $bWidgetDllType, $widget), "cveWCircleCreateAtOrigin", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWCircleCreateAtOrigin", "double", $radius, "double", $thickness, $sColorDllType, $color, $sWidget3dDllType, $widget3d, $sWidgetDllType, $widget), "cveWCircleCreateAtOrigin", @error)
 EndFunc   ;==>_cveWCircleCreateAtOrigin
 
 Func _cveWCircleCreate($radius, $center, $normal, $thickness, $color, $widget3d, $widget)
     ; CVAPI(cv::viz::WCircle*) cveWCircleCreate(double radius, CvPoint3D64f* center, CvPoint3D64f* normal, double thickness, CvScalar* color, cv::viz::Widget3D** widget3d, cv::viz::Widget** widget);
 
-    Local $bCenterDllType
-    If VarGetType($center) == "DLLStruct" Then
-        $bCenterDllType = "struct*"
+    Local $sCenterDllType
+    If IsDllStruct($center) Then
+        $sCenterDllType = "struct*"
     Else
-        $bCenterDllType = "ptr"
+        $sCenterDllType = "ptr"
     EndIf
 
-    Local $bNormalDllType
-    If VarGetType($normal) == "DLLStruct" Then
-        $bNormalDllType = "struct*"
+    Local $sNormalDllType
+    If IsDllStruct($normal) Then
+        $sNormalDllType = "struct*"
     Else
-        $bNormalDllType = "ptr"
+        $sNormalDllType = "ptr"
     EndIf
 
-    Local $bColorDllType
-    If VarGetType($color) == "DLLStruct" Then
-        $bColorDllType = "struct*"
+    Local $sColorDllType
+    If IsDllStruct($color) Then
+        $sColorDllType = "struct*"
     Else
-        $bColorDllType = "ptr"
+        $sColorDllType = "ptr"
     EndIf
 
-    Local $bWidget3dDllType
-    If VarGetType($widget3d) == "DLLStruct" Then
-        $bWidget3dDllType = "struct*"
+    Local $sWidget3dDllType
+    If IsDllStruct($widget3d) Then
+        $sWidget3dDllType = "struct*"
+    ElseIf $widget3d == Null Then
+        $sWidget3dDllType = "ptr"
     Else
-        $bWidget3dDllType = "ptr*"
+        $sWidget3dDllType = "ptr*"
     EndIf
 
-    Local $bWidgetDllType
-    If VarGetType($widget) == "DLLStruct" Then
-        $bWidgetDllType = "struct*"
+    Local $sWidgetDllType
+    If IsDllStruct($widget) Then
+        $sWidgetDllType = "struct*"
+    ElseIf $widget == Null Then
+        $sWidgetDllType = "ptr"
     Else
-        $bWidgetDllType = "ptr*"
+        $sWidgetDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWCircleCreate", "double", $radius, $bCenterDllType, $center, $bNormalDllType, $normal, "double", $thickness, $bColorDllType, $color, $bWidget3dDllType, $widget3d, $bWidgetDllType, $widget), "cveWCircleCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWCircleCreate", "double", $radius, $sCenterDllType, $center, $sNormalDllType, $normal, "double", $thickness, $sColorDllType, $color, $sWidget3dDllType, $widget3d, $sWidgetDllType, $widget), "cveWCircleCreate", @error)
 EndFunc   ;==>_cveWCircleCreate
 
 Func _cveWCircleRelease($circle)
     ; CVAPI(void) cveWCircleRelease(cv::viz::WCircle** circle);
 
-    Local $bCircleDllType
-    If VarGetType($circle) == "DLLStruct" Then
-        $bCircleDllType = "struct*"
+    Local $sCircleDllType
+    If IsDllStruct($circle) Then
+        $sCircleDllType = "struct*"
+    ElseIf $circle == Null Then
+        $sCircleDllType = "ptr"
     Else
-        $bCircleDllType = "ptr*"
+        $sCircleDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWCircleRelease", $bCircleDllType, $circle), "cveWCircleRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWCircleRelease", $sCircleDllType, $circle), "cveWCircleRelease", @error)
 EndFunc   ;==>_cveWCircleRelease
 
 Func _cveWConeCreateAtOrigin($length, $radius, $resolution, $color, $widget3d, $widget)
     ; CVAPI(cv::viz::WCone*) cveWConeCreateAtOrigin(double length, double radius, int resolution, CvScalar* color, cv::viz::Widget3D** widget3d, cv::viz::Widget** widget);
 
-    Local $bColorDllType
-    If VarGetType($color) == "DLLStruct" Then
-        $bColorDllType = "struct*"
+    Local $sColorDllType
+    If IsDllStruct($color) Then
+        $sColorDllType = "struct*"
     Else
-        $bColorDllType = "ptr"
+        $sColorDllType = "ptr"
     EndIf
 
-    Local $bWidget3dDllType
-    If VarGetType($widget3d) == "DLLStruct" Then
-        $bWidget3dDllType = "struct*"
+    Local $sWidget3dDllType
+    If IsDllStruct($widget3d) Then
+        $sWidget3dDllType = "struct*"
+    ElseIf $widget3d == Null Then
+        $sWidget3dDllType = "ptr"
     Else
-        $bWidget3dDllType = "ptr*"
+        $sWidget3dDllType = "ptr*"
     EndIf
 
-    Local $bWidgetDllType
-    If VarGetType($widget) == "DLLStruct" Then
-        $bWidgetDllType = "struct*"
+    Local $sWidgetDllType
+    If IsDllStruct($widget) Then
+        $sWidgetDllType = "struct*"
+    ElseIf $widget == Null Then
+        $sWidgetDllType = "ptr"
     Else
-        $bWidgetDllType = "ptr*"
+        $sWidgetDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWConeCreateAtOrigin", "double", $length, "double", $radius, "int", $resolution, $bColorDllType, $color, $bWidget3dDllType, $widget3d, $bWidgetDllType, $widget), "cveWConeCreateAtOrigin", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWConeCreateAtOrigin", "double", $length, "double", $radius, "int", $resolution, $sColorDllType, $color, $sWidget3dDllType, $widget3d, $sWidgetDllType, $widget), "cveWConeCreateAtOrigin", @error)
 EndFunc   ;==>_cveWConeCreateAtOrigin
 
 Func _cveWConeCreate($radius, $center, $tip, $resolution, $color, $widget3d, $widget)
     ; CVAPI(cv::viz::WCone*) cveWConeCreate(double radius, CvPoint3D64f* center, CvPoint3D64f* tip, int resolution, CvScalar* color, cv::viz::Widget3D** widget3d, cv::viz::Widget** widget);
 
-    Local $bCenterDllType
-    If VarGetType($center) == "DLLStruct" Then
-        $bCenterDllType = "struct*"
+    Local $sCenterDllType
+    If IsDllStruct($center) Then
+        $sCenterDllType = "struct*"
     Else
-        $bCenterDllType = "ptr"
+        $sCenterDllType = "ptr"
     EndIf
 
-    Local $bTipDllType
-    If VarGetType($tip) == "DLLStruct" Then
-        $bTipDllType = "struct*"
+    Local $sTipDllType
+    If IsDllStruct($tip) Then
+        $sTipDllType = "struct*"
     Else
-        $bTipDllType = "ptr"
+        $sTipDllType = "ptr"
     EndIf
 
-    Local $bColorDllType
-    If VarGetType($color) == "DLLStruct" Then
-        $bColorDllType = "struct*"
+    Local $sColorDllType
+    If IsDllStruct($color) Then
+        $sColorDllType = "struct*"
     Else
-        $bColorDllType = "ptr"
+        $sColorDllType = "ptr"
     EndIf
 
-    Local $bWidget3dDllType
-    If VarGetType($widget3d) == "DLLStruct" Then
-        $bWidget3dDllType = "struct*"
+    Local $sWidget3dDllType
+    If IsDllStruct($widget3d) Then
+        $sWidget3dDllType = "struct*"
+    ElseIf $widget3d == Null Then
+        $sWidget3dDllType = "ptr"
     Else
-        $bWidget3dDllType = "ptr*"
+        $sWidget3dDllType = "ptr*"
     EndIf
 
-    Local $bWidgetDllType
-    If VarGetType($widget) == "DLLStruct" Then
-        $bWidgetDllType = "struct*"
+    Local $sWidgetDllType
+    If IsDllStruct($widget) Then
+        $sWidgetDllType = "struct*"
+    ElseIf $widget == Null Then
+        $sWidgetDllType = "ptr"
     Else
-        $bWidgetDllType = "ptr*"
+        $sWidgetDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWConeCreate", "double", $radius, $bCenterDllType, $center, $bTipDllType, $tip, "int", $resolution, $bColorDllType, $color, $bWidget3dDllType, $widget3d, $bWidgetDllType, $widget), "cveWConeCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWConeCreate", "double", $radius, $sCenterDllType, $center, $sTipDllType, $tip, "int", $resolution, $sColorDllType, $color, $sWidget3dDllType, $widget3d, $sWidgetDllType, $widget), "cveWConeCreate", @error)
 EndFunc   ;==>_cveWConeCreate
 
 Func _cveWConeRelease($cone)
     ; CVAPI(void) cveWConeRelease(cv::viz::WCone** cone);
 
-    Local $bConeDllType
-    If VarGetType($cone) == "DLLStruct" Then
-        $bConeDllType = "struct*"
+    Local $sConeDllType
+    If IsDllStruct($cone) Then
+        $sConeDllType = "struct*"
+    ElseIf $cone == Null Then
+        $sConeDllType = "ptr"
     Else
-        $bConeDllType = "ptr*"
+        $sConeDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWConeRelease", $bConeDllType, $cone), "cveWConeRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWConeRelease", $sConeDllType, $cone), "cveWConeRelease", @error)
 EndFunc   ;==>_cveWConeRelease
 
 Func _cveWArrowCreate($pt1, $pt2, $thickness, $color, $widget3d, $widget)
     ; CVAPI(cv::viz::WArrow*) cveWArrowCreate(CvPoint3D64f* pt1, CvPoint3D64f* pt2, double thickness, CvScalar* color, cv::viz::Widget3D** widget3d, cv::viz::Widget** widget);
 
-    Local $bPt1DllType
-    If VarGetType($pt1) == "DLLStruct" Then
-        $bPt1DllType = "struct*"
+    Local $sPt1DllType
+    If IsDllStruct($pt1) Then
+        $sPt1DllType = "struct*"
     Else
-        $bPt1DllType = "ptr"
+        $sPt1DllType = "ptr"
     EndIf
 
-    Local $bPt2DllType
-    If VarGetType($pt2) == "DLLStruct" Then
-        $bPt2DllType = "struct*"
+    Local $sPt2DllType
+    If IsDllStruct($pt2) Then
+        $sPt2DllType = "struct*"
     Else
-        $bPt2DllType = "ptr"
+        $sPt2DllType = "ptr"
     EndIf
 
-    Local $bColorDllType
-    If VarGetType($color) == "DLLStruct" Then
-        $bColorDllType = "struct*"
+    Local $sColorDllType
+    If IsDllStruct($color) Then
+        $sColorDllType = "struct*"
     Else
-        $bColorDllType = "ptr"
+        $sColorDllType = "ptr"
     EndIf
 
-    Local $bWidget3dDllType
-    If VarGetType($widget3d) == "DLLStruct" Then
-        $bWidget3dDllType = "struct*"
+    Local $sWidget3dDllType
+    If IsDllStruct($widget3d) Then
+        $sWidget3dDllType = "struct*"
+    ElseIf $widget3d == Null Then
+        $sWidget3dDllType = "ptr"
     Else
-        $bWidget3dDllType = "ptr*"
+        $sWidget3dDllType = "ptr*"
     EndIf
 
-    Local $bWidgetDllType
-    If VarGetType($widget) == "DLLStruct" Then
-        $bWidgetDllType = "struct*"
+    Local $sWidgetDllType
+    If IsDllStruct($widget) Then
+        $sWidgetDllType = "struct*"
+    ElseIf $widget == Null Then
+        $sWidgetDllType = "ptr"
     Else
-        $bWidgetDllType = "ptr*"
+        $sWidgetDllType = "ptr*"
     EndIf
-    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWArrowCreate", $bPt1DllType, $pt1, $bPt2DllType, $pt2, "double", $thickness, $bColorDllType, $color, $bWidget3dDllType, $widget3d, $bWidgetDllType, $widget), "cveWArrowCreate", @error)
+    Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWArrowCreate", $sPt1DllType, $pt1, $sPt2DllType, $pt2, "double", $thickness, $sColorDllType, $color, $sWidget3dDllType, $widget3d, $sWidgetDllType, $widget), "cveWArrowCreate", @error)
 EndFunc   ;==>_cveWArrowCreate
 
 Func _cveWArrowRelease($arrow)
     ; CVAPI(void) cveWArrowRelease(cv::viz::WArrow** arrow);
 
-    Local $bArrowDllType
-    If VarGetType($arrow) == "DLLStruct" Then
-        $bArrowDllType = "struct*"
+    Local $sArrowDllType
+    If IsDllStruct($arrow) Then
+        $sArrowDllType = "struct*"
+    ElseIf $arrow == Null Then
+        $sArrowDllType = "ptr"
     Else
-        $bArrowDllType = "ptr*"
+        $sArrowDllType = "ptr*"
     EndIf
 
-    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWArrowRelease", $bArrowDllType, $arrow), "cveWArrowRelease", @error)
+    CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWArrowRelease", $sArrowDllType, $arrow), "cveWArrowRelease", @error)
 EndFunc   ;==>_cveWArrowRelease
