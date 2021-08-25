@@ -12,7 +12,7 @@ Func _OpenniGetColorPoints($capture, $points, $mask)
     EndIf
 
     Local $vecPoints, $iArrPointsSize
-    Local $bPointsIsArray = VarGetType($points) == "Array"
+    Local $bPointsIsArray = IsArray($points)
 
     If $bPointsIsArray Then
         $vecPoints = _VectorOfColorPointCreate()
@@ -50,7 +50,7 @@ Func _cveVideoCaptureCreateFromDevice($device, $apiPreference, $params)
     ; CVAPI(cv::VideoCapture*) cveVideoCaptureCreateFromDevice(int device, int apiPreference, std::vector<int>* params);
 
     Local $vecParams, $iArrParamsSize
-    Local $bParamsIsArray = VarGetType($params) == "Array"
+    Local $bParamsIsArray = IsArray($params)
 
     If $bParamsIsArray Then
         $vecParams = _VectorOfIntCreate()
@@ -82,7 +82,7 @@ EndFunc   ;==>_cveVideoCaptureCreateFromDevice
 Func _cveVideoCaptureCreateFromFile($fileName, $apiPreference, $params)
     ; CVAPI(cv::VideoCapture*) cveVideoCaptureCreateFromFile(cv::String* fileName, int apiPreference, std::vector<int>* params);
 
-    Local $bFileNameIsString = VarGetType($fileName) == "String"
+    Local $bFileNameIsString = IsString($fileName)
     If $bFileNameIsString Then
         $fileName = _cveStringCreateFromStr($fileName)
     EndIf
@@ -95,7 +95,7 @@ Func _cveVideoCaptureCreateFromFile($fileName, $apiPreference, $params)
     EndIf
 
     Local $vecParams, $iArrParamsSize
-    Local $bParamsIsArray = VarGetType($params) == "Array"
+    Local $bParamsIsArray = IsArray($params)
 
     If $bParamsIsArray Then
         $vecParams = _VectorOfIntCreate()
@@ -198,32 +198,49 @@ Func _cveVideoCaptureRetrieve($capture, $image, $flag)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureRetrieve", $sCaptureDllType, $capture, $sImageDllType, $image, "int", $flag), "cveVideoCaptureRetrieve", @error)
 EndFunc   ;==>_cveVideoCaptureRetrieve
 
-Func _cveVideoCaptureRetrieveMat($capture, $matImage, $flag)
-    ; cveVideoCaptureRetrieve using cv::Mat instead of _*Array
+Func _cveVideoCaptureRetrieveTyped($capture, $typeOfImage, $image, $flag)
 
-    Local $oArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $oArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $oArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $oArrImage = _cveOutputArrayFromVectorOfMat($vectorOfMatImage)
+        $oArrImage = Call("_cveOutputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $oArrImage = _cveOutputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $oArrImage = Call("_cveOutputArrayFrom" & $typeOfImage, $image)
     EndIf
 
     Local $retval = _cveVideoCaptureRetrieve($capture, $oArrImage, $flag)
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveOutputArrayRelease($oArrImage)
+    If $typeOfImage <> Default Then
+        _cveOutputArrayRelease($oArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveVideoCaptureRetrieveTyped
+
+Func _cveVideoCaptureRetrieveMat($capture, $image, $flag)
+    ; cveVideoCaptureRetrieve using cv::Mat instead of _*Array
+    Local $retval = _cveVideoCaptureRetrieveTyped($capture, "Mat", $image, $flag)
 
     Return $retval
 EndFunc   ;==>_cveVideoCaptureRetrieveMat
@@ -247,32 +264,49 @@ Func _cveVideoCaptureRead($capture, $image)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveVideoCaptureRead", $sCaptureDllType, $capture, $sImageDllType, $image), "cveVideoCaptureRead", @error)
 EndFunc   ;==>_cveVideoCaptureRead
 
-Func _cveVideoCaptureReadMat($capture, $matImage)
-    ; cveVideoCaptureRead using cv::Mat instead of _*Array
+Func _cveVideoCaptureReadTyped($capture, $typeOfImage, $image)
 
-    Local $oArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $oArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $oArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $oArrImage = _cveOutputArrayFromVectorOfMat($vectorOfMatImage)
+        $oArrImage = Call("_cveOutputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $oArrImage = _cveOutputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $oArrImage = Call("_cveOutputArrayFrom" & $typeOfImage, $image)
     EndIf
 
     Local $retval = _cveVideoCaptureRead($capture, $oArrImage)
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveOutputArrayRelease($oArrImage)
+    If $typeOfImage <> Default Then
+        _cveOutputArrayRelease($oArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveVideoCaptureReadTyped
+
+Func _cveVideoCaptureReadMat($capture, $image)
+    ; cveVideoCaptureRead using cv::Mat instead of _*Array
+    Local $retval = _cveVideoCaptureReadTyped($capture, "Mat", $image)
 
     Return $retval
 EndFunc   ;==>_cveVideoCaptureReadMat
@@ -327,7 +361,7 @@ Func _cveVideoCaptureGetBackendName($capture, $name)
         $sCaptureDllType = "ptr"
     EndIf
 
-    Local $bNameIsString = VarGetType($name) == "String"
+    Local $bNameIsString = IsString($name)
     If $bNameIsString Then
         $name = _cveStringCreateFromStr($name)
     EndIf
@@ -350,7 +384,7 @@ Func _cveVideoCaptureWaitAny($streams, $readyIndex, $timeoutNs)
     ; CVAPI(bool) cveVideoCaptureWaitAny(std::vector<cv::VideoCapture>* streams, std::vector<int>* readyIndex, int timeoutNs);
 
     Local $vecStreams, $iArrStreamsSize
-    Local $bStreamsIsArray = VarGetType($streams) == "Array"
+    Local $bStreamsIsArray = IsArray($streams)
 
     If $bStreamsIsArray Then
         $vecStreams = _VectorOfVideoCaptureCreate()
@@ -371,7 +405,7 @@ Func _cveVideoCaptureWaitAny($streams, $readyIndex, $timeoutNs)
     EndIf
 
     Local $vecReadyIndex, $iArrReadyIndexSize
-    Local $bReadyIndexIsArray = VarGetType($readyIndex) == "Array"
+    Local $bReadyIndexIsArray = IsArray($readyIndex)
 
     If $bReadyIndexIsArray Then
         $vecReadyIndex = _VectorOfIntCreate()
@@ -407,7 +441,7 @@ EndFunc   ;==>_cveVideoCaptureWaitAny
 Func _cveVideoWriterCreate($filename, $fourcc, $fps, $frameSize, $isColor)
     ; CVAPI(cv::VideoWriter*) cveVideoWriterCreate(cv::String* filename, int fourcc, double fps, CvSize* frameSize, bool isColor);
 
-    Local $bFilenameIsString = VarGetType($filename) == "String"
+    Local $bFilenameIsString = IsString($filename)
     If $bFilenameIsString Then
         $filename = _cveStringCreateFromStr($filename)
     EndIf
@@ -438,7 +472,7 @@ EndFunc   ;==>_cveVideoWriterCreate
 Func _cveVideoWriterCreate2($filename, $apiPreference, $fourcc, $fps, $frameSize, $isColor)
     ; CVAPI(cv::VideoWriter*) cveVideoWriterCreate2(cv::String* filename, int apiPreference, int fourcc, double fps, CvSize* frameSize, bool isColor);
 
-    Local $bFilenameIsString = VarGetType($filename) == "String"
+    Local $bFilenameIsString = IsString($filename)
     If $bFilenameIsString Then
         $filename = _cveStringCreateFromStr($filename)
     EndIf
@@ -469,7 +503,7 @@ EndFunc   ;==>_cveVideoWriterCreate2
 Func _cveVideoWriterCreate3($filename, $apiPreference, $fourcc, $fps, $frameSize, $params)
     ; CVAPI(cv::VideoWriter*) cveVideoWriterCreate3(cv::String* filename, int apiPreference, int fourcc, double fps, CvSize* frameSize, std::vector<int>* params);
 
-    Local $bFilenameIsString = VarGetType($filename) == "String"
+    Local $bFilenameIsString = IsString($filename)
     If $bFilenameIsString Then
         $filename = _cveStringCreateFromStr($filename)
     EndIf
@@ -489,7 +523,7 @@ Func _cveVideoWriterCreate3($filename, $apiPreference, $fourcc, $fps, $frameSize
     EndIf
 
     Local $vecParams, $iArrParamsSize
-    Local $bParamsIsArray = VarGetType($params) == "Array"
+    Local $bParamsIsArray = IsArray($params)
 
     If $bParamsIsArray Then
         $vecParams = _VectorOfIntCreate()
@@ -593,32 +627,47 @@ Func _cveVideoWriterWrite($writer, $image)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveVideoWriterWrite", $sWriterDllType, $writer, $sImageDllType, $image), "cveVideoWriterWrite", @error)
 EndFunc   ;==>_cveVideoWriterWrite
 
-Func _cveVideoWriterWriteMat($writer, $matImage)
-    ; cveVideoWriterWrite using cv::Mat instead of _*Array
+Func _cveVideoWriterWriteTyped($writer, $typeOfImage, $image)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
     _cveVideoWriterWrite($writer, $iArrImage)
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveVideoWriterWriteTyped
+
+Func _cveVideoWriterWriteMat($writer, $image)
+    ; cveVideoWriterWrite using cv::Mat instead of _*Array
+    _cveVideoWriterWriteTyped($writer, "Mat", $image)
 EndFunc   ;==>_cveVideoWriterWriteMat
 
 Func _cveVideoWriterFourcc($c1, $c2, $c3, $c4)
@@ -629,7 +678,7 @@ EndFunc   ;==>_cveVideoWriterFourcc
 Func _cveGetBackendName($api, $name)
     ; CVAPI(void) cveGetBackendName(int api, cv::String* name);
 
-    Local $bNameIsString = VarGetType($name) == "String"
+    Local $bNameIsString = IsString($name)
     If $bNameIsString Then
         $name = _cveStringCreateFromStr($name)
     EndIf
@@ -652,7 +701,7 @@ Func _cveGetBackends($backends)
     ; CVAPI(void) cveGetBackends(std::vector<int>* backends);
 
     Local $vecBackends, $iArrBackendsSize
-    Local $bBackendsIsArray = VarGetType($backends) == "Array"
+    Local $bBackendsIsArray = IsArray($backends)
 
     If $bBackendsIsArray Then
         $vecBackends = _VectorOfIntCreate()
@@ -683,7 +732,7 @@ Func _cveGetCameraBackends($backends)
     ; CVAPI(void) cveGetCameraBackends(std::vector<int>* backends);
 
     Local $vecBackends, $iArrBackendsSize
-    Local $bBackendsIsArray = VarGetType($backends) == "Array"
+    Local $bBackendsIsArray = IsArray($backends)
 
     If $bBackendsIsArray Then
         $vecBackends = _VectorOfIntCreate()
@@ -714,7 +763,7 @@ Func _cveGetStreamBackends($backends)
     ; CVAPI(void) cveGetStreamBackends(std::vector<int>* backends);
 
     Local $vecBackends, $iArrBackendsSize
-    Local $bBackendsIsArray = VarGetType($backends) == "Array"
+    Local $bBackendsIsArray = IsArray($backends)
 
     If $bBackendsIsArray Then
         $vecBackends = _VectorOfIntCreate()
@@ -745,7 +794,7 @@ Func _cveGetWriterBackends($backends)
     ; CVAPI(void) cveGetWriterBackends(std::vector<int>* backends);
 
     Local $vecBackends, $iArrBackendsSize
-    Local $bBackendsIsArray = VarGetType($backends) == "Array"
+    Local $bBackendsIsArray = IsArray($backends)
 
     If $bBackendsIsArray Then
         $vecBackends = _VectorOfIntCreate()

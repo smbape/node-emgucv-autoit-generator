@@ -287,54 +287,82 @@ Func _cveSaliencyComputeSaliency($saliency, $image, $saliencyMap)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveSaliencyComputeSaliency", $sSaliencyDllType, $saliency, $sImageDllType, $image, $sSaliencyMapDllType, $saliencyMap), "cveSaliencyComputeSaliency", @error)
 EndFunc   ;==>_cveSaliencyComputeSaliency
 
-Func _cveSaliencyComputeSaliencyMat($saliency, $matImage, $matSaliencyMap)
-    ; cveSaliencyComputeSaliency using cv::Mat instead of _*Array
+Func _cveSaliencyComputeSaliencyTyped($saliency, $typeOfImage, $image, $typeOfSaliencyMap, $saliencyMap)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $oArrSaliencyMap, $vectorOfMatSaliencyMap, $iArrSaliencyMapSize
-    Local $bSaliencyMapIsArray = VarGetType($matSaliencyMap) == "Array"
+    Local $oArrSaliencyMap, $vectorSaliencyMap, $iArrSaliencyMapSize
+    Local $bSaliencyMapIsArray = IsArray($saliencyMap)
+    Local $bSaliencyMapCreate = IsDllStruct($saliencyMap) And $typeOfSaliencyMap == "Scalar"
 
-    If $bSaliencyMapIsArray Then
-        $vectorOfMatSaliencyMap = _VectorOfMatCreate()
+    If $typeOfSaliencyMap == Default Then
+        $oArrSaliencyMap = $saliencyMap
+    ElseIf $bSaliencyMapIsArray Then
+        $vectorSaliencyMap = Call("_VectorOf" & $typeOfSaliencyMap & "Create")
 
-        $iArrSaliencyMapSize = UBound($matSaliencyMap)
+        $iArrSaliencyMapSize = UBound($saliencyMap)
         For $i = 0 To $iArrSaliencyMapSize - 1
-            _VectorOfMatPush($vectorOfMatSaliencyMap, $matSaliencyMap[$i])
+            Call("_VectorOf" & $typeOfSaliencyMap & "Push", $vectorSaliencyMap, $saliencyMap[$i])
         Next
 
-        $oArrSaliencyMap = _cveOutputArrayFromVectorOfMat($vectorOfMatSaliencyMap)
+        $oArrSaliencyMap = Call("_cveOutputArrayFromVectorOf" & $typeOfSaliencyMap, $vectorSaliencyMap)
     Else
-        $oArrSaliencyMap = _cveOutputArrayFromMat($matSaliencyMap)
+        If $bSaliencyMapCreate Then
+            $saliencyMap = Call("_cve" & $typeOfSaliencyMap & "Create", $saliencyMap)
+        EndIf
+        $oArrSaliencyMap = Call("_cveOutputArrayFrom" & $typeOfSaliencyMap, $saliencyMap)
     EndIf
 
     Local $retval = _cveSaliencyComputeSaliency($saliency, $iArrImage, $oArrSaliencyMap)
 
     If $bSaliencyMapIsArray Then
-        _VectorOfMatRelease($vectorOfMatSaliencyMap)
+        Call("_VectorOf" & $typeOfSaliencyMap & "Release", $vectorSaliencyMap)
     EndIf
 
-    _cveOutputArrayRelease($oArrSaliencyMap)
+    If $typeOfSaliencyMap <> Default Then
+        _cveOutputArrayRelease($oArrSaliencyMap)
+        If $bSaliencyMapCreate Then
+            Call("_cve" & $typeOfSaliencyMap & "Release", $saliencyMap)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveSaliencyComputeSaliencyTyped
+
+Func _cveSaliencyComputeSaliencyMat($saliency, $image, $saliencyMap)
+    ; cveSaliencyComputeSaliency using cv::Mat instead of _*Array
+    Local $retval = _cveSaliencyComputeSaliencyTyped($saliency, "Mat", $image, "Mat", $saliencyMap)
 
     Return $retval
 EndFunc   ;==>_cveSaliencyComputeSaliencyMat
@@ -365,54 +393,82 @@ Func _cveStaticSaliencyComputeBinaryMap($saliency, $saliencyMap, $binaryMap)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveStaticSaliencyComputeBinaryMap", $sSaliencyDllType, $saliency, $sSaliencyMapDllType, $saliencyMap, $sBinaryMapDllType, $binaryMap), "cveStaticSaliencyComputeBinaryMap", @error)
 EndFunc   ;==>_cveStaticSaliencyComputeBinaryMap
 
-Func _cveStaticSaliencyComputeBinaryMapMat($saliency, $matSaliencyMap, $matBinaryMap)
-    ; cveStaticSaliencyComputeBinaryMap using cv::Mat instead of _*Array
+Func _cveStaticSaliencyComputeBinaryMapTyped($saliency, $typeOfSaliencyMap, $saliencyMap, $typeOfBinaryMap, $binaryMap)
 
-    Local $iArrSaliencyMap, $vectorOfMatSaliencyMap, $iArrSaliencyMapSize
-    Local $bSaliencyMapIsArray = VarGetType($matSaliencyMap) == "Array"
+    Local $iArrSaliencyMap, $vectorSaliencyMap, $iArrSaliencyMapSize
+    Local $bSaliencyMapIsArray = IsArray($saliencyMap)
+    Local $bSaliencyMapCreate = IsDllStruct($saliencyMap) And $typeOfSaliencyMap == "Scalar"
 
-    If $bSaliencyMapIsArray Then
-        $vectorOfMatSaliencyMap = _VectorOfMatCreate()
+    If $typeOfSaliencyMap == Default Then
+        $iArrSaliencyMap = $saliencyMap
+    ElseIf $bSaliencyMapIsArray Then
+        $vectorSaliencyMap = Call("_VectorOf" & $typeOfSaliencyMap & "Create")
 
-        $iArrSaliencyMapSize = UBound($matSaliencyMap)
+        $iArrSaliencyMapSize = UBound($saliencyMap)
         For $i = 0 To $iArrSaliencyMapSize - 1
-            _VectorOfMatPush($vectorOfMatSaliencyMap, $matSaliencyMap[$i])
+            Call("_VectorOf" & $typeOfSaliencyMap & "Push", $vectorSaliencyMap, $saliencyMap[$i])
         Next
 
-        $iArrSaliencyMap = _cveInputArrayFromVectorOfMat($vectorOfMatSaliencyMap)
+        $iArrSaliencyMap = Call("_cveInputArrayFromVectorOf" & $typeOfSaliencyMap, $vectorSaliencyMap)
     Else
-        $iArrSaliencyMap = _cveInputArrayFromMat($matSaliencyMap)
+        If $bSaliencyMapCreate Then
+            $saliencyMap = Call("_cve" & $typeOfSaliencyMap & "Create", $saliencyMap)
+        EndIf
+        $iArrSaliencyMap = Call("_cveInputArrayFrom" & $typeOfSaliencyMap, $saliencyMap)
     EndIf
 
-    Local $oArrBinaryMap, $vectorOfMatBinaryMap, $iArrBinaryMapSize
-    Local $bBinaryMapIsArray = VarGetType($matBinaryMap) == "Array"
+    Local $oArrBinaryMap, $vectorBinaryMap, $iArrBinaryMapSize
+    Local $bBinaryMapIsArray = IsArray($binaryMap)
+    Local $bBinaryMapCreate = IsDllStruct($binaryMap) And $typeOfBinaryMap == "Scalar"
 
-    If $bBinaryMapIsArray Then
-        $vectorOfMatBinaryMap = _VectorOfMatCreate()
+    If $typeOfBinaryMap == Default Then
+        $oArrBinaryMap = $binaryMap
+    ElseIf $bBinaryMapIsArray Then
+        $vectorBinaryMap = Call("_VectorOf" & $typeOfBinaryMap & "Create")
 
-        $iArrBinaryMapSize = UBound($matBinaryMap)
+        $iArrBinaryMapSize = UBound($binaryMap)
         For $i = 0 To $iArrBinaryMapSize - 1
-            _VectorOfMatPush($vectorOfMatBinaryMap, $matBinaryMap[$i])
+            Call("_VectorOf" & $typeOfBinaryMap & "Push", $vectorBinaryMap, $binaryMap[$i])
         Next
 
-        $oArrBinaryMap = _cveOutputArrayFromVectorOfMat($vectorOfMatBinaryMap)
+        $oArrBinaryMap = Call("_cveOutputArrayFromVectorOf" & $typeOfBinaryMap, $vectorBinaryMap)
     Else
-        $oArrBinaryMap = _cveOutputArrayFromMat($matBinaryMap)
+        If $bBinaryMapCreate Then
+            $binaryMap = Call("_cve" & $typeOfBinaryMap & "Create", $binaryMap)
+        EndIf
+        $oArrBinaryMap = Call("_cveOutputArrayFrom" & $typeOfBinaryMap, $binaryMap)
     EndIf
 
     Local $retval = _cveStaticSaliencyComputeBinaryMap($saliency, $iArrSaliencyMap, $oArrBinaryMap)
 
     If $bBinaryMapIsArray Then
-        _VectorOfMatRelease($vectorOfMatBinaryMap)
+        Call("_VectorOf" & $typeOfBinaryMap & "Release", $vectorBinaryMap)
     EndIf
 
-    _cveOutputArrayRelease($oArrBinaryMap)
+    If $typeOfBinaryMap <> Default Then
+        _cveOutputArrayRelease($oArrBinaryMap)
+        If $bBinaryMapCreate Then
+            Call("_cve" & $typeOfBinaryMap & "Release", $binaryMap)
+        EndIf
+    EndIf
 
     If $bSaliencyMapIsArray Then
-        _VectorOfMatRelease($vectorOfMatSaliencyMap)
+        Call("_VectorOf" & $typeOfSaliencyMap & "Release", $vectorSaliencyMap)
     EndIf
 
-    _cveInputArrayRelease($iArrSaliencyMap)
+    If $typeOfSaliencyMap <> Default Then
+        _cveInputArrayRelease($iArrSaliencyMap)
+        If $bSaliencyMapCreate Then
+            Call("_cve" & $typeOfSaliencyMap & "Release", $saliencyMap)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveStaticSaliencyComputeBinaryMapTyped
+
+Func _cveStaticSaliencyComputeBinaryMapMat($saliency, $saliencyMap, $binaryMap)
+    ; cveStaticSaliencyComputeBinaryMap using cv::Mat instead of _*Array
+    Local $retval = _cveStaticSaliencyComputeBinaryMapTyped($saliency, "Mat", $saliencyMap, "Mat", $binaryMap)
 
     Return $retval
 EndFunc   ;==>_cveStaticSaliencyComputeBinaryMapMat
@@ -452,7 +508,7 @@ Func _cveObjectnessBINGSetTrainingPath($saliency, $trainingPath)
         $sSaliencyDllType = "ptr"
     EndIf
 
-    Local $bTrainingPathIsString = VarGetType($trainingPath) == "String"
+    Local $bTrainingPathIsString = IsString($trainingPath)
     If $bTrainingPathIsString Then
         $trainingPath = _cveStringCreateFromStr($trainingPath)
     EndIf
@@ -482,7 +538,7 @@ Func _cveObjectnessBINGGetObjectnessValues($saliency, $values)
     EndIf
 
     Local $vecValues, $iArrValuesSize
-    Local $bValuesIsArray = VarGetType($values) == "Array"
+    Local $bValuesIsArray = IsArray($values)
 
     If $bValuesIsArray Then
         $vecValues = _VectorOfFloatCreate()

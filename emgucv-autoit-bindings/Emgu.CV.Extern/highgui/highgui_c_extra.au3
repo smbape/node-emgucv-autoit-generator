@@ -4,7 +4,7 @@
 Func _cveImshow($winname, $mat)
     ; CVAPI(void) cveImshow(cv::String* winname, cv::_InputArray* mat);
 
-    Local $bWinnameIsString = VarGetType($winname) == "String"
+    Local $bWinnameIsString = IsString($winname)
     If $bWinnameIsString Then
         $winname = _cveStringCreateFromStr($winname)
     EndIf
@@ -30,38 +30,53 @@ Func _cveImshow($winname, $mat)
     EndIf
 EndFunc   ;==>_cveImshow
 
-Func _cveImshowMat($winname, $matMat)
-    ; cveImshow using cv::Mat instead of _*Array
+Func _cveImshowTyped($winname, $typeOfMat, $mat)
 
-    Local $iArrMat, $vectorOfMatMat, $iArrMatSize
-    Local $bMatIsArray = VarGetType($matMat) == "Array"
+    Local $iArrMat, $vectorMat, $iArrMatSize
+    Local $bMatIsArray = IsArray($mat)
+    Local $bMatCreate = IsDllStruct($mat) And $typeOfMat == "Scalar"
 
-    If $bMatIsArray Then
-        $vectorOfMatMat = _VectorOfMatCreate()
+    If $typeOfMat == Default Then
+        $iArrMat = $mat
+    ElseIf $bMatIsArray Then
+        $vectorMat = Call("_VectorOf" & $typeOfMat & "Create")
 
-        $iArrMatSize = UBound($matMat)
+        $iArrMatSize = UBound($mat)
         For $i = 0 To $iArrMatSize - 1
-            _VectorOfMatPush($vectorOfMatMat, $matMat[$i])
+            Call("_VectorOf" & $typeOfMat & "Push", $vectorMat, $mat[$i])
         Next
 
-        $iArrMat = _cveInputArrayFromVectorOfMat($vectorOfMatMat)
+        $iArrMat = Call("_cveInputArrayFromVectorOf" & $typeOfMat, $vectorMat)
     Else
-        $iArrMat = _cveInputArrayFromMat($matMat)
+        If $bMatCreate Then
+            $mat = Call("_cve" & $typeOfMat & "Create", $mat)
+        EndIf
+        $iArrMat = Call("_cveInputArrayFrom" & $typeOfMat, $mat)
     EndIf
 
     _cveImshow($winname, $iArrMat)
 
     If $bMatIsArray Then
-        _VectorOfMatRelease($vectorOfMatMat)
+        Call("_VectorOf" & $typeOfMat & "Release", $vectorMat)
     EndIf
 
-    _cveInputArrayRelease($iArrMat)
+    If $typeOfMat <> Default Then
+        _cveInputArrayRelease($iArrMat)
+        If $bMatCreate Then
+            Call("_cve" & $typeOfMat & "Release", $mat)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveImshowTyped
+
+Func _cveImshowMat($winname, $mat)
+    ; cveImshow using cv::Mat instead of _*Array
+    _cveImshowTyped($winname, "Mat", $mat)
 EndFunc   ;==>_cveImshowMat
 
 Func _cveNamedWindow($winname, $flags = $CV_WINDOW_AUTOSIZE)
     ; CVAPI(void) cveNamedWindow(cv::String* winname, int flags);
 
-    Local $bWinnameIsString = VarGetType($winname) == "String"
+    Local $bWinnameIsString = IsString($winname)
     If $bWinnameIsString Then
         $winname = _cveStringCreateFromStr($winname)
     EndIf
@@ -83,7 +98,7 @@ EndFunc   ;==>_cveNamedWindow
 Func _cveSetWindowProperty($winname, $propId, $propValue)
     ; CVAPI(void) cveSetWindowProperty(cv::String* winname, int propId, double propValue);
 
-    Local $bWinnameIsString = VarGetType($winname) == "String"
+    Local $bWinnameIsString = IsString($winname)
     If $bWinnameIsString Then
         $winname = _cveStringCreateFromStr($winname)
     EndIf
@@ -105,7 +120,7 @@ EndFunc   ;==>_cveSetWindowProperty
 Func _cveSetWindowTitle($winname, $title)
     ; CVAPI(void) cveSetWindowTitle(cv::String* winname, cv::String* title);
 
-    Local $bWinnameIsString = VarGetType($winname) == "String"
+    Local $bWinnameIsString = IsString($winname)
     If $bWinnameIsString Then
         $winname = _cveStringCreateFromStr($winname)
     EndIf
@@ -117,7 +132,7 @@ Func _cveSetWindowTitle($winname, $title)
         $sWinnameDllType = "ptr"
     EndIf
 
-    Local $bTitleIsString = VarGetType($title) == "String"
+    Local $bTitleIsString = IsString($title)
     If $bTitleIsString Then
         $title = _cveStringCreateFromStr($title)
     EndIf
@@ -143,7 +158,7 @@ EndFunc   ;==>_cveSetWindowTitle
 Func _cveGetWindowProperty($winname, $propId)
     ; CVAPI(double) cveGetWindowProperty(cv::String* winname, int propId);
 
-    Local $bWinnameIsString = VarGetType($winname) == "String"
+    Local $bWinnameIsString = IsString($winname)
     If $bWinnameIsString Then
         $winname = _cveStringCreateFromStr($winname)
     EndIf
@@ -167,7 +182,7 @@ EndFunc   ;==>_cveGetWindowProperty
 Func _cveDestroyWindow($winname)
     ; CVAPI(void) cveDestroyWindow(cv::String* winname);
 
-    Local $bWinnameIsString = VarGetType($winname) == "String"
+    Local $bWinnameIsString = IsString($winname)
     If $bWinnameIsString Then
         $winname = _cveStringCreateFromStr($winname)
     EndIf
@@ -204,7 +219,7 @@ EndFunc   ;==>_cvePollKey
 Func _cveSelectROI($windowName, $img, $showCrosshair, $fromCenter, $roi)
     ; CVAPI(void) cveSelectROI(cv::String* windowName, cv::_InputArray* img, bool showCrosshair, bool fromCenter, CvRect* roi);
 
-    Local $bWindowNameIsString = VarGetType($windowName) == "String"
+    Local $bWindowNameIsString = IsString($windowName)
     If $bWindowNameIsString Then
         $windowName = _cveStringCreateFromStr($windowName)
     EndIf
@@ -237,38 +252,53 @@ Func _cveSelectROI($windowName, $img, $showCrosshair, $fromCenter, $roi)
     EndIf
 EndFunc   ;==>_cveSelectROI
 
-Func _cveSelectROIMat($windowName, $matImg, $showCrosshair, $fromCenter, $roi)
-    ; cveSelectROI using cv::Mat instead of _*Array
+Func _cveSelectROITyped($windowName, $typeOfImg, $img, $showCrosshair, $fromCenter, $roi)
 
-    Local $iArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $iArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $iArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $iArrImg = _cveInputArrayFromVectorOfMat($vectorOfMatImg)
+        $iArrImg = Call("_cveInputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $iArrImg = _cveInputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $iArrImg = Call("_cveInputArrayFrom" & $typeOfImg, $img)
     EndIf
 
     _cveSelectROI($windowName, $iArrImg, $showCrosshair, $fromCenter, $roi)
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveInputArrayRelease($iArrImg)
+    If $typeOfImg <> Default Then
+        _cveInputArrayRelease($iArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveSelectROITyped
+
+Func _cveSelectROIMat($windowName, $img, $showCrosshair, $fromCenter, $roi)
+    ; cveSelectROI using cv::Mat instead of _*Array
+    _cveSelectROITyped($windowName, "Mat", $img, $showCrosshair, $fromCenter, $roi)
 EndFunc   ;==>_cveSelectROIMat
 
 Func _cveSelectROIs($windowName, $img, $boundingBoxs, $showCrosshair = true, $fromCenter = false)
     ; CVAPI(void) cveSelectROIs(cv::String* windowName, cv::_InputArray* img, std::vector<cv::Rect>* boundingBoxs, bool showCrosshair, bool fromCenter);
 
-    Local $bWindowNameIsString = VarGetType($windowName) == "String"
+    Local $bWindowNameIsString = IsString($windowName)
     If $bWindowNameIsString Then
         $windowName = _cveStringCreateFromStr($windowName)
     EndIf
@@ -288,7 +318,7 @@ Func _cveSelectROIs($windowName, $img, $boundingBoxs, $showCrosshair = true, $fr
     EndIf
 
     Local $vecBoundingBoxs, $iArrBoundingBoxsSize
-    Local $bBoundingBoxsIsArray = VarGetType($boundingBoxs) == "Array"
+    Local $bBoundingBoxsIsArray = IsArray($boundingBoxs)
 
     If $bBoundingBoxsIsArray Then
         $vecBoundingBoxs = _VectorOfRectCreate()
@@ -319,30 +349,45 @@ Func _cveSelectROIs($windowName, $img, $boundingBoxs, $showCrosshair = true, $fr
     EndIf
 EndFunc   ;==>_cveSelectROIs
 
-Func _cveSelectROIsMat($windowName, $matImg, $boundingBoxs, $showCrosshair = true, $fromCenter = false)
-    ; cveSelectROIs using cv::Mat instead of _*Array
+Func _cveSelectROIsTyped($windowName, $typeOfImg, $img, $boundingBoxs, $showCrosshair = true, $fromCenter = false)
 
-    Local $iArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $iArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $iArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $iArrImg = _cveInputArrayFromVectorOfMat($vectorOfMatImg)
+        $iArrImg = Call("_cveInputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $iArrImg = _cveInputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $iArrImg = Call("_cveInputArrayFrom" & $typeOfImg, $img)
     EndIf
 
     _cveSelectROIs($windowName, $iArrImg, $boundingBoxs, $showCrosshair, $fromCenter)
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveInputArrayRelease($iArrImg)
+    If $typeOfImg <> Default Then
+        _cveInputArrayRelease($iArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveSelectROIsTyped
+
+Func _cveSelectROIsMat($windowName, $img, $boundingBoxs, $showCrosshair = true, $fromCenter = false)
+    ; cveSelectROIs using cv::Mat instead of _*Array
+    _cveSelectROIsTyped($windowName, "Mat", $img, $boundingBoxs, $showCrosshair, $fromCenter)
 EndFunc   ;==>_cveSelectROIsMat

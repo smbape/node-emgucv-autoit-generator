@@ -15,7 +15,7 @@ Func _VectorOfGMatGetSize($v)
     ; CVAPI(int) VectorOfGMatGetSize(std::vector<cv::GMat>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfGMatCreate()
@@ -48,7 +48,7 @@ Func _VectorOfGMatPush($v, $value)
     ; CVAPI(void) VectorOfGMatPush(std::vector<cv::GMat>* v, cv::GMat* value);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfGMatCreate()
@@ -86,7 +86,7 @@ Func _VectorOfGMatPushVector($v, $other)
     ; CVAPI(void) VectorOfGMatPushVector(std::vector<cv::GMat>* v, std::vector<cv::GMat>* other);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfGMatCreate()
@@ -107,7 +107,7 @@ Func _VectorOfGMatPushVector($v, $other)
     EndIf
 
     Local $vecOther, $iArrOtherSize
-    Local $bOtherIsArray = VarGetType($other) == "Array"
+    Local $bOtherIsArray = IsArray($other)
 
     If $bOtherIsArray Then
         $vecOther = _VectorOfGMatCreate()
@@ -142,7 +142,7 @@ Func _VectorOfGMatGetStartAddress($v)
     ; CVAPI(cv::GMat*) VectorOfGMatGetStartAddress(std::vector<cv::GMat>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfGMatCreate()
@@ -175,7 +175,7 @@ Func _VectorOfGMatGetEndAddress($v)
     ; CVAPI(void*) VectorOfGMatGetEndAddress(std::vector<cv::GMat>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfGMatCreate()
@@ -208,7 +208,7 @@ Func _VectorOfGMatClear($v)
     ; CVAPI(void) VectorOfGMatClear(std::vector<cv::GMat>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfGMatCreate()
@@ -239,7 +239,7 @@ Func _VectorOfGMatRelease($v)
     ; CVAPI(void) VectorOfGMatRelease(std::vector<cv::GMat>** v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfGMatCreate()
@@ -272,7 +272,7 @@ Func _VectorOfGMatCopyData($v, $data)
     ; CVAPI(void) VectorOfGMatCopyData(std::vector<cv::GMat>* v, cv::GMat* data);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfGMatCreate()
@@ -310,7 +310,7 @@ Func _VectorOfGMatGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfGMatGetItemPtr(std::vector<cv::GMat>* vec, int index, cv::GMat** element);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfGMatCreate()
@@ -350,7 +350,7 @@ Func _cveInputArrayFromVectorOfGMat($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfGMat(std::vector<cv::GMat>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfGMatCreate()
@@ -383,7 +383,7 @@ Func _cveOutputArrayFromVectorOfGMat($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfGMat(std::vector<cv::GMat>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfGMatCreate()
@@ -416,7 +416,7 @@ Func _cveInputOutputArrayFromVectorOfGMat($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfGMat(std::vector<cv::GMat>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfGMatCreate()

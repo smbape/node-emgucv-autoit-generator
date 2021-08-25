@@ -4,7 +4,7 @@
 Func _cveSuperresCreateFrameSourceVideo($fileName, $useGpu, $sharedPtr)
     ; CVAPI(cv::superres::FrameSource*) cveSuperresCreateFrameSourceVideo(cv::String* fileName, bool useGpu, cv::Ptr<cv::superres::FrameSource>** sharedPtr);
 
-    Local $bFileNameIsString = VarGetType($fileName) == "String"
+    Local $bFileNameIsString = IsString($fileName)
     If $bFileNameIsString Then
         $fileName = _cveStringCreateFromStr($fileName)
     EndIf
@@ -68,32 +68,47 @@ Func _cveSuperresFrameSourceNextFrame($frameSource, $frame)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveSuperresFrameSourceNextFrame", $sFrameSourceDllType, $frameSource, $sFrameDllType, $frame), "cveSuperresFrameSourceNextFrame", @error)
 EndFunc   ;==>_cveSuperresFrameSourceNextFrame
 
-Func _cveSuperresFrameSourceNextFrameMat($frameSource, $matFrame)
-    ; cveSuperresFrameSourceNextFrame using cv::Mat instead of _*Array
+Func _cveSuperresFrameSourceNextFrameTyped($frameSource, $typeOfFrame, $frame)
 
-    Local $oArrFrame, $vectorOfMatFrame, $iArrFrameSize
-    Local $bFrameIsArray = VarGetType($matFrame) == "Array"
+    Local $oArrFrame, $vectorFrame, $iArrFrameSize
+    Local $bFrameIsArray = IsArray($frame)
+    Local $bFrameCreate = IsDllStruct($frame) And $typeOfFrame == "Scalar"
 
-    If $bFrameIsArray Then
-        $vectorOfMatFrame = _VectorOfMatCreate()
+    If $typeOfFrame == Default Then
+        $oArrFrame = $frame
+    ElseIf $bFrameIsArray Then
+        $vectorFrame = Call("_VectorOf" & $typeOfFrame & "Create")
 
-        $iArrFrameSize = UBound($matFrame)
+        $iArrFrameSize = UBound($frame)
         For $i = 0 To $iArrFrameSize - 1
-            _VectorOfMatPush($vectorOfMatFrame, $matFrame[$i])
+            Call("_VectorOf" & $typeOfFrame & "Push", $vectorFrame, $frame[$i])
         Next
 
-        $oArrFrame = _cveOutputArrayFromVectorOfMat($vectorOfMatFrame)
+        $oArrFrame = Call("_cveOutputArrayFromVectorOf" & $typeOfFrame, $vectorFrame)
     Else
-        $oArrFrame = _cveOutputArrayFromMat($matFrame)
+        If $bFrameCreate Then
+            $frame = Call("_cve" & $typeOfFrame & "Create", $frame)
+        EndIf
+        $oArrFrame = Call("_cveOutputArrayFrom" & $typeOfFrame, $frame)
     EndIf
 
     _cveSuperresFrameSourceNextFrame($frameSource, $oArrFrame)
 
     If $bFrameIsArray Then
-        _VectorOfMatRelease($vectorOfMatFrame)
+        Call("_VectorOf" & $typeOfFrame & "Release", $vectorFrame)
     EndIf
 
-    _cveOutputArrayRelease($oArrFrame)
+    If $typeOfFrame <> Default Then
+        _cveOutputArrayRelease($oArrFrame)
+        If $bFrameCreate Then
+            Call("_cve" & $typeOfFrame & "Release", $frame)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveSuperresFrameSourceNextFrameTyped
+
+Func _cveSuperresFrameSourceNextFrameMat($frameSource, $frame)
+    ; cveSuperresFrameSourceNextFrame using cv::Mat instead of _*Array
+    _cveSuperresFrameSourceNextFrameTyped($frameSource, "Mat", $frame)
 EndFunc   ;==>_cveSuperresFrameSourceNextFrameMat
 
 Func _cveSuperresFrameSourceRelease($sharedPtr)

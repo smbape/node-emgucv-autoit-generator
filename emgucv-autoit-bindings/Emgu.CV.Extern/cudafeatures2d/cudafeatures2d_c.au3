@@ -50,7 +50,7 @@ Func _cveCudaDescriptorMatcherAdd($matcher, $trainDescs)
     EndIf
 
     Local $vecTrainDescs, $iArrTrainDescsSize
-    Local $bTrainDescsIsArray = VarGetType($trainDescs) == "Array"
+    Local $bTrainDescsIsArray = IsArray($trainDescs)
 
     If $bTrainDescsIsArray Then
         $vecTrainDescs = _VectorOfGpuMatCreate()
@@ -152,7 +152,7 @@ Func _cveCudaDescriptorMatcherMatch1($matcher, $queryDescriptors, $trainDescript
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfDMatchCreate()
@@ -186,76 +186,113 @@ Func _cveCudaDescriptorMatcherMatch1($matcher, $queryDescriptors, $trainDescript
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherMatch1
 
-Func _cveCudaDescriptorMatcherMatch1Mat($matcher, $matQueryDescriptors, $matTrainDescriptors, $matches, $matMask)
-    ; cveCudaDescriptorMatcherMatch1 using cv::Mat instead of _*Array
+Func _cveCudaDescriptorMatcherMatch1Typed($matcher, $typeOfQueryDescriptors, $queryDescriptors, $typeOfTrainDescriptors, $trainDescriptors, $matches, $typeOfMask, $mask)
 
-    Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
-    Local $bQueryDescriptorsIsArray = VarGetType($matQueryDescriptors) == "Array"
+    Local $iArrQueryDescriptors, $vectorQueryDescriptors, $iArrQueryDescriptorsSize
+    Local $bQueryDescriptorsIsArray = IsArray($queryDescriptors)
+    Local $bQueryDescriptorsCreate = IsDllStruct($queryDescriptors) And $typeOfQueryDescriptors == "Scalar"
 
-    If $bQueryDescriptorsIsArray Then
-        $vectorOfMatQueryDescriptors = _VectorOfMatCreate()
+    If $typeOfQueryDescriptors == Default Then
+        $iArrQueryDescriptors = $queryDescriptors
+    ElseIf $bQueryDescriptorsIsArray Then
+        $vectorQueryDescriptors = Call("_VectorOf" & $typeOfQueryDescriptors & "Create")
 
-        $iArrQueryDescriptorsSize = UBound($matQueryDescriptors)
+        $iArrQueryDescriptorsSize = UBound($queryDescriptors)
         For $i = 0 To $iArrQueryDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatQueryDescriptors, $matQueryDescriptors[$i])
+            Call("_VectorOf" & $typeOfQueryDescriptors & "Push", $vectorQueryDescriptors, $queryDescriptors[$i])
         Next
 
-        $iArrQueryDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatQueryDescriptors)
+        $iArrQueryDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfQueryDescriptors, $vectorQueryDescriptors)
     Else
-        $iArrQueryDescriptors = _cveInputArrayFromMat($matQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            $queryDescriptors = Call("_cve" & $typeOfQueryDescriptors & "Create", $queryDescriptors)
+        EndIf
+        $iArrQueryDescriptors = Call("_cveInputArrayFrom" & $typeOfQueryDescriptors, $queryDescriptors)
     EndIf
 
-    Local $iArrTrainDescriptors, $vectorOfMatTrainDescriptors, $iArrTrainDescriptorsSize
-    Local $bTrainDescriptorsIsArray = VarGetType($matTrainDescriptors) == "Array"
+    Local $iArrTrainDescriptors, $vectorTrainDescriptors, $iArrTrainDescriptorsSize
+    Local $bTrainDescriptorsIsArray = IsArray($trainDescriptors)
+    Local $bTrainDescriptorsCreate = IsDllStruct($trainDescriptors) And $typeOfTrainDescriptors == "Scalar"
 
-    If $bTrainDescriptorsIsArray Then
-        $vectorOfMatTrainDescriptors = _VectorOfMatCreate()
+    If $typeOfTrainDescriptors == Default Then
+        $iArrTrainDescriptors = $trainDescriptors
+    ElseIf $bTrainDescriptorsIsArray Then
+        $vectorTrainDescriptors = Call("_VectorOf" & $typeOfTrainDescriptors & "Create")
 
-        $iArrTrainDescriptorsSize = UBound($matTrainDescriptors)
+        $iArrTrainDescriptorsSize = UBound($trainDescriptors)
         For $i = 0 To $iArrTrainDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatTrainDescriptors, $matTrainDescriptors[$i])
+            Call("_VectorOf" & $typeOfTrainDescriptors & "Push", $vectorTrainDescriptors, $trainDescriptors[$i])
         Next
 
-        $iArrTrainDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatTrainDescriptors)
+        $iArrTrainDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfTrainDescriptors, $vectorTrainDescriptors)
     Else
-        $iArrTrainDescriptors = _cveInputArrayFromMat($matTrainDescriptors)
+        If $bTrainDescriptorsCreate Then
+            $trainDescriptors = Call("_cve" & $typeOfTrainDescriptors & "Create", $trainDescriptors)
+        EndIf
+        $iArrTrainDescriptors = Call("_cveInputArrayFrom" & $typeOfTrainDescriptors, $trainDescriptors)
     EndIf
 
-    Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $iArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $iArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $iArrMask = _cveInputArrayFromVectorOfMat($vectorOfMatMask)
+        $iArrMask = Call("_cveInputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $iArrMask = _cveInputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $iArrMask = Call("_cveInputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
     _cveCudaDescriptorMatcherMatch1($matcher, $iArrQueryDescriptors, $iArrTrainDescriptors, $matches, $iArrMask)
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMask)
+    If $typeOfMask <> Default Then
+        _cveInputArrayRelease($iArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bTrainDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatTrainDescriptors)
+        Call("_VectorOf" & $typeOfTrainDescriptors & "Release", $vectorTrainDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrTrainDescriptors)
+    If $typeOfTrainDescriptors <> Default Then
+        _cveInputArrayRelease($iArrTrainDescriptors)
+        If $bTrainDescriptorsCreate Then
+            Call("_cve" & $typeOfTrainDescriptors & "Release", $trainDescriptors)
+        EndIf
+    EndIf
 
     If $bQueryDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueryDescriptors)
+        Call("_VectorOf" & $typeOfQueryDescriptors & "Release", $vectorQueryDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrQueryDescriptors)
+    If $typeOfQueryDescriptors <> Default Then
+        _cveInputArrayRelease($iArrQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            Call("_cve" & $typeOfQueryDescriptors & "Release", $queryDescriptors)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCudaDescriptorMatcherMatch1Typed
+
+Func _cveCudaDescriptorMatcherMatch1Mat($matcher, $queryDescriptors, $trainDescriptors, $matches, $mask)
+    ; cveCudaDescriptorMatcherMatch1 using cv::Mat instead of _*Array
+    _cveCudaDescriptorMatcherMatch1Typed($matcher, "Mat", $queryDescriptors, "Mat", $trainDescriptors, $matches, "Mat", $mask)
 EndFunc   ;==>_cveCudaDescriptorMatcherMatch1Mat
 
 Func _cveCudaDescriptorMatcherMatch2($matcher, $queryDescriptors, $matches, $masks)
@@ -276,7 +313,7 @@ Func _cveCudaDescriptorMatcherMatch2($matcher, $queryDescriptors, $matches, $mas
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfDMatchCreate()
@@ -297,7 +334,7 @@ Func _cveCudaDescriptorMatcherMatch2($matcher, $queryDescriptors, $matches, $mas
     EndIf
 
     Local $vecMasks, $iArrMasksSize
-    Local $bMasksIsArray = VarGetType($masks) == "Array"
+    Local $bMasksIsArray = IsArray($masks)
 
     If $bMasksIsArray Then
         $vecMasks = _VectorOfGpuMatCreate()
@@ -328,32 +365,47 @@ Func _cveCudaDescriptorMatcherMatch2($matcher, $queryDescriptors, $matches, $mas
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherMatch2
 
-Func _cveCudaDescriptorMatcherMatch2Mat($matcher, $matQueryDescriptors, $matches, $masks)
-    ; cveCudaDescriptorMatcherMatch2 using cv::Mat instead of _*Array
+Func _cveCudaDescriptorMatcherMatch2Typed($matcher, $typeOfQueryDescriptors, $queryDescriptors, $matches, $masks)
 
-    Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
-    Local $bQueryDescriptorsIsArray = VarGetType($matQueryDescriptors) == "Array"
+    Local $iArrQueryDescriptors, $vectorQueryDescriptors, $iArrQueryDescriptorsSize
+    Local $bQueryDescriptorsIsArray = IsArray($queryDescriptors)
+    Local $bQueryDescriptorsCreate = IsDllStruct($queryDescriptors) And $typeOfQueryDescriptors == "Scalar"
 
-    If $bQueryDescriptorsIsArray Then
-        $vectorOfMatQueryDescriptors = _VectorOfMatCreate()
+    If $typeOfQueryDescriptors == Default Then
+        $iArrQueryDescriptors = $queryDescriptors
+    ElseIf $bQueryDescriptorsIsArray Then
+        $vectorQueryDescriptors = Call("_VectorOf" & $typeOfQueryDescriptors & "Create")
 
-        $iArrQueryDescriptorsSize = UBound($matQueryDescriptors)
+        $iArrQueryDescriptorsSize = UBound($queryDescriptors)
         For $i = 0 To $iArrQueryDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatQueryDescriptors, $matQueryDescriptors[$i])
+            Call("_VectorOf" & $typeOfQueryDescriptors & "Push", $vectorQueryDescriptors, $queryDescriptors[$i])
         Next
 
-        $iArrQueryDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatQueryDescriptors)
+        $iArrQueryDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfQueryDescriptors, $vectorQueryDescriptors)
     Else
-        $iArrQueryDescriptors = _cveInputArrayFromMat($matQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            $queryDescriptors = Call("_cve" & $typeOfQueryDescriptors & "Create", $queryDescriptors)
+        EndIf
+        $iArrQueryDescriptors = Call("_cveInputArrayFrom" & $typeOfQueryDescriptors, $queryDescriptors)
     EndIf
 
     _cveCudaDescriptorMatcherMatch2($matcher, $iArrQueryDescriptors, $matches, $masks)
 
     If $bQueryDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueryDescriptors)
+        Call("_VectorOf" & $typeOfQueryDescriptors & "Release", $vectorQueryDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrQueryDescriptors)
+    If $typeOfQueryDescriptors <> Default Then
+        _cveInputArrayRelease($iArrQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            Call("_cve" & $typeOfQueryDescriptors & "Release", $queryDescriptors)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCudaDescriptorMatcherMatch2Typed
+
+Func _cveCudaDescriptorMatcherMatch2Mat($matcher, $queryDescriptors, $matches, $masks)
+    ; cveCudaDescriptorMatcherMatch2 using cv::Mat instead of _*Array
+    _cveCudaDescriptorMatcherMatch2Typed($matcher, "Mat", $queryDescriptors, $matches, $masks)
 EndFunc   ;==>_cveCudaDescriptorMatcherMatch2Mat
 
 Func _cveCudaDescriptorMatcherMatchAsync1($matcher, $queryDescriptors, $trainDescriptors, $matches, $mask, $stream)
@@ -404,98 +456,146 @@ Func _cveCudaDescriptorMatcherMatchAsync1($matcher, $queryDescriptors, $trainDes
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherMatchAsync1", $sMatcherDllType, $matcher, $sQueryDescriptorsDllType, $queryDescriptors, $sTrainDescriptorsDllType, $trainDescriptors, $sMatchesDllType, $matches, $sMaskDllType, $mask, $sStreamDllType, $stream), "cveCudaDescriptorMatcherMatchAsync1", @error)
 EndFunc   ;==>_cveCudaDescriptorMatcherMatchAsync1
 
-Func _cveCudaDescriptorMatcherMatchAsync1Mat($matcher, $matQueryDescriptors, $matTrainDescriptors, $matMatches, $matMask, $stream)
-    ; cveCudaDescriptorMatcherMatchAsync1 using cv::Mat instead of _*Array
+Func _cveCudaDescriptorMatcherMatchAsync1Typed($matcher, $typeOfQueryDescriptors, $queryDescriptors, $typeOfTrainDescriptors, $trainDescriptors, $typeOfMatches, $matches, $typeOfMask, $mask, $stream)
 
-    Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
-    Local $bQueryDescriptorsIsArray = VarGetType($matQueryDescriptors) == "Array"
+    Local $iArrQueryDescriptors, $vectorQueryDescriptors, $iArrQueryDescriptorsSize
+    Local $bQueryDescriptorsIsArray = IsArray($queryDescriptors)
+    Local $bQueryDescriptorsCreate = IsDllStruct($queryDescriptors) And $typeOfQueryDescriptors == "Scalar"
 
-    If $bQueryDescriptorsIsArray Then
-        $vectorOfMatQueryDescriptors = _VectorOfMatCreate()
+    If $typeOfQueryDescriptors == Default Then
+        $iArrQueryDescriptors = $queryDescriptors
+    ElseIf $bQueryDescriptorsIsArray Then
+        $vectorQueryDescriptors = Call("_VectorOf" & $typeOfQueryDescriptors & "Create")
 
-        $iArrQueryDescriptorsSize = UBound($matQueryDescriptors)
+        $iArrQueryDescriptorsSize = UBound($queryDescriptors)
         For $i = 0 To $iArrQueryDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatQueryDescriptors, $matQueryDescriptors[$i])
+            Call("_VectorOf" & $typeOfQueryDescriptors & "Push", $vectorQueryDescriptors, $queryDescriptors[$i])
         Next
 
-        $iArrQueryDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatQueryDescriptors)
+        $iArrQueryDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfQueryDescriptors, $vectorQueryDescriptors)
     Else
-        $iArrQueryDescriptors = _cveInputArrayFromMat($matQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            $queryDescriptors = Call("_cve" & $typeOfQueryDescriptors & "Create", $queryDescriptors)
+        EndIf
+        $iArrQueryDescriptors = Call("_cveInputArrayFrom" & $typeOfQueryDescriptors, $queryDescriptors)
     EndIf
 
-    Local $iArrTrainDescriptors, $vectorOfMatTrainDescriptors, $iArrTrainDescriptorsSize
-    Local $bTrainDescriptorsIsArray = VarGetType($matTrainDescriptors) == "Array"
+    Local $iArrTrainDescriptors, $vectorTrainDescriptors, $iArrTrainDescriptorsSize
+    Local $bTrainDescriptorsIsArray = IsArray($trainDescriptors)
+    Local $bTrainDescriptorsCreate = IsDllStruct($trainDescriptors) And $typeOfTrainDescriptors == "Scalar"
 
-    If $bTrainDescriptorsIsArray Then
-        $vectorOfMatTrainDescriptors = _VectorOfMatCreate()
+    If $typeOfTrainDescriptors == Default Then
+        $iArrTrainDescriptors = $trainDescriptors
+    ElseIf $bTrainDescriptorsIsArray Then
+        $vectorTrainDescriptors = Call("_VectorOf" & $typeOfTrainDescriptors & "Create")
 
-        $iArrTrainDescriptorsSize = UBound($matTrainDescriptors)
+        $iArrTrainDescriptorsSize = UBound($trainDescriptors)
         For $i = 0 To $iArrTrainDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatTrainDescriptors, $matTrainDescriptors[$i])
+            Call("_VectorOf" & $typeOfTrainDescriptors & "Push", $vectorTrainDescriptors, $trainDescriptors[$i])
         Next
 
-        $iArrTrainDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatTrainDescriptors)
+        $iArrTrainDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfTrainDescriptors, $vectorTrainDescriptors)
     Else
-        $iArrTrainDescriptors = _cveInputArrayFromMat($matTrainDescriptors)
+        If $bTrainDescriptorsCreate Then
+            $trainDescriptors = Call("_cve" & $typeOfTrainDescriptors & "Create", $trainDescriptors)
+        EndIf
+        $iArrTrainDescriptors = Call("_cveInputArrayFrom" & $typeOfTrainDescriptors, $trainDescriptors)
     EndIf
 
-    Local $oArrMatches, $vectorOfMatMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matMatches) == "Array"
+    Local $oArrMatches, $vectorMatches, $iArrMatchesSize
+    Local $bMatchesIsArray = IsArray($matches)
+    Local $bMatchesCreate = IsDllStruct($matches) And $typeOfMatches == "Scalar"
 
-    If $bMatchesIsArray Then
-        $vectorOfMatMatches = _VectorOfMatCreate()
+    If $typeOfMatches == Default Then
+        $oArrMatches = $matches
+    ElseIf $bMatchesIsArray Then
+        $vectorMatches = Call("_VectorOf" & $typeOfMatches & "Create")
 
-        $iArrMatchesSize = UBound($matMatches)
+        $iArrMatchesSize = UBound($matches)
         For $i = 0 To $iArrMatchesSize - 1
-            _VectorOfMatPush($vectorOfMatMatches, $matMatches[$i])
+            Call("_VectorOf" & $typeOfMatches & "Push", $vectorMatches, $matches[$i])
         Next
 
-        $oArrMatches = _cveOutputArrayFromVectorOfMat($vectorOfMatMatches)
+        $oArrMatches = Call("_cveOutputArrayFromVectorOf" & $typeOfMatches, $vectorMatches)
     Else
-        $oArrMatches = _cveOutputArrayFromMat($matMatches)
+        If $bMatchesCreate Then
+            $matches = Call("_cve" & $typeOfMatches & "Create", $matches)
+        EndIf
+        $oArrMatches = Call("_cveOutputArrayFrom" & $typeOfMatches, $matches)
     EndIf
 
-    Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $iArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $iArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $iArrMask = _cveInputArrayFromVectorOfMat($vectorOfMatMask)
+        $iArrMask = Call("_cveInputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $iArrMask = _cveInputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $iArrMask = Call("_cveInputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
     _cveCudaDescriptorMatcherMatchAsync1($matcher, $iArrQueryDescriptors, $iArrTrainDescriptors, $oArrMatches, $iArrMask, $stream)
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMask)
+    If $typeOfMask <> Default Then
+        _cveInputArrayRelease($iArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bMatchesIsArray Then
-        _VectorOfMatRelease($vectorOfMatMatches)
+        Call("_VectorOf" & $typeOfMatches & "Release", $vectorMatches)
     EndIf
 
-    _cveOutputArrayRelease($oArrMatches)
+    If $typeOfMatches <> Default Then
+        _cveOutputArrayRelease($oArrMatches)
+        If $bMatchesCreate Then
+            Call("_cve" & $typeOfMatches & "Release", $matches)
+        EndIf
+    EndIf
 
     If $bTrainDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatTrainDescriptors)
+        Call("_VectorOf" & $typeOfTrainDescriptors & "Release", $vectorTrainDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrTrainDescriptors)
+    If $typeOfTrainDescriptors <> Default Then
+        _cveInputArrayRelease($iArrTrainDescriptors)
+        If $bTrainDescriptorsCreate Then
+            Call("_cve" & $typeOfTrainDescriptors & "Release", $trainDescriptors)
+        EndIf
+    EndIf
 
     If $bQueryDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueryDescriptors)
+        Call("_VectorOf" & $typeOfQueryDescriptors & "Release", $vectorQueryDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrQueryDescriptors)
+    If $typeOfQueryDescriptors <> Default Then
+        _cveInputArrayRelease($iArrQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            Call("_cve" & $typeOfQueryDescriptors & "Release", $queryDescriptors)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCudaDescriptorMatcherMatchAsync1Typed
+
+Func _cveCudaDescriptorMatcherMatchAsync1Mat($matcher, $queryDescriptors, $trainDescriptors, $matches, $mask, $stream)
+    ; cveCudaDescriptorMatcherMatchAsync1 using cv::Mat instead of _*Array
+    _cveCudaDescriptorMatcherMatchAsync1Typed($matcher, "Mat", $queryDescriptors, "Mat", $trainDescriptors, "Mat", $matches, "Mat", $mask, $stream)
 EndFunc   ;==>_cveCudaDescriptorMatcherMatchAsync1Mat
 
 Func _cveCudaDescriptorMatcherMatchAsync2($matcher, $queryDescriptors, $matches, $masks, $stream)
@@ -523,7 +623,7 @@ Func _cveCudaDescriptorMatcherMatchAsync2($matcher, $queryDescriptors, $matches,
     EndIf
 
     Local $vecMasks, $iArrMasksSize
-    Local $bMasksIsArray = VarGetType($masks) == "Array"
+    Local $bMasksIsArray = IsArray($masks)
 
     If $bMasksIsArray Then
         $vecMasks = _VectorOfGpuMatCreate()
@@ -557,54 +657,80 @@ Func _cveCudaDescriptorMatcherMatchAsync2($matcher, $queryDescriptors, $matches,
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherMatchAsync2
 
-Func _cveCudaDescriptorMatcherMatchAsync2Mat($matcher, $matQueryDescriptors, $matMatches, $masks, $stream)
-    ; cveCudaDescriptorMatcherMatchAsync2 using cv::Mat instead of _*Array
+Func _cveCudaDescriptorMatcherMatchAsync2Typed($matcher, $typeOfQueryDescriptors, $queryDescriptors, $typeOfMatches, $matches, $masks, $stream)
 
-    Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
-    Local $bQueryDescriptorsIsArray = VarGetType($matQueryDescriptors) == "Array"
+    Local $iArrQueryDescriptors, $vectorQueryDescriptors, $iArrQueryDescriptorsSize
+    Local $bQueryDescriptorsIsArray = IsArray($queryDescriptors)
+    Local $bQueryDescriptorsCreate = IsDllStruct($queryDescriptors) And $typeOfQueryDescriptors == "Scalar"
 
-    If $bQueryDescriptorsIsArray Then
-        $vectorOfMatQueryDescriptors = _VectorOfMatCreate()
+    If $typeOfQueryDescriptors == Default Then
+        $iArrQueryDescriptors = $queryDescriptors
+    ElseIf $bQueryDescriptorsIsArray Then
+        $vectorQueryDescriptors = Call("_VectorOf" & $typeOfQueryDescriptors & "Create")
 
-        $iArrQueryDescriptorsSize = UBound($matQueryDescriptors)
+        $iArrQueryDescriptorsSize = UBound($queryDescriptors)
         For $i = 0 To $iArrQueryDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatQueryDescriptors, $matQueryDescriptors[$i])
+            Call("_VectorOf" & $typeOfQueryDescriptors & "Push", $vectorQueryDescriptors, $queryDescriptors[$i])
         Next
 
-        $iArrQueryDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatQueryDescriptors)
+        $iArrQueryDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfQueryDescriptors, $vectorQueryDescriptors)
     Else
-        $iArrQueryDescriptors = _cveInputArrayFromMat($matQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            $queryDescriptors = Call("_cve" & $typeOfQueryDescriptors & "Create", $queryDescriptors)
+        EndIf
+        $iArrQueryDescriptors = Call("_cveInputArrayFrom" & $typeOfQueryDescriptors, $queryDescriptors)
     EndIf
 
-    Local $oArrMatches, $vectorOfMatMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matMatches) == "Array"
+    Local $oArrMatches, $vectorMatches, $iArrMatchesSize
+    Local $bMatchesIsArray = IsArray($matches)
+    Local $bMatchesCreate = IsDllStruct($matches) And $typeOfMatches == "Scalar"
 
-    If $bMatchesIsArray Then
-        $vectorOfMatMatches = _VectorOfMatCreate()
+    If $typeOfMatches == Default Then
+        $oArrMatches = $matches
+    ElseIf $bMatchesIsArray Then
+        $vectorMatches = Call("_VectorOf" & $typeOfMatches & "Create")
 
-        $iArrMatchesSize = UBound($matMatches)
+        $iArrMatchesSize = UBound($matches)
         For $i = 0 To $iArrMatchesSize - 1
-            _VectorOfMatPush($vectorOfMatMatches, $matMatches[$i])
+            Call("_VectorOf" & $typeOfMatches & "Push", $vectorMatches, $matches[$i])
         Next
 
-        $oArrMatches = _cveOutputArrayFromVectorOfMat($vectorOfMatMatches)
+        $oArrMatches = Call("_cveOutputArrayFromVectorOf" & $typeOfMatches, $vectorMatches)
     Else
-        $oArrMatches = _cveOutputArrayFromMat($matMatches)
+        If $bMatchesCreate Then
+            $matches = Call("_cve" & $typeOfMatches & "Create", $matches)
+        EndIf
+        $oArrMatches = Call("_cveOutputArrayFrom" & $typeOfMatches, $matches)
     EndIf
 
     _cveCudaDescriptorMatcherMatchAsync2($matcher, $iArrQueryDescriptors, $oArrMatches, $masks, $stream)
 
     If $bMatchesIsArray Then
-        _VectorOfMatRelease($vectorOfMatMatches)
+        Call("_VectorOf" & $typeOfMatches & "Release", $vectorMatches)
     EndIf
 
-    _cveOutputArrayRelease($oArrMatches)
+    If $typeOfMatches <> Default Then
+        _cveOutputArrayRelease($oArrMatches)
+        If $bMatchesCreate Then
+            Call("_cve" & $typeOfMatches & "Release", $matches)
+        EndIf
+    EndIf
 
     If $bQueryDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueryDescriptors)
+        Call("_VectorOf" & $typeOfQueryDescriptors & "Release", $vectorQueryDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrQueryDescriptors)
+    If $typeOfQueryDescriptors <> Default Then
+        _cveInputArrayRelease($iArrQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            Call("_cve" & $typeOfQueryDescriptors & "Release", $queryDescriptors)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCudaDescriptorMatcherMatchAsync2Typed
+
+Func _cveCudaDescriptorMatcherMatchAsync2Mat($matcher, $queryDescriptors, $matches, $masks, $stream)
+    ; cveCudaDescriptorMatcherMatchAsync2 using cv::Mat instead of _*Array
+    _cveCudaDescriptorMatcherMatchAsync2Typed($matcher, "Mat", $queryDescriptors, "Mat", $matches, $masks, $stream)
 EndFunc   ;==>_cveCudaDescriptorMatcherMatchAsync2Mat
 
 Func _cveCudaDescriptorMatcherMatchConvert($matcher, $gpuMatches, $matches)
@@ -625,7 +751,7 @@ Func _cveCudaDescriptorMatcherMatchConvert($matcher, $gpuMatches, $matches)
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfDMatchCreate()
@@ -652,32 +778,47 @@ Func _cveCudaDescriptorMatcherMatchConvert($matcher, $gpuMatches, $matches)
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherMatchConvert
 
-Func _cveCudaDescriptorMatcherMatchConvertMat($matcher, $matGpuMatches, $matches)
-    ; cveCudaDescriptorMatcherMatchConvert using cv::Mat instead of _*Array
+Func _cveCudaDescriptorMatcherMatchConvertTyped($matcher, $typeOfGpuMatches, $gpuMatches, $matches)
 
-    Local $iArrGpuMatches, $vectorOfMatGpuMatches, $iArrGpuMatchesSize
-    Local $bGpuMatchesIsArray = VarGetType($matGpuMatches) == "Array"
+    Local $iArrGpuMatches, $vectorGpuMatches, $iArrGpuMatchesSize
+    Local $bGpuMatchesIsArray = IsArray($gpuMatches)
+    Local $bGpuMatchesCreate = IsDllStruct($gpuMatches) And $typeOfGpuMatches == "Scalar"
 
-    If $bGpuMatchesIsArray Then
-        $vectorOfMatGpuMatches = _VectorOfMatCreate()
+    If $typeOfGpuMatches == Default Then
+        $iArrGpuMatches = $gpuMatches
+    ElseIf $bGpuMatchesIsArray Then
+        $vectorGpuMatches = Call("_VectorOf" & $typeOfGpuMatches & "Create")
 
-        $iArrGpuMatchesSize = UBound($matGpuMatches)
+        $iArrGpuMatchesSize = UBound($gpuMatches)
         For $i = 0 To $iArrGpuMatchesSize - 1
-            _VectorOfMatPush($vectorOfMatGpuMatches, $matGpuMatches[$i])
+            Call("_VectorOf" & $typeOfGpuMatches & "Push", $vectorGpuMatches, $gpuMatches[$i])
         Next
 
-        $iArrGpuMatches = _cveInputArrayFromVectorOfMat($vectorOfMatGpuMatches)
+        $iArrGpuMatches = Call("_cveInputArrayFromVectorOf" & $typeOfGpuMatches, $vectorGpuMatches)
     Else
-        $iArrGpuMatches = _cveInputArrayFromMat($matGpuMatches)
+        If $bGpuMatchesCreate Then
+            $gpuMatches = Call("_cve" & $typeOfGpuMatches & "Create", $gpuMatches)
+        EndIf
+        $iArrGpuMatches = Call("_cveInputArrayFrom" & $typeOfGpuMatches, $gpuMatches)
     EndIf
 
     _cveCudaDescriptorMatcherMatchConvert($matcher, $iArrGpuMatches, $matches)
 
     If $bGpuMatchesIsArray Then
-        _VectorOfMatRelease($vectorOfMatGpuMatches)
+        Call("_VectorOf" & $typeOfGpuMatches & "Release", $vectorGpuMatches)
     EndIf
 
-    _cveInputArrayRelease($iArrGpuMatches)
+    If $typeOfGpuMatches <> Default Then
+        _cveInputArrayRelease($iArrGpuMatches)
+        If $bGpuMatchesCreate Then
+            Call("_cve" & $typeOfGpuMatches & "Release", $gpuMatches)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCudaDescriptorMatcherMatchConvertTyped
+
+Func _cveCudaDescriptorMatcherMatchConvertMat($matcher, $gpuMatches, $matches)
+    ; cveCudaDescriptorMatcherMatchConvert using cv::Mat instead of _*Array
+    _cveCudaDescriptorMatcherMatchConvertTyped($matcher, "Mat", $gpuMatches, $matches)
 EndFunc   ;==>_cveCudaDescriptorMatcherMatchConvertMat
 
 Func _cveCudaDescriptorMatcherKnnMatch1($matcher, $queryDescs, $trainDescs, $matches, $k, $masks, $compactResult)
@@ -705,7 +846,7 @@ Func _cveCudaDescriptorMatcherKnnMatch1($matcher, $queryDescs, $trainDescs, $mat
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfVectorOfDMatchCreate()
@@ -739,76 +880,113 @@ Func _cveCudaDescriptorMatcherKnnMatch1($matcher, $queryDescs, $trainDescs, $mat
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatch1
 
-Func _cveCudaDescriptorMatcherKnnMatch1Mat($matcher, $matQueryDescs, $matTrainDescs, $matches, $k, $matMasks, $compactResult)
-    ; cveCudaDescriptorMatcherKnnMatch1 using cv::Mat instead of _*Array
+Func _cveCudaDescriptorMatcherKnnMatch1Typed($matcher, $typeOfQueryDescs, $queryDescs, $typeOfTrainDescs, $trainDescs, $matches, $k, $typeOfMasks, $masks, $compactResult)
 
-    Local $iArrQueryDescs, $vectorOfMatQueryDescs, $iArrQueryDescsSize
-    Local $bQueryDescsIsArray = VarGetType($matQueryDescs) == "Array"
+    Local $iArrQueryDescs, $vectorQueryDescs, $iArrQueryDescsSize
+    Local $bQueryDescsIsArray = IsArray($queryDescs)
+    Local $bQueryDescsCreate = IsDllStruct($queryDescs) And $typeOfQueryDescs == "Scalar"
 
-    If $bQueryDescsIsArray Then
-        $vectorOfMatQueryDescs = _VectorOfMatCreate()
+    If $typeOfQueryDescs == Default Then
+        $iArrQueryDescs = $queryDescs
+    ElseIf $bQueryDescsIsArray Then
+        $vectorQueryDescs = Call("_VectorOf" & $typeOfQueryDescs & "Create")
 
-        $iArrQueryDescsSize = UBound($matQueryDescs)
+        $iArrQueryDescsSize = UBound($queryDescs)
         For $i = 0 To $iArrQueryDescsSize - 1
-            _VectorOfMatPush($vectorOfMatQueryDescs, $matQueryDescs[$i])
+            Call("_VectorOf" & $typeOfQueryDescs & "Push", $vectorQueryDescs, $queryDescs[$i])
         Next
 
-        $iArrQueryDescs = _cveInputArrayFromVectorOfMat($vectorOfMatQueryDescs)
+        $iArrQueryDescs = Call("_cveInputArrayFromVectorOf" & $typeOfQueryDescs, $vectorQueryDescs)
     Else
-        $iArrQueryDescs = _cveInputArrayFromMat($matQueryDescs)
+        If $bQueryDescsCreate Then
+            $queryDescs = Call("_cve" & $typeOfQueryDescs & "Create", $queryDescs)
+        EndIf
+        $iArrQueryDescs = Call("_cveInputArrayFrom" & $typeOfQueryDescs, $queryDescs)
     EndIf
 
-    Local $iArrTrainDescs, $vectorOfMatTrainDescs, $iArrTrainDescsSize
-    Local $bTrainDescsIsArray = VarGetType($matTrainDescs) == "Array"
+    Local $iArrTrainDescs, $vectorTrainDescs, $iArrTrainDescsSize
+    Local $bTrainDescsIsArray = IsArray($trainDescs)
+    Local $bTrainDescsCreate = IsDllStruct($trainDescs) And $typeOfTrainDescs == "Scalar"
 
-    If $bTrainDescsIsArray Then
-        $vectorOfMatTrainDescs = _VectorOfMatCreate()
+    If $typeOfTrainDescs == Default Then
+        $iArrTrainDescs = $trainDescs
+    ElseIf $bTrainDescsIsArray Then
+        $vectorTrainDescs = Call("_VectorOf" & $typeOfTrainDescs & "Create")
 
-        $iArrTrainDescsSize = UBound($matTrainDescs)
+        $iArrTrainDescsSize = UBound($trainDescs)
         For $i = 0 To $iArrTrainDescsSize - 1
-            _VectorOfMatPush($vectorOfMatTrainDescs, $matTrainDescs[$i])
+            Call("_VectorOf" & $typeOfTrainDescs & "Push", $vectorTrainDescs, $trainDescs[$i])
         Next
 
-        $iArrTrainDescs = _cveInputArrayFromVectorOfMat($vectorOfMatTrainDescs)
+        $iArrTrainDescs = Call("_cveInputArrayFromVectorOf" & $typeOfTrainDescs, $vectorTrainDescs)
     Else
-        $iArrTrainDescs = _cveInputArrayFromMat($matTrainDescs)
+        If $bTrainDescsCreate Then
+            $trainDescs = Call("_cve" & $typeOfTrainDescs & "Create", $trainDescs)
+        EndIf
+        $iArrTrainDescs = Call("_cveInputArrayFrom" & $typeOfTrainDescs, $trainDescs)
     EndIf
 
-    Local $iArrMasks, $vectorOfMatMasks, $iArrMasksSize
-    Local $bMasksIsArray = VarGetType($matMasks) == "Array"
+    Local $iArrMasks, $vectorMasks, $iArrMasksSize
+    Local $bMasksIsArray = IsArray($masks)
+    Local $bMasksCreate = IsDllStruct($masks) And $typeOfMasks == "Scalar"
 
-    If $bMasksIsArray Then
-        $vectorOfMatMasks = _VectorOfMatCreate()
+    If $typeOfMasks == Default Then
+        $iArrMasks = $masks
+    ElseIf $bMasksIsArray Then
+        $vectorMasks = Call("_VectorOf" & $typeOfMasks & "Create")
 
-        $iArrMasksSize = UBound($matMasks)
+        $iArrMasksSize = UBound($masks)
         For $i = 0 To $iArrMasksSize - 1
-            _VectorOfMatPush($vectorOfMatMasks, $matMasks[$i])
+            Call("_VectorOf" & $typeOfMasks & "Push", $vectorMasks, $masks[$i])
         Next
 
-        $iArrMasks = _cveInputArrayFromVectorOfMat($vectorOfMatMasks)
+        $iArrMasks = Call("_cveInputArrayFromVectorOf" & $typeOfMasks, $vectorMasks)
     Else
-        $iArrMasks = _cveInputArrayFromMat($matMasks)
+        If $bMasksCreate Then
+            $masks = Call("_cve" & $typeOfMasks & "Create", $masks)
+        EndIf
+        $iArrMasks = Call("_cveInputArrayFrom" & $typeOfMasks, $masks)
     EndIf
 
     _cveCudaDescriptorMatcherKnnMatch1($matcher, $iArrQueryDescs, $iArrTrainDescs, $matches, $k, $iArrMasks, $compactResult)
 
     If $bMasksIsArray Then
-        _VectorOfMatRelease($vectorOfMatMasks)
+        Call("_VectorOf" & $typeOfMasks & "Release", $vectorMasks)
     EndIf
 
-    _cveInputArrayRelease($iArrMasks)
+    If $typeOfMasks <> Default Then
+        _cveInputArrayRelease($iArrMasks)
+        If $bMasksCreate Then
+            Call("_cve" & $typeOfMasks & "Release", $masks)
+        EndIf
+    EndIf
 
     If $bTrainDescsIsArray Then
-        _VectorOfMatRelease($vectorOfMatTrainDescs)
+        Call("_VectorOf" & $typeOfTrainDescs & "Release", $vectorTrainDescs)
     EndIf
 
-    _cveInputArrayRelease($iArrTrainDescs)
+    If $typeOfTrainDescs <> Default Then
+        _cveInputArrayRelease($iArrTrainDescs)
+        If $bTrainDescsCreate Then
+            Call("_cve" & $typeOfTrainDescs & "Release", $trainDescs)
+        EndIf
+    EndIf
 
     If $bQueryDescsIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueryDescs)
+        Call("_VectorOf" & $typeOfQueryDescs & "Release", $vectorQueryDescs)
     EndIf
 
-    _cveInputArrayRelease($iArrQueryDescs)
+    If $typeOfQueryDescs <> Default Then
+        _cveInputArrayRelease($iArrQueryDescs)
+        If $bQueryDescsCreate Then
+            Call("_cve" & $typeOfQueryDescs & "Release", $queryDescs)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatch1Typed
+
+Func _cveCudaDescriptorMatcherKnnMatch1Mat($matcher, $queryDescs, $trainDescs, $matches, $k, $masks, $compactResult)
+    ; cveCudaDescriptorMatcherKnnMatch1 using cv::Mat instead of _*Array
+    _cveCudaDescriptorMatcherKnnMatch1Typed($matcher, "Mat", $queryDescs, "Mat", $trainDescs, $matches, $k, "Mat", $masks, $compactResult)
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatch1Mat
 
 Func _cveCudaDescriptorMatcherKnnMatch2($matcher, $queryDescriptors, $matches, $k, $masks, $compactResult)
@@ -829,7 +1007,7 @@ Func _cveCudaDescriptorMatcherKnnMatch2($matcher, $queryDescriptors, $matches, $
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfVectorOfDMatchCreate()
@@ -850,7 +1028,7 @@ Func _cveCudaDescriptorMatcherKnnMatch2($matcher, $queryDescriptors, $matches, $
     EndIf
 
     Local $vecMasks, $iArrMasksSize
-    Local $bMasksIsArray = VarGetType($masks) == "Array"
+    Local $bMasksIsArray = IsArray($masks)
 
     If $bMasksIsArray Then
         $vecMasks = _VectorOfGpuMatCreate()
@@ -881,32 +1059,47 @@ Func _cveCudaDescriptorMatcherKnnMatch2($matcher, $queryDescriptors, $matches, $
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatch2
 
-Func _cveCudaDescriptorMatcherKnnMatch2Mat($matcher, $matQueryDescriptors, $matches, $k, $masks, $compactResult)
-    ; cveCudaDescriptorMatcherKnnMatch2 using cv::Mat instead of _*Array
+Func _cveCudaDescriptorMatcherKnnMatch2Typed($matcher, $typeOfQueryDescriptors, $queryDescriptors, $matches, $k, $masks, $compactResult)
 
-    Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
-    Local $bQueryDescriptorsIsArray = VarGetType($matQueryDescriptors) == "Array"
+    Local $iArrQueryDescriptors, $vectorQueryDescriptors, $iArrQueryDescriptorsSize
+    Local $bQueryDescriptorsIsArray = IsArray($queryDescriptors)
+    Local $bQueryDescriptorsCreate = IsDllStruct($queryDescriptors) And $typeOfQueryDescriptors == "Scalar"
 
-    If $bQueryDescriptorsIsArray Then
-        $vectorOfMatQueryDescriptors = _VectorOfMatCreate()
+    If $typeOfQueryDescriptors == Default Then
+        $iArrQueryDescriptors = $queryDescriptors
+    ElseIf $bQueryDescriptorsIsArray Then
+        $vectorQueryDescriptors = Call("_VectorOf" & $typeOfQueryDescriptors & "Create")
 
-        $iArrQueryDescriptorsSize = UBound($matQueryDescriptors)
+        $iArrQueryDescriptorsSize = UBound($queryDescriptors)
         For $i = 0 To $iArrQueryDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatQueryDescriptors, $matQueryDescriptors[$i])
+            Call("_VectorOf" & $typeOfQueryDescriptors & "Push", $vectorQueryDescriptors, $queryDescriptors[$i])
         Next
 
-        $iArrQueryDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatQueryDescriptors)
+        $iArrQueryDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfQueryDescriptors, $vectorQueryDescriptors)
     Else
-        $iArrQueryDescriptors = _cveInputArrayFromMat($matQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            $queryDescriptors = Call("_cve" & $typeOfQueryDescriptors & "Create", $queryDescriptors)
+        EndIf
+        $iArrQueryDescriptors = Call("_cveInputArrayFrom" & $typeOfQueryDescriptors, $queryDescriptors)
     EndIf
 
     _cveCudaDescriptorMatcherKnnMatch2($matcher, $iArrQueryDescriptors, $matches, $k, $masks, $compactResult)
 
     If $bQueryDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueryDescriptors)
+        Call("_VectorOf" & $typeOfQueryDescriptors & "Release", $vectorQueryDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrQueryDescriptors)
+    If $typeOfQueryDescriptors <> Default Then
+        _cveInputArrayRelease($iArrQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            Call("_cve" & $typeOfQueryDescriptors & "Release", $queryDescriptors)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatch2Typed
+
+Func _cveCudaDescriptorMatcherKnnMatch2Mat($matcher, $queryDescriptors, $matches, $k, $masks, $compactResult)
+    ; cveCudaDescriptorMatcherKnnMatch2 using cv::Mat instead of _*Array
+    _cveCudaDescriptorMatcherKnnMatch2Typed($matcher, "Mat", $queryDescriptors, $matches, $k, $masks, $compactResult)
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatch2Mat
 
 Func _cveCudaDescriptorMatcherKnnMatchAsync1($matcher, $queryDescriptors, $trainDescriptors, $matches, $k, $mask, $stream)
@@ -957,98 +1150,146 @@ Func _cveCudaDescriptorMatcherKnnMatchAsync1($matcher, $queryDescriptors, $train
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherKnnMatchAsync1", $sMatcherDllType, $matcher, $sQueryDescriptorsDllType, $queryDescriptors, $sTrainDescriptorsDllType, $trainDescriptors, $sMatchesDllType, $matches, "int", $k, $sMaskDllType, $mask, $sStreamDllType, $stream), "cveCudaDescriptorMatcherKnnMatchAsync1", @error)
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchAsync1
 
-Func _cveCudaDescriptorMatcherKnnMatchAsync1Mat($matcher, $matQueryDescriptors, $matTrainDescriptors, $matMatches, $k, $matMask, $stream)
-    ; cveCudaDescriptorMatcherKnnMatchAsync1 using cv::Mat instead of _*Array
+Func _cveCudaDescriptorMatcherKnnMatchAsync1Typed($matcher, $typeOfQueryDescriptors, $queryDescriptors, $typeOfTrainDescriptors, $trainDescriptors, $typeOfMatches, $matches, $k, $typeOfMask, $mask, $stream)
 
-    Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
-    Local $bQueryDescriptorsIsArray = VarGetType($matQueryDescriptors) == "Array"
+    Local $iArrQueryDescriptors, $vectorQueryDescriptors, $iArrQueryDescriptorsSize
+    Local $bQueryDescriptorsIsArray = IsArray($queryDescriptors)
+    Local $bQueryDescriptorsCreate = IsDllStruct($queryDescriptors) And $typeOfQueryDescriptors == "Scalar"
 
-    If $bQueryDescriptorsIsArray Then
-        $vectorOfMatQueryDescriptors = _VectorOfMatCreate()
+    If $typeOfQueryDescriptors == Default Then
+        $iArrQueryDescriptors = $queryDescriptors
+    ElseIf $bQueryDescriptorsIsArray Then
+        $vectorQueryDescriptors = Call("_VectorOf" & $typeOfQueryDescriptors & "Create")
 
-        $iArrQueryDescriptorsSize = UBound($matQueryDescriptors)
+        $iArrQueryDescriptorsSize = UBound($queryDescriptors)
         For $i = 0 To $iArrQueryDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatQueryDescriptors, $matQueryDescriptors[$i])
+            Call("_VectorOf" & $typeOfQueryDescriptors & "Push", $vectorQueryDescriptors, $queryDescriptors[$i])
         Next
 
-        $iArrQueryDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatQueryDescriptors)
+        $iArrQueryDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfQueryDescriptors, $vectorQueryDescriptors)
     Else
-        $iArrQueryDescriptors = _cveInputArrayFromMat($matQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            $queryDescriptors = Call("_cve" & $typeOfQueryDescriptors & "Create", $queryDescriptors)
+        EndIf
+        $iArrQueryDescriptors = Call("_cveInputArrayFrom" & $typeOfQueryDescriptors, $queryDescriptors)
     EndIf
 
-    Local $iArrTrainDescriptors, $vectorOfMatTrainDescriptors, $iArrTrainDescriptorsSize
-    Local $bTrainDescriptorsIsArray = VarGetType($matTrainDescriptors) == "Array"
+    Local $iArrTrainDescriptors, $vectorTrainDescriptors, $iArrTrainDescriptorsSize
+    Local $bTrainDescriptorsIsArray = IsArray($trainDescriptors)
+    Local $bTrainDescriptorsCreate = IsDllStruct($trainDescriptors) And $typeOfTrainDescriptors == "Scalar"
 
-    If $bTrainDescriptorsIsArray Then
-        $vectorOfMatTrainDescriptors = _VectorOfMatCreate()
+    If $typeOfTrainDescriptors == Default Then
+        $iArrTrainDescriptors = $trainDescriptors
+    ElseIf $bTrainDescriptorsIsArray Then
+        $vectorTrainDescriptors = Call("_VectorOf" & $typeOfTrainDescriptors & "Create")
 
-        $iArrTrainDescriptorsSize = UBound($matTrainDescriptors)
+        $iArrTrainDescriptorsSize = UBound($trainDescriptors)
         For $i = 0 To $iArrTrainDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatTrainDescriptors, $matTrainDescriptors[$i])
+            Call("_VectorOf" & $typeOfTrainDescriptors & "Push", $vectorTrainDescriptors, $trainDescriptors[$i])
         Next
 
-        $iArrTrainDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatTrainDescriptors)
+        $iArrTrainDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfTrainDescriptors, $vectorTrainDescriptors)
     Else
-        $iArrTrainDescriptors = _cveInputArrayFromMat($matTrainDescriptors)
+        If $bTrainDescriptorsCreate Then
+            $trainDescriptors = Call("_cve" & $typeOfTrainDescriptors & "Create", $trainDescriptors)
+        EndIf
+        $iArrTrainDescriptors = Call("_cveInputArrayFrom" & $typeOfTrainDescriptors, $trainDescriptors)
     EndIf
 
-    Local $oArrMatches, $vectorOfMatMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matMatches) == "Array"
+    Local $oArrMatches, $vectorMatches, $iArrMatchesSize
+    Local $bMatchesIsArray = IsArray($matches)
+    Local $bMatchesCreate = IsDllStruct($matches) And $typeOfMatches == "Scalar"
 
-    If $bMatchesIsArray Then
-        $vectorOfMatMatches = _VectorOfMatCreate()
+    If $typeOfMatches == Default Then
+        $oArrMatches = $matches
+    ElseIf $bMatchesIsArray Then
+        $vectorMatches = Call("_VectorOf" & $typeOfMatches & "Create")
 
-        $iArrMatchesSize = UBound($matMatches)
+        $iArrMatchesSize = UBound($matches)
         For $i = 0 To $iArrMatchesSize - 1
-            _VectorOfMatPush($vectorOfMatMatches, $matMatches[$i])
+            Call("_VectorOf" & $typeOfMatches & "Push", $vectorMatches, $matches[$i])
         Next
 
-        $oArrMatches = _cveOutputArrayFromVectorOfMat($vectorOfMatMatches)
+        $oArrMatches = Call("_cveOutputArrayFromVectorOf" & $typeOfMatches, $vectorMatches)
     Else
-        $oArrMatches = _cveOutputArrayFromMat($matMatches)
+        If $bMatchesCreate Then
+            $matches = Call("_cve" & $typeOfMatches & "Create", $matches)
+        EndIf
+        $oArrMatches = Call("_cveOutputArrayFrom" & $typeOfMatches, $matches)
     EndIf
 
-    Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $iArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $iArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $iArrMask = _cveInputArrayFromVectorOfMat($vectorOfMatMask)
+        $iArrMask = Call("_cveInputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $iArrMask = _cveInputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $iArrMask = Call("_cveInputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
     _cveCudaDescriptorMatcherKnnMatchAsync1($matcher, $iArrQueryDescriptors, $iArrTrainDescriptors, $oArrMatches, $k, $iArrMask, $stream)
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMask)
+    If $typeOfMask <> Default Then
+        _cveInputArrayRelease($iArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bMatchesIsArray Then
-        _VectorOfMatRelease($vectorOfMatMatches)
+        Call("_VectorOf" & $typeOfMatches & "Release", $vectorMatches)
     EndIf
 
-    _cveOutputArrayRelease($oArrMatches)
+    If $typeOfMatches <> Default Then
+        _cveOutputArrayRelease($oArrMatches)
+        If $bMatchesCreate Then
+            Call("_cve" & $typeOfMatches & "Release", $matches)
+        EndIf
+    EndIf
 
     If $bTrainDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatTrainDescriptors)
+        Call("_VectorOf" & $typeOfTrainDescriptors & "Release", $vectorTrainDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrTrainDescriptors)
+    If $typeOfTrainDescriptors <> Default Then
+        _cveInputArrayRelease($iArrTrainDescriptors)
+        If $bTrainDescriptorsCreate Then
+            Call("_cve" & $typeOfTrainDescriptors & "Release", $trainDescriptors)
+        EndIf
+    EndIf
 
     If $bQueryDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueryDescriptors)
+        Call("_VectorOf" & $typeOfQueryDescriptors & "Release", $vectorQueryDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrQueryDescriptors)
+    If $typeOfQueryDescriptors <> Default Then
+        _cveInputArrayRelease($iArrQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            Call("_cve" & $typeOfQueryDescriptors & "Release", $queryDescriptors)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchAsync1Typed
+
+Func _cveCudaDescriptorMatcherKnnMatchAsync1Mat($matcher, $queryDescriptors, $trainDescriptors, $matches, $k, $mask, $stream)
+    ; cveCudaDescriptorMatcherKnnMatchAsync1 using cv::Mat instead of _*Array
+    _cveCudaDescriptorMatcherKnnMatchAsync1Typed($matcher, "Mat", $queryDescriptors, "Mat", $trainDescriptors, "Mat", $matches, $k, "Mat", $mask, $stream)
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchAsync1Mat
 
 Func _cveCudaDescriptorMatcherKnnMatchAsync2($matcher, $queryDescriptors, $matches, $k, $masks, $stream)
@@ -1076,7 +1317,7 @@ Func _cveCudaDescriptorMatcherKnnMatchAsync2($matcher, $queryDescriptors, $match
     EndIf
 
     Local $vecMasks, $iArrMasksSize
-    Local $bMasksIsArray = VarGetType($masks) == "Array"
+    Local $bMasksIsArray = IsArray($masks)
 
     If $bMasksIsArray Then
         $vecMasks = _VectorOfGpuMatCreate()
@@ -1110,54 +1351,80 @@ Func _cveCudaDescriptorMatcherKnnMatchAsync2($matcher, $queryDescriptors, $match
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchAsync2
 
-Func _cveCudaDescriptorMatcherKnnMatchAsync2Mat($matcher, $matQueryDescriptors, $matMatches, $k, $masks, $stream)
-    ; cveCudaDescriptorMatcherKnnMatchAsync2 using cv::Mat instead of _*Array
+Func _cveCudaDescriptorMatcherKnnMatchAsync2Typed($matcher, $typeOfQueryDescriptors, $queryDescriptors, $typeOfMatches, $matches, $k, $masks, $stream)
 
-    Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
-    Local $bQueryDescriptorsIsArray = VarGetType($matQueryDescriptors) == "Array"
+    Local $iArrQueryDescriptors, $vectorQueryDescriptors, $iArrQueryDescriptorsSize
+    Local $bQueryDescriptorsIsArray = IsArray($queryDescriptors)
+    Local $bQueryDescriptorsCreate = IsDllStruct($queryDescriptors) And $typeOfQueryDescriptors == "Scalar"
 
-    If $bQueryDescriptorsIsArray Then
-        $vectorOfMatQueryDescriptors = _VectorOfMatCreate()
+    If $typeOfQueryDescriptors == Default Then
+        $iArrQueryDescriptors = $queryDescriptors
+    ElseIf $bQueryDescriptorsIsArray Then
+        $vectorQueryDescriptors = Call("_VectorOf" & $typeOfQueryDescriptors & "Create")
 
-        $iArrQueryDescriptorsSize = UBound($matQueryDescriptors)
+        $iArrQueryDescriptorsSize = UBound($queryDescriptors)
         For $i = 0 To $iArrQueryDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatQueryDescriptors, $matQueryDescriptors[$i])
+            Call("_VectorOf" & $typeOfQueryDescriptors & "Push", $vectorQueryDescriptors, $queryDescriptors[$i])
         Next
 
-        $iArrQueryDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatQueryDescriptors)
+        $iArrQueryDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfQueryDescriptors, $vectorQueryDescriptors)
     Else
-        $iArrQueryDescriptors = _cveInputArrayFromMat($matQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            $queryDescriptors = Call("_cve" & $typeOfQueryDescriptors & "Create", $queryDescriptors)
+        EndIf
+        $iArrQueryDescriptors = Call("_cveInputArrayFrom" & $typeOfQueryDescriptors, $queryDescriptors)
     EndIf
 
-    Local $oArrMatches, $vectorOfMatMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matMatches) == "Array"
+    Local $oArrMatches, $vectorMatches, $iArrMatchesSize
+    Local $bMatchesIsArray = IsArray($matches)
+    Local $bMatchesCreate = IsDllStruct($matches) And $typeOfMatches == "Scalar"
 
-    If $bMatchesIsArray Then
-        $vectorOfMatMatches = _VectorOfMatCreate()
+    If $typeOfMatches == Default Then
+        $oArrMatches = $matches
+    ElseIf $bMatchesIsArray Then
+        $vectorMatches = Call("_VectorOf" & $typeOfMatches & "Create")
 
-        $iArrMatchesSize = UBound($matMatches)
+        $iArrMatchesSize = UBound($matches)
         For $i = 0 To $iArrMatchesSize - 1
-            _VectorOfMatPush($vectorOfMatMatches, $matMatches[$i])
+            Call("_VectorOf" & $typeOfMatches & "Push", $vectorMatches, $matches[$i])
         Next
 
-        $oArrMatches = _cveOutputArrayFromVectorOfMat($vectorOfMatMatches)
+        $oArrMatches = Call("_cveOutputArrayFromVectorOf" & $typeOfMatches, $vectorMatches)
     Else
-        $oArrMatches = _cveOutputArrayFromMat($matMatches)
+        If $bMatchesCreate Then
+            $matches = Call("_cve" & $typeOfMatches & "Create", $matches)
+        EndIf
+        $oArrMatches = Call("_cveOutputArrayFrom" & $typeOfMatches, $matches)
     EndIf
 
     _cveCudaDescriptorMatcherKnnMatchAsync2($matcher, $iArrQueryDescriptors, $oArrMatches, $k, $masks, $stream)
 
     If $bMatchesIsArray Then
-        _VectorOfMatRelease($vectorOfMatMatches)
+        Call("_VectorOf" & $typeOfMatches & "Release", $vectorMatches)
     EndIf
 
-    _cveOutputArrayRelease($oArrMatches)
+    If $typeOfMatches <> Default Then
+        _cveOutputArrayRelease($oArrMatches)
+        If $bMatchesCreate Then
+            Call("_cve" & $typeOfMatches & "Release", $matches)
+        EndIf
+    EndIf
 
     If $bQueryDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueryDescriptors)
+        Call("_VectorOf" & $typeOfQueryDescriptors & "Release", $vectorQueryDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrQueryDescriptors)
+    If $typeOfQueryDescriptors <> Default Then
+        _cveInputArrayRelease($iArrQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            Call("_cve" & $typeOfQueryDescriptors & "Release", $queryDescriptors)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchAsync2Typed
+
+Func _cveCudaDescriptorMatcherKnnMatchAsync2Mat($matcher, $queryDescriptors, $matches, $k, $masks, $stream)
+    ; cveCudaDescriptorMatcherKnnMatchAsync2 using cv::Mat instead of _*Array
+    _cveCudaDescriptorMatcherKnnMatchAsync2Typed($matcher, "Mat", $queryDescriptors, "Mat", $matches, $k, $masks, $stream)
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchAsync2Mat
 
 Func _cveCudaDescriptorMatcherKnnMatchConvert($matcher, $gpuMatches, $matches, $compactResult)
@@ -1178,7 +1445,7 @@ Func _cveCudaDescriptorMatcherKnnMatchConvert($matcher, $gpuMatches, $matches, $
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfVectorOfDMatchCreate()
@@ -1205,32 +1472,47 @@ Func _cveCudaDescriptorMatcherKnnMatchConvert($matcher, $gpuMatches, $matches, $
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchConvert
 
-Func _cveCudaDescriptorMatcherKnnMatchConvertMat($matcher, $matGpuMatches, $matches, $compactResult)
-    ; cveCudaDescriptorMatcherKnnMatchConvert using cv::Mat instead of _*Array
+Func _cveCudaDescriptorMatcherKnnMatchConvertTyped($matcher, $typeOfGpuMatches, $gpuMatches, $matches, $compactResult)
 
-    Local $iArrGpuMatches, $vectorOfMatGpuMatches, $iArrGpuMatchesSize
-    Local $bGpuMatchesIsArray = VarGetType($matGpuMatches) == "Array"
+    Local $iArrGpuMatches, $vectorGpuMatches, $iArrGpuMatchesSize
+    Local $bGpuMatchesIsArray = IsArray($gpuMatches)
+    Local $bGpuMatchesCreate = IsDllStruct($gpuMatches) And $typeOfGpuMatches == "Scalar"
 
-    If $bGpuMatchesIsArray Then
-        $vectorOfMatGpuMatches = _VectorOfMatCreate()
+    If $typeOfGpuMatches == Default Then
+        $iArrGpuMatches = $gpuMatches
+    ElseIf $bGpuMatchesIsArray Then
+        $vectorGpuMatches = Call("_VectorOf" & $typeOfGpuMatches & "Create")
 
-        $iArrGpuMatchesSize = UBound($matGpuMatches)
+        $iArrGpuMatchesSize = UBound($gpuMatches)
         For $i = 0 To $iArrGpuMatchesSize - 1
-            _VectorOfMatPush($vectorOfMatGpuMatches, $matGpuMatches[$i])
+            Call("_VectorOf" & $typeOfGpuMatches & "Push", $vectorGpuMatches, $gpuMatches[$i])
         Next
 
-        $iArrGpuMatches = _cveInputArrayFromVectorOfMat($vectorOfMatGpuMatches)
+        $iArrGpuMatches = Call("_cveInputArrayFromVectorOf" & $typeOfGpuMatches, $vectorGpuMatches)
     Else
-        $iArrGpuMatches = _cveInputArrayFromMat($matGpuMatches)
+        If $bGpuMatchesCreate Then
+            $gpuMatches = Call("_cve" & $typeOfGpuMatches & "Create", $gpuMatches)
+        EndIf
+        $iArrGpuMatches = Call("_cveInputArrayFrom" & $typeOfGpuMatches, $gpuMatches)
     EndIf
 
     _cveCudaDescriptorMatcherKnnMatchConvert($matcher, $iArrGpuMatches, $matches, $compactResult)
 
     If $bGpuMatchesIsArray Then
-        _VectorOfMatRelease($vectorOfMatGpuMatches)
+        Call("_VectorOf" & $typeOfGpuMatches & "Release", $vectorGpuMatches)
     EndIf
 
-    _cveInputArrayRelease($iArrGpuMatches)
+    If $typeOfGpuMatches <> Default Then
+        _cveInputArrayRelease($iArrGpuMatches)
+        If $bGpuMatchesCreate Then
+            Call("_cve" & $typeOfGpuMatches & "Release", $gpuMatches)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchConvertTyped
+
+Func _cveCudaDescriptorMatcherKnnMatchConvertMat($matcher, $gpuMatches, $matches, $compactResult)
+    ; cveCudaDescriptorMatcherKnnMatchConvert using cv::Mat instead of _*Array
+    _cveCudaDescriptorMatcherKnnMatchConvertTyped($matcher, "Mat", $gpuMatches, $matches, $compactResult)
 EndFunc   ;==>_cveCudaDescriptorMatcherKnnMatchConvertMat
 
 Func _cveCudaDescriptorMatcherRadiusMatch1($matcher, $queryDescriptors, $trainDescriptors, $matches, $maxDistance, $mask, $compactResult)
@@ -1258,7 +1540,7 @@ Func _cveCudaDescriptorMatcherRadiusMatch1($matcher, $queryDescriptors, $trainDe
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfVectorOfDMatchCreate()
@@ -1292,76 +1574,113 @@ Func _cveCudaDescriptorMatcherRadiusMatch1($matcher, $queryDescriptors, $trainDe
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatch1
 
-Func _cveCudaDescriptorMatcherRadiusMatch1Mat($matcher, $matQueryDescriptors, $matTrainDescriptors, $matches, $maxDistance, $matMask, $compactResult)
-    ; cveCudaDescriptorMatcherRadiusMatch1 using cv::Mat instead of _*Array
+Func _cveCudaDescriptorMatcherRadiusMatch1Typed($matcher, $typeOfQueryDescriptors, $queryDescriptors, $typeOfTrainDescriptors, $trainDescriptors, $matches, $maxDistance, $typeOfMask, $mask, $compactResult)
 
-    Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
-    Local $bQueryDescriptorsIsArray = VarGetType($matQueryDescriptors) == "Array"
+    Local $iArrQueryDescriptors, $vectorQueryDescriptors, $iArrQueryDescriptorsSize
+    Local $bQueryDescriptorsIsArray = IsArray($queryDescriptors)
+    Local $bQueryDescriptorsCreate = IsDllStruct($queryDescriptors) And $typeOfQueryDescriptors == "Scalar"
 
-    If $bQueryDescriptorsIsArray Then
-        $vectorOfMatQueryDescriptors = _VectorOfMatCreate()
+    If $typeOfQueryDescriptors == Default Then
+        $iArrQueryDescriptors = $queryDescriptors
+    ElseIf $bQueryDescriptorsIsArray Then
+        $vectorQueryDescriptors = Call("_VectorOf" & $typeOfQueryDescriptors & "Create")
 
-        $iArrQueryDescriptorsSize = UBound($matQueryDescriptors)
+        $iArrQueryDescriptorsSize = UBound($queryDescriptors)
         For $i = 0 To $iArrQueryDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatQueryDescriptors, $matQueryDescriptors[$i])
+            Call("_VectorOf" & $typeOfQueryDescriptors & "Push", $vectorQueryDescriptors, $queryDescriptors[$i])
         Next
 
-        $iArrQueryDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatQueryDescriptors)
+        $iArrQueryDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfQueryDescriptors, $vectorQueryDescriptors)
     Else
-        $iArrQueryDescriptors = _cveInputArrayFromMat($matQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            $queryDescriptors = Call("_cve" & $typeOfQueryDescriptors & "Create", $queryDescriptors)
+        EndIf
+        $iArrQueryDescriptors = Call("_cveInputArrayFrom" & $typeOfQueryDescriptors, $queryDescriptors)
     EndIf
 
-    Local $iArrTrainDescriptors, $vectorOfMatTrainDescriptors, $iArrTrainDescriptorsSize
-    Local $bTrainDescriptorsIsArray = VarGetType($matTrainDescriptors) == "Array"
+    Local $iArrTrainDescriptors, $vectorTrainDescriptors, $iArrTrainDescriptorsSize
+    Local $bTrainDescriptorsIsArray = IsArray($trainDescriptors)
+    Local $bTrainDescriptorsCreate = IsDllStruct($trainDescriptors) And $typeOfTrainDescriptors == "Scalar"
 
-    If $bTrainDescriptorsIsArray Then
-        $vectorOfMatTrainDescriptors = _VectorOfMatCreate()
+    If $typeOfTrainDescriptors == Default Then
+        $iArrTrainDescriptors = $trainDescriptors
+    ElseIf $bTrainDescriptorsIsArray Then
+        $vectorTrainDescriptors = Call("_VectorOf" & $typeOfTrainDescriptors & "Create")
 
-        $iArrTrainDescriptorsSize = UBound($matTrainDescriptors)
+        $iArrTrainDescriptorsSize = UBound($trainDescriptors)
         For $i = 0 To $iArrTrainDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatTrainDescriptors, $matTrainDescriptors[$i])
+            Call("_VectorOf" & $typeOfTrainDescriptors & "Push", $vectorTrainDescriptors, $trainDescriptors[$i])
         Next
 
-        $iArrTrainDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatTrainDescriptors)
+        $iArrTrainDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfTrainDescriptors, $vectorTrainDescriptors)
     Else
-        $iArrTrainDescriptors = _cveInputArrayFromMat($matTrainDescriptors)
+        If $bTrainDescriptorsCreate Then
+            $trainDescriptors = Call("_cve" & $typeOfTrainDescriptors & "Create", $trainDescriptors)
+        EndIf
+        $iArrTrainDescriptors = Call("_cveInputArrayFrom" & $typeOfTrainDescriptors, $trainDescriptors)
     EndIf
 
-    Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $iArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $iArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $iArrMask = _cveInputArrayFromVectorOfMat($vectorOfMatMask)
+        $iArrMask = Call("_cveInputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $iArrMask = _cveInputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $iArrMask = Call("_cveInputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
     _cveCudaDescriptorMatcherRadiusMatch1($matcher, $iArrQueryDescriptors, $iArrTrainDescriptors, $matches, $maxDistance, $iArrMask, $compactResult)
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMask)
+    If $typeOfMask <> Default Then
+        _cveInputArrayRelease($iArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bTrainDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatTrainDescriptors)
+        Call("_VectorOf" & $typeOfTrainDescriptors & "Release", $vectorTrainDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrTrainDescriptors)
+    If $typeOfTrainDescriptors <> Default Then
+        _cveInputArrayRelease($iArrTrainDescriptors)
+        If $bTrainDescriptorsCreate Then
+            Call("_cve" & $typeOfTrainDescriptors & "Release", $trainDescriptors)
+        EndIf
+    EndIf
 
     If $bQueryDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueryDescriptors)
+        Call("_VectorOf" & $typeOfQueryDescriptors & "Release", $vectorQueryDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrQueryDescriptors)
+    If $typeOfQueryDescriptors <> Default Then
+        _cveInputArrayRelease($iArrQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            Call("_cve" & $typeOfQueryDescriptors & "Release", $queryDescriptors)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatch1Typed
+
+Func _cveCudaDescriptorMatcherRadiusMatch1Mat($matcher, $queryDescriptors, $trainDescriptors, $matches, $maxDistance, $mask, $compactResult)
+    ; cveCudaDescriptorMatcherRadiusMatch1 using cv::Mat instead of _*Array
+    _cveCudaDescriptorMatcherRadiusMatch1Typed($matcher, "Mat", $queryDescriptors, "Mat", $trainDescriptors, $matches, $maxDistance, "Mat", $mask, $compactResult)
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatch1Mat
 
 Func _cveCudaDescriptorMatcherRadiusMatch2($matcher, $queryDescriptors, $matches, $maxDistance, $masks, $compactResult)
@@ -1382,7 +1701,7 @@ Func _cveCudaDescriptorMatcherRadiusMatch2($matcher, $queryDescriptors, $matches
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfVectorOfDMatchCreate()
@@ -1403,7 +1722,7 @@ Func _cveCudaDescriptorMatcherRadiusMatch2($matcher, $queryDescriptors, $matches
     EndIf
 
     Local $vecMasks, $iArrMasksSize
-    Local $bMasksIsArray = VarGetType($masks) == "Array"
+    Local $bMasksIsArray = IsArray($masks)
 
     If $bMasksIsArray Then
         $vecMasks = _VectorOfGpuMatCreate()
@@ -1434,32 +1753,47 @@ Func _cveCudaDescriptorMatcherRadiusMatch2($matcher, $queryDescriptors, $matches
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatch2
 
-Func _cveCudaDescriptorMatcherRadiusMatch2Mat($matcher, $matQueryDescriptors, $matches, $maxDistance, $masks, $compactResult)
-    ; cveCudaDescriptorMatcherRadiusMatch2 using cv::Mat instead of _*Array
+Func _cveCudaDescriptorMatcherRadiusMatch2Typed($matcher, $typeOfQueryDescriptors, $queryDescriptors, $matches, $maxDistance, $masks, $compactResult)
 
-    Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
-    Local $bQueryDescriptorsIsArray = VarGetType($matQueryDescriptors) == "Array"
+    Local $iArrQueryDescriptors, $vectorQueryDescriptors, $iArrQueryDescriptorsSize
+    Local $bQueryDescriptorsIsArray = IsArray($queryDescriptors)
+    Local $bQueryDescriptorsCreate = IsDllStruct($queryDescriptors) And $typeOfQueryDescriptors == "Scalar"
 
-    If $bQueryDescriptorsIsArray Then
-        $vectorOfMatQueryDescriptors = _VectorOfMatCreate()
+    If $typeOfQueryDescriptors == Default Then
+        $iArrQueryDescriptors = $queryDescriptors
+    ElseIf $bQueryDescriptorsIsArray Then
+        $vectorQueryDescriptors = Call("_VectorOf" & $typeOfQueryDescriptors & "Create")
 
-        $iArrQueryDescriptorsSize = UBound($matQueryDescriptors)
+        $iArrQueryDescriptorsSize = UBound($queryDescriptors)
         For $i = 0 To $iArrQueryDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatQueryDescriptors, $matQueryDescriptors[$i])
+            Call("_VectorOf" & $typeOfQueryDescriptors & "Push", $vectorQueryDescriptors, $queryDescriptors[$i])
         Next
 
-        $iArrQueryDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatQueryDescriptors)
+        $iArrQueryDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfQueryDescriptors, $vectorQueryDescriptors)
     Else
-        $iArrQueryDescriptors = _cveInputArrayFromMat($matQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            $queryDescriptors = Call("_cve" & $typeOfQueryDescriptors & "Create", $queryDescriptors)
+        EndIf
+        $iArrQueryDescriptors = Call("_cveInputArrayFrom" & $typeOfQueryDescriptors, $queryDescriptors)
     EndIf
 
     _cveCudaDescriptorMatcherRadiusMatch2($matcher, $iArrQueryDescriptors, $matches, $maxDistance, $masks, $compactResult)
 
     If $bQueryDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueryDescriptors)
+        Call("_VectorOf" & $typeOfQueryDescriptors & "Release", $vectorQueryDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrQueryDescriptors)
+    If $typeOfQueryDescriptors <> Default Then
+        _cveInputArrayRelease($iArrQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            Call("_cve" & $typeOfQueryDescriptors & "Release", $queryDescriptors)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatch2Typed
+
+Func _cveCudaDescriptorMatcherRadiusMatch2Mat($matcher, $queryDescriptors, $matches, $maxDistance, $masks, $compactResult)
+    ; cveCudaDescriptorMatcherRadiusMatch2 using cv::Mat instead of _*Array
+    _cveCudaDescriptorMatcherRadiusMatch2Typed($matcher, "Mat", $queryDescriptors, $matches, $maxDistance, $masks, $compactResult)
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatch2Mat
 
 Func _cveCudaDescriptorMatcherRadiusMatchAsync1($matcher, $queryDescriptors, $trainDescriptors, $matches, $maxDistance, $mask, $stream)
@@ -1510,98 +1844,146 @@ Func _cveCudaDescriptorMatcherRadiusMatchAsync1($matcher, $queryDescriptors, $tr
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaDescriptorMatcherRadiusMatchAsync1", $sMatcherDllType, $matcher, $sQueryDescriptorsDllType, $queryDescriptors, $sTrainDescriptorsDllType, $trainDescriptors, $sMatchesDllType, $matches, "float", $maxDistance, $sMaskDllType, $mask, $sStreamDllType, $stream), "cveCudaDescriptorMatcherRadiusMatchAsync1", @error)
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchAsync1
 
-Func _cveCudaDescriptorMatcherRadiusMatchAsync1Mat($matcher, $matQueryDescriptors, $matTrainDescriptors, $matMatches, $maxDistance, $matMask, $stream)
-    ; cveCudaDescriptorMatcherRadiusMatchAsync1 using cv::Mat instead of _*Array
+Func _cveCudaDescriptorMatcherRadiusMatchAsync1Typed($matcher, $typeOfQueryDescriptors, $queryDescriptors, $typeOfTrainDescriptors, $trainDescriptors, $typeOfMatches, $matches, $maxDistance, $typeOfMask, $mask, $stream)
 
-    Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
-    Local $bQueryDescriptorsIsArray = VarGetType($matQueryDescriptors) == "Array"
+    Local $iArrQueryDescriptors, $vectorQueryDescriptors, $iArrQueryDescriptorsSize
+    Local $bQueryDescriptorsIsArray = IsArray($queryDescriptors)
+    Local $bQueryDescriptorsCreate = IsDllStruct($queryDescriptors) And $typeOfQueryDescriptors == "Scalar"
 
-    If $bQueryDescriptorsIsArray Then
-        $vectorOfMatQueryDescriptors = _VectorOfMatCreate()
+    If $typeOfQueryDescriptors == Default Then
+        $iArrQueryDescriptors = $queryDescriptors
+    ElseIf $bQueryDescriptorsIsArray Then
+        $vectorQueryDescriptors = Call("_VectorOf" & $typeOfQueryDescriptors & "Create")
 
-        $iArrQueryDescriptorsSize = UBound($matQueryDescriptors)
+        $iArrQueryDescriptorsSize = UBound($queryDescriptors)
         For $i = 0 To $iArrQueryDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatQueryDescriptors, $matQueryDescriptors[$i])
+            Call("_VectorOf" & $typeOfQueryDescriptors & "Push", $vectorQueryDescriptors, $queryDescriptors[$i])
         Next
 
-        $iArrQueryDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatQueryDescriptors)
+        $iArrQueryDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfQueryDescriptors, $vectorQueryDescriptors)
     Else
-        $iArrQueryDescriptors = _cveInputArrayFromMat($matQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            $queryDescriptors = Call("_cve" & $typeOfQueryDescriptors & "Create", $queryDescriptors)
+        EndIf
+        $iArrQueryDescriptors = Call("_cveInputArrayFrom" & $typeOfQueryDescriptors, $queryDescriptors)
     EndIf
 
-    Local $iArrTrainDescriptors, $vectorOfMatTrainDescriptors, $iArrTrainDescriptorsSize
-    Local $bTrainDescriptorsIsArray = VarGetType($matTrainDescriptors) == "Array"
+    Local $iArrTrainDescriptors, $vectorTrainDescriptors, $iArrTrainDescriptorsSize
+    Local $bTrainDescriptorsIsArray = IsArray($trainDescriptors)
+    Local $bTrainDescriptorsCreate = IsDllStruct($trainDescriptors) And $typeOfTrainDescriptors == "Scalar"
 
-    If $bTrainDescriptorsIsArray Then
-        $vectorOfMatTrainDescriptors = _VectorOfMatCreate()
+    If $typeOfTrainDescriptors == Default Then
+        $iArrTrainDescriptors = $trainDescriptors
+    ElseIf $bTrainDescriptorsIsArray Then
+        $vectorTrainDescriptors = Call("_VectorOf" & $typeOfTrainDescriptors & "Create")
 
-        $iArrTrainDescriptorsSize = UBound($matTrainDescriptors)
+        $iArrTrainDescriptorsSize = UBound($trainDescriptors)
         For $i = 0 To $iArrTrainDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatTrainDescriptors, $matTrainDescriptors[$i])
+            Call("_VectorOf" & $typeOfTrainDescriptors & "Push", $vectorTrainDescriptors, $trainDescriptors[$i])
         Next
 
-        $iArrTrainDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatTrainDescriptors)
+        $iArrTrainDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfTrainDescriptors, $vectorTrainDescriptors)
     Else
-        $iArrTrainDescriptors = _cveInputArrayFromMat($matTrainDescriptors)
+        If $bTrainDescriptorsCreate Then
+            $trainDescriptors = Call("_cve" & $typeOfTrainDescriptors & "Create", $trainDescriptors)
+        EndIf
+        $iArrTrainDescriptors = Call("_cveInputArrayFrom" & $typeOfTrainDescriptors, $trainDescriptors)
     EndIf
 
-    Local $oArrMatches, $vectorOfMatMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matMatches) == "Array"
+    Local $oArrMatches, $vectorMatches, $iArrMatchesSize
+    Local $bMatchesIsArray = IsArray($matches)
+    Local $bMatchesCreate = IsDllStruct($matches) And $typeOfMatches == "Scalar"
 
-    If $bMatchesIsArray Then
-        $vectorOfMatMatches = _VectorOfMatCreate()
+    If $typeOfMatches == Default Then
+        $oArrMatches = $matches
+    ElseIf $bMatchesIsArray Then
+        $vectorMatches = Call("_VectorOf" & $typeOfMatches & "Create")
 
-        $iArrMatchesSize = UBound($matMatches)
+        $iArrMatchesSize = UBound($matches)
         For $i = 0 To $iArrMatchesSize - 1
-            _VectorOfMatPush($vectorOfMatMatches, $matMatches[$i])
+            Call("_VectorOf" & $typeOfMatches & "Push", $vectorMatches, $matches[$i])
         Next
 
-        $oArrMatches = _cveOutputArrayFromVectorOfMat($vectorOfMatMatches)
+        $oArrMatches = Call("_cveOutputArrayFromVectorOf" & $typeOfMatches, $vectorMatches)
     Else
-        $oArrMatches = _cveOutputArrayFromMat($matMatches)
+        If $bMatchesCreate Then
+            $matches = Call("_cve" & $typeOfMatches & "Create", $matches)
+        EndIf
+        $oArrMatches = Call("_cveOutputArrayFrom" & $typeOfMatches, $matches)
     EndIf
 
-    Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $iArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $iArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $iArrMask = _cveInputArrayFromVectorOfMat($vectorOfMatMask)
+        $iArrMask = Call("_cveInputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $iArrMask = _cveInputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $iArrMask = Call("_cveInputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
     _cveCudaDescriptorMatcherRadiusMatchAsync1($matcher, $iArrQueryDescriptors, $iArrTrainDescriptors, $oArrMatches, $maxDistance, $iArrMask, $stream)
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMask)
+    If $typeOfMask <> Default Then
+        _cveInputArrayRelease($iArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bMatchesIsArray Then
-        _VectorOfMatRelease($vectorOfMatMatches)
+        Call("_VectorOf" & $typeOfMatches & "Release", $vectorMatches)
     EndIf
 
-    _cveOutputArrayRelease($oArrMatches)
+    If $typeOfMatches <> Default Then
+        _cveOutputArrayRelease($oArrMatches)
+        If $bMatchesCreate Then
+            Call("_cve" & $typeOfMatches & "Release", $matches)
+        EndIf
+    EndIf
 
     If $bTrainDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatTrainDescriptors)
+        Call("_VectorOf" & $typeOfTrainDescriptors & "Release", $vectorTrainDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrTrainDescriptors)
+    If $typeOfTrainDescriptors <> Default Then
+        _cveInputArrayRelease($iArrTrainDescriptors)
+        If $bTrainDescriptorsCreate Then
+            Call("_cve" & $typeOfTrainDescriptors & "Release", $trainDescriptors)
+        EndIf
+    EndIf
 
     If $bQueryDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueryDescriptors)
+        Call("_VectorOf" & $typeOfQueryDescriptors & "Release", $vectorQueryDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrQueryDescriptors)
+    If $typeOfQueryDescriptors <> Default Then
+        _cveInputArrayRelease($iArrQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            Call("_cve" & $typeOfQueryDescriptors & "Release", $queryDescriptors)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchAsync1Typed
+
+Func _cveCudaDescriptorMatcherRadiusMatchAsync1Mat($matcher, $queryDescriptors, $trainDescriptors, $matches, $maxDistance, $mask, $stream)
+    ; cveCudaDescriptorMatcherRadiusMatchAsync1 using cv::Mat instead of _*Array
+    _cveCudaDescriptorMatcherRadiusMatchAsync1Typed($matcher, "Mat", $queryDescriptors, "Mat", $trainDescriptors, "Mat", $matches, $maxDistance, "Mat", $mask, $stream)
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchAsync1Mat
 
 Func _cveCudaDescriptorMatcherRadiusMatchAsync2($matcher, $queryDescriptors, $matches, $maxDistance, $masks, $stream)
@@ -1629,7 +2011,7 @@ Func _cveCudaDescriptorMatcherRadiusMatchAsync2($matcher, $queryDescriptors, $ma
     EndIf
 
     Local $vecMasks, $iArrMasksSize
-    Local $bMasksIsArray = VarGetType($masks) == "Array"
+    Local $bMasksIsArray = IsArray($masks)
 
     If $bMasksIsArray Then
         $vecMasks = _VectorOfGpuMatCreate()
@@ -1663,54 +2045,80 @@ Func _cveCudaDescriptorMatcherRadiusMatchAsync2($matcher, $queryDescriptors, $ma
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchAsync2
 
-Func _cveCudaDescriptorMatcherRadiusMatchAsync2Mat($matcher, $matQueryDescriptors, $matMatches, $maxDistance, $masks, $stream)
-    ; cveCudaDescriptorMatcherRadiusMatchAsync2 using cv::Mat instead of _*Array
+Func _cveCudaDescriptorMatcherRadiusMatchAsync2Typed($matcher, $typeOfQueryDescriptors, $queryDescriptors, $typeOfMatches, $matches, $maxDistance, $masks, $stream)
 
-    Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
-    Local $bQueryDescriptorsIsArray = VarGetType($matQueryDescriptors) == "Array"
+    Local $iArrQueryDescriptors, $vectorQueryDescriptors, $iArrQueryDescriptorsSize
+    Local $bQueryDescriptorsIsArray = IsArray($queryDescriptors)
+    Local $bQueryDescriptorsCreate = IsDllStruct($queryDescriptors) And $typeOfQueryDescriptors == "Scalar"
 
-    If $bQueryDescriptorsIsArray Then
-        $vectorOfMatQueryDescriptors = _VectorOfMatCreate()
+    If $typeOfQueryDescriptors == Default Then
+        $iArrQueryDescriptors = $queryDescriptors
+    ElseIf $bQueryDescriptorsIsArray Then
+        $vectorQueryDescriptors = Call("_VectorOf" & $typeOfQueryDescriptors & "Create")
 
-        $iArrQueryDescriptorsSize = UBound($matQueryDescriptors)
+        $iArrQueryDescriptorsSize = UBound($queryDescriptors)
         For $i = 0 To $iArrQueryDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatQueryDescriptors, $matQueryDescriptors[$i])
+            Call("_VectorOf" & $typeOfQueryDescriptors & "Push", $vectorQueryDescriptors, $queryDescriptors[$i])
         Next
 
-        $iArrQueryDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatQueryDescriptors)
+        $iArrQueryDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfQueryDescriptors, $vectorQueryDescriptors)
     Else
-        $iArrQueryDescriptors = _cveInputArrayFromMat($matQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            $queryDescriptors = Call("_cve" & $typeOfQueryDescriptors & "Create", $queryDescriptors)
+        EndIf
+        $iArrQueryDescriptors = Call("_cveInputArrayFrom" & $typeOfQueryDescriptors, $queryDescriptors)
     EndIf
 
-    Local $oArrMatches, $vectorOfMatMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matMatches) == "Array"
+    Local $oArrMatches, $vectorMatches, $iArrMatchesSize
+    Local $bMatchesIsArray = IsArray($matches)
+    Local $bMatchesCreate = IsDllStruct($matches) And $typeOfMatches == "Scalar"
 
-    If $bMatchesIsArray Then
-        $vectorOfMatMatches = _VectorOfMatCreate()
+    If $typeOfMatches == Default Then
+        $oArrMatches = $matches
+    ElseIf $bMatchesIsArray Then
+        $vectorMatches = Call("_VectorOf" & $typeOfMatches & "Create")
 
-        $iArrMatchesSize = UBound($matMatches)
+        $iArrMatchesSize = UBound($matches)
         For $i = 0 To $iArrMatchesSize - 1
-            _VectorOfMatPush($vectorOfMatMatches, $matMatches[$i])
+            Call("_VectorOf" & $typeOfMatches & "Push", $vectorMatches, $matches[$i])
         Next
 
-        $oArrMatches = _cveOutputArrayFromVectorOfMat($vectorOfMatMatches)
+        $oArrMatches = Call("_cveOutputArrayFromVectorOf" & $typeOfMatches, $vectorMatches)
     Else
-        $oArrMatches = _cveOutputArrayFromMat($matMatches)
+        If $bMatchesCreate Then
+            $matches = Call("_cve" & $typeOfMatches & "Create", $matches)
+        EndIf
+        $oArrMatches = Call("_cveOutputArrayFrom" & $typeOfMatches, $matches)
     EndIf
 
     _cveCudaDescriptorMatcherRadiusMatchAsync2($matcher, $iArrQueryDescriptors, $oArrMatches, $maxDistance, $masks, $stream)
 
     If $bMatchesIsArray Then
-        _VectorOfMatRelease($vectorOfMatMatches)
+        Call("_VectorOf" & $typeOfMatches & "Release", $vectorMatches)
     EndIf
 
-    _cveOutputArrayRelease($oArrMatches)
+    If $typeOfMatches <> Default Then
+        _cveOutputArrayRelease($oArrMatches)
+        If $bMatchesCreate Then
+            Call("_cve" & $typeOfMatches & "Release", $matches)
+        EndIf
+    EndIf
 
     If $bQueryDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueryDescriptors)
+        Call("_VectorOf" & $typeOfQueryDescriptors & "Release", $vectorQueryDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrQueryDescriptors)
+    If $typeOfQueryDescriptors <> Default Then
+        _cveInputArrayRelease($iArrQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            Call("_cve" & $typeOfQueryDescriptors & "Release", $queryDescriptors)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchAsync2Typed
+
+Func _cveCudaDescriptorMatcherRadiusMatchAsync2Mat($matcher, $queryDescriptors, $matches, $maxDistance, $masks, $stream)
+    ; cveCudaDescriptorMatcherRadiusMatchAsync2 using cv::Mat instead of _*Array
+    _cveCudaDescriptorMatcherRadiusMatchAsync2Typed($matcher, "Mat", $queryDescriptors, "Mat", $matches, $maxDistance, $masks, $stream)
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchAsync2Mat
 
 Func _cveCudaDescriptorMatcherRadiusMatchConvert($matcher, $gpu_matches, $matches, $compactResult)
@@ -1731,7 +2139,7 @@ Func _cveCudaDescriptorMatcherRadiusMatchConvert($matcher, $gpu_matches, $matche
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfVectorOfDMatchCreate()
@@ -1758,32 +2166,47 @@ Func _cveCudaDescriptorMatcherRadiusMatchConvert($matcher, $gpu_matches, $matche
     EndIf
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchConvert
 
-Func _cveCudaDescriptorMatcherRadiusMatchConvertMat($matcher, $matGpu_matches, $matches, $compactResult)
-    ; cveCudaDescriptorMatcherRadiusMatchConvert using cv::Mat instead of _*Array
+Func _cveCudaDescriptorMatcherRadiusMatchConvertTyped($matcher, $typeOfGpu_matches, $gpu_matches, $matches, $compactResult)
 
-    Local $iArrGpu_matches, $vectorOfMatGpu_matches, $iArrGpu_matchesSize
-    Local $bGpu_matchesIsArray = VarGetType($matGpu_matches) == "Array"
+    Local $iArrGpu_matches, $vectorGpu_matches, $iArrGpu_matchesSize
+    Local $bGpu_matchesIsArray = IsArray($gpu_matches)
+    Local $bGpu_matchesCreate = IsDllStruct($gpu_matches) And $typeOfGpu_matches == "Scalar"
 
-    If $bGpu_matchesIsArray Then
-        $vectorOfMatGpu_matches = _VectorOfMatCreate()
+    If $typeOfGpu_matches == Default Then
+        $iArrGpu_matches = $gpu_matches
+    ElseIf $bGpu_matchesIsArray Then
+        $vectorGpu_matches = Call("_VectorOf" & $typeOfGpu_matches & "Create")
 
-        $iArrGpu_matchesSize = UBound($matGpu_matches)
+        $iArrGpu_matchesSize = UBound($gpu_matches)
         For $i = 0 To $iArrGpu_matchesSize - 1
-            _VectorOfMatPush($vectorOfMatGpu_matches, $matGpu_matches[$i])
+            Call("_VectorOf" & $typeOfGpu_matches & "Push", $vectorGpu_matches, $gpu_matches[$i])
         Next
 
-        $iArrGpu_matches = _cveInputArrayFromVectorOfMat($vectorOfMatGpu_matches)
+        $iArrGpu_matches = Call("_cveInputArrayFromVectorOf" & $typeOfGpu_matches, $vectorGpu_matches)
     Else
-        $iArrGpu_matches = _cveInputArrayFromMat($matGpu_matches)
+        If $bGpu_matchesCreate Then
+            $gpu_matches = Call("_cve" & $typeOfGpu_matches & "Create", $gpu_matches)
+        EndIf
+        $iArrGpu_matches = Call("_cveInputArrayFrom" & $typeOfGpu_matches, $gpu_matches)
     EndIf
 
     _cveCudaDescriptorMatcherRadiusMatchConvert($matcher, $iArrGpu_matches, $matches, $compactResult)
 
     If $bGpu_matchesIsArray Then
-        _VectorOfMatRelease($vectorOfMatGpu_matches)
+        Call("_VectorOf" & $typeOfGpu_matches & "Release", $vectorGpu_matches)
     EndIf
 
-    _cveInputArrayRelease($iArrGpu_matches)
+    If $typeOfGpu_matches <> Default Then
+        _cveInputArrayRelease($iArrGpu_matches)
+        If $bGpu_matchesCreate Then
+            Call("_cve" & $typeOfGpu_matches & "Release", $gpu_matches)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchConvertTyped
+
+Func _cveCudaDescriptorMatcherRadiusMatchConvertMat($matcher, $gpu_matches, $matches, $compactResult)
+    ; cveCudaDescriptorMatcherRadiusMatchConvert using cv::Mat instead of _*Array
+    _cveCudaDescriptorMatcherRadiusMatchConvertTyped($matcher, "Mat", $gpu_matches, $matches, $compactResult)
 EndFunc   ;==>_cveCudaDescriptorMatcherRadiusMatchConvertMat
 
 Func _cveCudaFeature2dAsyncDetectAsync($feature2d, $image, $keypoints, $mask, $stream)
@@ -1827,76 +2250,113 @@ Func _cveCudaFeature2dAsyncDetectAsync($feature2d, $image, $keypoints, $mask, $s
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaFeature2dAsyncDetectAsync", $sFeature2dDllType, $feature2d, $sImageDllType, $image, $sKeypointsDllType, $keypoints, $sMaskDllType, $mask, $sStreamDllType, $stream), "cveCudaFeature2dAsyncDetectAsync", @error)
 EndFunc   ;==>_cveCudaFeature2dAsyncDetectAsync
 
-Func _cveCudaFeature2dAsyncDetectAsyncMat($feature2d, $matImage, $matKeypoints, $matMask, $stream)
-    ; cveCudaFeature2dAsyncDetectAsync using cv::Mat instead of _*Array
+Func _cveCudaFeature2dAsyncDetectAsyncTyped($feature2d, $typeOfImage, $image, $typeOfKeypoints, $keypoints, $typeOfMask, $mask, $stream)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $oArrKeypoints, $vectorOfMatKeypoints, $iArrKeypointsSize
-    Local $bKeypointsIsArray = VarGetType($matKeypoints) == "Array"
+    Local $oArrKeypoints, $vectorKeypoints, $iArrKeypointsSize
+    Local $bKeypointsIsArray = IsArray($keypoints)
+    Local $bKeypointsCreate = IsDllStruct($keypoints) And $typeOfKeypoints == "Scalar"
 
-    If $bKeypointsIsArray Then
-        $vectorOfMatKeypoints = _VectorOfMatCreate()
+    If $typeOfKeypoints == Default Then
+        $oArrKeypoints = $keypoints
+    ElseIf $bKeypointsIsArray Then
+        $vectorKeypoints = Call("_VectorOf" & $typeOfKeypoints & "Create")
 
-        $iArrKeypointsSize = UBound($matKeypoints)
+        $iArrKeypointsSize = UBound($keypoints)
         For $i = 0 To $iArrKeypointsSize - 1
-            _VectorOfMatPush($vectorOfMatKeypoints, $matKeypoints[$i])
+            Call("_VectorOf" & $typeOfKeypoints & "Push", $vectorKeypoints, $keypoints[$i])
         Next
 
-        $oArrKeypoints = _cveOutputArrayFromVectorOfMat($vectorOfMatKeypoints)
+        $oArrKeypoints = Call("_cveOutputArrayFromVectorOf" & $typeOfKeypoints, $vectorKeypoints)
     Else
-        $oArrKeypoints = _cveOutputArrayFromMat($matKeypoints)
+        If $bKeypointsCreate Then
+            $keypoints = Call("_cve" & $typeOfKeypoints & "Create", $keypoints)
+        EndIf
+        $oArrKeypoints = Call("_cveOutputArrayFrom" & $typeOfKeypoints, $keypoints)
     EndIf
 
-    Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $iArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $iArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $iArrMask = _cveInputArrayFromVectorOfMat($vectorOfMatMask)
+        $iArrMask = Call("_cveInputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $iArrMask = _cveInputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $iArrMask = Call("_cveInputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
     _cveCudaFeature2dAsyncDetectAsync($feature2d, $iArrImage, $oArrKeypoints, $iArrMask, $stream)
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMask)
+    If $typeOfMask <> Default Then
+        _cveInputArrayRelease($iArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bKeypointsIsArray Then
-        _VectorOfMatRelease($vectorOfMatKeypoints)
+        Call("_VectorOf" & $typeOfKeypoints & "Release", $vectorKeypoints)
     EndIf
 
-    _cveOutputArrayRelease($oArrKeypoints)
+    If $typeOfKeypoints <> Default Then
+        _cveOutputArrayRelease($oArrKeypoints)
+        If $bKeypointsCreate Then
+            Call("_cve" & $typeOfKeypoints & "Release", $keypoints)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCudaFeature2dAsyncDetectAsyncTyped
+
+Func _cveCudaFeature2dAsyncDetectAsyncMat($feature2d, $image, $keypoints, $mask, $stream)
+    ; cveCudaFeature2dAsyncDetectAsync using cv::Mat instead of _*Array
+    _cveCudaFeature2dAsyncDetectAsyncTyped($feature2d, "Mat", $image, "Mat", $keypoints, "Mat", $mask, $stream)
 EndFunc   ;==>_cveCudaFeature2dAsyncDetectAsyncMat
 
 Func _cveCudaFeature2dAsyncComputeAsync($feature2d, $image, $keypoints, $descriptors, $stream)
@@ -1940,76 +2400,113 @@ Func _cveCudaFeature2dAsyncComputeAsync($feature2d, $image, $keypoints, $descrip
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaFeature2dAsyncComputeAsync", $sFeature2dDllType, $feature2d, $sImageDllType, $image, $sKeypointsDllType, $keypoints, $sDescriptorsDllType, $descriptors, $sStreamDllType, $stream), "cveCudaFeature2dAsyncComputeAsync", @error)
 EndFunc   ;==>_cveCudaFeature2dAsyncComputeAsync
 
-Func _cveCudaFeature2dAsyncComputeAsyncMat($feature2d, $matImage, $matKeypoints, $matDescriptors, $stream)
-    ; cveCudaFeature2dAsyncComputeAsync using cv::Mat instead of _*Array
+Func _cveCudaFeature2dAsyncComputeAsyncTyped($feature2d, $typeOfImage, $image, $typeOfKeypoints, $keypoints, $typeOfDescriptors, $descriptors, $stream)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $oArrKeypoints, $vectorOfMatKeypoints, $iArrKeypointsSize
-    Local $bKeypointsIsArray = VarGetType($matKeypoints) == "Array"
+    Local $oArrKeypoints, $vectorKeypoints, $iArrKeypointsSize
+    Local $bKeypointsIsArray = IsArray($keypoints)
+    Local $bKeypointsCreate = IsDllStruct($keypoints) And $typeOfKeypoints == "Scalar"
 
-    If $bKeypointsIsArray Then
-        $vectorOfMatKeypoints = _VectorOfMatCreate()
+    If $typeOfKeypoints == Default Then
+        $oArrKeypoints = $keypoints
+    ElseIf $bKeypointsIsArray Then
+        $vectorKeypoints = Call("_VectorOf" & $typeOfKeypoints & "Create")
 
-        $iArrKeypointsSize = UBound($matKeypoints)
+        $iArrKeypointsSize = UBound($keypoints)
         For $i = 0 To $iArrKeypointsSize - 1
-            _VectorOfMatPush($vectorOfMatKeypoints, $matKeypoints[$i])
+            Call("_VectorOf" & $typeOfKeypoints & "Push", $vectorKeypoints, $keypoints[$i])
         Next
 
-        $oArrKeypoints = _cveOutputArrayFromVectorOfMat($vectorOfMatKeypoints)
+        $oArrKeypoints = Call("_cveOutputArrayFromVectorOf" & $typeOfKeypoints, $vectorKeypoints)
     Else
-        $oArrKeypoints = _cveOutputArrayFromMat($matKeypoints)
+        If $bKeypointsCreate Then
+            $keypoints = Call("_cve" & $typeOfKeypoints & "Create", $keypoints)
+        EndIf
+        $oArrKeypoints = Call("_cveOutputArrayFrom" & $typeOfKeypoints, $keypoints)
     EndIf
 
-    Local $oArrDescriptors, $vectorOfMatDescriptors, $iArrDescriptorsSize
-    Local $bDescriptorsIsArray = VarGetType($matDescriptors) == "Array"
+    Local $oArrDescriptors, $vectorDescriptors, $iArrDescriptorsSize
+    Local $bDescriptorsIsArray = IsArray($descriptors)
+    Local $bDescriptorsCreate = IsDllStruct($descriptors) And $typeOfDescriptors == "Scalar"
 
-    If $bDescriptorsIsArray Then
-        $vectorOfMatDescriptors = _VectorOfMatCreate()
+    If $typeOfDescriptors == Default Then
+        $oArrDescriptors = $descriptors
+    ElseIf $bDescriptorsIsArray Then
+        $vectorDescriptors = Call("_VectorOf" & $typeOfDescriptors & "Create")
 
-        $iArrDescriptorsSize = UBound($matDescriptors)
+        $iArrDescriptorsSize = UBound($descriptors)
         For $i = 0 To $iArrDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatDescriptors, $matDescriptors[$i])
+            Call("_VectorOf" & $typeOfDescriptors & "Push", $vectorDescriptors, $descriptors[$i])
         Next
 
-        $oArrDescriptors = _cveOutputArrayFromVectorOfMat($vectorOfMatDescriptors)
+        $oArrDescriptors = Call("_cveOutputArrayFromVectorOf" & $typeOfDescriptors, $vectorDescriptors)
     Else
-        $oArrDescriptors = _cveOutputArrayFromMat($matDescriptors)
+        If $bDescriptorsCreate Then
+            $descriptors = Call("_cve" & $typeOfDescriptors & "Create", $descriptors)
+        EndIf
+        $oArrDescriptors = Call("_cveOutputArrayFrom" & $typeOfDescriptors, $descriptors)
     EndIf
 
     _cveCudaFeature2dAsyncComputeAsync($feature2d, $iArrImage, $oArrKeypoints, $oArrDescriptors, $stream)
 
     If $bDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatDescriptors)
+        Call("_VectorOf" & $typeOfDescriptors & "Release", $vectorDescriptors)
     EndIf
 
-    _cveOutputArrayRelease($oArrDescriptors)
+    If $typeOfDescriptors <> Default Then
+        _cveOutputArrayRelease($oArrDescriptors)
+        If $bDescriptorsCreate Then
+            Call("_cve" & $typeOfDescriptors & "Release", $descriptors)
+        EndIf
+    EndIf
 
     If $bKeypointsIsArray Then
-        _VectorOfMatRelease($vectorOfMatKeypoints)
+        Call("_VectorOf" & $typeOfKeypoints & "Release", $vectorKeypoints)
     EndIf
 
-    _cveOutputArrayRelease($oArrKeypoints)
+    If $typeOfKeypoints <> Default Then
+        _cveOutputArrayRelease($oArrKeypoints)
+        If $bKeypointsCreate Then
+            Call("_cve" & $typeOfKeypoints & "Release", $keypoints)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCudaFeature2dAsyncComputeAsyncTyped
+
+Func _cveCudaFeature2dAsyncComputeAsyncMat($feature2d, $image, $keypoints, $descriptors, $stream)
+    ; cveCudaFeature2dAsyncComputeAsync using cv::Mat instead of _*Array
+    _cveCudaFeature2dAsyncComputeAsyncTyped($feature2d, "Mat", $image, "Mat", $keypoints, "Mat", $descriptors, $stream)
 EndFunc   ;==>_cveCudaFeature2dAsyncComputeAsyncMat
 
 Func _cveCudaFeature2dAsyncDetectAndComputeAsync($feature2d, $image, $mask, $keypoints, $descriptors, $useProvidedKeypoints, $stream)
@@ -2060,98 +2557,146 @@ Func _cveCudaFeature2dAsyncDetectAndComputeAsync($feature2d, $image, $mask, $key
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCudaFeature2dAsyncDetectAndComputeAsync", $sFeature2dDllType, $feature2d, $sImageDllType, $image, $sMaskDllType, $mask, $sKeypointsDllType, $keypoints, $sDescriptorsDllType, $descriptors, "boolean", $useProvidedKeypoints, $sStreamDllType, $stream), "cveCudaFeature2dAsyncDetectAndComputeAsync", @error)
 EndFunc   ;==>_cveCudaFeature2dAsyncDetectAndComputeAsync
 
-Func _cveCudaFeature2dAsyncDetectAndComputeAsyncMat($feature2d, $matImage, $matMask, $matKeypoints, $matDescriptors, $useProvidedKeypoints, $stream)
-    ; cveCudaFeature2dAsyncDetectAndComputeAsync using cv::Mat instead of _*Array
+Func _cveCudaFeature2dAsyncDetectAndComputeAsyncTyped($feature2d, $typeOfImage, $image, $typeOfMask, $mask, $typeOfKeypoints, $keypoints, $typeOfDescriptors, $descriptors, $useProvidedKeypoints, $stream)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $iArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $iArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $iArrMask = _cveInputArrayFromVectorOfMat($vectorOfMatMask)
+        $iArrMask = Call("_cveInputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $iArrMask = _cveInputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $iArrMask = Call("_cveInputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
-    Local $oArrKeypoints, $vectorOfMatKeypoints, $iArrKeypointsSize
-    Local $bKeypointsIsArray = VarGetType($matKeypoints) == "Array"
+    Local $oArrKeypoints, $vectorKeypoints, $iArrKeypointsSize
+    Local $bKeypointsIsArray = IsArray($keypoints)
+    Local $bKeypointsCreate = IsDllStruct($keypoints) And $typeOfKeypoints == "Scalar"
 
-    If $bKeypointsIsArray Then
-        $vectorOfMatKeypoints = _VectorOfMatCreate()
+    If $typeOfKeypoints == Default Then
+        $oArrKeypoints = $keypoints
+    ElseIf $bKeypointsIsArray Then
+        $vectorKeypoints = Call("_VectorOf" & $typeOfKeypoints & "Create")
 
-        $iArrKeypointsSize = UBound($matKeypoints)
+        $iArrKeypointsSize = UBound($keypoints)
         For $i = 0 To $iArrKeypointsSize - 1
-            _VectorOfMatPush($vectorOfMatKeypoints, $matKeypoints[$i])
+            Call("_VectorOf" & $typeOfKeypoints & "Push", $vectorKeypoints, $keypoints[$i])
         Next
 
-        $oArrKeypoints = _cveOutputArrayFromVectorOfMat($vectorOfMatKeypoints)
+        $oArrKeypoints = Call("_cveOutputArrayFromVectorOf" & $typeOfKeypoints, $vectorKeypoints)
     Else
-        $oArrKeypoints = _cveOutputArrayFromMat($matKeypoints)
+        If $bKeypointsCreate Then
+            $keypoints = Call("_cve" & $typeOfKeypoints & "Create", $keypoints)
+        EndIf
+        $oArrKeypoints = Call("_cveOutputArrayFrom" & $typeOfKeypoints, $keypoints)
     EndIf
 
-    Local $oArrDescriptors, $vectorOfMatDescriptors, $iArrDescriptorsSize
-    Local $bDescriptorsIsArray = VarGetType($matDescriptors) == "Array"
+    Local $oArrDescriptors, $vectorDescriptors, $iArrDescriptorsSize
+    Local $bDescriptorsIsArray = IsArray($descriptors)
+    Local $bDescriptorsCreate = IsDllStruct($descriptors) And $typeOfDescriptors == "Scalar"
 
-    If $bDescriptorsIsArray Then
-        $vectorOfMatDescriptors = _VectorOfMatCreate()
+    If $typeOfDescriptors == Default Then
+        $oArrDescriptors = $descriptors
+    ElseIf $bDescriptorsIsArray Then
+        $vectorDescriptors = Call("_VectorOf" & $typeOfDescriptors & "Create")
 
-        $iArrDescriptorsSize = UBound($matDescriptors)
+        $iArrDescriptorsSize = UBound($descriptors)
         For $i = 0 To $iArrDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatDescriptors, $matDescriptors[$i])
+            Call("_VectorOf" & $typeOfDescriptors & "Push", $vectorDescriptors, $descriptors[$i])
         Next
 
-        $oArrDescriptors = _cveOutputArrayFromVectorOfMat($vectorOfMatDescriptors)
+        $oArrDescriptors = Call("_cveOutputArrayFromVectorOf" & $typeOfDescriptors, $vectorDescriptors)
     Else
-        $oArrDescriptors = _cveOutputArrayFromMat($matDescriptors)
+        If $bDescriptorsCreate Then
+            $descriptors = Call("_cve" & $typeOfDescriptors & "Create", $descriptors)
+        EndIf
+        $oArrDescriptors = Call("_cveOutputArrayFrom" & $typeOfDescriptors, $descriptors)
     EndIf
 
     _cveCudaFeature2dAsyncDetectAndComputeAsync($feature2d, $iArrImage, $iArrMask, $oArrKeypoints, $oArrDescriptors, $useProvidedKeypoints, $stream)
 
     If $bDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatDescriptors)
+        Call("_VectorOf" & $typeOfDescriptors & "Release", $vectorDescriptors)
     EndIf
 
-    _cveOutputArrayRelease($oArrDescriptors)
+    If $typeOfDescriptors <> Default Then
+        _cveOutputArrayRelease($oArrDescriptors)
+        If $bDescriptorsCreate Then
+            Call("_cve" & $typeOfDescriptors & "Release", $descriptors)
+        EndIf
+    EndIf
 
     If $bKeypointsIsArray Then
-        _VectorOfMatRelease($vectorOfMatKeypoints)
+        Call("_VectorOf" & $typeOfKeypoints & "Release", $vectorKeypoints)
     EndIf
 
-    _cveOutputArrayRelease($oArrKeypoints)
+    If $typeOfKeypoints <> Default Then
+        _cveOutputArrayRelease($oArrKeypoints)
+        If $bKeypointsCreate Then
+            Call("_cve" & $typeOfKeypoints & "Release", $keypoints)
+        EndIf
+    EndIf
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMask)
+    If $typeOfMask <> Default Then
+        _cveInputArrayRelease($iArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCudaFeature2dAsyncDetectAndComputeAsyncTyped
+
+Func _cveCudaFeature2dAsyncDetectAndComputeAsyncMat($feature2d, $image, $mask, $keypoints, $descriptors, $useProvidedKeypoints, $stream)
+    ; cveCudaFeature2dAsyncDetectAndComputeAsync using cv::Mat instead of _*Array
+    _cveCudaFeature2dAsyncDetectAndComputeAsyncTyped($feature2d, "Mat", $image, "Mat", $mask, "Mat", $keypoints, "Mat", $descriptors, $useProvidedKeypoints, $stream)
 EndFunc   ;==>_cveCudaFeature2dAsyncDetectAndComputeAsyncMat
 
 Func _cveCudaFeature2dAsyncConvert($feature2d, $gpu_keypoints, $keypoints)
@@ -2172,7 +2717,7 @@ Func _cveCudaFeature2dAsyncConvert($feature2d, $gpu_keypoints, $keypoints)
     EndIf
 
     Local $vecKeypoints, $iArrKeypointsSize
-    Local $bKeypointsIsArray = VarGetType($keypoints) == "Array"
+    Local $bKeypointsIsArray = IsArray($keypoints)
 
     If $bKeypointsIsArray Then
         $vecKeypoints = _VectorOfKeyPointCreate()
@@ -2199,32 +2744,47 @@ Func _cveCudaFeature2dAsyncConvert($feature2d, $gpu_keypoints, $keypoints)
     EndIf
 EndFunc   ;==>_cveCudaFeature2dAsyncConvert
 
-Func _cveCudaFeature2dAsyncConvertMat($feature2d, $matGpu_keypoints, $keypoints)
-    ; cveCudaFeature2dAsyncConvert using cv::Mat instead of _*Array
+Func _cveCudaFeature2dAsyncConvertTyped($feature2d, $typeOfGpu_keypoints, $gpu_keypoints, $keypoints)
 
-    Local $iArrGpu_keypoints, $vectorOfMatGpu_keypoints, $iArrGpu_keypointsSize
-    Local $bGpu_keypointsIsArray = VarGetType($matGpu_keypoints) == "Array"
+    Local $iArrGpu_keypoints, $vectorGpu_keypoints, $iArrGpu_keypointsSize
+    Local $bGpu_keypointsIsArray = IsArray($gpu_keypoints)
+    Local $bGpu_keypointsCreate = IsDllStruct($gpu_keypoints) And $typeOfGpu_keypoints == "Scalar"
 
-    If $bGpu_keypointsIsArray Then
-        $vectorOfMatGpu_keypoints = _VectorOfMatCreate()
+    If $typeOfGpu_keypoints == Default Then
+        $iArrGpu_keypoints = $gpu_keypoints
+    ElseIf $bGpu_keypointsIsArray Then
+        $vectorGpu_keypoints = Call("_VectorOf" & $typeOfGpu_keypoints & "Create")
 
-        $iArrGpu_keypointsSize = UBound($matGpu_keypoints)
+        $iArrGpu_keypointsSize = UBound($gpu_keypoints)
         For $i = 0 To $iArrGpu_keypointsSize - 1
-            _VectorOfMatPush($vectorOfMatGpu_keypoints, $matGpu_keypoints[$i])
+            Call("_VectorOf" & $typeOfGpu_keypoints & "Push", $vectorGpu_keypoints, $gpu_keypoints[$i])
         Next
 
-        $iArrGpu_keypoints = _cveInputArrayFromVectorOfMat($vectorOfMatGpu_keypoints)
+        $iArrGpu_keypoints = Call("_cveInputArrayFromVectorOf" & $typeOfGpu_keypoints, $vectorGpu_keypoints)
     Else
-        $iArrGpu_keypoints = _cveInputArrayFromMat($matGpu_keypoints)
+        If $bGpu_keypointsCreate Then
+            $gpu_keypoints = Call("_cve" & $typeOfGpu_keypoints & "Create", $gpu_keypoints)
+        EndIf
+        $iArrGpu_keypoints = Call("_cveInputArrayFrom" & $typeOfGpu_keypoints, $gpu_keypoints)
     EndIf
 
     _cveCudaFeature2dAsyncConvert($feature2d, $iArrGpu_keypoints, $keypoints)
 
     If $bGpu_keypointsIsArray Then
-        _VectorOfMatRelease($vectorOfMatGpu_keypoints)
+        Call("_VectorOf" & $typeOfGpu_keypoints & "Release", $vectorGpu_keypoints)
     EndIf
 
-    _cveInputArrayRelease($iArrGpu_keypoints)
+    If $typeOfGpu_keypoints <> Default Then
+        _cveInputArrayRelease($iArrGpu_keypoints)
+        If $bGpu_keypointsCreate Then
+            Call("_cve" & $typeOfGpu_keypoints & "Release", $gpu_keypoints)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCudaFeature2dAsyncConvertTyped
+
+Func _cveCudaFeature2dAsyncConvertMat($feature2d, $gpu_keypoints, $keypoints)
+    ; cveCudaFeature2dAsyncConvert using cv::Mat instead of _*Array
+    _cveCudaFeature2dAsyncConvertTyped($feature2d, "Mat", $gpu_keypoints, $keypoints)
 EndFunc   ;==>_cveCudaFeature2dAsyncConvertMat
 
 Func _cveCudaFastFeatureDetectorCreate($threshold, $nonmaxSupression, $type, $maxPoints, $feature2D, $feature2dAsync, $sharedPtr)

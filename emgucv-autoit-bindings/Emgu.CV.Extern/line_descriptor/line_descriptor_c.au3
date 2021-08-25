@@ -33,7 +33,7 @@ Func _cveLineDescriptorBinaryDescriptorDetect($descriptor, $image, $keypoints, $
     EndIf
 
     Local $vecKeypoints, $iArrKeypointsSize
-    Local $bKeypointsIsArray = VarGetType($keypoints) == "Array"
+    Local $bKeypointsIsArray = IsArray($keypoints)
 
     If $bKeypointsIsArray Then
         $vecKeypoints = _VectorOfKeyLineCreate()
@@ -85,7 +85,7 @@ Func _cveLineDescriptorBinaryDescriptorCompute($descriptor, $image, $keylines, $
     EndIf
 
     Local $vecKeylines, $iArrKeylinesSize
-    Local $bKeylinesIsArray = VarGetType($keylines) == "Array"
+    Local $bKeylinesIsArray = IsArray($keylines)
 
     If $bKeylinesIsArray Then
         $vecKeylines = _VectorOfKeyLineCreate()
@@ -166,7 +166,7 @@ Func _cveLineDescriptorLSDDetectorDetect($detector, $image, $keypoints, $scale, 
     EndIf
 
     Local $vecKeypoints, $iArrKeypointsSize
-    Local $bKeypointsIsArray = VarGetType($keypoints) == "Array"
+    Local $bKeypointsIsArray = IsArray($keypoints)
 
     If $bKeypointsIsArray Then
         $vecKeypoints = _VectorOfKeyLineCreate()

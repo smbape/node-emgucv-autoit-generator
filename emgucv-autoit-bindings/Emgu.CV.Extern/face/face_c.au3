@@ -144,7 +144,7 @@ Func _cveLBPHFaceRecognizerGetHistograms($recognizer, $histograms)
     EndIf
 
     Local $vecHistograms, $iArrHistogramsSize
-    Local $bHistogramsIsArray = VarGetType($histograms) == "Array"
+    Local $bHistogramsIsArray = IsArray($histograms)
 
     If $bHistogramsIsArray Then
         $vecHistograms = _VectorOfMatCreate()
@@ -198,54 +198,80 @@ Func _cveFaceRecognizerTrain($recognizer, $images, $labels)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFaceRecognizerTrain", $sRecognizerDllType, $recognizer, $sImagesDllType, $images, $sLabelsDllType, $labels), "cveFaceRecognizerTrain", @error)
 EndFunc   ;==>_cveFaceRecognizerTrain
 
-Func _cveFaceRecognizerTrainMat($recognizer, $matImages, $matLabels)
-    ; cveFaceRecognizerTrain using cv::Mat instead of _*Array
+Func _cveFaceRecognizerTrainTyped($recognizer, $typeOfImages, $images, $typeOfLabels, $labels)
 
-    Local $iArrImages, $vectorOfMatImages, $iArrImagesSize
-    Local $bImagesIsArray = VarGetType($matImages) == "Array"
+    Local $iArrImages, $vectorImages, $iArrImagesSize
+    Local $bImagesIsArray = IsArray($images)
+    Local $bImagesCreate = IsDllStruct($images) And $typeOfImages == "Scalar"
 
-    If $bImagesIsArray Then
-        $vectorOfMatImages = _VectorOfMatCreate()
+    If $typeOfImages == Default Then
+        $iArrImages = $images
+    ElseIf $bImagesIsArray Then
+        $vectorImages = Call("_VectorOf" & $typeOfImages & "Create")
 
-        $iArrImagesSize = UBound($matImages)
+        $iArrImagesSize = UBound($images)
         For $i = 0 To $iArrImagesSize - 1
-            _VectorOfMatPush($vectorOfMatImages, $matImages[$i])
+            Call("_VectorOf" & $typeOfImages & "Push", $vectorImages, $images[$i])
         Next
 
-        $iArrImages = _cveInputArrayFromVectorOfMat($vectorOfMatImages)
+        $iArrImages = Call("_cveInputArrayFromVectorOf" & $typeOfImages, $vectorImages)
     Else
-        $iArrImages = _cveInputArrayFromMat($matImages)
+        If $bImagesCreate Then
+            $images = Call("_cve" & $typeOfImages & "Create", $images)
+        EndIf
+        $iArrImages = Call("_cveInputArrayFrom" & $typeOfImages, $images)
     EndIf
 
-    Local $iArrLabels, $vectorOfMatLabels, $iArrLabelsSize
-    Local $bLabelsIsArray = VarGetType($matLabels) == "Array"
+    Local $iArrLabels, $vectorLabels, $iArrLabelsSize
+    Local $bLabelsIsArray = IsArray($labels)
+    Local $bLabelsCreate = IsDllStruct($labels) And $typeOfLabels == "Scalar"
 
-    If $bLabelsIsArray Then
-        $vectorOfMatLabels = _VectorOfMatCreate()
+    If $typeOfLabels == Default Then
+        $iArrLabels = $labels
+    ElseIf $bLabelsIsArray Then
+        $vectorLabels = Call("_VectorOf" & $typeOfLabels & "Create")
 
-        $iArrLabelsSize = UBound($matLabels)
+        $iArrLabelsSize = UBound($labels)
         For $i = 0 To $iArrLabelsSize - 1
-            _VectorOfMatPush($vectorOfMatLabels, $matLabels[$i])
+            Call("_VectorOf" & $typeOfLabels & "Push", $vectorLabels, $labels[$i])
         Next
 
-        $iArrLabels = _cveInputArrayFromVectorOfMat($vectorOfMatLabels)
+        $iArrLabels = Call("_cveInputArrayFromVectorOf" & $typeOfLabels, $vectorLabels)
     Else
-        $iArrLabels = _cveInputArrayFromMat($matLabels)
+        If $bLabelsCreate Then
+            $labels = Call("_cve" & $typeOfLabels & "Create", $labels)
+        EndIf
+        $iArrLabels = Call("_cveInputArrayFrom" & $typeOfLabels, $labels)
     EndIf
 
     _cveFaceRecognizerTrain($recognizer, $iArrImages, $iArrLabels)
 
     If $bLabelsIsArray Then
-        _VectorOfMatRelease($vectorOfMatLabels)
+        Call("_VectorOf" & $typeOfLabels & "Release", $vectorLabels)
     EndIf
 
-    _cveInputArrayRelease($iArrLabels)
+    If $typeOfLabels <> Default Then
+        _cveInputArrayRelease($iArrLabels)
+        If $bLabelsCreate Then
+            Call("_cve" & $typeOfLabels & "Release", $labels)
+        EndIf
+    EndIf
 
     If $bImagesIsArray Then
-        _VectorOfMatRelease($vectorOfMatImages)
+        Call("_VectorOf" & $typeOfImages & "Release", $vectorImages)
     EndIf
 
-    _cveInputArrayRelease($iArrImages)
+    If $typeOfImages <> Default Then
+        _cveInputArrayRelease($iArrImages)
+        If $bImagesCreate Then
+            Call("_cve" & $typeOfImages & "Release", $images)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveFaceRecognizerTrainTyped
+
+Func _cveFaceRecognizerTrainMat($recognizer, $images, $labels)
+    ; cveFaceRecognizerTrain using cv::Mat instead of _*Array
+    _cveFaceRecognizerTrainTyped($recognizer, "Mat", $images, "Mat", $labels)
 EndFunc   ;==>_cveFaceRecognizerTrainMat
 
 Func _cveFaceRecognizerUpdate($recognizer, $images, $labels)
@@ -275,54 +301,80 @@ Func _cveFaceRecognizerUpdate($recognizer, $images, $labels)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFaceRecognizerUpdate", $sRecognizerDllType, $recognizer, $sImagesDllType, $images, $sLabelsDllType, $labels), "cveFaceRecognizerUpdate", @error)
 EndFunc   ;==>_cveFaceRecognizerUpdate
 
-Func _cveFaceRecognizerUpdateMat($recognizer, $matImages, $matLabels)
-    ; cveFaceRecognizerUpdate using cv::Mat instead of _*Array
+Func _cveFaceRecognizerUpdateTyped($recognizer, $typeOfImages, $images, $typeOfLabels, $labels)
 
-    Local $iArrImages, $vectorOfMatImages, $iArrImagesSize
-    Local $bImagesIsArray = VarGetType($matImages) == "Array"
+    Local $iArrImages, $vectorImages, $iArrImagesSize
+    Local $bImagesIsArray = IsArray($images)
+    Local $bImagesCreate = IsDllStruct($images) And $typeOfImages == "Scalar"
 
-    If $bImagesIsArray Then
-        $vectorOfMatImages = _VectorOfMatCreate()
+    If $typeOfImages == Default Then
+        $iArrImages = $images
+    ElseIf $bImagesIsArray Then
+        $vectorImages = Call("_VectorOf" & $typeOfImages & "Create")
 
-        $iArrImagesSize = UBound($matImages)
+        $iArrImagesSize = UBound($images)
         For $i = 0 To $iArrImagesSize - 1
-            _VectorOfMatPush($vectorOfMatImages, $matImages[$i])
+            Call("_VectorOf" & $typeOfImages & "Push", $vectorImages, $images[$i])
         Next
 
-        $iArrImages = _cveInputArrayFromVectorOfMat($vectorOfMatImages)
+        $iArrImages = Call("_cveInputArrayFromVectorOf" & $typeOfImages, $vectorImages)
     Else
-        $iArrImages = _cveInputArrayFromMat($matImages)
+        If $bImagesCreate Then
+            $images = Call("_cve" & $typeOfImages & "Create", $images)
+        EndIf
+        $iArrImages = Call("_cveInputArrayFrom" & $typeOfImages, $images)
     EndIf
 
-    Local $iArrLabels, $vectorOfMatLabels, $iArrLabelsSize
-    Local $bLabelsIsArray = VarGetType($matLabels) == "Array"
+    Local $iArrLabels, $vectorLabels, $iArrLabelsSize
+    Local $bLabelsIsArray = IsArray($labels)
+    Local $bLabelsCreate = IsDllStruct($labels) And $typeOfLabels == "Scalar"
 
-    If $bLabelsIsArray Then
-        $vectorOfMatLabels = _VectorOfMatCreate()
+    If $typeOfLabels == Default Then
+        $iArrLabels = $labels
+    ElseIf $bLabelsIsArray Then
+        $vectorLabels = Call("_VectorOf" & $typeOfLabels & "Create")
 
-        $iArrLabelsSize = UBound($matLabels)
+        $iArrLabelsSize = UBound($labels)
         For $i = 0 To $iArrLabelsSize - 1
-            _VectorOfMatPush($vectorOfMatLabels, $matLabels[$i])
+            Call("_VectorOf" & $typeOfLabels & "Push", $vectorLabels, $labels[$i])
         Next
 
-        $iArrLabels = _cveInputArrayFromVectorOfMat($vectorOfMatLabels)
+        $iArrLabels = Call("_cveInputArrayFromVectorOf" & $typeOfLabels, $vectorLabels)
     Else
-        $iArrLabels = _cveInputArrayFromMat($matLabels)
+        If $bLabelsCreate Then
+            $labels = Call("_cve" & $typeOfLabels & "Create", $labels)
+        EndIf
+        $iArrLabels = Call("_cveInputArrayFrom" & $typeOfLabels, $labels)
     EndIf
 
     _cveFaceRecognizerUpdate($recognizer, $iArrImages, $iArrLabels)
 
     If $bLabelsIsArray Then
-        _VectorOfMatRelease($vectorOfMatLabels)
+        Call("_VectorOf" & $typeOfLabels & "Release", $vectorLabels)
     EndIf
 
-    _cveInputArrayRelease($iArrLabels)
+    If $typeOfLabels <> Default Then
+        _cveInputArrayRelease($iArrLabels)
+        If $bLabelsCreate Then
+            Call("_cve" & $typeOfLabels & "Release", $labels)
+        EndIf
+    EndIf
 
     If $bImagesIsArray Then
-        _VectorOfMatRelease($vectorOfMatImages)
+        Call("_VectorOf" & $typeOfImages & "Release", $vectorImages)
     EndIf
 
-    _cveInputArrayRelease($iArrImages)
+    If $typeOfImages <> Default Then
+        _cveInputArrayRelease($iArrImages)
+        If $bImagesCreate Then
+            Call("_cve" & $typeOfImages & "Release", $images)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveFaceRecognizerUpdateTyped
+
+Func _cveFaceRecognizerUpdateMat($recognizer, $images, $labels)
+    ; cveFaceRecognizerUpdate using cv::Mat instead of _*Array
+    _cveFaceRecognizerUpdateTyped($recognizer, "Mat", $images, "Mat", $labels)
 EndFunc   ;==>_cveFaceRecognizerUpdateMat
 
 Func _cveFaceRecognizerPredict($recognizer, $image, $label, $distance)
@@ -359,32 +411,47 @@ Func _cveFaceRecognizerPredict($recognizer, $image, $label, $distance)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFaceRecognizerPredict", $sRecognizerDllType, $recognizer, $sImageDllType, $image, $sLabelDllType, $label, $sDistanceDllType, $distance), "cveFaceRecognizerPredict", @error)
 EndFunc   ;==>_cveFaceRecognizerPredict
 
-Func _cveFaceRecognizerPredictMat($recognizer, $matImage, $label, $distance)
-    ; cveFaceRecognizerPredict using cv::Mat instead of _*Array
+Func _cveFaceRecognizerPredictTyped($recognizer, $typeOfImage, $image, $label, $distance)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
     _cveFaceRecognizerPredict($recognizer, $iArrImage, $label, $distance)
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveFaceRecognizerPredictTyped
+
+Func _cveFaceRecognizerPredictMat($recognizer, $image, $label, $distance)
+    ; cveFaceRecognizerPredict using cv::Mat instead of _*Array
+    _cveFaceRecognizerPredictTyped($recognizer, "Mat", $image, $label, $distance)
 EndFunc   ;==>_cveFaceRecognizerPredictMat
 
 Func _cveFaceRecognizerWrite($recognizer, $fileName)
@@ -397,7 +464,7 @@ Func _cveFaceRecognizerWrite($recognizer, $fileName)
         $sRecognizerDllType = "ptr"
     EndIf
 
-    Local $bFileNameIsString = VarGetType($fileName) == "String"
+    Local $bFileNameIsString = IsString($fileName)
     If $bFileNameIsString Then
         $fileName = _cveStringCreateFromStr($fileName)
     EndIf
@@ -426,7 +493,7 @@ Func _cveFaceRecognizerRead($recognizer, $fileName)
         $sRecognizerDllType = "ptr"
     EndIf
 
-    Local $bFileNameIsString = VarGetType($fileName) == "String"
+    Local $bFileNameIsString = IsString($fileName)
     If $bFileNameIsString Then
         $fileName = _cveStringCreateFromStr($fileName)
     EndIf
@@ -486,54 +553,80 @@ Func _cveBIFCompute($bif, $image, $features)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBIFCompute", $sBifDllType, $bif, $sImageDllType, $image, $sFeaturesDllType, $features), "cveBIFCompute", @error)
 EndFunc   ;==>_cveBIFCompute
 
-Func _cveBIFComputeMat($bif, $matImage, $matFeatures)
-    ; cveBIFCompute using cv::Mat instead of _*Array
+Func _cveBIFComputeTyped($bif, $typeOfImage, $image, $typeOfFeatures, $features)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $oArrFeatures, $vectorOfMatFeatures, $iArrFeaturesSize
-    Local $bFeaturesIsArray = VarGetType($matFeatures) == "Array"
+    Local $oArrFeatures, $vectorFeatures, $iArrFeaturesSize
+    Local $bFeaturesIsArray = IsArray($features)
+    Local $bFeaturesCreate = IsDllStruct($features) And $typeOfFeatures == "Scalar"
 
-    If $bFeaturesIsArray Then
-        $vectorOfMatFeatures = _VectorOfMatCreate()
+    If $typeOfFeatures == Default Then
+        $oArrFeatures = $features
+    ElseIf $bFeaturesIsArray Then
+        $vectorFeatures = Call("_VectorOf" & $typeOfFeatures & "Create")
 
-        $iArrFeaturesSize = UBound($matFeatures)
+        $iArrFeaturesSize = UBound($features)
         For $i = 0 To $iArrFeaturesSize - 1
-            _VectorOfMatPush($vectorOfMatFeatures, $matFeatures[$i])
+            Call("_VectorOf" & $typeOfFeatures & "Push", $vectorFeatures, $features[$i])
         Next
 
-        $oArrFeatures = _cveOutputArrayFromVectorOfMat($vectorOfMatFeatures)
+        $oArrFeatures = Call("_cveOutputArrayFromVectorOf" & $typeOfFeatures, $vectorFeatures)
     Else
-        $oArrFeatures = _cveOutputArrayFromMat($matFeatures)
+        If $bFeaturesCreate Then
+            $features = Call("_cve" & $typeOfFeatures & "Create", $features)
+        EndIf
+        $oArrFeatures = Call("_cveOutputArrayFrom" & $typeOfFeatures, $features)
     EndIf
 
     _cveBIFCompute($bif, $iArrImage, $oArrFeatures)
 
     If $bFeaturesIsArray Then
-        _VectorOfMatRelease($vectorOfMatFeatures)
+        Call("_VectorOf" & $typeOfFeatures & "Release", $vectorFeatures)
     EndIf
 
-    _cveOutputArrayRelease($oArrFeatures)
+    If $typeOfFeatures <> Default Then
+        _cveOutputArrayRelease($oArrFeatures)
+        If $bFeaturesCreate Then
+            Call("_cve" & $typeOfFeatures & "Release", $features)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveBIFComputeTyped
+
+Func _cveBIFComputeMat($bif, $image, $features)
+    ; cveBIFCompute using cv::Mat instead of _*Array
+    _cveBIFComputeTyped($bif, "Mat", $image, "Mat", $features)
 EndFunc   ;==>_cveBIFComputeMat
 
 Func _cveBIFRelease($sharedPtr)
@@ -727,7 +820,7 @@ Func _cveFacemarkLoadModel($facemark, $model)
         $sFacemarkDllType = "ptr"
     EndIf
 
-    Local $bModelIsString = VarGetType($model) == "String"
+    Local $bModelIsString = IsString($model)
     If $bModelIsString Then
         $model = _cveStringCreateFromStr($model)
     EndIf
@@ -779,76 +872,115 @@ Func _cveFacemarkFit($facemark, $image, $faces, $landmarks)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveFacemarkFit", $sFacemarkDllType, $facemark, $sImageDllType, $image, $sFacesDllType, $faces, $sLandmarksDllType, $landmarks), "cveFacemarkFit", @error)
 EndFunc   ;==>_cveFacemarkFit
 
-Func _cveFacemarkFitMat($facemark, $matImage, $matFaces, $matLandmarks)
-    ; cveFacemarkFit using cv::Mat instead of _*Array
+Func _cveFacemarkFitTyped($facemark, $typeOfImage, $image, $typeOfFaces, $faces, $typeOfLandmarks, $landmarks)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $iArrFaces, $vectorOfMatFaces, $iArrFacesSize
-    Local $bFacesIsArray = VarGetType($matFaces) == "Array"
+    Local $iArrFaces, $vectorFaces, $iArrFacesSize
+    Local $bFacesIsArray = IsArray($faces)
+    Local $bFacesCreate = IsDllStruct($faces) And $typeOfFaces == "Scalar"
 
-    If $bFacesIsArray Then
-        $vectorOfMatFaces = _VectorOfMatCreate()
+    If $typeOfFaces == Default Then
+        $iArrFaces = $faces
+    ElseIf $bFacesIsArray Then
+        $vectorFaces = Call("_VectorOf" & $typeOfFaces & "Create")
 
-        $iArrFacesSize = UBound($matFaces)
+        $iArrFacesSize = UBound($faces)
         For $i = 0 To $iArrFacesSize - 1
-            _VectorOfMatPush($vectorOfMatFaces, $matFaces[$i])
+            Call("_VectorOf" & $typeOfFaces & "Push", $vectorFaces, $faces[$i])
         Next
 
-        $iArrFaces = _cveInputArrayFromVectorOfMat($vectorOfMatFaces)
+        $iArrFaces = Call("_cveInputArrayFromVectorOf" & $typeOfFaces, $vectorFaces)
     Else
-        $iArrFaces = _cveInputArrayFromMat($matFaces)
+        If $bFacesCreate Then
+            $faces = Call("_cve" & $typeOfFaces & "Create", $faces)
+        EndIf
+        $iArrFaces = Call("_cveInputArrayFrom" & $typeOfFaces, $faces)
     EndIf
 
-    Local $ioArrLandmarks, $vectorOfMatLandmarks, $iArrLandmarksSize
-    Local $bLandmarksIsArray = VarGetType($matLandmarks) == "Array"
+    Local $ioArrLandmarks, $vectorLandmarks, $iArrLandmarksSize
+    Local $bLandmarksIsArray = IsArray($landmarks)
+    Local $bLandmarksCreate = IsDllStruct($landmarks) And $typeOfLandmarks == "Scalar"
 
-    If $bLandmarksIsArray Then
-        $vectorOfMatLandmarks = _VectorOfMatCreate()
+    If $typeOfLandmarks == Default Then
+        $ioArrLandmarks = $landmarks
+    ElseIf $bLandmarksIsArray Then
+        $vectorLandmarks = Call("_VectorOf" & $typeOfLandmarks & "Create")
 
-        $iArrLandmarksSize = UBound($matLandmarks)
+        $iArrLandmarksSize = UBound($landmarks)
         For $i = 0 To $iArrLandmarksSize - 1
-            _VectorOfMatPush($vectorOfMatLandmarks, $matLandmarks[$i])
+            Call("_VectorOf" & $typeOfLandmarks & "Push", $vectorLandmarks, $landmarks[$i])
         Next
 
-        $ioArrLandmarks = _cveInputOutputArrayFromVectorOfMat($vectorOfMatLandmarks)
+        $ioArrLandmarks = Call("_cveInputOutputArrayFromVectorOf" & $typeOfLandmarks, $vectorLandmarks)
     Else
-        $ioArrLandmarks = _cveInputOutputArrayFromMat($matLandmarks)
+        If $bLandmarksCreate Then
+            $landmarks = Call("_cve" & $typeOfLandmarks & "Create", $landmarks)
+        EndIf
+        $ioArrLandmarks = Call("_cveInputOutputArrayFrom" & $typeOfLandmarks, $landmarks)
     EndIf
 
     Local $retval = _cveFacemarkFit($facemark, $iArrImage, $iArrFaces, $ioArrLandmarks)
 
     If $bLandmarksIsArray Then
-        _VectorOfMatRelease($vectorOfMatLandmarks)
+        Call("_VectorOf" & $typeOfLandmarks & "Release", $vectorLandmarks)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrLandmarks)
+    If $typeOfLandmarks <> Default Then
+        _cveInputOutputArrayRelease($ioArrLandmarks)
+        If $bLandmarksCreate Then
+            Call("_cve" & $typeOfLandmarks & "Release", $landmarks)
+        EndIf
+    EndIf
 
     If $bFacesIsArray Then
-        _VectorOfMatRelease($vectorOfMatFaces)
+        Call("_VectorOf" & $typeOfFaces & "Release", $vectorFaces)
     EndIf
 
-    _cveInputArrayRelease($iArrFaces)
+    If $typeOfFaces <> Default Then
+        _cveInputArrayRelease($iArrFaces)
+        If $bFacesCreate Then
+            Call("_cve" & $typeOfFaces & "Release", $faces)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveFacemarkFitTyped
+
+Func _cveFacemarkFitMat($facemark, $image, $faces, $landmarks)
+    ; cveFacemarkFit using cv::Mat instead of _*Array
+    Local $retval = _cveFacemarkFitTyped($facemark, "Mat", $image, "Mat", $faces, "Mat", $landmarks)
 
     Return $retval
 EndFunc   ;==>_cveFacemarkFitMat
@@ -880,54 +1012,80 @@ Func _cveDrawFacemarks($image, $points, $color = _cvScalar(255,0,0))
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDrawFacemarks", $sImageDllType, $image, $sPointsDllType, $points, $sColorDllType, $color), "cveDrawFacemarks", @error)
 EndFunc   ;==>_cveDrawFacemarks
 
-Func _cveDrawFacemarksMat($matImage, $matPoints, $color = _cvScalar(255,0,0))
-    ; cveDrawFacemarks using cv::Mat instead of _*Array
+Func _cveDrawFacemarksTyped($typeOfImage, $image, $typeOfPoints, $points, $color = _cvScalar(255,0,0))
 
-    Local $ioArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $ioArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $ioArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $ioArrImage = _cveInputOutputArrayFromVectorOfMat($vectorOfMatImage)
+        $ioArrImage = Call("_cveInputOutputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $ioArrImage = _cveInputOutputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $ioArrImage = Call("_cveInputOutputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $iArrPoints, $vectorOfMatPoints, $iArrPointsSize
-    Local $bPointsIsArray = VarGetType($matPoints) == "Array"
+    Local $iArrPoints, $vectorPoints, $iArrPointsSize
+    Local $bPointsIsArray = IsArray($points)
+    Local $bPointsCreate = IsDllStruct($points) And $typeOfPoints == "Scalar"
 
-    If $bPointsIsArray Then
-        $vectorOfMatPoints = _VectorOfMatCreate()
+    If $typeOfPoints == Default Then
+        $iArrPoints = $points
+    ElseIf $bPointsIsArray Then
+        $vectorPoints = Call("_VectorOf" & $typeOfPoints & "Create")
 
-        $iArrPointsSize = UBound($matPoints)
+        $iArrPointsSize = UBound($points)
         For $i = 0 To $iArrPointsSize - 1
-            _VectorOfMatPush($vectorOfMatPoints, $matPoints[$i])
+            Call("_VectorOf" & $typeOfPoints & "Push", $vectorPoints, $points[$i])
         Next
 
-        $iArrPoints = _cveInputArrayFromVectorOfMat($vectorOfMatPoints)
+        $iArrPoints = Call("_cveInputArrayFromVectorOf" & $typeOfPoints, $vectorPoints)
     Else
-        $iArrPoints = _cveInputArrayFromMat($matPoints)
+        If $bPointsCreate Then
+            $points = Call("_cve" & $typeOfPoints & "Create", $points)
+        EndIf
+        $iArrPoints = Call("_cveInputArrayFrom" & $typeOfPoints, $points)
     EndIf
 
     _cveDrawFacemarks($ioArrImage, $iArrPoints, $color)
 
     If $bPointsIsArray Then
-        _VectorOfMatRelease($vectorOfMatPoints)
+        Call("_VectorOf" & $typeOfPoints & "Release", $vectorPoints)
     EndIf
 
-    _cveInputArrayRelease($iArrPoints)
+    If $typeOfPoints <> Default Then
+        _cveInputArrayRelease($iArrPoints)
+        If $bPointsCreate Then
+            Call("_cve" & $typeOfPoints & "Release", $points)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputOutputArrayRelease($ioArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDrawFacemarksTyped
+
+Func _cveDrawFacemarksMat($image, $points, $color = _cvScalar(255,0,0))
+    ; cveDrawFacemarks using cv::Mat instead of _*Array
+    _cveDrawFacemarksTyped("Mat", $image, "Mat", $points, $color)
 EndFunc   ;==>_cveDrawFacemarksMat
 
 Func _cveMaceCreate($imgSize, $sharedPtr)
@@ -954,7 +1112,7 @@ Func _cveMaceSalt($mace, $passphrase)
         $sMaceDllType = "ptr"
     EndIf
 
-    Local $bPassphraseIsString = VarGetType($passphrase) == "String"
+    Local $bPassphraseIsString = IsString($passphrase)
     If $bPassphraseIsString Then
         $passphrase = _cveStringCreateFromStr($passphrase)
     EndIf
@@ -993,32 +1151,47 @@ Func _cveMaceTrain($mace, $images)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMaceTrain", $sMaceDllType, $mace, $sImagesDllType, $images), "cveMaceTrain", @error)
 EndFunc   ;==>_cveMaceTrain
 
-Func _cveMaceTrainMat($mace, $matImages)
-    ; cveMaceTrain using cv::Mat instead of _*Array
+Func _cveMaceTrainTyped($mace, $typeOfImages, $images)
 
-    Local $iArrImages, $vectorOfMatImages, $iArrImagesSize
-    Local $bImagesIsArray = VarGetType($matImages) == "Array"
+    Local $iArrImages, $vectorImages, $iArrImagesSize
+    Local $bImagesIsArray = IsArray($images)
+    Local $bImagesCreate = IsDllStruct($images) And $typeOfImages == "Scalar"
 
-    If $bImagesIsArray Then
-        $vectorOfMatImages = _VectorOfMatCreate()
+    If $typeOfImages == Default Then
+        $iArrImages = $images
+    ElseIf $bImagesIsArray Then
+        $vectorImages = Call("_VectorOf" & $typeOfImages & "Create")
 
-        $iArrImagesSize = UBound($matImages)
+        $iArrImagesSize = UBound($images)
         For $i = 0 To $iArrImagesSize - 1
-            _VectorOfMatPush($vectorOfMatImages, $matImages[$i])
+            Call("_VectorOf" & $typeOfImages & "Push", $vectorImages, $images[$i])
         Next
 
-        $iArrImages = _cveInputArrayFromVectorOfMat($vectorOfMatImages)
+        $iArrImages = Call("_cveInputArrayFromVectorOf" & $typeOfImages, $vectorImages)
     Else
-        $iArrImages = _cveInputArrayFromMat($matImages)
+        If $bImagesCreate Then
+            $images = Call("_cve" & $typeOfImages & "Create", $images)
+        EndIf
+        $iArrImages = Call("_cveInputArrayFrom" & $typeOfImages, $images)
     EndIf
 
     _cveMaceTrain($mace, $iArrImages)
 
     If $bImagesIsArray Then
-        _VectorOfMatRelease($vectorOfMatImages)
+        Call("_VectorOf" & $typeOfImages & "Release", $vectorImages)
     EndIf
 
-    _cveInputArrayRelease($iArrImages)
+    If $typeOfImages <> Default Then
+        _cveInputArrayRelease($iArrImages)
+        If $bImagesCreate Then
+            Call("_cve" & $typeOfImages & "Release", $images)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveMaceTrainTyped
+
+Func _cveMaceTrainMat($mace, $images)
+    ; cveMaceTrain using cv::Mat instead of _*Array
+    _cveMaceTrainTyped($mace, "Mat", $images)
 EndFunc   ;==>_cveMaceTrainMat
 
 Func _cveMaceSame($mace, $query)
@@ -1040,32 +1213,49 @@ Func _cveMaceSame($mace, $query)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveMaceSame", $sMaceDllType, $mace, $sQueryDllType, $query), "cveMaceSame", @error)
 EndFunc   ;==>_cveMaceSame
 
-Func _cveMaceSameMat($mace, $matQuery)
-    ; cveMaceSame using cv::Mat instead of _*Array
+Func _cveMaceSameTyped($mace, $typeOfQuery, $query)
 
-    Local $iArrQuery, $vectorOfMatQuery, $iArrQuerySize
-    Local $bQueryIsArray = VarGetType($matQuery) == "Array"
+    Local $iArrQuery, $vectorQuery, $iArrQuerySize
+    Local $bQueryIsArray = IsArray($query)
+    Local $bQueryCreate = IsDllStruct($query) And $typeOfQuery == "Scalar"
 
-    If $bQueryIsArray Then
-        $vectorOfMatQuery = _VectorOfMatCreate()
+    If $typeOfQuery == Default Then
+        $iArrQuery = $query
+    ElseIf $bQueryIsArray Then
+        $vectorQuery = Call("_VectorOf" & $typeOfQuery & "Create")
 
-        $iArrQuerySize = UBound($matQuery)
+        $iArrQuerySize = UBound($query)
         For $i = 0 To $iArrQuerySize - 1
-            _VectorOfMatPush($vectorOfMatQuery, $matQuery[$i])
+            Call("_VectorOf" & $typeOfQuery & "Push", $vectorQuery, $query[$i])
         Next
 
-        $iArrQuery = _cveInputArrayFromVectorOfMat($vectorOfMatQuery)
+        $iArrQuery = Call("_cveInputArrayFromVectorOf" & $typeOfQuery, $vectorQuery)
     Else
-        $iArrQuery = _cveInputArrayFromMat($matQuery)
+        If $bQueryCreate Then
+            $query = Call("_cve" & $typeOfQuery & "Create", $query)
+        EndIf
+        $iArrQuery = Call("_cveInputArrayFrom" & $typeOfQuery, $query)
     EndIf
 
     Local $retval = _cveMaceSame($mace, $iArrQuery)
 
     If $bQueryIsArray Then
-        _VectorOfMatRelease($vectorOfMatQuery)
+        Call("_VectorOf" & $typeOfQuery & "Release", $vectorQuery)
     EndIf
 
-    _cveInputArrayRelease($iArrQuery)
+    If $typeOfQuery <> Default Then
+        _cveInputArrayRelease($iArrQuery)
+        If $bQueryCreate Then
+            Call("_cve" & $typeOfQuery & "Release", $query)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveMaceSameTyped
+
+Func _cveMaceSameMat($mace, $query)
+    ; cveMaceSame using cv::Mat instead of _*Array
+    Local $retval = _cveMaceSameTyped($mace, "Mat", $query)
 
     Return $retval
 EndFunc   ;==>_cveMaceSameMat

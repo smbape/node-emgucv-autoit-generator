@@ -67,54 +67,80 @@ Func _cudaBackgroundSubtractorMOGApply($mog, $frame, $fgMask, $learningRate, $st
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaBackgroundSubtractorMOGApply", $sMogDllType, $mog, $sFrameDllType, $frame, $sFgMaskDllType, $fgMask, "double", $learningRate, $sStreamDllType, $stream), "cudaBackgroundSubtractorMOGApply", @error)
 EndFunc   ;==>_cudaBackgroundSubtractorMOGApply
 
-Func _cudaBackgroundSubtractorMOGApplyMat($mog, $matFrame, $matFgMask, $learningRate, $stream)
-    ; cudaBackgroundSubtractorMOGApply using cv::Mat instead of _*Array
+Func _cudaBackgroundSubtractorMOGApplyTyped($mog, $typeOfFrame, $frame, $typeOfFgMask, $fgMask, $learningRate, $stream)
 
-    Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
-    Local $bFrameIsArray = VarGetType($matFrame) == "Array"
+    Local $iArrFrame, $vectorFrame, $iArrFrameSize
+    Local $bFrameIsArray = IsArray($frame)
+    Local $bFrameCreate = IsDllStruct($frame) And $typeOfFrame == "Scalar"
 
-    If $bFrameIsArray Then
-        $vectorOfMatFrame = _VectorOfMatCreate()
+    If $typeOfFrame == Default Then
+        $iArrFrame = $frame
+    ElseIf $bFrameIsArray Then
+        $vectorFrame = Call("_VectorOf" & $typeOfFrame & "Create")
 
-        $iArrFrameSize = UBound($matFrame)
+        $iArrFrameSize = UBound($frame)
         For $i = 0 To $iArrFrameSize - 1
-            _VectorOfMatPush($vectorOfMatFrame, $matFrame[$i])
+            Call("_VectorOf" & $typeOfFrame & "Push", $vectorFrame, $frame[$i])
         Next
 
-        $iArrFrame = _cveInputArrayFromVectorOfMat($vectorOfMatFrame)
+        $iArrFrame = Call("_cveInputArrayFromVectorOf" & $typeOfFrame, $vectorFrame)
     Else
-        $iArrFrame = _cveInputArrayFromMat($matFrame)
+        If $bFrameCreate Then
+            $frame = Call("_cve" & $typeOfFrame & "Create", $frame)
+        EndIf
+        $iArrFrame = Call("_cveInputArrayFrom" & $typeOfFrame, $frame)
     EndIf
 
-    Local $oArrFgMask, $vectorOfMatFgMask, $iArrFgMaskSize
-    Local $bFgMaskIsArray = VarGetType($matFgMask) == "Array"
+    Local $oArrFgMask, $vectorFgMask, $iArrFgMaskSize
+    Local $bFgMaskIsArray = IsArray($fgMask)
+    Local $bFgMaskCreate = IsDllStruct($fgMask) And $typeOfFgMask == "Scalar"
 
-    If $bFgMaskIsArray Then
-        $vectorOfMatFgMask = _VectorOfMatCreate()
+    If $typeOfFgMask == Default Then
+        $oArrFgMask = $fgMask
+    ElseIf $bFgMaskIsArray Then
+        $vectorFgMask = Call("_VectorOf" & $typeOfFgMask & "Create")
 
-        $iArrFgMaskSize = UBound($matFgMask)
+        $iArrFgMaskSize = UBound($fgMask)
         For $i = 0 To $iArrFgMaskSize - 1
-            _VectorOfMatPush($vectorOfMatFgMask, $matFgMask[$i])
+            Call("_VectorOf" & $typeOfFgMask & "Push", $vectorFgMask, $fgMask[$i])
         Next
 
-        $oArrFgMask = _cveOutputArrayFromVectorOfMat($vectorOfMatFgMask)
+        $oArrFgMask = Call("_cveOutputArrayFromVectorOf" & $typeOfFgMask, $vectorFgMask)
     Else
-        $oArrFgMask = _cveOutputArrayFromMat($matFgMask)
+        If $bFgMaskCreate Then
+            $fgMask = Call("_cve" & $typeOfFgMask & "Create", $fgMask)
+        EndIf
+        $oArrFgMask = Call("_cveOutputArrayFrom" & $typeOfFgMask, $fgMask)
     EndIf
 
     _cudaBackgroundSubtractorMOGApply($mog, $iArrFrame, $oArrFgMask, $learningRate, $stream)
 
     If $bFgMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatFgMask)
+        Call("_VectorOf" & $typeOfFgMask & "Release", $vectorFgMask)
     EndIf
 
-    _cveOutputArrayRelease($oArrFgMask)
+    If $typeOfFgMask <> Default Then
+        _cveOutputArrayRelease($oArrFgMask)
+        If $bFgMaskCreate Then
+            Call("_cve" & $typeOfFgMask & "Release", $fgMask)
+        EndIf
+    EndIf
 
     If $bFrameIsArray Then
-        _VectorOfMatRelease($vectorOfMatFrame)
+        Call("_VectorOf" & $typeOfFrame & "Release", $vectorFrame)
     EndIf
 
-    _cveInputArrayRelease($iArrFrame)
+    If $typeOfFrame <> Default Then
+        _cveInputArrayRelease($iArrFrame)
+        If $bFrameCreate Then
+            Call("_cve" & $typeOfFrame & "Release", $frame)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaBackgroundSubtractorMOGApplyTyped
+
+Func _cudaBackgroundSubtractorMOGApplyMat($mog, $frame, $fgMask, $learningRate, $stream)
+    ; cudaBackgroundSubtractorMOGApply using cv::Mat instead of _*Array
+    _cudaBackgroundSubtractorMOGApplyTyped($mog, "Mat", $frame, "Mat", $fgMask, $learningRate, $stream)
 EndFunc   ;==>_cudaBackgroundSubtractorMOGApplyMat
 
 Func _cudaBackgroundSubtractorMOGRelease($mog)
@@ -198,54 +224,80 @@ Func _cudaBackgroundSubtractorMOG2Apply($mog, $frame, $fgMask, $learningRate, $s
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaBackgroundSubtractorMOG2Apply", $sMogDllType, $mog, $sFrameDllType, $frame, $sFgMaskDllType, $fgMask, "double", $learningRate, $sStreamDllType, $stream), "cudaBackgroundSubtractorMOG2Apply", @error)
 EndFunc   ;==>_cudaBackgroundSubtractorMOG2Apply
 
-Func _cudaBackgroundSubtractorMOG2ApplyMat($mog, $matFrame, $matFgMask, $learningRate, $stream)
-    ; cudaBackgroundSubtractorMOG2Apply using cv::Mat instead of _*Array
+Func _cudaBackgroundSubtractorMOG2ApplyTyped($mog, $typeOfFrame, $frame, $typeOfFgMask, $fgMask, $learningRate, $stream)
 
-    Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
-    Local $bFrameIsArray = VarGetType($matFrame) == "Array"
+    Local $iArrFrame, $vectorFrame, $iArrFrameSize
+    Local $bFrameIsArray = IsArray($frame)
+    Local $bFrameCreate = IsDllStruct($frame) And $typeOfFrame == "Scalar"
 
-    If $bFrameIsArray Then
-        $vectorOfMatFrame = _VectorOfMatCreate()
+    If $typeOfFrame == Default Then
+        $iArrFrame = $frame
+    ElseIf $bFrameIsArray Then
+        $vectorFrame = Call("_VectorOf" & $typeOfFrame & "Create")
 
-        $iArrFrameSize = UBound($matFrame)
+        $iArrFrameSize = UBound($frame)
         For $i = 0 To $iArrFrameSize - 1
-            _VectorOfMatPush($vectorOfMatFrame, $matFrame[$i])
+            Call("_VectorOf" & $typeOfFrame & "Push", $vectorFrame, $frame[$i])
         Next
 
-        $iArrFrame = _cveInputArrayFromVectorOfMat($vectorOfMatFrame)
+        $iArrFrame = Call("_cveInputArrayFromVectorOf" & $typeOfFrame, $vectorFrame)
     Else
-        $iArrFrame = _cveInputArrayFromMat($matFrame)
+        If $bFrameCreate Then
+            $frame = Call("_cve" & $typeOfFrame & "Create", $frame)
+        EndIf
+        $iArrFrame = Call("_cveInputArrayFrom" & $typeOfFrame, $frame)
     EndIf
 
-    Local $oArrFgMask, $vectorOfMatFgMask, $iArrFgMaskSize
-    Local $bFgMaskIsArray = VarGetType($matFgMask) == "Array"
+    Local $oArrFgMask, $vectorFgMask, $iArrFgMaskSize
+    Local $bFgMaskIsArray = IsArray($fgMask)
+    Local $bFgMaskCreate = IsDllStruct($fgMask) And $typeOfFgMask == "Scalar"
 
-    If $bFgMaskIsArray Then
-        $vectorOfMatFgMask = _VectorOfMatCreate()
+    If $typeOfFgMask == Default Then
+        $oArrFgMask = $fgMask
+    ElseIf $bFgMaskIsArray Then
+        $vectorFgMask = Call("_VectorOf" & $typeOfFgMask & "Create")
 
-        $iArrFgMaskSize = UBound($matFgMask)
+        $iArrFgMaskSize = UBound($fgMask)
         For $i = 0 To $iArrFgMaskSize - 1
-            _VectorOfMatPush($vectorOfMatFgMask, $matFgMask[$i])
+            Call("_VectorOf" & $typeOfFgMask & "Push", $vectorFgMask, $fgMask[$i])
         Next
 
-        $oArrFgMask = _cveOutputArrayFromVectorOfMat($vectorOfMatFgMask)
+        $oArrFgMask = Call("_cveOutputArrayFromVectorOf" & $typeOfFgMask, $vectorFgMask)
     Else
-        $oArrFgMask = _cveOutputArrayFromMat($matFgMask)
+        If $bFgMaskCreate Then
+            $fgMask = Call("_cve" & $typeOfFgMask & "Create", $fgMask)
+        EndIf
+        $oArrFgMask = Call("_cveOutputArrayFrom" & $typeOfFgMask, $fgMask)
     EndIf
 
     _cudaBackgroundSubtractorMOG2Apply($mog, $iArrFrame, $oArrFgMask, $learningRate, $stream)
 
     If $bFgMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatFgMask)
+        Call("_VectorOf" & $typeOfFgMask & "Release", $vectorFgMask)
     EndIf
 
-    _cveOutputArrayRelease($oArrFgMask)
+    If $typeOfFgMask <> Default Then
+        _cveOutputArrayRelease($oArrFgMask)
+        If $bFgMaskCreate Then
+            Call("_cve" & $typeOfFgMask & "Release", $fgMask)
+        EndIf
+    EndIf
 
     If $bFrameIsArray Then
-        _VectorOfMatRelease($vectorOfMatFrame)
+        Call("_VectorOf" & $typeOfFrame & "Release", $vectorFrame)
     EndIf
 
-    _cveInputArrayRelease($iArrFrame)
+    If $typeOfFrame <> Default Then
+        _cveInputArrayRelease($iArrFrame)
+        If $bFrameCreate Then
+            Call("_cve" & $typeOfFrame & "Release", $frame)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaBackgroundSubtractorMOG2ApplyTyped
+
+Func _cudaBackgroundSubtractorMOG2ApplyMat($mog, $frame, $fgMask, $learningRate, $stream)
+    ; cudaBackgroundSubtractorMOG2Apply using cv::Mat instead of _*Array
+    _cudaBackgroundSubtractorMOG2ApplyTyped($mog, "Mat", $frame, "Mat", $fgMask, $learningRate, $stream)
 EndFunc   ;==>_cudaBackgroundSubtractorMOG2ApplyMat
 
 Func _cudaBackgroundSubtractorMOG2Release($mog)

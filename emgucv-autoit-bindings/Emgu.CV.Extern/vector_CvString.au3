@@ -15,7 +15,7 @@ Func _VectorOfCvStringGetSize($v)
     ; CVAPI(int) VectorOfCvStringGetSize(std::vector<cv::String>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfCvStringCreate()
@@ -48,7 +48,7 @@ Func _VectorOfCvStringPush($v, $value)
     ; CVAPI(void) VectorOfCvStringPush(std::vector<cv::String>* v, cv::String* value);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfCvStringCreate()
@@ -68,7 +68,7 @@ Func _VectorOfCvStringPush($v, $value)
         $sVDllType = "ptr"
     EndIf
 
-    Local $bValueIsString = VarGetType($value) == "String"
+    Local $bValueIsString = IsString($value)
     If $bValueIsString Then
         $value = _cveStringCreateFromStr($value)
     EndIf
@@ -95,7 +95,7 @@ Func _VectorOfCvStringPushVector($v, $other)
     ; CVAPI(void) VectorOfCvStringPushVector(std::vector<cv::String>* v, std::vector<cv::String>* other);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfCvStringCreate()
@@ -116,7 +116,7 @@ Func _VectorOfCvStringPushVector($v, $other)
     EndIf
 
     Local $vecOther, $iArrOtherSize
-    Local $bOtherIsArray = VarGetType($other) == "Array"
+    Local $bOtherIsArray = IsArray($other)
 
     If $bOtherIsArray Then
         $vecOther = _VectorOfCvStringCreate()
@@ -151,7 +151,7 @@ Func _VectorOfCvStringGetStartAddress($v)
     ; CVAPI(cv::String*) VectorOfCvStringGetStartAddress(std::vector<cv::String>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfCvStringCreate()
@@ -184,7 +184,7 @@ Func _VectorOfCvStringGetEndAddress($v)
     ; CVAPI(void*) VectorOfCvStringGetEndAddress(std::vector<cv::String>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfCvStringCreate()
@@ -217,7 +217,7 @@ Func _VectorOfCvStringClear($v)
     ; CVAPI(void) VectorOfCvStringClear(std::vector<cv::String>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfCvStringCreate()
@@ -248,7 +248,7 @@ Func _VectorOfCvStringRelease($v)
     ; CVAPI(void) VectorOfCvStringRelease(std::vector<cv::String>** v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfCvStringCreate()
@@ -281,7 +281,7 @@ Func _VectorOfCvStringCopyData($v, $data)
     ; CVAPI(void) VectorOfCvStringCopyData(std::vector<cv::String>* v, cv::String* data);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfCvStringCreate()
@@ -301,7 +301,7 @@ Func _VectorOfCvStringCopyData($v, $data)
         $sVDllType = "ptr"
     EndIf
 
-    Local $bDataIsString = VarGetType($data) == "String"
+    Local $bDataIsString = IsString($data)
     If $bDataIsString Then
         $data = _cveStringCreateFromStr($data)
     EndIf
@@ -328,7 +328,7 @@ Func _VectorOfCvStringGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfCvStringGetItemPtr(std::vector<cv::String>* vec, int index, cv::String** element);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfCvStringCreate()
@@ -368,7 +368,7 @@ Func _cveInputArrayFromVectorOfCvString($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfCvString(std::vector<cv::String>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfCvStringCreate()
@@ -401,7 +401,7 @@ Func _cveOutputArrayFromVectorOfCvString($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfCvString(std::vector<cv::String>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfCvStringCreate()
@@ -434,7 +434,7 @@ Func _cveInputOutputArrayFromVectorOfCvString($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfCvString(std::vector<cv::String>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfCvStringCreate()

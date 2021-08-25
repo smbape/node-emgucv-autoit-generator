@@ -4,7 +4,7 @@
 Func _cudaCascadeClassifierCreate($filename, $sharedPtr)
     ; CVAPI(cv::cuda::CascadeClassifier*) cudaCascadeClassifierCreate(cv::String* filename, cv::Ptr<cv::cuda::CascadeClassifier>** sharedPtr);
 
-    Local $bFilenameIsString = VarGetType($filename) == "String"
+    Local $bFilenameIsString = IsString($filename)
     If $bFilenameIsString Then
         $filename = _cveStringCreateFromStr($filename)
     EndIf
@@ -104,54 +104,80 @@ Func _cudaCascadeClassifierDetectMultiScale($classifier, $image, $objects, $stre
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCascadeClassifierDetectMultiScale", $sClassifierDllType, $classifier, $sImageDllType, $image, $sObjectsDllType, $objects, $sStreamDllType, $stream), "cudaCascadeClassifierDetectMultiScale", @error)
 EndFunc   ;==>_cudaCascadeClassifierDetectMultiScale
 
-Func _cudaCascadeClassifierDetectMultiScaleMat($classifier, $matImage, $matObjects, $stream)
-    ; cudaCascadeClassifierDetectMultiScale using cv::Mat instead of _*Array
+Func _cudaCascadeClassifierDetectMultiScaleTyped($classifier, $typeOfImage, $image, $typeOfObjects, $objects, $stream)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $oArrObjects, $vectorOfMatObjects, $iArrObjectsSize
-    Local $bObjectsIsArray = VarGetType($matObjects) == "Array"
+    Local $oArrObjects, $vectorObjects, $iArrObjectsSize
+    Local $bObjectsIsArray = IsArray($objects)
+    Local $bObjectsCreate = IsDllStruct($objects) And $typeOfObjects == "Scalar"
 
-    If $bObjectsIsArray Then
-        $vectorOfMatObjects = _VectorOfMatCreate()
+    If $typeOfObjects == Default Then
+        $oArrObjects = $objects
+    ElseIf $bObjectsIsArray Then
+        $vectorObjects = Call("_VectorOf" & $typeOfObjects & "Create")
 
-        $iArrObjectsSize = UBound($matObjects)
+        $iArrObjectsSize = UBound($objects)
         For $i = 0 To $iArrObjectsSize - 1
-            _VectorOfMatPush($vectorOfMatObjects, $matObjects[$i])
+            Call("_VectorOf" & $typeOfObjects & "Push", $vectorObjects, $objects[$i])
         Next
 
-        $oArrObjects = _cveOutputArrayFromVectorOfMat($vectorOfMatObjects)
+        $oArrObjects = Call("_cveOutputArrayFromVectorOf" & $typeOfObjects, $vectorObjects)
     Else
-        $oArrObjects = _cveOutputArrayFromMat($matObjects)
+        If $bObjectsCreate Then
+            $objects = Call("_cve" & $typeOfObjects & "Create", $objects)
+        EndIf
+        $oArrObjects = Call("_cveOutputArrayFrom" & $typeOfObjects, $objects)
     EndIf
 
     _cudaCascadeClassifierDetectMultiScale($classifier, $iArrImage, $oArrObjects, $stream)
 
     If $bObjectsIsArray Then
-        _VectorOfMatRelease($vectorOfMatObjects)
+        Call("_VectorOf" & $typeOfObjects & "Release", $vectorObjects)
     EndIf
 
-    _cveOutputArrayRelease($oArrObjects)
+    If $typeOfObjects <> Default Then
+        _cveOutputArrayRelease($oArrObjects)
+        If $bObjectsCreate Then
+            Call("_cve" & $typeOfObjects & "Release", $objects)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaCascadeClassifierDetectMultiScaleTyped
+
+Func _cudaCascadeClassifierDetectMultiScaleMat($classifier, $image, $objects, $stream)
+    ; cudaCascadeClassifierDetectMultiScale using cv::Mat instead of _*Array
+    _cudaCascadeClassifierDetectMultiScaleTyped($classifier, "Mat", $image, "Mat", $objects, $stream)
 EndFunc   ;==>_cudaCascadeClassifierDetectMultiScaleMat
 
 Func _cudaCascadeClassifierConvert($classifier, $gpuObjects, $objects)
@@ -172,7 +198,7 @@ Func _cudaCascadeClassifierConvert($classifier, $gpuObjects, $objects)
     EndIf
 
     Local $vecObjects, $iArrObjectsSize
-    Local $bObjectsIsArray = VarGetType($objects) == "Array"
+    Local $bObjectsIsArray = IsArray($objects)
 
     If $bObjectsIsArray Then
         $vecObjects = _VectorOfRectCreate()
@@ -199,32 +225,47 @@ Func _cudaCascadeClassifierConvert($classifier, $gpuObjects, $objects)
     EndIf
 EndFunc   ;==>_cudaCascadeClassifierConvert
 
-Func _cudaCascadeClassifierConvertMat($classifier, $matGpuObjects, $objects)
-    ; cudaCascadeClassifierConvert using cv::Mat instead of _*Array
+Func _cudaCascadeClassifierConvertTyped($classifier, $typeOfGpuObjects, $gpuObjects, $objects)
 
-    Local $oArrGpuObjects, $vectorOfMatGpuObjects, $iArrGpuObjectsSize
-    Local $bGpuObjectsIsArray = VarGetType($matGpuObjects) == "Array"
+    Local $oArrGpuObjects, $vectorGpuObjects, $iArrGpuObjectsSize
+    Local $bGpuObjectsIsArray = IsArray($gpuObjects)
+    Local $bGpuObjectsCreate = IsDllStruct($gpuObjects) And $typeOfGpuObjects == "Scalar"
 
-    If $bGpuObjectsIsArray Then
-        $vectorOfMatGpuObjects = _VectorOfMatCreate()
+    If $typeOfGpuObjects == Default Then
+        $oArrGpuObjects = $gpuObjects
+    ElseIf $bGpuObjectsIsArray Then
+        $vectorGpuObjects = Call("_VectorOf" & $typeOfGpuObjects & "Create")
 
-        $iArrGpuObjectsSize = UBound($matGpuObjects)
+        $iArrGpuObjectsSize = UBound($gpuObjects)
         For $i = 0 To $iArrGpuObjectsSize - 1
-            _VectorOfMatPush($vectorOfMatGpuObjects, $matGpuObjects[$i])
+            Call("_VectorOf" & $typeOfGpuObjects & "Push", $vectorGpuObjects, $gpuObjects[$i])
         Next
 
-        $oArrGpuObjects = _cveOutputArrayFromVectorOfMat($vectorOfMatGpuObjects)
+        $oArrGpuObjects = Call("_cveOutputArrayFromVectorOf" & $typeOfGpuObjects, $vectorGpuObjects)
     Else
-        $oArrGpuObjects = _cveOutputArrayFromMat($matGpuObjects)
+        If $bGpuObjectsCreate Then
+            $gpuObjects = Call("_cve" & $typeOfGpuObjects & "Create", $gpuObjects)
+        EndIf
+        $oArrGpuObjects = Call("_cveOutputArrayFrom" & $typeOfGpuObjects, $gpuObjects)
     EndIf
 
     _cudaCascadeClassifierConvert($classifier, $oArrGpuObjects, $objects)
 
     If $bGpuObjectsIsArray Then
-        _VectorOfMatRelease($vectorOfMatGpuObjects)
+        Call("_VectorOf" & $typeOfGpuObjects & "Release", $vectorGpuObjects)
     EndIf
 
-    _cveOutputArrayRelease($oArrGpuObjects)
+    If $typeOfGpuObjects <> Default Then
+        _cveOutputArrayRelease($oArrGpuObjects)
+        If $bGpuObjectsCreate Then
+            Call("_cve" & $typeOfGpuObjects & "Release", $gpuObjects)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaCascadeClassifierConvertTyped
+
+Func _cudaCascadeClassifierConvertMat($classifier, $gpuObjects, $objects)
+    ; cudaCascadeClassifierConvert using cv::Mat instead of _*Array
+    _cudaCascadeClassifierConvertTyped($classifier, "Mat", $gpuObjects, $objects)
 EndFunc   ;==>_cudaCascadeClassifierConvertMat
 
 Func _cudaCascadeClassifierGetMinObjectSize($classifier, $minObjectSize)
@@ -349,32 +390,47 @@ Func _cudaHOGSetSVMDetector($descriptor, $detector)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHOGSetSVMDetector", $sDescriptorDllType, $descriptor, $sDetectorDllType, $detector), "cudaHOGSetSVMDetector", @error)
 EndFunc   ;==>_cudaHOGSetSVMDetector
 
-Func _cudaHOGSetSVMDetectorMat($descriptor, $matDetector)
-    ; cudaHOGSetSVMDetector using cv::Mat instead of _*Array
+Func _cudaHOGSetSVMDetectorTyped($descriptor, $typeOfDetector, $detector)
 
-    Local $iArrDetector, $vectorOfMatDetector, $iArrDetectorSize
-    Local $bDetectorIsArray = VarGetType($matDetector) == "Array"
+    Local $iArrDetector, $vectorDetector, $iArrDetectorSize
+    Local $bDetectorIsArray = IsArray($detector)
+    Local $bDetectorCreate = IsDllStruct($detector) And $typeOfDetector == "Scalar"
 
-    If $bDetectorIsArray Then
-        $vectorOfMatDetector = _VectorOfMatCreate()
+    If $typeOfDetector == Default Then
+        $iArrDetector = $detector
+    ElseIf $bDetectorIsArray Then
+        $vectorDetector = Call("_VectorOf" & $typeOfDetector & "Create")
 
-        $iArrDetectorSize = UBound($matDetector)
+        $iArrDetectorSize = UBound($detector)
         For $i = 0 To $iArrDetectorSize - 1
-            _VectorOfMatPush($vectorOfMatDetector, $matDetector[$i])
+            Call("_VectorOf" & $typeOfDetector & "Push", $vectorDetector, $detector[$i])
         Next
 
-        $iArrDetector = _cveInputArrayFromVectorOfMat($vectorOfMatDetector)
+        $iArrDetector = Call("_cveInputArrayFromVectorOf" & $typeOfDetector, $vectorDetector)
     Else
-        $iArrDetector = _cveInputArrayFromMat($matDetector)
+        If $bDetectorCreate Then
+            $detector = Call("_cve" & $typeOfDetector & "Create", $detector)
+        EndIf
+        $iArrDetector = Call("_cveInputArrayFrom" & $typeOfDetector, $detector)
     EndIf
 
     _cudaHOGSetSVMDetector($descriptor, $iArrDetector)
 
     If $bDetectorIsArray Then
-        _VectorOfMatRelease($vectorOfMatDetector)
+        Call("_VectorOf" & $typeOfDetector & "Release", $vectorDetector)
     EndIf
 
-    _cveInputArrayRelease($iArrDetector)
+    If $typeOfDetector <> Default Then
+        _cveInputArrayRelease($iArrDetector)
+        If $bDetectorCreate Then
+            Call("_cve" & $typeOfDetector & "Release", $detector)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaHOGSetSVMDetectorTyped
+
+Func _cudaHOGSetSVMDetectorMat($descriptor, $detector)
+    ; cudaHOGSetSVMDetector using cv::Mat instead of _*Array
+    _cudaHOGSetSVMDetectorTyped($descriptor, "Mat", $detector)
 EndFunc   ;==>_cudaHOGSetSVMDetectorMat
 
 Func _cudaHOGRelease($descriptor)
@@ -410,7 +466,7 @@ Func _cudaHOGDetectMultiScale($descriptor, $img, $foundLocations, $confidents)
     EndIf
 
     Local $vecFoundLocations, $iArrFoundLocationsSize
-    Local $bFoundLocationsIsArray = VarGetType($foundLocations) == "Array"
+    Local $bFoundLocationsIsArray = IsArray($foundLocations)
 
     If $bFoundLocationsIsArray Then
         $vecFoundLocations = _VectorOfRectCreate()
@@ -431,7 +487,7 @@ Func _cudaHOGDetectMultiScale($descriptor, $img, $foundLocations, $confidents)
     EndIf
 
     Local $vecConfidents, $iArrConfidentsSize
-    Local $bConfidentsIsArray = VarGetType($confidents) == "Array"
+    Local $bConfidentsIsArray = IsArray($confidents)
 
     If $bConfidentsIsArray Then
         $vecConfidents = _VectorOfDoubleCreate()
@@ -462,30 +518,45 @@ Func _cudaHOGDetectMultiScale($descriptor, $img, $foundLocations, $confidents)
     EndIf
 EndFunc   ;==>_cudaHOGDetectMultiScale
 
-Func _cudaHOGDetectMultiScaleMat($descriptor, $matImg, $foundLocations, $confidents)
-    ; cudaHOGDetectMultiScale using cv::Mat instead of _*Array
+Func _cudaHOGDetectMultiScaleTyped($descriptor, $typeOfImg, $img, $foundLocations, $confidents)
 
-    Local $iArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $iArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $iArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $iArrImg = _cveInputArrayFromVectorOfMat($vectorOfMatImg)
+        $iArrImg = Call("_cveInputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $iArrImg = _cveInputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $iArrImg = Call("_cveInputArrayFrom" & $typeOfImg, $img)
     EndIf
 
     _cudaHOGDetectMultiScale($descriptor, $iArrImg, $foundLocations, $confidents)
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveInputArrayRelease($iArrImg)
+    If $typeOfImg <> Default Then
+        _cveInputArrayRelease($iArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaHOGDetectMultiScaleTyped
+
+Func _cudaHOGDetectMultiScaleMat($descriptor, $img, $foundLocations, $confidents)
+    ; cudaHOGDetectMultiScale using cv::Mat instead of _*Array
+    _cudaHOGDetectMultiScaleTyped($descriptor, "Mat", $img, $foundLocations, $confidents)
 EndFunc   ;==>_cudaHOGDetectMultiScaleMat

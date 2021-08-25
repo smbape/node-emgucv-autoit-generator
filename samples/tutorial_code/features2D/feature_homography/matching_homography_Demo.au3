@@ -292,14 +292,8 @@ Func Detect()
 		Next
 
 		Local $H = _cveMatCreate()
-		Local $i_arr_H = _cveInputArrayFromMat($H)
-		Local $o_arr_H = _cveOutputArrayFromMat($H)
-		Local $i_arr_obj = _cveInputArrayFromVectorOfPointF($obj)
-		Local $i_arr_scene = _cveInputArrayFromVectorOfPointF($scene)
 		Local $resultMask = _cveMatCreate()
-		Local $o_arr_resultMask = _cveOutputArrayFromMat($resultMask)
-		_cveFindHomography($i_arr_obj, $i_arr_scene, $o_arr_H, $CV_RANSAC, 3, $o_arr_resultMask) ;
-		_cveOutputArrayRelease($o_arr_resultMask)
+		_cveFindHomographyTyped("VectorOfPointF", $obj, "VectorOfPointF", $scene, "Mat", $H, $CV_RANSAC, 3, "Mat", $resultMask) ;
 		_cveMatRelease($resultMask)
 
 		If _cveMatIsEmpty($H) Then
@@ -310,7 +304,6 @@ Func Detect()
 			_cveMatGetSize($img_object, $img_object_size)
 
 			Local $obj_corners = _VectorOfPointFCreate()
-			Local $i_arr_obj_corners = _cveInputArrayFromVectorOfPointF($obj_corners)
 
 			_VectorOfPointFPush($obj_corners, _cvPoint2f(0, 0))
 			_VectorOfPointFPush($obj_corners, _cvPoint2f($img_object_size.width, 0))
@@ -318,9 +311,8 @@ Func Detect()
 			_VectorOfPointFPush($obj_corners, _cvPoint2f(0, $img_object_size.height))
 
 			Local $scene_corners = _VectorOfPointFCreateSize(4)
-			Local $o_arr_scene_corners = _cveOutputArrayFromVectorOfPointF($scene_corners)
 
-			_cvePerspectiveTransform($i_arr_obj_corners, $o_arr_scene_corners, $i_arr_H) ;
+			_cvePerspectiveTransformTyped("VectorOfPointF", $obj_corners, "VectorOfPointF", $scene_corners, "Mat", $H) ;
 
 			Local $tPointFPtr = DllStructCreate("ptr value")
 
@@ -349,16 +341,10 @@ Func Detect()
 			_cveLineMat($img_matches, _cvPoint($scene_corners_3.x + $img_object_size.width, $scene_corners_3.y), _
 					_cvPoint($scene_corners_0.x + $img_object_size.width, $scene_corners_0.y), _cvScalar(0, 255, 0), 4) ;
 
-			_cveOutputArrayRelease($o_arr_scene_corners)
-			_cveInputArrayRelease($i_arr_obj_corners)
 			_VectorOfPointFRelease($scene_corners)
 			_VectorOfPointFRelease($obj_corners)
 		EndIf
 
-		_cveInputArrayRelease($i_arr_scene)
-		_cveInputArrayRelease($i_arr_obj)
-		_cveOutputArrayRelease($o_arr_H)
-		_cveInputArrayRelease($i_arr_H)
 		_cveMatRelease($H)
 		_VectorOfPointFRelease($scene)
 		_VectorOfPointFRelease($obj)

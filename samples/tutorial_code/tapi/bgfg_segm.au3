@@ -100,15 +100,11 @@ Local $cap = Null
 Local $running = True
 Local $bInitialized = False
 
-Local $frame, $i_arr_frame
-Local $fgmask, $i_arr_fgmask, $o_arr_fgmask
-Local $fgimg, $i_arr_fgimg, $o_arr_fgimg
+Local $frame, $fgmask, $fgimg
 
-Local $tKNNSharedPtr
-Local $knn
+Local $tKNNSharedPtr, $knn
 
-Local $tMOG2SharedPtr
-Local $mog2
+Local $tMOG2SharedPtr, $mog2
 
 Local $mode
 
@@ -205,19 +201,13 @@ Func Main()
 	EndIf
 
 	$frame = _cveMatCreate()
-	$i_arr_frame = _cveInputArrayFromMat($frame)
 EndFunc   ;==>Main
 
 Func Clean()
 	If $cap == Null Then Return
 
 	If $bInitialized Then
-		_cveOutputArrayRelease($o_arr_fgmask)
-		_cveInputArrayRelease($i_arr_fgmask)
 		_cveMatRelease($fgmask)
-
-		_cveOutputArrayRelease($o_arr_fgimg)
-		_cveInputArrayRelease($i_arr_fgimg)
 		_cveMatRelease($fgimg)
 
 		_cveBackgroundSubtractorMOG2Release($mog2, $tMOG2SharedPtr)
@@ -226,9 +216,7 @@ Func Clean()
 		$bInitialized = False
 	EndIf
 
-	_cveInputArrayRelease($i_arr_frame)
 	_cveMatRelease($frame)
-
 	_cveVideoCaptureRelease($cap)
 	$cap = Null
 EndFunc   ;==>Clean
@@ -280,13 +268,9 @@ Func InitState()
 
 	Local $tMatImg = DllStructCreate($tagCvMat, $frame)
 	$fgimg = _cveMatCreate()
-	$i_arr_fgimg = _cveInputArrayFromMat($fgimg)
-	$o_arr_fgimg = _cveOutputArrayFromMat($fgimg)
 	_cveMatCreateData($fgimg, $tMatImg.rows, $tMatImg.cols, CV_MAT_TYPE($tMatImg.flags))
 
 	$fgmask = _cveMatCreate()
-	$i_arr_fgmask = _cveInputArrayFromMat($fgmask)
-	$o_arr_fgmask = _cveOutputArrayFromMat($fgmask)
 
 	$bInitialized = True
 EndFunc   ;==>InitState
@@ -308,18 +292,13 @@ Func UpdateFrame()
 
 	Switch $method
 		Case $M_KNN
-			_cveBackgroundSubtractorUpdate($knn, $i_arr_frame, $o_arr_fgmask, -1)
+			_cveBackgroundSubtractorUpdateMat($knn, $frame, $fgmask, -1)
 		Case $M_MOG2
-			_cveBackgroundSubtractorUpdate($mog2, $i_arr_frame, $o_arr_fgmask, -1)
+			_cveBackgroundSubtractorUpdateMat($mog2, $frame, $fgmask, -1)
 	EndSwitch
 
-	Local $scalar = _cveScalarCreate(_cvScalarAll(0))
-	Local $i_arr_scalar = _cveInputArrayFromScalar($scalar)
-	_cveMatSetTo($fgimg, $i_arr_scalar, _cveNoArray())
-	_cveInputArrayRelease($i_arr_scalar)
-	_cveScalarRelease($scalar)
-
-	_cveMatCopyTo($frame, $o_arr_fgimg, $i_arr_fgmask)
+	_cveMatSetToTyped($fgimg, "Scalar", _cvScalarAll(0), Default, _cveNoArray())
+	_cveMatCopyToMat($frame, $fgimg, $fgmask)
 
 	_cveImshowControlPic($frame, $FormGUI, $PicImage)
 	_cveImshowControlPic($fgmask, $FormGUI, $PicForegroundMask)

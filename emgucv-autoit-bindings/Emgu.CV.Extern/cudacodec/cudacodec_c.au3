@@ -4,7 +4,7 @@
 Func _cudaVideoWriterCreate($fileName, $frameSize, $fps, $format, $sharedPtr)
     ; CVAPI(cv::cudacodec::VideoWriter*) cudaVideoWriterCreate(cv::String* fileName, CvSize* frameSize, double fps, cv::cudacodec::SurfaceFormat format, cv::Ptr<cv::cudacodec::VideoWriter>** sharedPtr);
 
-    Local $bFileNameIsString = VarGetType($fileName) == "String"
+    Local $bFileNameIsString = IsString($fileName)
     If $bFileNameIsString Then
         $fileName = _cveStringCreateFromStr($fileName)
     EndIf
@@ -76,38 +76,53 @@ Func _cudaVideoWriterWrite($writer, $frame, $lastFrame)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaVideoWriterWrite", $sWriterDllType, $writer, $sFrameDllType, $frame, "boolean", $lastFrame), "cudaVideoWriterWrite", @error)
 EndFunc   ;==>_cudaVideoWriterWrite
 
-Func _cudaVideoWriterWriteMat($writer, $matFrame, $lastFrame)
-    ; cudaVideoWriterWrite using cv::Mat instead of _*Array
+Func _cudaVideoWriterWriteTyped($writer, $typeOfFrame, $frame, $lastFrame)
 
-    Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
-    Local $bFrameIsArray = VarGetType($matFrame) == "Array"
+    Local $iArrFrame, $vectorFrame, $iArrFrameSize
+    Local $bFrameIsArray = IsArray($frame)
+    Local $bFrameCreate = IsDllStruct($frame) And $typeOfFrame == "Scalar"
 
-    If $bFrameIsArray Then
-        $vectorOfMatFrame = _VectorOfMatCreate()
+    If $typeOfFrame == Default Then
+        $iArrFrame = $frame
+    ElseIf $bFrameIsArray Then
+        $vectorFrame = Call("_VectorOf" & $typeOfFrame & "Create")
 
-        $iArrFrameSize = UBound($matFrame)
+        $iArrFrameSize = UBound($frame)
         For $i = 0 To $iArrFrameSize - 1
-            _VectorOfMatPush($vectorOfMatFrame, $matFrame[$i])
+            Call("_VectorOf" & $typeOfFrame & "Push", $vectorFrame, $frame[$i])
         Next
 
-        $iArrFrame = _cveInputArrayFromVectorOfMat($vectorOfMatFrame)
+        $iArrFrame = Call("_cveInputArrayFromVectorOf" & $typeOfFrame, $vectorFrame)
     Else
-        $iArrFrame = _cveInputArrayFromMat($matFrame)
+        If $bFrameCreate Then
+            $frame = Call("_cve" & $typeOfFrame & "Create", $frame)
+        EndIf
+        $iArrFrame = Call("_cveInputArrayFrom" & $typeOfFrame, $frame)
     EndIf
 
     _cudaVideoWriterWrite($writer, $iArrFrame, $lastFrame)
 
     If $bFrameIsArray Then
-        _VectorOfMatRelease($vectorOfMatFrame)
+        Call("_VectorOf" & $typeOfFrame & "Release", $vectorFrame)
     EndIf
 
-    _cveInputArrayRelease($iArrFrame)
+    If $typeOfFrame <> Default Then
+        _cveInputArrayRelease($iArrFrame)
+        If $bFrameCreate Then
+            Call("_cve" & $typeOfFrame & "Release", $frame)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaVideoWriterWriteTyped
+
+Func _cudaVideoWriterWriteMat($writer, $frame, $lastFrame)
+    ; cudaVideoWriterWrite using cv::Mat instead of _*Array
+    _cudaVideoWriterWriteTyped($writer, "Mat", $frame, $lastFrame)
 EndFunc   ;==>_cudaVideoWriterWriteMat
 
 Func _cudaVideoReaderCreate($fileName, $sharedPtr)
     ; CVAPI(cv::cudacodec::VideoReader*) cudaVideoReaderCreate(cv::String* fileName, cv::Ptr<cv::cudacodec::VideoReader>** sharedPtr);
 
-    Local $bFileNameIsString = VarGetType($fileName) == "String"
+    Local $bFileNameIsString = IsString($fileName)
     If $bFileNameIsString Then
         $fileName = _cveStringCreateFromStr($fileName)
     EndIf

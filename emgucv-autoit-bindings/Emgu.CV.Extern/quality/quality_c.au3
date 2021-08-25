@@ -28,32 +28,47 @@ Func _cveQualityBaseCompute($qualityBase, $cmpImgs, $score)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQualityBaseCompute", $sQualityBaseDllType, $qualityBase, $sCmpImgsDllType, $cmpImgs, $sScoreDllType, $score), "cveQualityBaseCompute", @error)
 EndFunc   ;==>_cveQualityBaseCompute
 
-Func _cveQualityBaseComputeMat($qualityBase, $matCmpImgs, $score)
-    ; cveQualityBaseCompute using cv::Mat instead of _*Array
+Func _cveQualityBaseComputeTyped($qualityBase, $typeOfCmpImgs, $cmpImgs, $score)
 
-    Local $iArrCmpImgs, $vectorOfMatCmpImgs, $iArrCmpImgsSize
-    Local $bCmpImgsIsArray = VarGetType($matCmpImgs) == "Array"
+    Local $iArrCmpImgs, $vectorCmpImgs, $iArrCmpImgsSize
+    Local $bCmpImgsIsArray = IsArray($cmpImgs)
+    Local $bCmpImgsCreate = IsDllStruct($cmpImgs) And $typeOfCmpImgs == "Scalar"
 
-    If $bCmpImgsIsArray Then
-        $vectorOfMatCmpImgs = _VectorOfMatCreate()
+    If $typeOfCmpImgs == Default Then
+        $iArrCmpImgs = $cmpImgs
+    ElseIf $bCmpImgsIsArray Then
+        $vectorCmpImgs = Call("_VectorOf" & $typeOfCmpImgs & "Create")
 
-        $iArrCmpImgsSize = UBound($matCmpImgs)
+        $iArrCmpImgsSize = UBound($cmpImgs)
         For $i = 0 To $iArrCmpImgsSize - 1
-            _VectorOfMatPush($vectorOfMatCmpImgs, $matCmpImgs[$i])
+            Call("_VectorOf" & $typeOfCmpImgs & "Push", $vectorCmpImgs, $cmpImgs[$i])
         Next
 
-        $iArrCmpImgs = _cveInputArrayFromVectorOfMat($vectorOfMatCmpImgs)
+        $iArrCmpImgs = Call("_cveInputArrayFromVectorOf" & $typeOfCmpImgs, $vectorCmpImgs)
     Else
-        $iArrCmpImgs = _cveInputArrayFromMat($matCmpImgs)
+        If $bCmpImgsCreate Then
+            $cmpImgs = Call("_cve" & $typeOfCmpImgs & "Create", $cmpImgs)
+        EndIf
+        $iArrCmpImgs = Call("_cveInputArrayFrom" & $typeOfCmpImgs, $cmpImgs)
     EndIf
 
     _cveQualityBaseCompute($qualityBase, $iArrCmpImgs, $score)
 
     If $bCmpImgsIsArray Then
-        _VectorOfMatRelease($vectorOfMatCmpImgs)
+        Call("_VectorOf" & $typeOfCmpImgs & "Release", $vectorCmpImgs)
     EndIf
 
-    _cveInputArrayRelease($iArrCmpImgs)
+    If $typeOfCmpImgs <> Default Then
+        _cveInputArrayRelease($iArrCmpImgs)
+        If $bCmpImgsCreate Then
+            Call("_cve" & $typeOfCmpImgs & "Release", $cmpImgs)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveQualityBaseComputeTyped
+
+Func _cveQualityBaseComputeMat($qualityBase, $cmpImgs, $score)
+    ; cveQualityBaseCompute using cv::Mat instead of _*Array
+    _cveQualityBaseComputeTyped($qualityBase, "Mat", $cmpImgs, $score)
 EndFunc   ;==>_cveQualityBaseComputeMat
 
 Func _cveQualityBaseGetQualityMap($qualityBase, $dst)
@@ -76,32 +91,47 @@ Func _cveQualityBaseGetQualityMap($qualityBase, $dst)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveQualityBaseGetQualityMap", $sQualityBaseDllType, $qualityBase, $sDstDllType, $dst), "cveQualityBaseGetQualityMap", @error)
 EndFunc   ;==>_cveQualityBaseGetQualityMap
 
-Func _cveQualityBaseGetQualityMapMat($qualityBase, $matDst)
-    ; cveQualityBaseGetQualityMap using cv::Mat instead of _*Array
+Func _cveQualityBaseGetQualityMapTyped($qualityBase, $typeOfDst, $dst)
 
-    Local $oArrDst, $vectorOfMatDst, $iArrDstSize
-    Local $bDstIsArray = VarGetType($matDst) == "Array"
+    Local $oArrDst, $vectorDst, $iArrDstSize
+    Local $bDstIsArray = IsArray($dst)
+    Local $bDstCreate = IsDllStruct($dst) And $typeOfDst == "Scalar"
 
-    If $bDstIsArray Then
-        $vectorOfMatDst = _VectorOfMatCreate()
+    If $typeOfDst == Default Then
+        $oArrDst = $dst
+    ElseIf $bDstIsArray Then
+        $vectorDst = Call("_VectorOf" & $typeOfDst & "Create")
 
-        $iArrDstSize = UBound($matDst)
+        $iArrDstSize = UBound($dst)
         For $i = 0 To $iArrDstSize - 1
-            _VectorOfMatPush($vectorOfMatDst, $matDst[$i])
+            Call("_VectorOf" & $typeOfDst & "Push", $vectorDst, $dst[$i])
         Next
 
-        $oArrDst = _cveOutputArrayFromVectorOfMat($vectorOfMatDst)
+        $oArrDst = Call("_cveOutputArrayFromVectorOf" & $typeOfDst, $vectorDst)
     Else
-        $oArrDst = _cveOutputArrayFromMat($matDst)
+        If $bDstCreate Then
+            $dst = Call("_cve" & $typeOfDst & "Create", $dst)
+        EndIf
+        $oArrDst = Call("_cveOutputArrayFrom" & $typeOfDst, $dst)
     EndIf
 
     _cveQualityBaseGetQualityMap($qualityBase, $oArrDst)
 
     If $bDstIsArray Then
-        _VectorOfMatRelease($vectorOfMatDst)
+        Call("_VectorOf" & $typeOfDst & "Release", $vectorDst)
     EndIf
 
-    _cveOutputArrayRelease($oArrDst)
+    If $typeOfDst <> Default Then
+        _cveOutputArrayRelease($oArrDst)
+        If $bDstCreate Then
+            Call("_cve" & $typeOfDst & "Release", $dst)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveQualityBaseGetQualityMapTyped
+
+Func _cveQualityBaseGetQualityMapMat($qualityBase, $dst)
+    ; cveQualityBaseGetQualityMap using cv::Mat instead of _*Array
+    _cveQualityBaseGetQualityMapTyped($qualityBase, "Mat", $dst)
 EndFunc   ;==>_cveQualityBaseGetQualityMapMat
 
 Func _cveQualityMSECreate($refImgs, $qualityBase, $algorithm, $sharedPtr)
@@ -143,32 +173,49 @@ Func _cveQualityMSECreate($refImgs, $qualityBase, $algorithm, $sharedPtr)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveQualityMSECreate", $sRefImgsDllType, $refImgs, $sQualityBaseDllType, $qualityBase, $sAlgorithmDllType, $algorithm, $sSharedPtrDllType, $sharedPtr), "cveQualityMSECreate", @error)
 EndFunc   ;==>_cveQualityMSECreate
 
-Func _cveQualityMSECreateMat($matRefImgs, $qualityBase, $algorithm, $sharedPtr)
-    ; cveQualityMSECreate using cv::Mat instead of _*Array
+Func _cveQualityMSECreateTyped($typeOfRefImgs, $refImgs, $qualityBase, $algorithm, $sharedPtr)
 
-    Local $iArrRefImgs, $vectorOfMatRefImgs, $iArrRefImgsSize
-    Local $bRefImgsIsArray = VarGetType($matRefImgs) == "Array"
+    Local $iArrRefImgs, $vectorRefImgs, $iArrRefImgsSize
+    Local $bRefImgsIsArray = IsArray($refImgs)
+    Local $bRefImgsCreate = IsDllStruct($refImgs) And $typeOfRefImgs == "Scalar"
 
-    If $bRefImgsIsArray Then
-        $vectorOfMatRefImgs = _VectorOfMatCreate()
+    If $typeOfRefImgs == Default Then
+        $iArrRefImgs = $refImgs
+    ElseIf $bRefImgsIsArray Then
+        $vectorRefImgs = Call("_VectorOf" & $typeOfRefImgs & "Create")
 
-        $iArrRefImgsSize = UBound($matRefImgs)
+        $iArrRefImgsSize = UBound($refImgs)
         For $i = 0 To $iArrRefImgsSize - 1
-            _VectorOfMatPush($vectorOfMatRefImgs, $matRefImgs[$i])
+            Call("_VectorOf" & $typeOfRefImgs & "Push", $vectorRefImgs, $refImgs[$i])
         Next
 
-        $iArrRefImgs = _cveInputArrayFromVectorOfMat($vectorOfMatRefImgs)
+        $iArrRefImgs = Call("_cveInputArrayFromVectorOf" & $typeOfRefImgs, $vectorRefImgs)
     Else
-        $iArrRefImgs = _cveInputArrayFromMat($matRefImgs)
+        If $bRefImgsCreate Then
+            $refImgs = Call("_cve" & $typeOfRefImgs & "Create", $refImgs)
+        EndIf
+        $iArrRefImgs = Call("_cveInputArrayFrom" & $typeOfRefImgs, $refImgs)
     EndIf
 
     Local $retval = _cveQualityMSECreate($iArrRefImgs, $qualityBase, $algorithm, $sharedPtr)
 
     If $bRefImgsIsArray Then
-        _VectorOfMatRelease($vectorOfMatRefImgs)
+        Call("_VectorOf" & $typeOfRefImgs & "Release", $vectorRefImgs)
     EndIf
 
-    _cveInputArrayRelease($iArrRefImgs)
+    If $typeOfRefImgs <> Default Then
+        _cveInputArrayRelease($iArrRefImgs)
+        If $bRefImgsCreate Then
+            Call("_cve" & $typeOfRefImgs & "Release", $refImgs)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveQualityMSECreateTyped
+
+Func _cveQualityMSECreateMat($refImgs, $qualityBase, $algorithm, $sharedPtr)
+    ; cveQualityMSECreate using cv::Mat instead of _*Array
+    Local $retval = _cveQualityMSECreateTyped("Mat", $refImgs, $qualityBase, $algorithm, $sharedPtr)
 
     Return $retval
 EndFunc   ;==>_cveQualityMSECreateMat
@@ -191,7 +238,7 @@ EndFunc   ;==>_cveQualityMSERelease
 Func _cveQualityBRISQUECreate($modelFilePath, $rangeFilePath, $qualityBase, $algorithm, $sharedPtr)
     ; CVAPI(cv::quality::QualityBRISQUE*) cveQualityBRISQUECreate(cv::String* modelFilePath, cv::String* rangeFilePath, cv::quality::QualityBase** qualityBase, cv::Algorithm** algorithm, cv::Ptr<cv::quality::QualityBRISQUE>** sharedPtr);
 
-    Local $bModelFilePathIsString = VarGetType($modelFilePath) == "String"
+    Local $bModelFilePathIsString = IsString($modelFilePath)
     If $bModelFilePathIsString Then
         $modelFilePath = _cveStringCreateFromStr($modelFilePath)
     EndIf
@@ -203,7 +250,7 @@ Func _cveQualityBRISQUECreate($modelFilePath, $rangeFilePath, $qualityBase, $alg
         $sModelFilePathDllType = "ptr"
     EndIf
 
-    Local $bRangeFilePathIsString = VarGetType($rangeFilePath) == "String"
+    Local $bRangeFilePathIsString = IsString($rangeFilePath)
     If $bRangeFilePathIsString Then
         $rangeFilePath = _cveStringCreateFromStr($rangeFilePath)
     EndIf
@@ -309,32 +356,49 @@ Func _cveQualityPSNRCreate($refImgs, $maxPixelValue, $qualityBase, $algorithm, $
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveQualityPSNRCreate", $sRefImgsDllType, $refImgs, "double", $maxPixelValue, $sQualityBaseDllType, $qualityBase, $sAlgorithmDllType, $algorithm, $sSharedPtrDllType, $sharedPtr), "cveQualityPSNRCreate", @error)
 EndFunc   ;==>_cveQualityPSNRCreate
 
-Func _cveQualityPSNRCreateMat($matRefImgs, $maxPixelValue, $qualityBase, $algorithm, $sharedPtr)
-    ; cveQualityPSNRCreate using cv::Mat instead of _*Array
+Func _cveQualityPSNRCreateTyped($typeOfRefImgs, $refImgs, $maxPixelValue, $qualityBase, $algorithm, $sharedPtr)
 
-    Local $iArrRefImgs, $vectorOfMatRefImgs, $iArrRefImgsSize
-    Local $bRefImgsIsArray = VarGetType($matRefImgs) == "Array"
+    Local $iArrRefImgs, $vectorRefImgs, $iArrRefImgsSize
+    Local $bRefImgsIsArray = IsArray($refImgs)
+    Local $bRefImgsCreate = IsDllStruct($refImgs) And $typeOfRefImgs == "Scalar"
 
-    If $bRefImgsIsArray Then
-        $vectorOfMatRefImgs = _VectorOfMatCreate()
+    If $typeOfRefImgs == Default Then
+        $iArrRefImgs = $refImgs
+    ElseIf $bRefImgsIsArray Then
+        $vectorRefImgs = Call("_VectorOf" & $typeOfRefImgs & "Create")
 
-        $iArrRefImgsSize = UBound($matRefImgs)
+        $iArrRefImgsSize = UBound($refImgs)
         For $i = 0 To $iArrRefImgsSize - 1
-            _VectorOfMatPush($vectorOfMatRefImgs, $matRefImgs[$i])
+            Call("_VectorOf" & $typeOfRefImgs & "Push", $vectorRefImgs, $refImgs[$i])
         Next
 
-        $iArrRefImgs = _cveInputArrayFromVectorOfMat($vectorOfMatRefImgs)
+        $iArrRefImgs = Call("_cveInputArrayFromVectorOf" & $typeOfRefImgs, $vectorRefImgs)
     Else
-        $iArrRefImgs = _cveInputArrayFromMat($matRefImgs)
+        If $bRefImgsCreate Then
+            $refImgs = Call("_cve" & $typeOfRefImgs & "Create", $refImgs)
+        EndIf
+        $iArrRefImgs = Call("_cveInputArrayFrom" & $typeOfRefImgs, $refImgs)
     EndIf
 
     Local $retval = _cveQualityPSNRCreate($iArrRefImgs, $maxPixelValue, $qualityBase, $algorithm, $sharedPtr)
 
     If $bRefImgsIsArray Then
-        _VectorOfMatRelease($vectorOfMatRefImgs)
+        Call("_VectorOf" & $typeOfRefImgs & "Release", $vectorRefImgs)
     EndIf
 
-    _cveInputArrayRelease($iArrRefImgs)
+    If $typeOfRefImgs <> Default Then
+        _cveInputArrayRelease($iArrRefImgs)
+        If $bRefImgsCreate Then
+            Call("_cve" & $typeOfRefImgs & "Release", $refImgs)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveQualityPSNRCreateTyped
+
+Func _cveQualityPSNRCreateMat($refImgs, $maxPixelValue, $qualityBase, $algorithm, $sharedPtr)
+    ; cveQualityPSNRCreate using cv::Mat instead of _*Array
+    Local $retval = _cveQualityPSNRCreateTyped("Mat", $refImgs, $maxPixelValue, $qualityBase, $algorithm, $sharedPtr)
 
     Return $retval
 EndFunc   ;==>_cveQualityPSNRCreateMat
@@ -393,32 +457,49 @@ Func _cveQualitySSIMCreate($refImgs, $qualityBase, $algorithm, $sharedPtr)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveQualitySSIMCreate", $sRefImgsDllType, $refImgs, $sQualityBaseDllType, $qualityBase, $sAlgorithmDllType, $algorithm, $sSharedPtrDllType, $sharedPtr), "cveQualitySSIMCreate", @error)
 EndFunc   ;==>_cveQualitySSIMCreate
 
-Func _cveQualitySSIMCreateMat($matRefImgs, $qualityBase, $algorithm, $sharedPtr)
-    ; cveQualitySSIMCreate using cv::Mat instead of _*Array
+Func _cveQualitySSIMCreateTyped($typeOfRefImgs, $refImgs, $qualityBase, $algorithm, $sharedPtr)
 
-    Local $iArrRefImgs, $vectorOfMatRefImgs, $iArrRefImgsSize
-    Local $bRefImgsIsArray = VarGetType($matRefImgs) == "Array"
+    Local $iArrRefImgs, $vectorRefImgs, $iArrRefImgsSize
+    Local $bRefImgsIsArray = IsArray($refImgs)
+    Local $bRefImgsCreate = IsDllStruct($refImgs) And $typeOfRefImgs == "Scalar"
 
-    If $bRefImgsIsArray Then
-        $vectorOfMatRefImgs = _VectorOfMatCreate()
+    If $typeOfRefImgs == Default Then
+        $iArrRefImgs = $refImgs
+    ElseIf $bRefImgsIsArray Then
+        $vectorRefImgs = Call("_VectorOf" & $typeOfRefImgs & "Create")
 
-        $iArrRefImgsSize = UBound($matRefImgs)
+        $iArrRefImgsSize = UBound($refImgs)
         For $i = 0 To $iArrRefImgsSize - 1
-            _VectorOfMatPush($vectorOfMatRefImgs, $matRefImgs[$i])
+            Call("_VectorOf" & $typeOfRefImgs & "Push", $vectorRefImgs, $refImgs[$i])
         Next
 
-        $iArrRefImgs = _cveInputArrayFromVectorOfMat($vectorOfMatRefImgs)
+        $iArrRefImgs = Call("_cveInputArrayFromVectorOf" & $typeOfRefImgs, $vectorRefImgs)
     Else
-        $iArrRefImgs = _cveInputArrayFromMat($matRefImgs)
+        If $bRefImgsCreate Then
+            $refImgs = Call("_cve" & $typeOfRefImgs & "Create", $refImgs)
+        EndIf
+        $iArrRefImgs = Call("_cveInputArrayFrom" & $typeOfRefImgs, $refImgs)
     EndIf
 
     Local $retval = _cveQualitySSIMCreate($iArrRefImgs, $qualityBase, $algorithm, $sharedPtr)
 
     If $bRefImgsIsArray Then
-        _VectorOfMatRelease($vectorOfMatRefImgs)
+        Call("_VectorOf" & $typeOfRefImgs & "Release", $vectorRefImgs)
     EndIf
 
-    _cveInputArrayRelease($iArrRefImgs)
+    If $typeOfRefImgs <> Default Then
+        _cveInputArrayRelease($iArrRefImgs)
+        If $bRefImgsCreate Then
+            Call("_cve" & $typeOfRefImgs & "Release", $refImgs)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveQualitySSIMCreateTyped
+
+Func _cveQualitySSIMCreateMat($refImgs, $qualityBase, $algorithm, $sharedPtr)
+    ; cveQualitySSIMCreate using cv::Mat instead of _*Array
+    Local $retval = _cveQualitySSIMCreateTyped("Mat", $refImgs, $qualityBase, $algorithm, $sharedPtr)
 
     Return $retval
 EndFunc   ;==>_cveQualitySSIMCreateMat
@@ -477,32 +558,49 @@ Func _cveQualityGMSDCreate($refImgs, $qualityBase, $algorithm, $sharedPtr)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveQualityGMSDCreate", $sRefImgsDllType, $refImgs, $sQualityBaseDllType, $qualityBase, $sAlgorithmDllType, $algorithm, $sSharedPtrDllType, $sharedPtr), "cveQualityGMSDCreate", @error)
 EndFunc   ;==>_cveQualityGMSDCreate
 
-Func _cveQualityGMSDCreateMat($matRefImgs, $qualityBase, $algorithm, $sharedPtr)
-    ; cveQualityGMSDCreate using cv::Mat instead of _*Array
+Func _cveQualityGMSDCreateTyped($typeOfRefImgs, $refImgs, $qualityBase, $algorithm, $sharedPtr)
 
-    Local $iArrRefImgs, $vectorOfMatRefImgs, $iArrRefImgsSize
-    Local $bRefImgsIsArray = VarGetType($matRefImgs) == "Array"
+    Local $iArrRefImgs, $vectorRefImgs, $iArrRefImgsSize
+    Local $bRefImgsIsArray = IsArray($refImgs)
+    Local $bRefImgsCreate = IsDllStruct($refImgs) And $typeOfRefImgs == "Scalar"
 
-    If $bRefImgsIsArray Then
-        $vectorOfMatRefImgs = _VectorOfMatCreate()
+    If $typeOfRefImgs == Default Then
+        $iArrRefImgs = $refImgs
+    ElseIf $bRefImgsIsArray Then
+        $vectorRefImgs = Call("_VectorOf" & $typeOfRefImgs & "Create")
 
-        $iArrRefImgsSize = UBound($matRefImgs)
+        $iArrRefImgsSize = UBound($refImgs)
         For $i = 0 To $iArrRefImgsSize - 1
-            _VectorOfMatPush($vectorOfMatRefImgs, $matRefImgs[$i])
+            Call("_VectorOf" & $typeOfRefImgs & "Push", $vectorRefImgs, $refImgs[$i])
         Next
 
-        $iArrRefImgs = _cveInputArrayFromVectorOfMat($vectorOfMatRefImgs)
+        $iArrRefImgs = Call("_cveInputArrayFromVectorOf" & $typeOfRefImgs, $vectorRefImgs)
     Else
-        $iArrRefImgs = _cveInputArrayFromMat($matRefImgs)
+        If $bRefImgsCreate Then
+            $refImgs = Call("_cve" & $typeOfRefImgs & "Create", $refImgs)
+        EndIf
+        $iArrRefImgs = Call("_cveInputArrayFrom" & $typeOfRefImgs, $refImgs)
     EndIf
 
     Local $retval = _cveQualityGMSDCreate($iArrRefImgs, $qualityBase, $algorithm, $sharedPtr)
 
     If $bRefImgsIsArray Then
-        _VectorOfMatRelease($vectorOfMatRefImgs)
+        Call("_VectorOf" & $typeOfRefImgs & "Release", $vectorRefImgs)
     EndIf
 
-    _cveInputArrayRelease($iArrRefImgs)
+    If $typeOfRefImgs <> Default Then
+        _cveInputArrayRelease($iArrRefImgs)
+        If $bRefImgsCreate Then
+            Call("_cve" & $typeOfRefImgs & "Release", $refImgs)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveQualityGMSDCreateTyped
+
+Func _cveQualityGMSDCreateMat($refImgs, $qualityBase, $algorithm, $sharedPtr)
+    ; cveQualityGMSDCreate using cv::Mat instead of _*Array
+    Local $retval = _cveQualityGMSDCreateTyped("Mat", $refImgs, $qualityBase, $algorithm, $sharedPtr)
 
     Return $retval
 EndFunc   ;==>_cveQualityGMSDCreateMat

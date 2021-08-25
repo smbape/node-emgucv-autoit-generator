@@ -297,32 +297,49 @@ Func _cveDAISYCreate($radius, $qRadius, $qTheta, $qHist, $norm, $H, $interpolati
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveDAISYCreate", "float", $radius, "int", $qRadius, "int", $qTheta, "int", $qHist, "int", $norm, $sHDllType, $H, "boolean", $interpolation, "boolean", $useOrientation, $sExtractorDllType, $extractor, $sSharedPtrDllType, $sharedPtr), "cveDAISYCreate", @error)
 EndFunc   ;==>_cveDAISYCreate
 
-Func _cveDAISYCreateMat($radius, $qRadius, $qTheta, $qHist, $norm, $matH, $interpolation, $useOrientation, $extractor, $sharedPtr)
-    ; cveDAISYCreate using cv::Mat instead of _*Array
+Func _cveDAISYCreateTyped($radius, $qRadius, $qTheta, $qHist, $norm, $typeOfH, $H, $interpolation, $useOrientation, $extractor, $sharedPtr)
 
-    Local $iArrH, $vectorOfMatH, $iArrHSize
-    Local $bHIsArray = VarGetType($matH) == "Array"
+    Local $iArrH, $vectorH, $iArrHSize
+    Local $bHIsArray = IsArray($H)
+    Local $bHCreate = IsDllStruct($H) And $typeOfH == "Scalar"
 
-    If $bHIsArray Then
-        $vectorOfMatH = _VectorOfMatCreate()
+    If $typeOfH == Default Then
+        $iArrH = $H
+    ElseIf $bHIsArray Then
+        $vectorH = Call("_VectorOf" & $typeOfH & "Create")
 
-        $iArrHSize = UBound($matH)
+        $iArrHSize = UBound($H)
         For $i = 0 To $iArrHSize - 1
-            _VectorOfMatPush($vectorOfMatH, $matH[$i])
+            Call("_VectorOf" & $typeOfH & "Push", $vectorH, $H[$i])
         Next
 
-        $iArrH = _cveInputArrayFromVectorOfMat($vectorOfMatH)
+        $iArrH = Call("_cveInputArrayFromVectorOf" & $typeOfH, $vectorH)
     Else
-        $iArrH = _cveInputArrayFromMat($matH)
+        If $bHCreate Then
+            $H = Call("_cve" & $typeOfH & "Create", $H)
+        EndIf
+        $iArrH = Call("_cveInputArrayFrom" & $typeOfH, $H)
     EndIf
 
     Local $retval = _cveDAISYCreate($radius, $qRadius, $qTheta, $qHist, $norm, $iArrH, $interpolation, $useOrientation, $extractor, $sharedPtr)
 
     If $bHIsArray Then
-        _VectorOfMatRelease($vectorOfMatH)
+        Call("_VectorOf" & $typeOfH & "Release", $vectorH)
     EndIf
 
-    _cveInputArrayRelease($iArrH)
+    If $typeOfH <> Default Then
+        _cveInputArrayRelease($iArrH)
+        If $bHCreate Then
+            Call("_cve" & $typeOfH & "Release", $H)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveDAISYCreateTyped
+
+Func _cveDAISYCreateMat($radius, $qRadius, $qTheta, $qHist, $norm, $H, $interpolation, $useOrientation, $extractor, $sharedPtr)
+    ; cveDAISYCreate using cv::Mat instead of _*Array
+    Local $retval = _cveDAISYCreateTyped($radius, $qRadius, $qTheta, $qHist, $norm, "Mat", $H, $interpolation, $useOrientation, $extractor, $sharedPtr)
 
     Return $retval
 EndFunc   ;==>_cveDAISYCreateMat
@@ -474,7 +491,7 @@ Func _cvePCTSignaturesCreate2($initSamplingPoints, $initSeedCount, $sharedPtr)
     ; CVAPI(cv::xfeatures2d::PCTSignatures*) cvePCTSignaturesCreate2(std::vector<cv::Point2f>* initSamplingPoints, int initSeedCount, cv::Ptr<cv::xfeatures2d::PCTSignatures>** sharedPtr);
 
     Local $vecInitSamplingPoints, $iArrInitSamplingPointsSize
-    Local $bInitSamplingPointsIsArray = VarGetType($initSamplingPoints) == "Array"
+    Local $bInitSamplingPointsIsArray = IsArray($initSamplingPoints)
 
     If $bInitSamplingPointsIsArray Then
         $vecInitSamplingPoints = _VectorOfPointFCreate()
@@ -516,7 +533,7 @@ Func _cvePCTSignaturesCreate3($initSamplingPoints, $initClusterSeedIndexes, $sha
     ; CVAPI(cv::xfeatures2d::PCTSignatures*) cvePCTSignaturesCreate3(std::vector<cv::Point2f>* initSamplingPoints, std::vector<int>* initClusterSeedIndexes, cv::Ptr<cv::xfeatures2d::PCTSignatures>** sharedPtr);
 
     Local $vecInitSamplingPoints, $iArrInitSamplingPointsSize
-    Local $bInitSamplingPointsIsArray = VarGetType($initSamplingPoints) == "Array"
+    Local $bInitSamplingPointsIsArray = IsArray($initSamplingPoints)
 
     If $bInitSamplingPointsIsArray Then
         $vecInitSamplingPoints = _VectorOfPointFCreate()
@@ -537,7 +554,7 @@ Func _cvePCTSignaturesCreate3($initSamplingPoints, $initClusterSeedIndexes, $sha
     EndIf
 
     Local $vecInitClusterSeedIndexes, $iArrInitClusterSeedIndexesSize
-    Local $bInitClusterSeedIndexesIsArray = VarGetType($initClusterSeedIndexes) == "Array"
+    Local $bInitClusterSeedIndexesIsArray = IsArray($initClusterSeedIndexes)
 
     If $bInitClusterSeedIndexesIsArray Then
         $vecInitClusterSeedIndexes = _VectorOfIntCreate()
@@ -621,54 +638,80 @@ Func _cvePCTSignaturesComputeSignature($pct, $image, $signature)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePCTSignaturesComputeSignature", $sPctDllType, $pct, $sImageDllType, $image, $sSignatureDllType, $signature), "cvePCTSignaturesComputeSignature", @error)
 EndFunc   ;==>_cvePCTSignaturesComputeSignature
 
-Func _cvePCTSignaturesComputeSignatureMat($pct, $matImage, $matSignature)
-    ; cvePCTSignaturesComputeSignature using cv::Mat instead of _*Array
+Func _cvePCTSignaturesComputeSignatureTyped($pct, $typeOfImage, $image, $typeOfSignature, $signature)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $oArrSignature, $vectorOfMatSignature, $iArrSignatureSize
-    Local $bSignatureIsArray = VarGetType($matSignature) == "Array"
+    Local $oArrSignature, $vectorSignature, $iArrSignatureSize
+    Local $bSignatureIsArray = IsArray($signature)
+    Local $bSignatureCreate = IsDllStruct($signature) And $typeOfSignature == "Scalar"
 
-    If $bSignatureIsArray Then
-        $vectorOfMatSignature = _VectorOfMatCreate()
+    If $typeOfSignature == Default Then
+        $oArrSignature = $signature
+    ElseIf $bSignatureIsArray Then
+        $vectorSignature = Call("_VectorOf" & $typeOfSignature & "Create")
 
-        $iArrSignatureSize = UBound($matSignature)
+        $iArrSignatureSize = UBound($signature)
         For $i = 0 To $iArrSignatureSize - 1
-            _VectorOfMatPush($vectorOfMatSignature, $matSignature[$i])
+            Call("_VectorOf" & $typeOfSignature & "Push", $vectorSignature, $signature[$i])
         Next
 
-        $oArrSignature = _cveOutputArrayFromVectorOfMat($vectorOfMatSignature)
+        $oArrSignature = Call("_cveOutputArrayFromVectorOf" & $typeOfSignature, $vectorSignature)
     Else
-        $oArrSignature = _cveOutputArrayFromMat($matSignature)
+        If $bSignatureCreate Then
+            $signature = Call("_cve" & $typeOfSignature & "Create", $signature)
+        EndIf
+        $oArrSignature = Call("_cveOutputArrayFrom" & $typeOfSignature, $signature)
     EndIf
 
     _cvePCTSignaturesComputeSignature($pct, $iArrImage, $oArrSignature)
 
     If $bSignatureIsArray Then
-        _VectorOfMatRelease($vectorOfMatSignature)
+        Call("_VectorOf" & $typeOfSignature & "Release", $vectorSignature)
     EndIf
 
-    _cveOutputArrayRelease($oArrSignature)
+    If $typeOfSignature <> Default Then
+        _cveOutputArrayRelease($oArrSignature)
+        If $bSignatureCreate Then
+            Call("_cve" & $typeOfSignature & "Release", $signature)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cvePCTSignaturesComputeSignatureTyped
+
+Func _cvePCTSignaturesComputeSignatureMat($pct, $image, $signature)
+    ; cvePCTSignaturesComputeSignature using cv::Mat instead of _*Array
+    _cvePCTSignaturesComputeSignatureTyped($pct, "Mat", $image, "Mat", $signature)
 EndFunc   ;==>_cvePCTSignaturesComputeSignatureMat
 
 Func _cvePCTSignaturesDrawSignature($source, $signature, $result, $radiusToShorterSideRatio, $borderThickness)
@@ -698,76 +741,113 @@ Func _cvePCTSignaturesDrawSignature($source, $signature, $result, $radiusToShort
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePCTSignaturesDrawSignature", $sSourceDllType, $source, $sSignatureDllType, $signature, $sResultDllType, $result, "float", $radiusToShorterSideRatio, "int", $borderThickness), "cvePCTSignaturesDrawSignature", @error)
 EndFunc   ;==>_cvePCTSignaturesDrawSignature
 
-Func _cvePCTSignaturesDrawSignatureMat($matSource, $matSignature, $matResult, $radiusToShorterSideRatio, $borderThickness)
-    ; cvePCTSignaturesDrawSignature using cv::Mat instead of _*Array
+Func _cvePCTSignaturesDrawSignatureTyped($typeOfSource, $source, $typeOfSignature, $signature, $typeOfResult, $result, $radiusToShorterSideRatio, $borderThickness)
 
-    Local $iArrSource, $vectorOfMatSource, $iArrSourceSize
-    Local $bSourceIsArray = VarGetType($matSource) == "Array"
+    Local $iArrSource, $vectorSource, $iArrSourceSize
+    Local $bSourceIsArray = IsArray($source)
+    Local $bSourceCreate = IsDllStruct($source) And $typeOfSource == "Scalar"
 
-    If $bSourceIsArray Then
-        $vectorOfMatSource = _VectorOfMatCreate()
+    If $typeOfSource == Default Then
+        $iArrSource = $source
+    ElseIf $bSourceIsArray Then
+        $vectorSource = Call("_VectorOf" & $typeOfSource & "Create")
 
-        $iArrSourceSize = UBound($matSource)
+        $iArrSourceSize = UBound($source)
         For $i = 0 To $iArrSourceSize - 1
-            _VectorOfMatPush($vectorOfMatSource, $matSource[$i])
+            Call("_VectorOf" & $typeOfSource & "Push", $vectorSource, $source[$i])
         Next
 
-        $iArrSource = _cveInputArrayFromVectorOfMat($vectorOfMatSource)
+        $iArrSource = Call("_cveInputArrayFromVectorOf" & $typeOfSource, $vectorSource)
     Else
-        $iArrSource = _cveInputArrayFromMat($matSource)
+        If $bSourceCreate Then
+            $source = Call("_cve" & $typeOfSource & "Create", $source)
+        EndIf
+        $iArrSource = Call("_cveInputArrayFrom" & $typeOfSource, $source)
     EndIf
 
-    Local $iArrSignature, $vectorOfMatSignature, $iArrSignatureSize
-    Local $bSignatureIsArray = VarGetType($matSignature) == "Array"
+    Local $iArrSignature, $vectorSignature, $iArrSignatureSize
+    Local $bSignatureIsArray = IsArray($signature)
+    Local $bSignatureCreate = IsDllStruct($signature) And $typeOfSignature == "Scalar"
 
-    If $bSignatureIsArray Then
-        $vectorOfMatSignature = _VectorOfMatCreate()
+    If $typeOfSignature == Default Then
+        $iArrSignature = $signature
+    ElseIf $bSignatureIsArray Then
+        $vectorSignature = Call("_VectorOf" & $typeOfSignature & "Create")
 
-        $iArrSignatureSize = UBound($matSignature)
+        $iArrSignatureSize = UBound($signature)
         For $i = 0 To $iArrSignatureSize - 1
-            _VectorOfMatPush($vectorOfMatSignature, $matSignature[$i])
+            Call("_VectorOf" & $typeOfSignature & "Push", $vectorSignature, $signature[$i])
         Next
 
-        $iArrSignature = _cveInputArrayFromVectorOfMat($vectorOfMatSignature)
+        $iArrSignature = Call("_cveInputArrayFromVectorOf" & $typeOfSignature, $vectorSignature)
     Else
-        $iArrSignature = _cveInputArrayFromMat($matSignature)
+        If $bSignatureCreate Then
+            $signature = Call("_cve" & $typeOfSignature & "Create", $signature)
+        EndIf
+        $iArrSignature = Call("_cveInputArrayFrom" & $typeOfSignature, $signature)
     EndIf
 
-    Local $oArrResult, $vectorOfMatResult, $iArrResultSize
-    Local $bResultIsArray = VarGetType($matResult) == "Array"
+    Local $oArrResult, $vectorResult, $iArrResultSize
+    Local $bResultIsArray = IsArray($result)
+    Local $bResultCreate = IsDllStruct($result) And $typeOfResult == "Scalar"
 
-    If $bResultIsArray Then
-        $vectorOfMatResult = _VectorOfMatCreate()
+    If $typeOfResult == Default Then
+        $oArrResult = $result
+    ElseIf $bResultIsArray Then
+        $vectorResult = Call("_VectorOf" & $typeOfResult & "Create")
 
-        $iArrResultSize = UBound($matResult)
+        $iArrResultSize = UBound($result)
         For $i = 0 To $iArrResultSize - 1
-            _VectorOfMatPush($vectorOfMatResult, $matResult[$i])
+            Call("_VectorOf" & $typeOfResult & "Push", $vectorResult, $result[$i])
         Next
 
-        $oArrResult = _cveOutputArrayFromVectorOfMat($vectorOfMatResult)
+        $oArrResult = Call("_cveOutputArrayFromVectorOf" & $typeOfResult, $vectorResult)
     Else
-        $oArrResult = _cveOutputArrayFromMat($matResult)
+        If $bResultCreate Then
+            $result = Call("_cve" & $typeOfResult & "Create", $result)
+        EndIf
+        $oArrResult = Call("_cveOutputArrayFrom" & $typeOfResult, $result)
     EndIf
 
     _cvePCTSignaturesDrawSignature($iArrSource, $iArrSignature, $oArrResult, $radiusToShorterSideRatio, $borderThickness)
 
     If $bResultIsArray Then
-        _VectorOfMatRelease($vectorOfMatResult)
+        Call("_VectorOf" & $typeOfResult & "Release", $vectorResult)
     EndIf
 
-    _cveOutputArrayRelease($oArrResult)
+    If $typeOfResult <> Default Then
+        _cveOutputArrayRelease($oArrResult)
+        If $bResultCreate Then
+            Call("_cve" & $typeOfResult & "Release", $result)
+        EndIf
+    EndIf
 
     If $bSignatureIsArray Then
-        _VectorOfMatRelease($vectorOfMatSignature)
+        Call("_VectorOf" & $typeOfSignature & "Release", $vectorSignature)
     EndIf
 
-    _cveInputArrayRelease($iArrSignature)
+    If $typeOfSignature <> Default Then
+        _cveInputArrayRelease($iArrSignature)
+        If $bSignatureCreate Then
+            Call("_cve" & $typeOfSignature & "Release", $signature)
+        EndIf
+    EndIf
 
     If $bSourceIsArray Then
-        _VectorOfMatRelease($vectorOfMatSource)
+        Call("_VectorOf" & $typeOfSource & "Release", $vectorSource)
     EndIf
 
-    _cveInputArrayRelease($iArrSource)
+    If $typeOfSource <> Default Then
+        _cveInputArrayRelease($iArrSource)
+        If $bSourceCreate Then
+            Call("_cve" & $typeOfSource & "Release", $source)
+        EndIf
+    EndIf
+EndFunc   ;==>_cvePCTSignaturesDrawSignatureTyped
+
+Func _cvePCTSignaturesDrawSignatureMat($source, $signature, $result, $radiusToShorterSideRatio, $borderThickness)
+    ; cvePCTSignaturesDrawSignature using cv::Mat instead of _*Array
+    _cvePCTSignaturesDrawSignatureTyped("Mat", $source, "Mat", $signature, "Mat", $result, $radiusToShorterSideRatio, $borderThickness)
 EndFunc   ;==>_cvePCTSignaturesDrawSignatureMat
 
 Func _cvePCTSignaturesSQFDCreate($distanceFunction, $similarityFunction, $similarityParameter, $sharedPtr)
@@ -810,54 +890,82 @@ Func _cvePCTSignaturesSQFDComputeQuadraticFormDistance($sqfd, $signature0, $sign
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cvePCTSignaturesSQFDComputeQuadraticFormDistance", $sSqfdDllType, $sqfd, $sSignature0DllType, $signature0, $sSignature1DllType, $signature1), "cvePCTSignaturesSQFDComputeQuadraticFormDistance", @error)
 EndFunc   ;==>_cvePCTSignaturesSQFDComputeQuadraticFormDistance
 
-Func _cvePCTSignaturesSQFDComputeQuadraticFormDistanceMat($sqfd, $matSignature0, $matSignature1)
-    ; cvePCTSignaturesSQFDComputeQuadraticFormDistance using cv::Mat instead of _*Array
+Func _cvePCTSignaturesSQFDComputeQuadraticFormDistanceTyped($sqfd, $typeOfSignature0, $signature0, $typeOfSignature1, $signature1)
 
-    Local $iArrSignature0, $vectorOfMatSignature0, $iArrSignature0Size
-    Local $bSignature0IsArray = VarGetType($matSignature0) == "Array"
+    Local $iArrSignature0, $vectorSignature0, $iArrSignature0Size
+    Local $bSignature0IsArray = IsArray($signature0)
+    Local $bSignature0Create = IsDllStruct($signature0) And $typeOfSignature0 == "Scalar"
 
-    If $bSignature0IsArray Then
-        $vectorOfMatSignature0 = _VectorOfMatCreate()
+    If $typeOfSignature0 == Default Then
+        $iArrSignature0 = $signature0
+    ElseIf $bSignature0IsArray Then
+        $vectorSignature0 = Call("_VectorOf" & $typeOfSignature0 & "Create")
 
-        $iArrSignature0Size = UBound($matSignature0)
+        $iArrSignature0Size = UBound($signature0)
         For $i = 0 To $iArrSignature0Size - 1
-            _VectorOfMatPush($vectorOfMatSignature0, $matSignature0[$i])
+            Call("_VectorOf" & $typeOfSignature0 & "Push", $vectorSignature0, $signature0[$i])
         Next
 
-        $iArrSignature0 = _cveInputArrayFromVectorOfMat($vectorOfMatSignature0)
+        $iArrSignature0 = Call("_cveInputArrayFromVectorOf" & $typeOfSignature0, $vectorSignature0)
     Else
-        $iArrSignature0 = _cveInputArrayFromMat($matSignature0)
+        If $bSignature0Create Then
+            $signature0 = Call("_cve" & $typeOfSignature0 & "Create", $signature0)
+        EndIf
+        $iArrSignature0 = Call("_cveInputArrayFrom" & $typeOfSignature0, $signature0)
     EndIf
 
-    Local $iArrSignature1, $vectorOfMatSignature1, $iArrSignature1Size
-    Local $bSignature1IsArray = VarGetType($matSignature1) == "Array"
+    Local $iArrSignature1, $vectorSignature1, $iArrSignature1Size
+    Local $bSignature1IsArray = IsArray($signature1)
+    Local $bSignature1Create = IsDllStruct($signature1) And $typeOfSignature1 == "Scalar"
 
-    If $bSignature1IsArray Then
-        $vectorOfMatSignature1 = _VectorOfMatCreate()
+    If $typeOfSignature1 == Default Then
+        $iArrSignature1 = $signature1
+    ElseIf $bSignature1IsArray Then
+        $vectorSignature1 = Call("_VectorOf" & $typeOfSignature1 & "Create")
 
-        $iArrSignature1Size = UBound($matSignature1)
+        $iArrSignature1Size = UBound($signature1)
         For $i = 0 To $iArrSignature1Size - 1
-            _VectorOfMatPush($vectorOfMatSignature1, $matSignature1[$i])
+            Call("_VectorOf" & $typeOfSignature1 & "Push", $vectorSignature1, $signature1[$i])
         Next
 
-        $iArrSignature1 = _cveInputArrayFromVectorOfMat($vectorOfMatSignature1)
+        $iArrSignature1 = Call("_cveInputArrayFromVectorOf" & $typeOfSignature1, $vectorSignature1)
     Else
-        $iArrSignature1 = _cveInputArrayFromMat($matSignature1)
+        If $bSignature1Create Then
+            $signature1 = Call("_cve" & $typeOfSignature1 & "Create", $signature1)
+        EndIf
+        $iArrSignature1 = Call("_cveInputArrayFrom" & $typeOfSignature1, $signature1)
     EndIf
 
     Local $retval = _cvePCTSignaturesSQFDComputeQuadraticFormDistance($sqfd, $iArrSignature0, $iArrSignature1)
 
     If $bSignature1IsArray Then
-        _VectorOfMatRelease($vectorOfMatSignature1)
+        Call("_VectorOf" & $typeOfSignature1 & "Release", $vectorSignature1)
     EndIf
 
-    _cveInputArrayRelease($iArrSignature1)
+    If $typeOfSignature1 <> Default Then
+        _cveInputArrayRelease($iArrSignature1)
+        If $bSignature1Create Then
+            Call("_cve" & $typeOfSignature1 & "Release", $signature1)
+        EndIf
+    EndIf
 
     If $bSignature0IsArray Then
-        _VectorOfMatRelease($vectorOfMatSignature0)
+        Call("_VectorOf" & $typeOfSignature0 & "Release", $vectorSignature0)
     EndIf
 
-    _cveInputArrayRelease($iArrSignature0)
+    If $typeOfSignature0 <> Default Then
+        _cveInputArrayRelease($iArrSignature0)
+        If $bSignature0Create Then
+            Call("_cve" & $typeOfSignature0 & "Release", $signature0)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cvePCTSignaturesSQFDComputeQuadraticFormDistanceTyped
+
+Func _cvePCTSignaturesSQFDComputeQuadraticFormDistanceMat($sqfd, $signature0, $signature1)
+    ; cvePCTSignaturesSQFDComputeQuadraticFormDistance using cv::Mat instead of _*Array
+    Local $retval = _cvePCTSignaturesSQFDComputeQuadraticFormDistanceTyped($sqfd, "Mat", $signature0, "Mat", $signature1)
 
     Return $retval
 EndFunc   ;==>_cvePCTSignaturesSQFDComputeQuadraticFormDistanceMat
@@ -880,7 +988,7 @@ Func _cvePCTSignaturesSQFDComputeQuadraticFormDistances($sqfd, $sourceSignature,
     EndIf
 
     Local $vecImageSignatures, $iArrImageSignaturesSize
-    Local $bImageSignaturesIsArray = VarGetType($imageSignatures) == "Array"
+    Local $bImageSignaturesIsArray = IsArray($imageSignatures)
 
     If $bImageSignaturesIsArray Then
         $vecImageSignatures = _VectorOfMatCreate()
@@ -901,7 +1009,7 @@ Func _cvePCTSignaturesSQFDComputeQuadraticFormDistances($sqfd, $sourceSignature,
     EndIf
 
     Local $vecDistances, $iArrDistancesSize
-    Local $bDistancesIsArray = VarGetType($distances) == "Array"
+    Local $bDistancesIsArray = IsArray($distances)
 
     If $bDistancesIsArray Then
         $vecDistances = _VectorOfFloatCreate()
@@ -994,7 +1102,7 @@ Func _cveMatchGMS($size1, $size2, $keypoints1, $keypoints2, $matches1to2, $match
     EndIf
 
     Local $vecKeypoints1, $iArrKeypoints1Size
-    Local $bKeypoints1IsArray = VarGetType($keypoints1) == "Array"
+    Local $bKeypoints1IsArray = IsArray($keypoints1)
 
     If $bKeypoints1IsArray Then
         $vecKeypoints1 = _VectorOfKeyPointCreate()
@@ -1015,7 +1123,7 @@ Func _cveMatchGMS($size1, $size2, $keypoints1, $keypoints2, $matches1to2, $match
     EndIf
 
     Local $vecKeypoints2, $iArrKeypoints2Size
-    Local $bKeypoints2IsArray = VarGetType($keypoints2) == "Array"
+    Local $bKeypoints2IsArray = IsArray($keypoints2)
 
     If $bKeypoints2IsArray Then
         $vecKeypoints2 = _VectorOfKeyPointCreate()
@@ -1036,7 +1144,7 @@ Func _cveMatchGMS($size1, $size2, $keypoints1, $keypoints2, $matches1to2, $match
     EndIf
 
     Local $vecMatches1to2, $iArrMatches1to2Size
-    Local $bMatches1to2IsArray = VarGetType($matches1to2) == "Array"
+    Local $bMatches1to2IsArray = IsArray($matches1to2)
 
     If $bMatches1to2IsArray Then
         $vecMatches1to2 = _VectorOfDMatchCreate()
@@ -1057,7 +1165,7 @@ Func _cveMatchGMS($size1, $size2, $keypoints1, $keypoints2, $matches1to2, $match
     EndIf
 
     Local $vecMatchesGMS, $iArrMatchesGMSSize
-    Local $bMatchesGMSIsArray = VarGetType($matchesGMS) == "Array"
+    Local $bMatchesGMSIsArray = IsArray($matchesGMS)
 
     If $bMatchesGMSIsArray Then
         $vecMatchesGMS = _VectorOfDMatchCreate()
@@ -1100,7 +1208,7 @@ Func _cveMatchLOGOS($keypoints1, $keypoints2, $nn1, $nn2, $matches1to2)
     ; CVAPI(void) cveMatchLOGOS(std::vector<cv::KeyPoint>* keypoints1, std::vector<cv::KeyPoint>* keypoints2, std::vector<int>* nn1, std::vector<int>* nn2, std::vector<cv::DMatch>* matches1to2);
 
     Local $vecKeypoints1, $iArrKeypoints1Size
-    Local $bKeypoints1IsArray = VarGetType($keypoints1) == "Array"
+    Local $bKeypoints1IsArray = IsArray($keypoints1)
 
     If $bKeypoints1IsArray Then
         $vecKeypoints1 = _VectorOfKeyPointCreate()
@@ -1121,7 +1229,7 @@ Func _cveMatchLOGOS($keypoints1, $keypoints2, $nn1, $nn2, $matches1to2)
     EndIf
 
     Local $vecKeypoints2, $iArrKeypoints2Size
-    Local $bKeypoints2IsArray = VarGetType($keypoints2) == "Array"
+    Local $bKeypoints2IsArray = IsArray($keypoints2)
 
     If $bKeypoints2IsArray Then
         $vecKeypoints2 = _VectorOfKeyPointCreate()
@@ -1142,7 +1250,7 @@ Func _cveMatchLOGOS($keypoints1, $keypoints2, $nn1, $nn2, $matches1to2)
     EndIf
 
     Local $vecNn1, $iArrNn1Size
-    Local $bNn1IsArray = VarGetType($nn1) == "Array"
+    Local $bNn1IsArray = IsArray($nn1)
 
     If $bNn1IsArray Then
         $vecNn1 = _VectorOfIntCreate()
@@ -1163,7 +1271,7 @@ Func _cveMatchLOGOS($keypoints1, $keypoints2, $nn1, $nn2, $matches1to2)
     EndIf
 
     Local $vecNn2, $iArrNn2Size
-    Local $bNn2IsArray = VarGetType($nn2) == "Array"
+    Local $bNn2IsArray = IsArray($nn2)
 
     If $bNn2IsArray Then
         $vecNn2 = _VectorOfIntCreate()
@@ -1184,7 +1292,7 @@ Func _cveMatchLOGOS($keypoints1, $keypoints2, $nn1, $nn2, $matches1to2)
     EndIf
 
     Local $vecMatches1to2, $iArrMatches1to2Size
-    Local $bMatches1to2IsArray = VarGetType($matches1to2) == "Array"
+    Local $bMatches1to2IsArray = IsArray($matches1to2)
 
     If $bMatches1to2IsArray Then
         $vecMatches1to2 = _VectorOfDMatchCreate()

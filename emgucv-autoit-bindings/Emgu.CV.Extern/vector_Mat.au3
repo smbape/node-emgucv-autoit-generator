@@ -15,7 +15,7 @@ Func _VectorOfMatGetSize($v)
     ; CVAPI(int) VectorOfMatGetSize(std::vector<cv::Mat>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfMatCreate()
@@ -48,7 +48,7 @@ Func _VectorOfMatPush($v, $value)
     ; CVAPI(void) VectorOfMatPush(std::vector<cv::Mat>* v, cv::Mat* value);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfMatCreate()
@@ -86,7 +86,7 @@ Func _VectorOfMatPushVector($v, $other)
     ; CVAPI(void) VectorOfMatPushVector(std::vector<cv::Mat>* v, std::vector<cv::Mat>* other);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfMatCreate()
@@ -107,7 +107,7 @@ Func _VectorOfMatPushVector($v, $other)
     EndIf
 
     Local $vecOther, $iArrOtherSize
-    Local $bOtherIsArray = VarGetType($other) == "Array"
+    Local $bOtherIsArray = IsArray($other)
 
     If $bOtherIsArray Then
         $vecOther = _VectorOfMatCreate()
@@ -142,7 +142,7 @@ Func _VectorOfMatGetStartAddress($v)
     ; CVAPI(cv::Mat*) VectorOfMatGetStartAddress(std::vector<cv::Mat>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfMatCreate()
@@ -175,7 +175,7 @@ Func _VectorOfMatGetEndAddress($v)
     ; CVAPI(void*) VectorOfMatGetEndAddress(std::vector<cv::Mat>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfMatCreate()
@@ -208,7 +208,7 @@ Func _VectorOfMatClear($v)
     ; CVAPI(void) VectorOfMatClear(std::vector<cv::Mat>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfMatCreate()
@@ -239,7 +239,7 @@ Func _VectorOfMatRelease($v)
     ; CVAPI(void) VectorOfMatRelease(std::vector<cv::Mat>** v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfMatCreate()
@@ -272,7 +272,7 @@ Func _VectorOfMatCopyData($v, $data)
     ; CVAPI(void) VectorOfMatCopyData(std::vector<cv::Mat>* v, cv::Mat* data);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfMatCreate()
@@ -310,7 +310,7 @@ Func _VectorOfMatGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfMatGetItemPtr(std::vector<cv::Mat>* vec, int index, cv::Mat** element);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfMatCreate()
@@ -350,7 +350,7 @@ Func _cveInputArrayFromVectorOfMat($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfMat(std::vector<cv::Mat>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfMatCreate()
@@ -383,7 +383,7 @@ Func _cveOutputArrayFromVectorOfMat($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfMat(std::vector<cv::Mat>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfMatCreate()
@@ -416,7 +416,7 @@ Func _cveInputOutputArrayFromVectorOfMat($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfMat(std::vector<cv::Mat>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfMatCreate()

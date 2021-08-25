@@ -16,7 +16,7 @@ Func _cveDnnSuperResImplSetModel($dnnSuperRes, $algo, $scale)
         $sDnnSuperResDllType = "ptr"
     EndIf
 
-    Local $bAlgoIsString = VarGetType($algo) == "String"
+    Local $bAlgoIsString = IsString($algo)
     If $bAlgoIsString Then
         $algo = _cveStringCreateFromStr($algo)
     EndIf
@@ -45,7 +45,7 @@ Func _cveDnnSuperResImplReadModel1($dnnSuperRes, $path)
         $sDnnSuperResDllType = "ptr"
     EndIf
 
-    Local $bPathIsString = VarGetType($path) == "String"
+    Local $bPathIsString = IsString($path)
     If $bPathIsString Then
         $path = _cveStringCreateFromStr($path)
     EndIf
@@ -74,7 +74,7 @@ Func _cveDnnSuperResImplReadModel2($dnnSuperRes, $weights, $definition)
         $sDnnSuperResDllType = "ptr"
     EndIf
 
-    Local $bWeightsIsString = VarGetType($weights) == "String"
+    Local $bWeightsIsString = IsString($weights)
     If $bWeightsIsString Then
         $weights = _cveStringCreateFromStr($weights)
     EndIf
@@ -86,7 +86,7 @@ Func _cveDnnSuperResImplReadModel2($dnnSuperRes, $weights, $definition)
         $sWeightsDllType = "ptr"
     EndIf
 
-    Local $bDefinitionIsString = VarGetType($definition) == "String"
+    Local $bDefinitionIsString = IsString($definition)
     If $bDefinitionIsString Then
         $definition = _cveStringCreateFromStr($definition)
     EndIf
@@ -136,54 +136,80 @@ Func _cveDnnSuperResImplUpsample($dnnSuperRes, $img, $result)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnSuperResImplUpsample", $sDnnSuperResDllType, $dnnSuperRes, $sImgDllType, $img, $sResultDllType, $result), "cveDnnSuperResImplUpsample", @error)
 EndFunc   ;==>_cveDnnSuperResImplUpsample
 
-Func _cveDnnSuperResImplUpsampleMat($dnnSuperRes, $matImg, $matResult)
-    ; cveDnnSuperResImplUpsample using cv::Mat instead of _*Array
+Func _cveDnnSuperResImplUpsampleTyped($dnnSuperRes, $typeOfImg, $img, $typeOfResult, $result)
 
-    Local $iArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $iArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $iArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $iArrImg = _cveInputArrayFromVectorOfMat($vectorOfMatImg)
+        $iArrImg = Call("_cveInputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $iArrImg = _cveInputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $iArrImg = Call("_cveInputArrayFrom" & $typeOfImg, $img)
     EndIf
 
-    Local $oArrResult, $vectorOfMatResult, $iArrResultSize
-    Local $bResultIsArray = VarGetType($matResult) == "Array"
+    Local $oArrResult, $vectorResult, $iArrResultSize
+    Local $bResultIsArray = IsArray($result)
+    Local $bResultCreate = IsDllStruct($result) And $typeOfResult == "Scalar"
 
-    If $bResultIsArray Then
-        $vectorOfMatResult = _VectorOfMatCreate()
+    If $typeOfResult == Default Then
+        $oArrResult = $result
+    ElseIf $bResultIsArray Then
+        $vectorResult = Call("_VectorOf" & $typeOfResult & "Create")
 
-        $iArrResultSize = UBound($matResult)
+        $iArrResultSize = UBound($result)
         For $i = 0 To $iArrResultSize - 1
-            _VectorOfMatPush($vectorOfMatResult, $matResult[$i])
+            Call("_VectorOf" & $typeOfResult & "Push", $vectorResult, $result[$i])
         Next
 
-        $oArrResult = _cveOutputArrayFromVectorOfMat($vectorOfMatResult)
+        $oArrResult = Call("_cveOutputArrayFromVectorOf" & $typeOfResult, $vectorResult)
     Else
-        $oArrResult = _cveOutputArrayFromMat($matResult)
+        If $bResultCreate Then
+            $result = Call("_cve" & $typeOfResult & "Create", $result)
+        EndIf
+        $oArrResult = Call("_cveOutputArrayFrom" & $typeOfResult, $result)
     EndIf
 
     _cveDnnSuperResImplUpsample($dnnSuperRes, $iArrImg, $oArrResult)
 
     If $bResultIsArray Then
-        _VectorOfMatRelease($vectorOfMatResult)
+        Call("_VectorOf" & $typeOfResult & "Release", $vectorResult)
     EndIf
 
-    _cveOutputArrayRelease($oArrResult)
+    If $typeOfResult <> Default Then
+        _cveOutputArrayRelease($oArrResult)
+        If $bResultCreate Then
+            Call("_cve" & $typeOfResult & "Release", $result)
+        EndIf
+    EndIf
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveInputArrayRelease($iArrImg)
+    If $typeOfImg <> Default Then
+        _cveInputArrayRelease($iArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDnnSuperResImplUpsampleTyped
+
+Func _cveDnnSuperResImplUpsampleMat($dnnSuperRes, $img, $result)
+    ; cveDnnSuperResImplUpsample using cv::Mat instead of _*Array
+    _cveDnnSuperResImplUpsampleTyped($dnnSuperRes, "Mat", $img, "Mat", $result)
 EndFunc   ;==>_cveDnnSuperResImplUpsampleMat
 
 Func _cveDnnSuperResImplGetScale($dnnSuperRes)
@@ -208,7 +234,7 @@ Func _cveDnnSuperResImplGetAlgorithm($dnnSuperRes, $algorithm)
         $sDnnSuperResDllType = "ptr"
     EndIf
 
-    Local $bAlgorithmIsString = VarGetType($algorithm) == "String"
+    Local $bAlgorithmIsString = IsString($algorithm)
     If $bAlgorithmIsString Then
         $algorithm = _cveStringCreateFromStr($algorithm)
     EndIf

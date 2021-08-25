@@ -11,7 +11,7 @@ Func _cveFacemarkAAMParamsGetModelFile($obj, $str)
         $sObjDllType = "ptr"
     EndIf
 
-    Local $bStrIsString = VarGetType($str) == "String"
+    Local $bStrIsString = IsString($str)
     If $bStrIsString Then
         $str = _cveStringCreateFromStr($str)
     EndIf
@@ -40,7 +40,7 @@ Func _cveFacemarkAAMParamsSetModelFile($obj, $str)
         $sObjDllType = "ptr"
     EndIf
 
-    Local $bStrIsString = VarGetType($str) == "String"
+    Local $bStrIsString = IsString($str)
     If $bStrIsString Then
         $str = _cveStringCreateFromStr($str)
     EndIf

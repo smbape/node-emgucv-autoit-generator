@@ -15,7 +15,7 @@ Func _VectorOfGpuMatGetSize($v)
     ; CVAPI(int) VectorOfGpuMatGetSize(std::vector<cv::cuda::GpuMat>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfGpuMatCreate()
@@ -48,7 +48,7 @@ Func _VectorOfGpuMatPush($v, $value)
     ; CVAPI(void) VectorOfGpuMatPush(std::vector<cv::cuda::GpuMat>* v, cv::cuda::GpuMat* value);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfGpuMatCreate()
@@ -86,7 +86,7 @@ Func _VectorOfGpuMatPushVector($v, $other)
     ; CVAPI(void) VectorOfGpuMatPushVector(std::vector<cv::cuda::GpuMat>* v, std::vector<cv::cuda::GpuMat>* other);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfGpuMatCreate()
@@ -107,7 +107,7 @@ Func _VectorOfGpuMatPushVector($v, $other)
     EndIf
 
     Local $vecOther, $iArrOtherSize
-    Local $bOtherIsArray = VarGetType($other) == "Array"
+    Local $bOtherIsArray = IsArray($other)
 
     If $bOtherIsArray Then
         $vecOther = _VectorOfGpuMatCreate()
@@ -142,7 +142,7 @@ Func _VectorOfGpuMatGetStartAddress($v)
     ; CVAPI(cv::cuda::GpuMat*) VectorOfGpuMatGetStartAddress(std::vector<cv::cuda::GpuMat>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfGpuMatCreate()
@@ -175,7 +175,7 @@ Func _VectorOfGpuMatGetEndAddress($v)
     ; CVAPI(void*) VectorOfGpuMatGetEndAddress(std::vector<cv::cuda::GpuMat>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfGpuMatCreate()
@@ -208,7 +208,7 @@ Func _VectorOfGpuMatClear($v)
     ; CVAPI(void) VectorOfGpuMatClear(std::vector<cv::cuda::GpuMat>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfGpuMatCreate()
@@ -239,7 +239,7 @@ Func _VectorOfGpuMatRelease($v)
     ; CVAPI(void) VectorOfGpuMatRelease(std::vector<cv::cuda::GpuMat>** v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfGpuMatCreate()
@@ -272,7 +272,7 @@ Func _VectorOfGpuMatCopyData($v, $data)
     ; CVAPI(void) VectorOfGpuMatCopyData(std::vector<cv::cuda::GpuMat>* v, cv::cuda::GpuMat* data);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfGpuMatCreate()
@@ -310,7 +310,7 @@ Func _VectorOfGpuMatGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfGpuMatGetItemPtr(std::vector<cv::cuda::GpuMat>* vec, int index, cv::cuda::GpuMat** element);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfGpuMatCreate()
@@ -350,7 +350,7 @@ Func _cveInputArrayFromVectorOfGpuMat($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfGpuMat(std::vector<cv::cuda::GpuMat>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfGpuMatCreate()
@@ -383,7 +383,7 @@ Func _cveOutputArrayFromVectorOfGpuMat($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfGpuMat(std::vector<cv::cuda::GpuMat>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfGpuMatCreate()
@@ -416,7 +416,7 @@ Func _cveInputOutputArrayFromVectorOfGpuMat($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfGpuMat(std::vector<cv::cuda::GpuMat>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfGpuMatCreate()

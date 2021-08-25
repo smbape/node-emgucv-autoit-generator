@@ -194,7 +194,7 @@ Func _cveMserDetectRegions($mserPtr, $image, $msers, $bboxes)
     EndIf
 
     Local $vecMsers, $iArrMsersSize
-    Local $bMsersIsArray = VarGetType($msers) == "Array"
+    Local $bMsersIsArray = IsArray($msers)
 
     If $bMsersIsArray Then
         $vecMsers = _VectorOfVectorOfPointCreate()
@@ -215,7 +215,7 @@ Func _cveMserDetectRegions($mserPtr, $image, $msers, $bboxes)
     EndIf
 
     Local $vecBboxes, $iArrBboxesSize
-    Local $bBboxesIsArray = VarGetType($bboxes) == "Array"
+    Local $bBboxesIsArray = IsArray($bboxes)
 
     If $bBboxesIsArray Then
         $vecBboxes = _VectorOfRectCreate()
@@ -246,32 +246,47 @@ Func _cveMserDetectRegions($mserPtr, $image, $msers, $bboxes)
     EndIf
 EndFunc   ;==>_cveMserDetectRegions
 
-Func _cveMserDetectRegionsMat($mserPtr, $matImage, $msers, $bboxes)
-    ; cveMserDetectRegions using cv::Mat instead of _*Array
+Func _cveMserDetectRegionsTyped($mserPtr, $typeOfImage, $image, $msers, $bboxes)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
     _cveMserDetectRegions($mserPtr, $iArrImage, $msers, $bboxes)
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveMserDetectRegionsTyped
+
+Func _cveMserDetectRegionsMat($mserPtr, $image, $msers, $bboxes)
+    ; cveMserDetectRegions using cv::Mat instead of _*Array
+    _cveMserDetectRegionsTyped($mserPtr, "Mat", $image, $msers, $bboxes)
 EndFunc   ;==>_cveMserDetectRegionsMat
 
 Func _cveMserRelease($sharedPtr)
@@ -388,7 +403,7 @@ Func _drawKeypoints($image, $keypoints, $outImage, $color = _cvScalarAll(-1), $f
     EndIf
 
     Local $vecKeypoints, $iArrKeypointsSize
-    Local $bKeypointsIsArray = VarGetType($keypoints) == "Array"
+    Local $bKeypointsIsArray = IsArray($keypoints)
 
     If $bKeypointsIsArray Then
         $vecKeypoints = _VectorOfKeyPointCreate()
@@ -429,54 +444,80 @@ Func _drawKeypoints($image, $keypoints, $outImage, $color = _cvScalarAll(-1), $f
     EndIf
 EndFunc   ;==>_drawKeypoints
 
-Func _drawKeypointsMat($matImage, $keypoints, $matOutImage, $color = _cvScalarAll(-1), $flags = $CV_DRAW_MATCHES_FLAGS_DEFAULT)
-    ; drawKeypoints using cv::Mat instead of _*Array
+Func _drawKeypointsTyped($typeOfImage, $image, $keypoints, $typeOfOutImage, $outImage, $color = _cvScalarAll(-1), $flags = $CV_DRAW_MATCHES_FLAGS_DEFAULT)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $ioArrOutImage, $vectorOfMatOutImage, $iArrOutImageSize
-    Local $bOutImageIsArray = VarGetType($matOutImage) == "Array"
+    Local $ioArrOutImage, $vectorOutImage, $iArrOutImageSize
+    Local $bOutImageIsArray = IsArray($outImage)
+    Local $bOutImageCreate = IsDllStruct($outImage) And $typeOfOutImage == "Scalar"
 
-    If $bOutImageIsArray Then
-        $vectorOfMatOutImage = _VectorOfMatCreate()
+    If $typeOfOutImage == Default Then
+        $ioArrOutImage = $outImage
+    ElseIf $bOutImageIsArray Then
+        $vectorOutImage = Call("_VectorOf" & $typeOfOutImage & "Create")
 
-        $iArrOutImageSize = UBound($matOutImage)
+        $iArrOutImageSize = UBound($outImage)
         For $i = 0 To $iArrOutImageSize - 1
-            _VectorOfMatPush($vectorOfMatOutImage, $matOutImage[$i])
+            Call("_VectorOf" & $typeOfOutImage & "Push", $vectorOutImage, $outImage[$i])
         Next
 
-        $ioArrOutImage = _cveInputOutputArrayFromVectorOfMat($vectorOfMatOutImage)
+        $ioArrOutImage = Call("_cveInputOutputArrayFromVectorOf" & $typeOfOutImage, $vectorOutImage)
     Else
-        $ioArrOutImage = _cveInputOutputArrayFromMat($matOutImage)
+        If $bOutImageCreate Then
+            $outImage = Call("_cve" & $typeOfOutImage & "Create", $outImage)
+        EndIf
+        $ioArrOutImage = Call("_cveInputOutputArrayFrom" & $typeOfOutImage, $outImage)
     EndIf
 
     _drawKeypoints($iArrImage, $keypoints, $ioArrOutImage, $color, $flags)
 
     If $bOutImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatOutImage)
+        Call("_VectorOf" & $typeOfOutImage & "Release", $vectorOutImage)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrOutImage)
+    If $typeOfOutImage <> Default Then
+        _cveInputOutputArrayRelease($ioArrOutImage)
+        If $bOutImageCreate Then
+            Call("_cve" & $typeOfOutImage & "Release", $outImage)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_drawKeypointsTyped
+
+Func _drawKeypointsMat($image, $keypoints, $outImage, $color = _cvScalarAll(-1), $flags = $CV_DRAW_MATCHES_FLAGS_DEFAULT)
+    ; drawKeypoints using cv::Mat instead of _*Array
+    _drawKeypointsTyped("Mat", $image, $keypoints, "Mat", $outImage, $color, $flags)
 EndFunc   ;==>_drawKeypointsMat
 
 Func _drawMatchedFeatures1($img1, $keypoints1, $img2, $keypoints2, $matches, $outImg, $matchColor, $singlePointColor, $matchesMask, $flags)
@@ -490,7 +531,7 @@ Func _drawMatchedFeatures1($img1, $keypoints1, $img2, $keypoints2, $matches, $ou
     EndIf
 
     Local $vecKeypoints1, $iArrKeypoints1Size
-    Local $bKeypoints1IsArray = VarGetType($keypoints1) == "Array"
+    Local $bKeypoints1IsArray = IsArray($keypoints1)
 
     If $bKeypoints1IsArray Then
         $vecKeypoints1 = _VectorOfKeyPointCreate()
@@ -518,7 +559,7 @@ Func _drawMatchedFeatures1($img1, $keypoints1, $img2, $keypoints2, $matches, $ou
     EndIf
 
     Local $vecKeypoints2, $iArrKeypoints2Size
-    Local $bKeypoints2IsArray = VarGetType($keypoints2) == "Array"
+    Local $bKeypoints2IsArray = IsArray($keypoints2)
 
     If $bKeypoints2IsArray Then
         $vecKeypoints2 = _VectorOfKeyPointCreate()
@@ -539,7 +580,7 @@ Func _drawMatchedFeatures1($img1, $keypoints1, $img2, $keypoints2, $matches, $ou
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfDMatchCreate()
@@ -581,7 +622,7 @@ Func _drawMatchedFeatures1($img1, $keypoints1, $img2, $keypoints2, $matches, $ou
     EndIf
 
     Local $vecMatchesMask, $iArrMatchesMaskSize
-    Local $bMatchesMaskIsArray = VarGetType($matchesMask) == "Array"
+    Local $bMatchesMaskIsArray = IsArray($matchesMask)
 
     If $bMatchesMaskIsArray Then
         $vecMatchesMask = _VectorOfByteCreate()
@@ -620,76 +661,113 @@ Func _drawMatchedFeatures1($img1, $keypoints1, $img2, $keypoints2, $matches, $ou
     EndIf
 EndFunc   ;==>_drawMatchedFeatures1
 
-Func _drawMatchedFeatures1Mat($matImg1, $keypoints1, $matImg2, $keypoints2, $matches, $matOutImg, $matchColor, $singlePointColor, $matchesMask, $flags)
-    ; drawMatchedFeatures1 using cv::Mat instead of _*Array
+Func _drawMatchedFeatures1Typed($typeOfImg1, $img1, $keypoints1, $typeOfImg2, $img2, $keypoints2, $matches, $typeOfOutImg, $outImg, $matchColor, $singlePointColor, $matchesMask, $flags)
 
-    Local $iArrImg1, $vectorOfMatImg1, $iArrImg1Size
-    Local $bImg1IsArray = VarGetType($matImg1) == "Array"
+    Local $iArrImg1, $vectorImg1, $iArrImg1Size
+    Local $bImg1IsArray = IsArray($img1)
+    Local $bImg1Create = IsDllStruct($img1) And $typeOfImg1 == "Scalar"
 
-    If $bImg1IsArray Then
-        $vectorOfMatImg1 = _VectorOfMatCreate()
+    If $typeOfImg1 == Default Then
+        $iArrImg1 = $img1
+    ElseIf $bImg1IsArray Then
+        $vectorImg1 = Call("_VectorOf" & $typeOfImg1 & "Create")
 
-        $iArrImg1Size = UBound($matImg1)
+        $iArrImg1Size = UBound($img1)
         For $i = 0 To $iArrImg1Size - 1
-            _VectorOfMatPush($vectorOfMatImg1, $matImg1[$i])
+            Call("_VectorOf" & $typeOfImg1 & "Push", $vectorImg1, $img1[$i])
         Next
 
-        $iArrImg1 = _cveInputArrayFromVectorOfMat($vectorOfMatImg1)
+        $iArrImg1 = Call("_cveInputArrayFromVectorOf" & $typeOfImg1, $vectorImg1)
     Else
-        $iArrImg1 = _cveInputArrayFromMat($matImg1)
+        If $bImg1Create Then
+            $img1 = Call("_cve" & $typeOfImg1 & "Create", $img1)
+        EndIf
+        $iArrImg1 = Call("_cveInputArrayFrom" & $typeOfImg1, $img1)
     EndIf
 
-    Local $iArrImg2, $vectorOfMatImg2, $iArrImg2Size
-    Local $bImg2IsArray = VarGetType($matImg2) == "Array"
+    Local $iArrImg2, $vectorImg2, $iArrImg2Size
+    Local $bImg2IsArray = IsArray($img2)
+    Local $bImg2Create = IsDllStruct($img2) And $typeOfImg2 == "Scalar"
 
-    If $bImg2IsArray Then
-        $vectorOfMatImg2 = _VectorOfMatCreate()
+    If $typeOfImg2 == Default Then
+        $iArrImg2 = $img2
+    ElseIf $bImg2IsArray Then
+        $vectorImg2 = Call("_VectorOf" & $typeOfImg2 & "Create")
 
-        $iArrImg2Size = UBound($matImg2)
+        $iArrImg2Size = UBound($img2)
         For $i = 0 To $iArrImg2Size - 1
-            _VectorOfMatPush($vectorOfMatImg2, $matImg2[$i])
+            Call("_VectorOf" & $typeOfImg2 & "Push", $vectorImg2, $img2[$i])
         Next
 
-        $iArrImg2 = _cveInputArrayFromVectorOfMat($vectorOfMatImg2)
+        $iArrImg2 = Call("_cveInputArrayFromVectorOf" & $typeOfImg2, $vectorImg2)
     Else
-        $iArrImg2 = _cveInputArrayFromMat($matImg2)
+        If $bImg2Create Then
+            $img2 = Call("_cve" & $typeOfImg2 & "Create", $img2)
+        EndIf
+        $iArrImg2 = Call("_cveInputArrayFrom" & $typeOfImg2, $img2)
     EndIf
 
-    Local $ioArrOutImg, $vectorOfMatOutImg, $iArrOutImgSize
-    Local $bOutImgIsArray = VarGetType($matOutImg) == "Array"
+    Local $ioArrOutImg, $vectorOutImg, $iArrOutImgSize
+    Local $bOutImgIsArray = IsArray($outImg)
+    Local $bOutImgCreate = IsDllStruct($outImg) And $typeOfOutImg == "Scalar"
 
-    If $bOutImgIsArray Then
-        $vectorOfMatOutImg = _VectorOfMatCreate()
+    If $typeOfOutImg == Default Then
+        $ioArrOutImg = $outImg
+    ElseIf $bOutImgIsArray Then
+        $vectorOutImg = Call("_VectorOf" & $typeOfOutImg & "Create")
 
-        $iArrOutImgSize = UBound($matOutImg)
+        $iArrOutImgSize = UBound($outImg)
         For $i = 0 To $iArrOutImgSize - 1
-            _VectorOfMatPush($vectorOfMatOutImg, $matOutImg[$i])
+            Call("_VectorOf" & $typeOfOutImg & "Push", $vectorOutImg, $outImg[$i])
         Next
 
-        $ioArrOutImg = _cveInputOutputArrayFromVectorOfMat($vectorOfMatOutImg)
+        $ioArrOutImg = Call("_cveInputOutputArrayFromVectorOf" & $typeOfOutImg, $vectorOutImg)
     Else
-        $ioArrOutImg = _cveInputOutputArrayFromMat($matOutImg)
+        If $bOutImgCreate Then
+            $outImg = Call("_cve" & $typeOfOutImg & "Create", $outImg)
+        EndIf
+        $ioArrOutImg = Call("_cveInputOutputArrayFrom" & $typeOfOutImg, $outImg)
     EndIf
 
     _drawMatchedFeatures1($iArrImg1, $keypoints1, $iArrImg2, $keypoints2, $matches, $ioArrOutImg, $matchColor, $singlePointColor, $matchesMask, $flags)
 
     If $bOutImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatOutImg)
+        Call("_VectorOf" & $typeOfOutImg & "Release", $vectorOutImg)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrOutImg)
+    If $typeOfOutImg <> Default Then
+        _cveInputOutputArrayRelease($ioArrOutImg)
+        If $bOutImgCreate Then
+            Call("_cve" & $typeOfOutImg & "Release", $outImg)
+        EndIf
+    EndIf
 
     If $bImg2IsArray Then
-        _VectorOfMatRelease($vectorOfMatImg2)
+        Call("_VectorOf" & $typeOfImg2 & "Release", $vectorImg2)
     EndIf
 
-    _cveInputArrayRelease($iArrImg2)
+    If $typeOfImg2 <> Default Then
+        _cveInputArrayRelease($iArrImg2)
+        If $bImg2Create Then
+            Call("_cve" & $typeOfImg2 & "Release", $img2)
+        EndIf
+    EndIf
 
     If $bImg1IsArray Then
-        _VectorOfMatRelease($vectorOfMatImg1)
+        Call("_VectorOf" & $typeOfImg1 & "Release", $vectorImg1)
     EndIf
 
-    _cveInputArrayRelease($iArrImg1)
+    If $typeOfImg1 <> Default Then
+        _cveInputArrayRelease($iArrImg1)
+        If $bImg1Create Then
+            Call("_cve" & $typeOfImg1 & "Release", $img1)
+        EndIf
+    EndIf
+EndFunc   ;==>_drawMatchedFeatures1Typed
+
+Func _drawMatchedFeatures1Mat($img1, $keypoints1, $img2, $keypoints2, $matches, $outImg, $matchColor, $singlePointColor, $matchesMask, $flags)
+    ; drawMatchedFeatures1 using cv::Mat instead of _*Array
+    _drawMatchedFeatures1Typed("Mat", $img1, $keypoints1, "Mat", $img2, $keypoints2, $matches, "Mat", $outImg, $matchColor, $singlePointColor, $matchesMask, $flags)
 EndFunc   ;==>_drawMatchedFeatures1Mat
 
 Func _drawMatchedFeatures2($img1, $keypoints1, $img2, $keypoints2, $matches, $outImg, $matchColor, $singlePointColor, $matchesMask, $flags)
@@ -703,7 +781,7 @@ Func _drawMatchedFeatures2($img1, $keypoints1, $img2, $keypoints2, $matches, $ou
     EndIf
 
     Local $vecKeypoints1, $iArrKeypoints1Size
-    Local $bKeypoints1IsArray = VarGetType($keypoints1) == "Array"
+    Local $bKeypoints1IsArray = IsArray($keypoints1)
 
     If $bKeypoints1IsArray Then
         $vecKeypoints1 = _VectorOfKeyPointCreate()
@@ -731,7 +809,7 @@ Func _drawMatchedFeatures2($img1, $keypoints1, $img2, $keypoints2, $matches, $ou
     EndIf
 
     Local $vecKeypoints2, $iArrKeypoints2Size
-    Local $bKeypoints2IsArray = VarGetType($keypoints2) == "Array"
+    Local $bKeypoints2IsArray = IsArray($keypoints2)
 
     If $bKeypoints2IsArray Then
         $vecKeypoints2 = _VectorOfKeyPointCreate()
@@ -752,7 +830,7 @@ Func _drawMatchedFeatures2($img1, $keypoints1, $img2, $keypoints2, $matches, $ou
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfVectorOfDMatchCreate()
@@ -794,7 +872,7 @@ Func _drawMatchedFeatures2($img1, $keypoints1, $img2, $keypoints2, $matches, $ou
     EndIf
 
     Local $vecMatchesMask, $iArrMatchesMaskSize
-    Local $bMatchesMaskIsArray = VarGetType($matchesMask) == "Array"
+    Local $bMatchesMaskIsArray = IsArray($matchesMask)
 
     If $bMatchesMaskIsArray Then
         $vecMatchesMask = _VectorOfVectorOfByteCreate()
@@ -833,76 +911,113 @@ Func _drawMatchedFeatures2($img1, $keypoints1, $img2, $keypoints2, $matches, $ou
     EndIf
 EndFunc   ;==>_drawMatchedFeatures2
 
-Func _drawMatchedFeatures2Mat($matImg1, $keypoints1, $matImg2, $keypoints2, $matches, $matOutImg, $matchColor, $singlePointColor, $matchesMask, $flags)
-    ; drawMatchedFeatures2 using cv::Mat instead of _*Array
+Func _drawMatchedFeatures2Typed($typeOfImg1, $img1, $keypoints1, $typeOfImg2, $img2, $keypoints2, $matches, $typeOfOutImg, $outImg, $matchColor, $singlePointColor, $matchesMask, $flags)
 
-    Local $iArrImg1, $vectorOfMatImg1, $iArrImg1Size
-    Local $bImg1IsArray = VarGetType($matImg1) == "Array"
+    Local $iArrImg1, $vectorImg1, $iArrImg1Size
+    Local $bImg1IsArray = IsArray($img1)
+    Local $bImg1Create = IsDllStruct($img1) And $typeOfImg1 == "Scalar"
 
-    If $bImg1IsArray Then
-        $vectorOfMatImg1 = _VectorOfMatCreate()
+    If $typeOfImg1 == Default Then
+        $iArrImg1 = $img1
+    ElseIf $bImg1IsArray Then
+        $vectorImg1 = Call("_VectorOf" & $typeOfImg1 & "Create")
 
-        $iArrImg1Size = UBound($matImg1)
+        $iArrImg1Size = UBound($img1)
         For $i = 0 To $iArrImg1Size - 1
-            _VectorOfMatPush($vectorOfMatImg1, $matImg1[$i])
+            Call("_VectorOf" & $typeOfImg1 & "Push", $vectorImg1, $img1[$i])
         Next
 
-        $iArrImg1 = _cveInputArrayFromVectorOfMat($vectorOfMatImg1)
+        $iArrImg1 = Call("_cveInputArrayFromVectorOf" & $typeOfImg1, $vectorImg1)
     Else
-        $iArrImg1 = _cveInputArrayFromMat($matImg1)
+        If $bImg1Create Then
+            $img1 = Call("_cve" & $typeOfImg1 & "Create", $img1)
+        EndIf
+        $iArrImg1 = Call("_cveInputArrayFrom" & $typeOfImg1, $img1)
     EndIf
 
-    Local $iArrImg2, $vectorOfMatImg2, $iArrImg2Size
-    Local $bImg2IsArray = VarGetType($matImg2) == "Array"
+    Local $iArrImg2, $vectorImg2, $iArrImg2Size
+    Local $bImg2IsArray = IsArray($img2)
+    Local $bImg2Create = IsDllStruct($img2) And $typeOfImg2 == "Scalar"
 
-    If $bImg2IsArray Then
-        $vectorOfMatImg2 = _VectorOfMatCreate()
+    If $typeOfImg2 == Default Then
+        $iArrImg2 = $img2
+    ElseIf $bImg2IsArray Then
+        $vectorImg2 = Call("_VectorOf" & $typeOfImg2 & "Create")
 
-        $iArrImg2Size = UBound($matImg2)
+        $iArrImg2Size = UBound($img2)
         For $i = 0 To $iArrImg2Size - 1
-            _VectorOfMatPush($vectorOfMatImg2, $matImg2[$i])
+            Call("_VectorOf" & $typeOfImg2 & "Push", $vectorImg2, $img2[$i])
         Next
 
-        $iArrImg2 = _cveInputArrayFromVectorOfMat($vectorOfMatImg2)
+        $iArrImg2 = Call("_cveInputArrayFromVectorOf" & $typeOfImg2, $vectorImg2)
     Else
-        $iArrImg2 = _cveInputArrayFromMat($matImg2)
+        If $bImg2Create Then
+            $img2 = Call("_cve" & $typeOfImg2 & "Create", $img2)
+        EndIf
+        $iArrImg2 = Call("_cveInputArrayFrom" & $typeOfImg2, $img2)
     EndIf
 
-    Local $ioArrOutImg, $vectorOfMatOutImg, $iArrOutImgSize
-    Local $bOutImgIsArray = VarGetType($matOutImg) == "Array"
+    Local $ioArrOutImg, $vectorOutImg, $iArrOutImgSize
+    Local $bOutImgIsArray = IsArray($outImg)
+    Local $bOutImgCreate = IsDllStruct($outImg) And $typeOfOutImg == "Scalar"
 
-    If $bOutImgIsArray Then
-        $vectorOfMatOutImg = _VectorOfMatCreate()
+    If $typeOfOutImg == Default Then
+        $ioArrOutImg = $outImg
+    ElseIf $bOutImgIsArray Then
+        $vectorOutImg = Call("_VectorOf" & $typeOfOutImg & "Create")
 
-        $iArrOutImgSize = UBound($matOutImg)
+        $iArrOutImgSize = UBound($outImg)
         For $i = 0 To $iArrOutImgSize - 1
-            _VectorOfMatPush($vectorOfMatOutImg, $matOutImg[$i])
+            Call("_VectorOf" & $typeOfOutImg & "Push", $vectorOutImg, $outImg[$i])
         Next
 
-        $ioArrOutImg = _cveInputOutputArrayFromVectorOfMat($vectorOfMatOutImg)
+        $ioArrOutImg = Call("_cveInputOutputArrayFromVectorOf" & $typeOfOutImg, $vectorOutImg)
     Else
-        $ioArrOutImg = _cveInputOutputArrayFromMat($matOutImg)
+        If $bOutImgCreate Then
+            $outImg = Call("_cve" & $typeOfOutImg & "Create", $outImg)
+        EndIf
+        $ioArrOutImg = Call("_cveInputOutputArrayFrom" & $typeOfOutImg, $outImg)
     EndIf
 
     _drawMatchedFeatures2($iArrImg1, $keypoints1, $iArrImg2, $keypoints2, $matches, $ioArrOutImg, $matchColor, $singlePointColor, $matchesMask, $flags)
 
     If $bOutImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatOutImg)
+        Call("_VectorOf" & $typeOfOutImg & "Release", $vectorOutImg)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrOutImg)
+    If $typeOfOutImg <> Default Then
+        _cveInputOutputArrayRelease($ioArrOutImg)
+        If $bOutImgCreate Then
+            Call("_cve" & $typeOfOutImg & "Release", $outImg)
+        EndIf
+    EndIf
 
     If $bImg2IsArray Then
-        _VectorOfMatRelease($vectorOfMatImg2)
+        Call("_VectorOf" & $typeOfImg2 & "Release", $vectorImg2)
     EndIf
 
-    _cveInputArrayRelease($iArrImg2)
+    If $typeOfImg2 <> Default Then
+        _cveInputArrayRelease($iArrImg2)
+        If $bImg2Create Then
+            Call("_cve" & $typeOfImg2 & "Release", $img2)
+        EndIf
+    EndIf
 
     If $bImg1IsArray Then
-        _VectorOfMatRelease($vectorOfMatImg1)
+        Call("_VectorOf" & $typeOfImg1 & "Release", $vectorImg1)
     EndIf
 
-    _cveInputArrayRelease($iArrImg1)
+    If $typeOfImg1 <> Default Then
+        _cveInputArrayRelease($iArrImg1)
+        If $bImg1Create Then
+            Call("_cve" & $typeOfImg1 & "Release", $img1)
+        EndIf
+    EndIf
+EndFunc   ;==>_drawMatchedFeatures2Typed
+
+Func _drawMatchedFeatures2Mat($img1, $keypoints1, $img2, $keypoints2, $matches, $outImg, $matchColor, $singlePointColor, $matchesMask, $flags)
+    ; drawMatchedFeatures2 using cv::Mat instead of _*Array
+    _drawMatchedFeatures2Typed("Mat", $img1, $keypoints1, "Mat", $img2, $keypoints2, $matches, "Mat", $outImg, $matchColor, $singlePointColor, $matchesMask, $flags)
 EndFunc   ;==>_drawMatchedFeatures2Mat
 
 Func _drawMatchedFeatures3($img1, $keypoints1, $img2, $keypoints2, $matches, $outImg, $matchColor, $singlePointColor, $matchesMask, $flags)
@@ -916,7 +1031,7 @@ Func _drawMatchedFeatures3($img1, $keypoints1, $img2, $keypoints2, $matches, $ou
     EndIf
 
     Local $vecKeypoints1, $iArrKeypoints1Size
-    Local $bKeypoints1IsArray = VarGetType($keypoints1) == "Array"
+    Local $bKeypoints1IsArray = IsArray($keypoints1)
 
     If $bKeypoints1IsArray Then
         $vecKeypoints1 = _VectorOfKeyPointCreate()
@@ -944,7 +1059,7 @@ Func _drawMatchedFeatures3($img1, $keypoints1, $img2, $keypoints2, $matches, $ou
     EndIf
 
     Local $vecKeypoints2, $iArrKeypoints2Size
-    Local $bKeypoints2IsArray = VarGetType($keypoints2) == "Array"
+    Local $bKeypoints2IsArray = IsArray($keypoints2)
 
     If $bKeypoints2IsArray Then
         $vecKeypoints2 = _VectorOfKeyPointCreate()
@@ -965,7 +1080,7 @@ Func _drawMatchedFeatures3($img1, $keypoints1, $img2, $keypoints2, $matches, $ou
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfVectorOfDMatchCreate()
@@ -1028,98 +1143,146 @@ Func _drawMatchedFeatures3($img1, $keypoints1, $img2, $keypoints2, $matches, $ou
     EndIf
 EndFunc   ;==>_drawMatchedFeatures3
 
-Func _drawMatchedFeatures3Mat($matImg1, $keypoints1, $matImg2, $keypoints2, $matches, $matOutImg, $matchColor, $singlePointColor, $matMatchesMask, $flags)
-    ; drawMatchedFeatures3 using cv::Mat instead of _*Array
+Func _drawMatchedFeatures3Typed($typeOfImg1, $img1, $keypoints1, $typeOfImg2, $img2, $keypoints2, $matches, $typeOfOutImg, $outImg, $matchColor, $singlePointColor, $typeOfMatchesMask, $matchesMask, $flags)
 
-    Local $iArrImg1, $vectorOfMatImg1, $iArrImg1Size
-    Local $bImg1IsArray = VarGetType($matImg1) == "Array"
+    Local $iArrImg1, $vectorImg1, $iArrImg1Size
+    Local $bImg1IsArray = IsArray($img1)
+    Local $bImg1Create = IsDllStruct($img1) And $typeOfImg1 == "Scalar"
 
-    If $bImg1IsArray Then
-        $vectorOfMatImg1 = _VectorOfMatCreate()
+    If $typeOfImg1 == Default Then
+        $iArrImg1 = $img1
+    ElseIf $bImg1IsArray Then
+        $vectorImg1 = Call("_VectorOf" & $typeOfImg1 & "Create")
 
-        $iArrImg1Size = UBound($matImg1)
+        $iArrImg1Size = UBound($img1)
         For $i = 0 To $iArrImg1Size - 1
-            _VectorOfMatPush($vectorOfMatImg1, $matImg1[$i])
+            Call("_VectorOf" & $typeOfImg1 & "Push", $vectorImg1, $img1[$i])
         Next
 
-        $iArrImg1 = _cveInputArrayFromVectorOfMat($vectorOfMatImg1)
+        $iArrImg1 = Call("_cveInputArrayFromVectorOf" & $typeOfImg1, $vectorImg1)
     Else
-        $iArrImg1 = _cveInputArrayFromMat($matImg1)
+        If $bImg1Create Then
+            $img1 = Call("_cve" & $typeOfImg1 & "Create", $img1)
+        EndIf
+        $iArrImg1 = Call("_cveInputArrayFrom" & $typeOfImg1, $img1)
     EndIf
 
-    Local $iArrImg2, $vectorOfMatImg2, $iArrImg2Size
-    Local $bImg2IsArray = VarGetType($matImg2) == "Array"
+    Local $iArrImg2, $vectorImg2, $iArrImg2Size
+    Local $bImg2IsArray = IsArray($img2)
+    Local $bImg2Create = IsDllStruct($img2) And $typeOfImg2 == "Scalar"
 
-    If $bImg2IsArray Then
-        $vectorOfMatImg2 = _VectorOfMatCreate()
+    If $typeOfImg2 == Default Then
+        $iArrImg2 = $img2
+    ElseIf $bImg2IsArray Then
+        $vectorImg2 = Call("_VectorOf" & $typeOfImg2 & "Create")
 
-        $iArrImg2Size = UBound($matImg2)
+        $iArrImg2Size = UBound($img2)
         For $i = 0 To $iArrImg2Size - 1
-            _VectorOfMatPush($vectorOfMatImg2, $matImg2[$i])
+            Call("_VectorOf" & $typeOfImg2 & "Push", $vectorImg2, $img2[$i])
         Next
 
-        $iArrImg2 = _cveInputArrayFromVectorOfMat($vectorOfMatImg2)
+        $iArrImg2 = Call("_cveInputArrayFromVectorOf" & $typeOfImg2, $vectorImg2)
     Else
-        $iArrImg2 = _cveInputArrayFromMat($matImg2)
+        If $bImg2Create Then
+            $img2 = Call("_cve" & $typeOfImg2 & "Create", $img2)
+        EndIf
+        $iArrImg2 = Call("_cveInputArrayFrom" & $typeOfImg2, $img2)
     EndIf
 
-    Local $ioArrOutImg, $vectorOfMatOutImg, $iArrOutImgSize
-    Local $bOutImgIsArray = VarGetType($matOutImg) == "Array"
+    Local $ioArrOutImg, $vectorOutImg, $iArrOutImgSize
+    Local $bOutImgIsArray = IsArray($outImg)
+    Local $bOutImgCreate = IsDllStruct($outImg) And $typeOfOutImg == "Scalar"
 
-    If $bOutImgIsArray Then
-        $vectorOfMatOutImg = _VectorOfMatCreate()
+    If $typeOfOutImg == Default Then
+        $ioArrOutImg = $outImg
+    ElseIf $bOutImgIsArray Then
+        $vectorOutImg = Call("_VectorOf" & $typeOfOutImg & "Create")
 
-        $iArrOutImgSize = UBound($matOutImg)
+        $iArrOutImgSize = UBound($outImg)
         For $i = 0 To $iArrOutImgSize - 1
-            _VectorOfMatPush($vectorOfMatOutImg, $matOutImg[$i])
+            Call("_VectorOf" & $typeOfOutImg & "Push", $vectorOutImg, $outImg[$i])
         Next
 
-        $ioArrOutImg = _cveInputOutputArrayFromVectorOfMat($vectorOfMatOutImg)
+        $ioArrOutImg = Call("_cveInputOutputArrayFromVectorOf" & $typeOfOutImg, $vectorOutImg)
     Else
-        $ioArrOutImg = _cveInputOutputArrayFromMat($matOutImg)
+        If $bOutImgCreate Then
+            $outImg = Call("_cve" & $typeOfOutImg & "Create", $outImg)
+        EndIf
+        $ioArrOutImg = Call("_cveInputOutputArrayFrom" & $typeOfOutImg, $outImg)
     EndIf
 
-    Local $iArrMatchesMask, $vectorOfMatMatchesMask, $iArrMatchesMaskSize
-    Local $bMatchesMaskIsArray = VarGetType($matMatchesMask) == "Array"
+    Local $iArrMatchesMask, $vectorMatchesMask, $iArrMatchesMaskSize
+    Local $bMatchesMaskIsArray = IsArray($matchesMask)
+    Local $bMatchesMaskCreate = IsDllStruct($matchesMask) And $typeOfMatchesMask == "Scalar"
 
-    If $bMatchesMaskIsArray Then
-        $vectorOfMatMatchesMask = _VectorOfMatCreate()
+    If $typeOfMatchesMask == Default Then
+        $iArrMatchesMask = $matchesMask
+    ElseIf $bMatchesMaskIsArray Then
+        $vectorMatchesMask = Call("_VectorOf" & $typeOfMatchesMask & "Create")
 
-        $iArrMatchesMaskSize = UBound($matMatchesMask)
+        $iArrMatchesMaskSize = UBound($matchesMask)
         For $i = 0 To $iArrMatchesMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMatchesMask, $matMatchesMask[$i])
+            Call("_VectorOf" & $typeOfMatchesMask & "Push", $vectorMatchesMask, $matchesMask[$i])
         Next
 
-        $iArrMatchesMask = _cveInputArrayFromVectorOfMat($vectorOfMatMatchesMask)
+        $iArrMatchesMask = Call("_cveInputArrayFromVectorOf" & $typeOfMatchesMask, $vectorMatchesMask)
     Else
-        $iArrMatchesMask = _cveInputArrayFromMat($matMatchesMask)
+        If $bMatchesMaskCreate Then
+            $matchesMask = Call("_cve" & $typeOfMatchesMask & "Create", $matchesMask)
+        EndIf
+        $iArrMatchesMask = Call("_cveInputArrayFrom" & $typeOfMatchesMask, $matchesMask)
     EndIf
 
     _drawMatchedFeatures3($iArrImg1, $keypoints1, $iArrImg2, $keypoints2, $matches, $ioArrOutImg, $matchColor, $singlePointColor, $iArrMatchesMask, $flags)
 
     If $bMatchesMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMatchesMask)
+        Call("_VectorOf" & $typeOfMatchesMask & "Release", $vectorMatchesMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMatchesMask)
+    If $typeOfMatchesMask <> Default Then
+        _cveInputArrayRelease($iArrMatchesMask)
+        If $bMatchesMaskCreate Then
+            Call("_cve" & $typeOfMatchesMask & "Release", $matchesMask)
+        EndIf
+    EndIf
 
     If $bOutImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatOutImg)
+        Call("_VectorOf" & $typeOfOutImg & "Release", $vectorOutImg)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrOutImg)
+    If $typeOfOutImg <> Default Then
+        _cveInputOutputArrayRelease($ioArrOutImg)
+        If $bOutImgCreate Then
+            Call("_cve" & $typeOfOutImg & "Release", $outImg)
+        EndIf
+    EndIf
 
     If $bImg2IsArray Then
-        _VectorOfMatRelease($vectorOfMatImg2)
+        Call("_VectorOf" & $typeOfImg2 & "Release", $vectorImg2)
     EndIf
 
-    _cveInputArrayRelease($iArrImg2)
+    If $typeOfImg2 <> Default Then
+        _cveInputArrayRelease($iArrImg2)
+        If $bImg2Create Then
+            Call("_cve" & $typeOfImg2 & "Release", $img2)
+        EndIf
+    EndIf
 
     If $bImg1IsArray Then
-        _VectorOfMatRelease($vectorOfMatImg1)
+        Call("_VectorOf" & $typeOfImg1 & "Release", $vectorImg1)
     EndIf
 
-    _cveInputArrayRelease($iArrImg1)
+    If $typeOfImg1 <> Default Then
+        _cveInputArrayRelease($iArrImg1)
+        If $bImg1Create Then
+            Call("_cve" & $typeOfImg1 & "Release", $img1)
+        EndIf
+    EndIf
+EndFunc   ;==>_drawMatchedFeatures3Typed
+
+Func _drawMatchedFeatures3Mat($img1, $keypoints1, $img2, $keypoints2, $matches, $outImg, $matchColor, $singlePointColor, $matchesMask, $flags)
+    ; drawMatchedFeatures3 using cv::Mat instead of _*Array
+    _drawMatchedFeatures3Typed("Mat", $img1, $keypoints1, "Mat", $img2, $keypoints2, $matches, "Mat", $outImg, $matchColor, $singlePointColor, "Mat", $matchesMask, $flags)
 EndFunc   ;==>_drawMatchedFeatures3Mat
 
 Func _cveDescriptorMatcherAdd($matcher, $trainDescriptors)
@@ -1142,32 +1305,47 @@ Func _cveDescriptorMatcherAdd($matcher, $trainDescriptors)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDescriptorMatcherAdd", $sMatcherDllType, $matcher, $sTrainDescriptorsDllType, $trainDescriptors), "cveDescriptorMatcherAdd", @error)
 EndFunc   ;==>_cveDescriptorMatcherAdd
 
-Func _cveDescriptorMatcherAddMat($matcher, $matTrainDescriptors)
-    ; cveDescriptorMatcherAdd using cv::Mat instead of _*Array
+Func _cveDescriptorMatcherAddTyped($matcher, $typeOfTrainDescriptors, $trainDescriptors)
 
-    Local $iArrTrainDescriptors, $vectorOfMatTrainDescriptors, $iArrTrainDescriptorsSize
-    Local $bTrainDescriptorsIsArray = VarGetType($matTrainDescriptors) == "Array"
+    Local $iArrTrainDescriptors, $vectorTrainDescriptors, $iArrTrainDescriptorsSize
+    Local $bTrainDescriptorsIsArray = IsArray($trainDescriptors)
+    Local $bTrainDescriptorsCreate = IsDllStruct($trainDescriptors) And $typeOfTrainDescriptors == "Scalar"
 
-    If $bTrainDescriptorsIsArray Then
-        $vectorOfMatTrainDescriptors = _VectorOfMatCreate()
+    If $typeOfTrainDescriptors == Default Then
+        $iArrTrainDescriptors = $trainDescriptors
+    ElseIf $bTrainDescriptorsIsArray Then
+        $vectorTrainDescriptors = Call("_VectorOf" & $typeOfTrainDescriptors & "Create")
 
-        $iArrTrainDescriptorsSize = UBound($matTrainDescriptors)
+        $iArrTrainDescriptorsSize = UBound($trainDescriptors)
         For $i = 0 To $iArrTrainDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatTrainDescriptors, $matTrainDescriptors[$i])
+            Call("_VectorOf" & $typeOfTrainDescriptors & "Push", $vectorTrainDescriptors, $trainDescriptors[$i])
         Next
 
-        $iArrTrainDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatTrainDescriptors)
+        $iArrTrainDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfTrainDescriptors, $vectorTrainDescriptors)
     Else
-        $iArrTrainDescriptors = _cveInputArrayFromMat($matTrainDescriptors)
+        If $bTrainDescriptorsCreate Then
+            $trainDescriptors = Call("_cve" & $typeOfTrainDescriptors & "Create", $trainDescriptors)
+        EndIf
+        $iArrTrainDescriptors = Call("_cveInputArrayFrom" & $typeOfTrainDescriptors, $trainDescriptors)
     EndIf
 
     _cveDescriptorMatcherAdd($matcher, $iArrTrainDescriptors)
 
     If $bTrainDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatTrainDescriptors)
+        Call("_VectorOf" & $typeOfTrainDescriptors & "Release", $vectorTrainDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrTrainDescriptors)
+    If $typeOfTrainDescriptors <> Default Then
+        _cveInputArrayRelease($iArrTrainDescriptors)
+        If $bTrainDescriptorsCreate Then
+            Call("_cve" & $typeOfTrainDescriptors & "Release", $trainDescriptors)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDescriptorMatcherAddTyped
+
+Func _cveDescriptorMatcherAddMat($matcher, $trainDescriptors)
+    ; cveDescriptorMatcherAdd using cv::Mat instead of _*Array
+    _cveDescriptorMatcherAddTyped($matcher, "Mat", $trainDescriptors)
 EndFunc   ;==>_cveDescriptorMatcherAddMat
 
 Func _cveDescriptorMatcherKnnMatch1($matcher, $queryDescriptors, $trainDescriptors, $matches, $k, $mask, $compactResult)
@@ -1195,7 +1373,7 @@ Func _cveDescriptorMatcherKnnMatch1($matcher, $queryDescriptors, $trainDescripto
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfVectorOfDMatchCreate()
@@ -1229,76 +1407,113 @@ Func _cveDescriptorMatcherKnnMatch1($matcher, $queryDescriptors, $trainDescripto
     EndIf
 EndFunc   ;==>_cveDescriptorMatcherKnnMatch1
 
-Func _cveDescriptorMatcherKnnMatch1Mat($matcher, $matQueryDescriptors, $matTrainDescriptors, $matches, $k, $matMask, $compactResult)
-    ; cveDescriptorMatcherKnnMatch1 using cv::Mat instead of _*Array
+Func _cveDescriptorMatcherKnnMatch1Typed($matcher, $typeOfQueryDescriptors, $queryDescriptors, $typeOfTrainDescriptors, $trainDescriptors, $matches, $k, $typeOfMask, $mask, $compactResult)
 
-    Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
-    Local $bQueryDescriptorsIsArray = VarGetType($matQueryDescriptors) == "Array"
+    Local $iArrQueryDescriptors, $vectorQueryDescriptors, $iArrQueryDescriptorsSize
+    Local $bQueryDescriptorsIsArray = IsArray($queryDescriptors)
+    Local $bQueryDescriptorsCreate = IsDllStruct($queryDescriptors) And $typeOfQueryDescriptors == "Scalar"
 
-    If $bQueryDescriptorsIsArray Then
-        $vectorOfMatQueryDescriptors = _VectorOfMatCreate()
+    If $typeOfQueryDescriptors == Default Then
+        $iArrQueryDescriptors = $queryDescriptors
+    ElseIf $bQueryDescriptorsIsArray Then
+        $vectorQueryDescriptors = Call("_VectorOf" & $typeOfQueryDescriptors & "Create")
 
-        $iArrQueryDescriptorsSize = UBound($matQueryDescriptors)
+        $iArrQueryDescriptorsSize = UBound($queryDescriptors)
         For $i = 0 To $iArrQueryDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatQueryDescriptors, $matQueryDescriptors[$i])
+            Call("_VectorOf" & $typeOfQueryDescriptors & "Push", $vectorQueryDescriptors, $queryDescriptors[$i])
         Next
 
-        $iArrQueryDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatQueryDescriptors)
+        $iArrQueryDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfQueryDescriptors, $vectorQueryDescriptors)
     Else
-        $iArrQueryDescriptors = _cveInputArrayFromMat($matQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            $queryDescriptors = Call("_cve" & $typeOfQueryDescriptors & "Create", $queryDescriptors)
+        EndIf
+        $iArrQueryDescriptors = Call("_cveInputArrayFrom" & $typeOfQueryDescriptors, $queryDescriptors)
     EndIf
 
-    Local $iArrTrainDescriptors, $vectorOfMatTrainDescriptors, $iArrTrainDescriptorsSize
-    Local $bTrainDescriptorsIsArray = VarGetType($matTrainDescriptors) == "Array"
+    Local $iArrTrainDescriptors, $vectorTrainDescriptors, $iArrTrainDescriptorsSize
+    Local $bTrainDescriptorsIsArray = IsArray($trainDescriptors)
+    Local $bTrainDescriptorsCreate = IsDllStruct($trainDescriptors) And $typeOfTrainDescriptors == "Scalar"
 
-    If $bTrainDescriptorsIsArray Then
-        $vectorOfMatTrainDescriptors = _VectorOfMatCreate()
+    If $typeOfTrainDescriptors == Default Then
+        $iArrTrainDescriptors = $trainDescriptors
+    ElseIf $bTrainDescriptorsIsArray Then
+        $vectorTrainDescriptors = Call("_VectorOf" & $typeOfTrainDescriptors & "Create")
 
-        $iArrTrainDescriptorsSize = UBound($matTrainDescriptors)
+        $iArrTrainDescriptorsSize = UBound($trainDescriptors)
         For $i = 0 To $iArrTrainDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatTrainDescriptors, $matTrainDescriptors[$i])
+            Call("_VectorOf" & $typeOfTrainDescriptors & "Push", $vectorTrainDescriptors, $trainDescriptors[$i])
         Next
 
-        $iArrTrainDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatTrainDescriptors)
+        $iArrTrainDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfTrainDescriptors, $vectorTrainDescriptors)
     Else
-        $iArrTrainDescriptors = _cveInputArrayFromMat($matTrainDescriptors)
+        If $bTrainDescriptorsCreate Then
+            $trainDescriptors = Call("_cve" & $typeOfTrainDescriptors & "Create", $trainDescriptors)
+        EndIf
+        $iArrTrainDescriptors = Call("_cveInputArrayFrom" & $typeOfTrainDescriptors, $trainDescriptors)
     EndIf
 
-    Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $iArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $iArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $iArrMask = _cveInputArrayFromVectorOfMat($vectorOfMatMask)
+        $iArrMask = Call("_cveInputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $iArrMask = _cveInputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $iArrMask = Call("_cveInputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
     _cveDescriptorMatcherKnnMatch1($matcher, $iArrQueryDescriptors, $iArrTrainDescriptors, $matches, $k, $iArrMask, $compactResult)
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMask)
+    If $typeOfMask <> Default Then
+        _cveInputArrayRelease($iArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bTrainDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatTrainDescriptors)
+        Call("_VectorOf" & $typeOfTrainDescriptors & "Release", $vectorTrainDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrTrainDescriptors)
+    If $typeOfTrainDescriptors <> Default Then
+        _cveInputArrayRelease($iArrTrainDescriptors)
+        If $bTrainDescriptorsCreate Then
+            Call("_cve" & $typeOfTrainDescriptors & "Release", $trainDescriptors)
+        EndIf
+    EndIf
 
     If $bQueryDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueryDescriptors)
+        Call("_VectorOf" & $typeOfQueryDescriptors & "Release", $vectorQueryDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrQueryDescriptors)
+    If $typeOfQueryDescriptors <> Default Then
+        _cveInputArrayRelease($iArrQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            Call("_cve" & $typeOfQueryDescriptors & "Release", $queryDescriptors)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDescriptorMatcherKnnMatch1Typed
+
+Func _cveDescriptorMatcherKnnMatch1Mat($matcher, $queryDescriptors, $trainDescriptors, $matches, $k, $mask, $compactResult)
+    ; cveDescriptorMatcherKnnMatch1 using cv::Mat instead of _*Array
+    _cveDescriptorMatcherKnnMatch1Typed($matcher, "Mat", $queryDescriptors, "Mat", $trainDescriptors, $matches, $k, "Mat", $mask, $compactResult)
 EndFunc   ;==>_cveDescriptorMatcherKnnMatch1Mat
 
 Func _cveDescriptorMatcherKnnMatch2($matcher, $queryDescriptors, $matches, $k, $mask, $compactResult)
@@ -1319,7 +1534,7 @@ Func _cveDescriptorMatcherKnnMatch2($matcher, $queryDescriptors, $matches, $k, $
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfVectorOfDMatchCreate()
@@ -1353,54 +1568,80 @@ Func _cveDescriptorMatcherKnnMatch2($matcher, $queryDescriptors, $matches, $k, $
     EndIf
 EndFunc   ;==>_cveDescriptorMatcherKnnMatch2
 
-Func _cveDescriptorMatcherKnnMatch2Mat($matcher, $matQueryDescriptors, $matches, $k, $matMask, $compactResult)
-    ; cveDescriptorMatcherKnnMatch2 using cv::Mat instead of _*Array
+Func _cveDescriptorMatcherKnnMatch2Typed($matcher, $typeOfQueryDescriptors, $queryDescriptors, $matches, $k, $typeOfMask, $mask, $compactResult)
 
-    Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
-    Local $bQueryDescriptorsIsArray = VarGetType($matQueryDescriptors) == "Array"
+    Local $iArrQueryDescriptors, $vectorQueryDescriptors, $iArrQueryDescriptorsSize
+    Local $bQueryDescriptorsIsArray = IsArray($queryDescriptors)
+    Local $bQueryDescriptorsCreate = IsDllStruct($queryDescriptors) And $typeOfQueryDescriptors == "Scalar"
 
-    If $bQueryDescriptorsIsArray Then
-        $vectorOfMatQueryDescriptors = _VectorOfMatCreate()
+    If $typeOfQueryDescriptors == Default Then
+        $iArrQueryDescriptors = $queryDescriptors
+    ElseIf $bQueryDescriptorsIsArray Then
+        $vectorQueryDescriptors = Call("_VectorOf" & $typeOfQueryDescriptors & "Create")
 
-        $iArrQueryDescriptorsSize = UBound($matQueryDescriptors)
+        $iArrQueryDescriptorsSize = UBound($queryDescriptors)
         For $i = 0 To $iArrQueryDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatQueryDescriptors, $matQueryDescriptors[$i])
+            Call("_VectorOf" & $typeOfQueryDescriptors & "Push", $vectorQueryDescriptors, $queryDescriptors[$i])
         Next
 
-        $iArrQueryDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatQueryDescriptors)
+        $iArrQueryDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfQueryDescriptors, $vectorQueryDescriptors)
     Else
-        $iArrQueryDescriptors = _cveInputArrayFromMat($matQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            $queryDescriptors = Call("_cve" & $typeOfQueryDescriptors & "Create", $queryDescriptors)
+        EndIf
+        $iArrQueryDescriptors = Call("_cveInputArrayFrom" & $typeOfQueryDescriptors, $queryDescriptors)
     EndIf
 
-    Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $iArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $iArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $iArrMask = _cveInputArrayFromVectorOfMat($vectorOfMatMask)
+        $iArrMask = Call("_cveInputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $iArrMask = _cveInputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $iArrMask = Call("_cveInputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
     _cveDescriptorMatcherKnnMatch2($matcher, $iArrQueryDescriptors, $matches, $k, $iArrMask, $compactResult)
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMask)
+    If $typeOfMask <> Default Then
+        _cveInputArrayRelease($iArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bQueryDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueryDescriptors)
+        Call("_VectorOf" & $typeOfQueryDescriptors & "Release", $vectorQueryDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrQueryDescriptors)
+    If $typeOfQueryDescriptors <> Default Then
+        _cveInputArrayRelease($iArrQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            Call("_cve" & $typeOfQueryDescriptors & "Release", $queryDescriptors)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDescriptorMatcherKnnMatch2Typed
+
+Func _cveDescriptorMatcherKnnMatch2Mat($matcher, $queryDescriptors, $matches, $k, $mask, $compactResult)
+    ; cveDescriptorMatcherKnnMatch2 using cv::Mat instead of _*Array
+    _cveDescriptorMatcherKnnMatch2Typed($matcher, "Mat", $queryDescriptors, $matches, $k, "Mat", $mask, $compactResult)
 EndFunc   ;==>_cveDescriptorMatcherKnnMatch2Mat
 
 Func _cveDescriptorMatcherGetAlgorithm($matcher)
@@ -1490,7 +1731,7 @@ Func _cveDescriptorMatcherMatch1($matcher, $queryDescriptors, $trainDescriptors,
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfDMatchCreate()
@@ -1524,76 +1765,113 @@ Func _cveDescriptorMatcherMatch1($matcher, $queryDescriptors, $trainDescriptors,
     EndIf
 EndFunc   ;==>_cveDescriptorMatcherMatch1
 
-Func _cveDescriptorMatcherMatch1Mat($matcher, $matQueryDescriptors, $matTrainDescriptors, $matches, $matMask)
-    ; cveDescriptorMatcherMatch1 using cv::Mat instead of _*Array
+Func _cveDescriptorMatcherMatch1Typed($matcher, $typeOfQueryDescriptors, $queryDescriptors, $typeOfTrainDescriptors, $trainDescriptors, $matches, $typeOfMask, $mask)
 
-    Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
-    Local $bQueryDescriptorsIsArray = VarGetType($matQueryDescriptors) == "Array"
+    Local $iArrQueryDescriptors, $vectorQueryDescriptors, $iArrQueryDescriptorsSize
+    Local $bQueryDescriptorsIsArray = IsArray($queryDescriptors)
+    Local $bQueryDescriptorsCreate = IsDllStruct($queryDescriptors) And $typeOfQueryDescriptors == "Scalar"
 
-    If $bQueryDescriptorsIsArray Then
-        $vectorOfMatQueryDescriptors = _VectorOfMatCreate()
+    If $typeOfQueryDescriptors == Default Then
+        $iArrQueryDescriptors = $queryDescriptors
+    ElseIf $bQueryDescriptorsIsArray Then
+        $vectorQueryDescriptors = Call("_VectorOf" & $typeOfQueryDescriptors & "Create")
 
-        $iArrQueryDescriptorsSize = UBound($matQueryDescriptors)
+        $iArrQueryDescriptorsSize = UBound($queryDescriptors)
         For $i = 0 To $iArrQueryDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatQueryDescriptors, $matQueryDescriptors[$i])
+            Call("_VectorOf" & $typeOfQueryDescriptors & "Push", $vectorQueryDescriptors, $queryDescriptors[$i])
         Next
 
-        $iArrQueryDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatQueryDescriptors)
+        $iArrQueryDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfQueryDescriptors, $vectorQueryDescriptors)
     Else
-        $iArrQueryDescriptors = _cveInputArrayFromMat($matQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            $queryDescriptors = Call("_cve" & $typeOfQueryDescriptors & "Create", $queryDescriptors)
+        EndIf
+        $iArrQueryDescriptors = Call("_cveInputArrayFrom" & $typeOfQueryDescriptors, $queryDescriptors)
     EndIf
 
-    Local $iArrTrainDescriptors, $vectorOfMatTrainDescriptors, $iArrTrainDescriptorsSize
-    Local $bTrainDescriptorsIsArray = VarGetType($matTrainDescriptors) == "Array"
+    Local $iArrTrainDescriptors, $vectorTrainDescriptors, $iArrTrainDescriptorsSize
+    Local $bTrainDescriptorsIsArray = IsArray($trainDescriptors)
+    Local $bTrainDescriptorsCreate = IsDllStruct($trainDescriptors) And $typeOfTrainDescriptors == "Scalar"
 
-    If $bTrainDescriptorsIsArray Then
-        $vectorOfMatTrainDescriptors = _VectorOfMatCreate()
+    If $typeOfTrainDescriptors == Default Then
+        $iArrTrainDescriptors = $trainDescriptors
+    ElseIf $bTrainDescriptorsIsArray Then
+        $vectorTrainDescriptors = Call("_VectorOf" & $typeOfTrainDescriptors & "Create")
 
-        $iArrTrainDescriptorsSize = UBound($matTrainDescriptors)
+        $iArrTrainDescriptorsSize = UBound($trainDescriptors)
         For $i = 0 To $iArrTrainDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatTrainDescriptors, $matTrainDescriptors[$i])
+            Call("_VectorOf" & $typeOfTrainDescriptors & "Push", $vectorTrainDescriptors, $trainDescriptors[$i])
         Next
 
-        $iArrTrainDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatTrainDescriptors)
+        $iArrTrainDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfTrainDescriptors, $vectorTrainDescriptors)
     Else
-        $iArrTrainDescriptors = _cveInputArrayFromMat($matTrainDescriptors)
+        If $bTrainDescriptorsCreate Then
+            $trainDescriptors = Call("_cve" & $typeOfTrainDescriptors & "Create", $trainDescriptors)
+        EndIf
+        $iArrTrainDescriptors = Call("_cveInputArrayFrom" & $typeOfTrainDescriptors, $trainDescriptors)
     EndIf
 
-    Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $iArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $iArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $iArrMask = _cveInputArrayFromVectorOfMat($vectorOfMatMask)
+        $iArrMask = Call("_cveInputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $iArrMask = _cveInputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $iArrMask = Call("_cveInputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
     _cveDescriptorMatcherMatch1($matcher, $iArrQueryDescriptors, $iArrTrainDescriptors, $matches, $iArrMask)
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMask)
+    If $typeOfMask <> Default Then
+        _cveInputArrayRelease($iArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bTrainDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatTrainDescriptors)
+        Call("_VectorOf" & $typeOfTrainDescriptors & "Release", $vectorTrainDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrTrainDescriptors)
+    If $typeOfTrainDescriptors <> Default Then
+        _cveInputArrayRelease($iArrTrainDescriptors)
+        If $bTrainDescriptorsCreate Then
+            Call("_cve" & $typeOfTrainDescriptors & "Release", $trainDescriptors)
+        EndIf
+    EndIf
 
     If $bQueryDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueryDescriptors)
+        Call("_VectorOf" & $typeOfQueryDescriptors & "Release", $vectorQueryDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrQueryDescriptors)
+    If $typeOfQueryDescriptors <> Default Then
+        _cveInputArrayRelease($iArrQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            Call("_cve" & $typeOfQueryDescriptors & "Release", $queryDescriptors)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDescriptorMatcherMatch1Typed
+
+Func _cveDescriptorMatcherMatch1Mat($matcher, $queryDescriptors, $trainDescriptors, $matches, $mask)
+    ; cveDescriptorMatcherMatch1 using cv::Mat instead of _*Array
+    _cveDescriptorMatcherMatch1Typed($matcher, "Mat", $queryDescriptors, "Mat", $trainDescriptors, $matches, "Mat", $mask)
 EndFunc   ;==>_cveDescriptorMatcherMatch1Mat
 
 Func _cveDescriptorMatcherMatch2($matcher, $queryDescriptors, $matches, $masks)
@@ -1614,7 +1892,7 @@ Func _cveDescriptorMatcherMatch2($matcher, $queryDescriptors, $matches, $masks)
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfDMatchCreate()
@@ -1648,54 +1926,80 @@ Func _cveDescriptorMatcherMatch2($matcher, $queryDescriptors, $matches, $masks)
     EndIf
 EndFunc   ;==>_cveDescriptorMatcherMatch2
 
-Func _cveDescriptorMatcherMatch2Mat($matcher, $matQueryDescriptors, $matches, $matMasks)
-    ; cveDescriptorMatcherMatch2 using cv::Mat instead of _*Array
+Func _cveDescriptorMatcherMatch2Typed($matcher, $typeOfQueryDescriptors, $queryDescriptors, $matches, $typeOfMasks, $masks)
 
-    Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
-    Local $bQueryDescriptorsIsArray = VarGetType($matQueryDescriptors) == "Array"
+    Local $iArrQueryDescriptors, $vectorQueryDescriptors, $iArrQueryDescriptorsSize
+    Local $bQueryDescriptorsIsArray = IsArray($queryDescriptors)
+    Local $bQueryDescriptorsCreate = IsDllStruct($queryDescriptors) And $typeOfQueryDescriptors == "Scalar"
 
-    If $bQueryDescriptorsIsArray Then
-        $vectorOfMatQueryDescriptors = _VectorOfMatCreate()
+    If $typeOfQueryDescriptors == Default Then
+        $iArrQueryDescriptors = $queryDescriptors
+    ElseIf $bQueryDescriptorsIsArray Then
+        $vectorQueryDescriptors = Call("_VectorOf" & $typeOfQueryDescriptors & "Create")
 
-        $iArrQueryDescriptorsSize = UBound($matQueryDescriptors)
+        $iArrQueryDescriptorsSize = UBound($queryDescriptors)
         For $i = 0 To $iArrQueryDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatQueryDescriptors, $matQueryDescriptors[$i])
+            Call("_VectorOf" & $typeOfQueryDescriptors & "Push", $vectorQueryDescriptors, $queryDescriptors[$i])
         Next
 
-        $iArrQueryDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatQueryDescriptors)
+        $iArrQueryDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfQueryDescriptors, $vectorQueryDescriptors)
     Else
-        $iArrQueryDescriptors = _cveInputArrayFromMat($matQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            $queryDescriptors = Call("_cve" & $typeOfQueryDescriptors & "Create", $queryDescriptors)
+        EndIf
+        $iArrQueryDescriptors = Call("_cveInputArrayFrom" & $typeOfQueryDescriptors, $queryDescriptors)
     EndIf
 
-    Local $iArrMasks, $vectorOfMatMasks, $iArrMasksSize
-    Local $bMasksIsArray = VarGetType($matMasks) == "Array"
+    Local $iArrMasks, $vectorMasks, $iArrMasksSize
+    Local $bMasksIsArray = IsArray($masks)
+    Local $bMasksCreate = IsDllStruct($masks) And $typeOfMasks == "Scalar"
 
-    If $bMasksIsArray Then
-        $vectorOfMatMasks = _VectorOfMatCreate()
+    If $typeOfMasks == Default Then
+        $iArrMasks = $masks
+    ElseIf $bMasksIsArray Then
+        $vectorMasks = Call("_VectorOf" & $typeOfMasks & "Create")
 
-        $iArrMasksSize = UBound($matMasks)
+        $iArrMasksSize = UBound($masks)
         For $i = 0 To $iArrMasksSize - 1
-            _VectorOfMatPush($vectorOfMatMasks, $matMasks[$i])
+            Call("_VectorOf" & $typeOfMasks & "Push", $vectorMasks, $masks[$i])
         Next
 
-        $iArrMasks = _cveInputArrayFromVectorOfMat($vectorOfMatMasks)
+        $iArrMasks = Call("_cveInputArrayFromVectorOf" & $typeOfMasks, $vectorMasks)
     Else
-        $iArrMasks = _cveInputArrayFromMat($matMasks)
+        If $bMasksCreate Then
+            $masks = Call("_cve" & $typeOfMasks & "Create", $masks)
+        EndIf
+        $iArrMasks = Call("_cveInputArrayFrom" & $typeOfMasks, $masks)
     EndIf
 
     _cveDescriptorMatcherMatch2($matcher, $iArrQueryDescriptors, $matches, $iArrMasks)
 
     If $bMasksIsArray Then
-        _VectorOfMatRelease($vectorOfMatMasks)
+        Call("_VectorOf" & $typeOfMasks & "Release", $vectorMasks)
     EndIf
 
-    _cveInputArrayRelease($iArrMasks)
+    If $typeOfMasks <> Default Then
+        _cveInputArrayRelease($iArrMasks)
+        If $bMasksCreate Then
+            Call("_cve" & $typeOfMasks & "Release", $masks)
+        EndIf
+    EndIf
 
     If $bQueryDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueryDescriptors)
+        Call("_VectorOf" & $typeOfQueryDescriptors & "Release", $vectorQueryDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrQueryDescriptors)
+    If $typeOfQueryDescriptors <> Default Then
+        _cveInputArrayRelease($iArrQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            Call("_cve" & $typeOfQueryDescriptors & "Release", $queryDescriptors)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDescriptorMatcherMatch2Typed
+
+Func _cveDescriptorMatcherMatch2Mat($matcher, $queryDescriptors, $matches, $masks)
+    ; cveDescriptorMatcherMatch2 using cv::Mat instead of _*Array
+    _cveDescriptorMatcherMatch2Typed($matcher, "Mat", $queryDescriptors, $matches, "Mat", $masks)
 EndFunc   ;==>_cveDescriptorMatcherMatch2Mat
 
 Func _cveDescriptorMatcherRadiusMatch1($matcher, $queryDescriptors, $trainDescriptors, $matches, $maxDistance, $mask, $compactResult)
@@ -1723,7 +2027,7 @@ Func _cveDescriptorMatcherRadiusMatch1($matcher, $queryDescriptors, $trainDescri
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfVectorOfDMatchCreate()
@@ -1757,76 +2061,113 @@ Func _cveDescriptorMatcherRadiusMatch1($matcher, $queryDescriptors, $trainDescri
     EndIf
 EndFunc   ;==>_cveDescriptorMatcherRadiusMatch1
 
-Func _cveDescriptorMatcherRadiusMatch1Mat($matcher, $matQueryDescriptors, $matTrainDescriptors, $matches, $maxDistance, $matMask, $compactResult)
-    ; cveDescriptorMatcherRadiusMatch1 using cv::Mat instead of _*Array
+Func _cveDescriptorMatcherRadiusMatch1Typed($matcher, $typeOfQueryDescriptors, $queryDescriptors, $typeOfTrainDescriptors, $trainDescriptors, $matches, $maxDistance, $typeOfMask, $mask, $compactResult)
 
-    Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
-    Local $bQueryDescriptorsIsArray = VarGetType($matQueryDescriptors) == "Array"
+    Local $iArrQueryDescriptors, $vectorQueryDescriptors, $iArrQueryDescriptorsSize
+    Local $bQueryDescriptorsIsArray = IsArray($queryDescriptors)
+    Local $bQueryDescriptorsCreate = IsDllStruct($queryDescriptors) And $typeOfQueryDescriptors == "Scalar"
 
-    If $bQueryDescriptorsIsArray Then
-        $vectorOfMatQueryDescriptors = _VectorOfMatCreate()
+    If $typeOfQueryDescriptors == Default Then
+        $iArrQueryDescriptors = $queryDescriptors
+    ElseIf $bQueryDescriptorsIsArray Then
+        $vectorQueryDescriptors = Call("_VectorOf" & $typeOfQueryDescriptors & "Create")
 
-        $iArrQueryDescriptorsSize = UBound($matQueryDescriptors)
+        $iArrQueryDescriptorsSize = UBound($queryDescriptors)
         For $i = 0 To $iArrQueryDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatQueryDescriptors, $matQueryDescriptors[$i])
+            Call("_VectorOf" & $typeOfQueryDescriptors & "Push", $vectorQueryDescriptors, $queryDescriptors[$i])
         Next
 
-        $iArrQueryDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatQueryDescriptors)
+        $iArrQueryDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfQueryDescriptors, $vectorQueryDescriptors)
     Else
-        $iArrQueryDescriptors = _cveInputArrayFromMat($matQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            $queryDescriptors = Call("_cve" & $typeOfQueryDescriptors & "Create", $queryDescriptors)
+        EndIf
+        $iArrQueryDescriptors = Call("_cveInputArrayFrom" & $typeOfQueryDescriptors, $queryDescriptors)
     EndIf
 
-    Local $iArrTrainDescriptors, $vectorOfMatTrainDescriptors, $iArrTrainDescriptorsSize
-    Local $bTrainDescriptorsIsArray = VarGetType($matTrainDescriptors) == "Array"
+    Local $iArrTrainDescriptors, $vectorTrainDescriptors, $iArrTrainDescriptorsSize
+    Local $bTrainDescriptorsIsArray = IsArray($trainDescriptors)
+    Local $bTrainDescriptorsCreate = IsDllStruct($trainDescriptors) And $typeOfTrainDescriptors == "Scalar"
 
-    If $bTrainDescriptorsIsArray Then
-        $vectorOfMatTrainDescriptors = _VectorOfMatCreate()
+    If $typeOfTrainDescriptors == Default Then
+        $iArrTrainDescriptors = $trainDescriptors
+    ElseIf $bTrainDescriptorsIsArray Then
+        $vectorTrainDescriptors = Call("_VectorOf" & $typeOfTrainDescriptors & "Create")
 
-        $iArrTrainDescriptorsSize = UBound($matTrainDescriptors)
+        $iArrTrainDescriptorsSize = UBound($trainDescriptors)
         For $i = 0 To $iArrTrainDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatTrainDescriptors, $matTrainDescriptors[$i])
+            Call("_VectorOf" & $typeOfTrainDescriptors & "Push", $vectorTrainDescriptors, $trainDescriptors[$i])
         Next
 
-        $iArrTrainDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatTrainDescriptors)
+        $iArrTrainDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfTrainDescriptors, $vectorTrainDescriptors)
     Else
-        $iArrTrainDescriptors = _cveInputArrayFromMat($matTrainDescriptors)
+        If $bTrainDescriptorsCreate Then
+            $trainDescriptors = Call("_cve" & $typeOfTrainDescriptors & "Create", $trainDescriptors)
+        EndIf
+        $iArrTrainDescriptors = Call("_cveInputArrayFrom" & $typeOfTrainDescriptors, $trainDescriptors)
     EndIf
 
-    Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $iArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $iArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $iArrMask = _cveInputArrayFromVectorOfMat($vectorOfMatMask)
+        $iArrMask = Call("_cveInputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $iArrMask = _cveInputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $iArrMask = Call("_cveInputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
     _cveDescriptorMatcherRadiusMatch1($matcher, $iArrQueryDescriptors, $iArrTrainDescriptors, $matches, $maxDistance, $iArrMask, $compactResult)
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMask)
+    If $typeOfMask <> Default Then
+        _cveInputArrayRelease($iArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bTrainDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatTrainDescriptors)
+        Call("_VectorOf" & $typeOfTrainDescriptors & "Release", $vectorTrainDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrTrainDescriptors)
+    If $typeOfTrainDescriptors <> Default Then
+        _cveInputArrayRelease($iArrTrainDescriptors)
+        If $bTrainDescriptorsCreate Then
+            Call("_cve" & $typeOfTrainDescriptors & "Release", $trainDescriptors)
+        EndIf
+    EndIf
 
     If $bQueryDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueryDescriptors)
+        Call("_VectorOf" & $typeOfQueryDescriptors & "Release", $vectorQueryDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrQueryDescriptors)
+    If $typeOfQueryDescriptors <> Default Then
+        _cveInputArrayRelease($iArrQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            Call("_cve" & $typeOfQueryDescriptors & "Release", $queryDescriptors)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDescriptorMatcherRadiusMatch1Typed
+
+Func _cveDescriptorMatcherRadiusMatch1Mat($matcher, $queryDescriptors, $trainDescriptors, $matches, $maxDistance, $mask, $compactResult)
+    ; cveDescriptorMatcherRadiusMatch1 using cv::Mat instead of _*Array
+    _cveDescriptorMatcherRadiusMatch1Typed($matcher, "Mat", $queryDescriptors, "Mat", $trainDescriptors, $matches, $maxDistance, "Mat", $mask, $compactResult)
 EndFunc   ;==>_cveDescriptorMatcherRadiusMatch1Mat
 
 Func _cveDescriptorMatcherRadiusMatch2($matcher, $queryDescriptors, $matches, $maxDistance, $masks, $compactResult)
@@ -1847,7 +2188,7 @@ Func _cveDescriptorMatcherRadiusMatch2($matcher, $queryDescriptors, $matches, $m
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfVectorOfDMatchCreate()
@@ -1881,54 +2222,80 @@ Func _cveDescriptorMatcherRadiusMatch2($matcher, $queryDescriptors, $matches, $m
     EndIf
 EndFunc   ;==>_cveDescriptorMatcherRadiusMatch2
 
-Func _cveDescriptorMatcherRadiusMatch2Mat($matcher, $matQueryDescriptors, $matches, $maxDistance, $matMasks, $compactResult)
-    ; cveDescriptorMatcherRadiusMatch2 using cv::Mat instead of _*Array
+Func _cveDescriptorMatcherRadiusMatch2Typed($matcher, $typeOfQueryDescriptors, $queryDescriptors, $matches, $maxDistance, $typeOfMasks, $masks, $compactResult)
 
-    Local $iArrQueryDescriptors, $vectorOfMatQueryDescriptors, $iArrQueryDescriptorsSize
-    Local $bQueryDescriptorsIsArray = VarGetType($matQueryDescriptors) == "Array"
+    Local $iArrQueryDescriptors, $vectorQueryDescriptors, $iArrQueryDescriptorsSize
+    Local $bQueryDescriptorsIsArray = IsArray($queryDescriptors)
+    Local $bQueryDescriptorsCreate = IsDllStruct($queryDescriptors) And $typeOfQueryDescriptors == "Scalar"
 
-    If $bQueryDescriptorsIsArray Then
-        $vectorOfMatQueryDescriptors = _VectorOfMatCreate()
+    If $typeOfQueryDescriptors == Default Then
+        $iArrQueryDescriptors = $queryDescriptors
+    ElseIf $bQueryDescriptorsIsArray Then
+        $vectorQueryDescriptors = Call("_VectorOf" & $typeOfQueryDescriptors & "Create")
 
-        $iArrQueryDescriptorsSize = UBound($matQueryDescriptors)
+        $iArrQueryDescriptorsSize = UBound($queryDescriptors)
         For $i = 0 To $iArrQueryDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatQueryDescriptors, $matQueryDescriptors[$i])
+            Call("_VectorOf" & $typeOfQueryDescriptors & "Push", $vectorQueryDescriptors, $queryDescriptors[$i])
         Next
 
-        $iArrQueryDescriptors = _cveInputArrayFromVectorOfMat($vectorOfMatQueryDescriptors)
+        $iArrQueryDescriptors = Call("_cveInputArrayFromVectorOf" & $typeOfQueryDescriptors, $vectorQueryDescriptors)
     Else
-        $iArrQueryDescriptors = _cveInputArrayFromMat($matQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            $queryDescriptors = Call("_cve" & $typeOfQueryDescriptors & "Create", $queryDescriptors)
+        EndIf
+        $iArrQueryDescriptors = Call("_cveInputArrayFrom" & $typeOfQueryDescriptors, $queryDescriptors)
     EndIf
 
-    Local $iArrMasks, $vectorOfMatMasks, $iArrMasksSize
-    Local $bMasksIsArray = VarGetType($matMasks) == "Array"
+    Local $iArrMasks, $vectorMasks, $iArrMasksSize
+    Local $bMasksIsArray = IsArray($masks)
+    Local $bMasksCreate = IsDllStruct($masks) And $typeOfMasks == "Scalar"
 
-    If $bMasksIsArray Then
-        $vectorOfMatMasks = _VectorOfMatCreate()
+    If $typeOfMasks == Default Then
+        $iArrMasks = $masks
+    ElseIf $bMasksIsArray Then
+        $vectorMasks = Call("_VectorOf" & $typeOfMasks & "Create")
 
-        $iArrMasksSize = UBound($matMasks)
+        $iArrMasksSize = UBound($masks)
         For $i = 0 To $iArrMasksSize - 1
-            _VectorOfMatPush($vectorOfMatMasks, $matMasks[$i])
+            Call("_VectorOf" & $typeOfMasks & "Push", $vectorMasks, $masks[$i])
         Next
 
-        $iArrMasks = _cveInputArrayFromVectorOfMat($vectorOfMatMasks)
+        $iArrMasks = Call("_cveInputArrayFromVectorOf" & $typeOfMasks, $vectorMasks)
     Else
-        $iArrMasks = _cveInputArrayFromMat($matMasks)
+        If $bMasksCreate Then
+            $masks = Call("_cve" & $typeOfMasks & "Create", $masks)
+        EndIf
+        $iArrMasks = Call("_cveInputArrayFrom" & $typeOfMasks, $masks)
     EndIf
 
     _cveDescriptorMatcherRadiusMatch2($matcher, $iArrQueryDescriptors, $matches, $maxDistance, $iArrMasks, $compactResult)
 
     If $bMasksIsArray Then
-        _VectorOfMatRelease($vectorOfMatMasks)
+        Call("_VectorOf" & $typeOfMasks & "Release", $vectorMasks)
     EndIf
 
-    _cveInputArrayRelease($iArrMasks)
+    If $typeOfMasks <> Default Then
+        _cveInputArrayRelease($iArrMasks)
+        If $bMasksCreate Then
+            Call("_cve" & $typeOfMasks & "Release", $masks)
+        EndIf
+    EndIf
 
     If $bQueryDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueryDescriptors)
+        Call("_VectorOf" & $typeOfQueryDescriptors & "Release", $vectorQueryDescriptors)
     EndIf
 
-    _cveInputArrayRelease($iArrQueryDescriptors)
+    If $typeOfQueryDescriptors <> Default Then
+        _cveInputArrayRelease($iArrQueryDescriptors)
+        If $bQueryDescriptorsCreate Then
+            Call("_cve" & $typeOfQueryDescriptors & "Release", $queryDescriptors)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDescriptorMatcherRadiusMatch2Typed
+
+Func _cveDescriptorMatcherRadiusMatch2Mat($matcher, $queryDescriptors, $matches, $maxDistance, $masks, $compactResult)
+    ; cveDescriptorMatcherRadiusMatch2 using cv::Mat instead of _*Array
+    _cveDescriptorMatcherRadiusMatch2Typed($matcher, "Mat", $queryDescriptors, $matches, $maxDistance, "Mat", $masks, $compactResult)
 EndFunc   ;==>_cveDescriptorMatcherRadiusMatch2Mat
 
 Func _cveBFMatcherCreate($distanceType, $crossCheck, $m)
@@ -2007,7 +2374,7 @@ Func _voteForSizeAndOrientation($modelKeyPoints, $observedKeyPoints, $matches, $
     ; CVAPI(int) voteForSizeAndOrientation(std::vector<cv::KeyPoint>* modelKeyPoints, std::vector<cv::KeyPoint>* observedKeyPoints, std::vector<std::vector<cv::DMatch>>* matches, cv::Mat* mask, double scaleIncrement, int rotationBins);
 
     Local $vecModelKeyPoints, $iArrModelKeyPointsSize
-    Local $bModelKeyPointsIsArray = VarGetType($modelKeyPoints) == "Array"
+    Local $bModelKeyPointsIsArray = IsArray($modelKeyPoints)
 
     If $bModelKeyPointsIsArray Then
         $vecModelKeyPoints = _VectorOfKeyPointCreate()
@@ -2028,7 +2395,7 @@ Func _voteForSizeAndOrientation($modelKeyPoints, $observedKeyPoints, $matches, $
     EndIf
 
     Local $vecObservedKeyPoints, $iArrObservedKeyPointsSize
-    Local $bObservedKeyPointsIsArray = VarGetType($observedKeyPoints) == "Array"
+    Local $bObservedKeyPointsIsArray = IsArray($observedKeyPoints)
 
     If $bObservedKeyPointsIsArray Then
         $vecObservedKeyPoints = _VectorOfKeyPointCreate()
@@ -2049,7 +2416,7 @@ Func _voteForSizeAndOrientation($modelKeyPoints, $observedKeyPoints, $matches, $
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfVectorOfDMatchCreate()
@@ -2118,7 +2485,7 @@ Func _CvFeature2DDetectAndCompute($feature2D, $image, $mask, $keypoints, $descri
     EndIf
 
     Local $vecKeypoints, $iArrKeypointsSize
-    Local $bKeypointsIsArray = VarGetType($keypoints) == "Array"
+    Local $bKeypointsIsArray = IsArray($keypoints)
 
     If $bKeypointsIsArray Then
         $vecKeypoints = _VectorOfKeyPointCreate()
@@ -2152,76 +2519,113 @@ Func _CvFeature2DDetectAndCompute($feature2D, $image, $mask, $keypoints, $descri
     EndIf
 EndFunc   ;==>_CvFeature2DDetectAndCompute
 
-Func _CvFeature2DDetectAndComputeMat($feature2D, $matImage, $matMask, $keypoints, $matDescriptors, $useProvidedKeyPoints)
-    ; CvFeature2DDetectAndCompute using cv::Mat instead of _*Array
+Func _CvFeature2DDetectAndComputeTyped($feature2D, $typeOfImage, $image, $typeOfMask, $mask, $keypoints, $typeOfDescriptors, $descriptors, $useProvidedKeyPoints)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $iArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $iArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $iArrMask = _cveInputArrayFromVectorOfMat($vectorOfMatMask)
+        $iArrMask = Call("_cveInputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $iArrMask = _cveInputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $iArrMask = Call("_cveInputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
-    Local $oArrDescriptors, $vectorOfMatDescriptors, $iArrDescriptorsSize
-    Local $bDescriptorsIsArray = VarGetType($matDescriptors) == "Array"
+    Local $oArrDescriptors, $vectorDescriptors, $iArrDescriptorsSize
+    Local $bDescriptorsIsArray = IsArray($descriptors)
+    Local $bDescriptorsCreate = IsDllStruct($descriptors) And $typeOfDescriptors == "Scalar"
 
-    If $bDescriptorsIsArray Then
-        $vectorOfMatDescriptors = _VectorOfMatCreate()
+    If $typeOfDescriptors == Default Then
+        $oArrDescriptors = $descriptors
+    ElseIf $bDescriptorsIsArray Then
+        $vectorDescriptors = Call("_VectorOf" & $typeOfDescriptors & "Create")
 
-        $iArrDescriptorsSize = UBound($matDescriptors)
+        $iArrDescriptorsSize = UBound($descriptors)
         For $i = 0 To $iArrDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatDescriptors, $matDescriptors[$i])
+            Call("_VectorOf" & $typeOfDescriptors & "Push", $vectorDescriptors, $descriptors[$i])
         Next
 
-        $oArrDescriptors = _cveOutputArrayFromVectorOfMat($vectorOfMatDescriptors)
+        $oArrDescriptors = Call("_cveOutputArrayFromVectorOf" & $typeOfDescriptors, $vectorDescriptors)
     Else
-        $oArrDescriptors = _cveOutputArrayFromMat($matDescriptors)
+        If $bDescriptorsCreate Then
+            $descriptors = Call("_cve" & $typeOfDescriptors & "Create", $descriptors)
+        EndIf
+        $oArrDescriptors = Call("_cveOutputArrayFrom" & $typeOfDescriptors, $descriptors)
     EndIf
 
     _CvFeature2DDetectAndCompute($feature2D, $iArrImage, $iArrMask, $keypoints, $oArrDescriptors, $useProvidedKeyPoints)
 
     If $bDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatDescriptors)
+        Call("_VectorOf" & $typeOfDescriptors & "Release", $vectorDescriptors)
     EndIf
 
-    _cveOutputArrayRelease($oArrDescriptors)
+    If $typeOfDescriptors <> Default Then
+        _cveOutputArrayRelease($oArrDescriptors)
+        If $bDescriptorsCreate Then
+            Call("_cve" & $typeOfDescriptors & "Release", $descriptors)
+        EndIf
+    EndIf
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMask)
+    If $typeOfMask <> Default Then
+        _cveInputArrayRelease($iArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_CvFeature2DDetectAndComputeTyped
+
+Func _CvFeature2DDetectAndComputeMat($feature2D, $image, $mask, $keypoints, $descriptors, $useProvidedKeyPoints)
+    ; CvFeature2DDetectAndCompute using cv::Mat instead of _*Array
+    _CvFeature2DDetectAndComputeTyped($feature2D, "Mat", $image, "Mat", $mask, $keypoints, "Mat", $descriptors, $useProvidedKeyPoints)
 EndFunc   ;==>_CvFeature2DDetectAndComputeMat
 
 Func _CvFeature2DDetect($feature2D, $image, $keypoints, $mask)
@@ -2242,7 +2646,7 @@ Func _CvFeature2DDetect($feature2D, $image, $keypoints, $mask)
     EndIf
 
     Local $vecKeypoints, $iArrKeypointsSize
-    Local $bKeypointsIsArray = VarGetType($keypoints) == "Array"
+    Local $bKeypointsIsArray = IsArray($keypoints)
 
     If $bKeypointsIsArray Then
         $vecKeypoints = _VectorOfKeyPointCreate()
@@ -2276,54 +2680,80 @@ Func _CvFeature2DDetect($feature2D, $image, $keypoints, $mask)
     EndIf
 EndFunc   ;==>_CvFeature2DDetect
 
-Func _CvFeature2DDetectMat($feature2D, $matImage, $keypoints, $matMask)
-    ; CvFeature2DDetect using cv::Mat instead of _*Array
+Func _CvFeature2DDetectTyped($feature2D, $typeOfImage, $image, $keypoints, $typeOfMask, $mask)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $iArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $iArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $iArrMask = _cveInputArrayFromVectorOfMat($vectorOfMatMask)
+        $iArrMask = Call("_cveInputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $iArrMask = _cveInputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $iArrMask = Call("_cveInputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
     _CvFeature2DDetect($feature2D, $iArrImage, $keypoints, $iArrMask)
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMask)
+    If $typeOfMask <> Default Then
+        _cveInputArrayRelease($iArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_CvFeature2DDetectTyped
+
+Func _CvFeature2DDetectMat($feature2D, $image, $keypoints, $mask)
+    ; CvFeature2DDetect using cv::Mat instead of _*Array
+    _CvFeature2DDetectTyped($feature2D, "Mat", $image, $keypoints, "Mat", $mask)
 EndFunc   ;==>_CvFeature2DDetectMat
 
 Func _CvFeature2DCompute($feature2D, $image, $keypoints, $descriptors)
@@ -2344,7 +2774,7 @@ Func _CvFeature2DCompute($feature2D, $image, $keypoints, $descriptors)
     EndIf
 
     Local $vecKeypoints, $iArrKeypointsSize
-    Local $bKeypointsIsArray = VarGetType($keypoints) == "Array"
+    Local $bKeypointsIsArray = IsArray($keypoints)
 
     If $bKeypointsIsArray Then
         $vecKeypoints = _VectorOfKeyPointCreate()
@@ -2378,54 +2808,80 @@ Func _CvFeature2DCompute($feature2D, $image, $keypoints, $descriptors)
     EndIf
 EndFunc   ;==>_CvFeature2DCompute
 
-Func _CvFeature2DComputeMat($feature2D, $matImage, $keypoints, $matDescriptors)
-    ; CvFeature2DCompute using cv::Mat instead of _*Array
+Func _CvFeature2DComputeTyped($feature2D, $typeOfImage, $image, $keypoints, $typeOfDescriptors, $descriptors)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $oArrDescriptors, $vectorOfMatDescriptors, $iArrDescriptorsSize
-    Local $bDescriptorsIsArray = VarGetType($matDescriptors) == "Array"
+    Local $oArrDescriptors, $vectorDescriptors, $iArrDescriptorsSize
+    Local $bDescriptorsIsArray = IsArray($descriptors)
+    Local $bDescriptorsCreate = IsDllStruct($descriptors) And $typeOfDescriptors == "Scalar"
 
-    If $bDescriptorsIsArray Then
-        $vectorOfMatDescriptors = _VectorOfMatCreate()
+    If $typeOfDescriptors == Default Then
+        $oArrDescriptors = $descriptors
+    ElseIf $bDescriptorsIsArray Then
+        $vectorDescriptors = Call("_VectorOf" & $typeOfDescriptors & "Create")
 
-        $iArrDescriptorsSize = UBound($matDescriptors)
+        $iArrDescriptorsSize = UBound($descriptors)
         For $i = 0 To $iArrDescriptorsSize - 1
-            _VectorOfMatPush($vectorOfMatDescriptors, $matDescriptors[$i])
+            Call("_VectorOf" & $typeOfDescriptors & "Push", $vectorDescriptors, $descriptors[$i])
         Next
 
-        $oArrDescriptors = _cveOutputArrayFromVectorOfMat($vectorOfMatDescriptors)
+        $oArrDescriptors = Call("_cveOutputArrayFromVectorOf" & $typeOfDescriptors, $vectorDescriptors)
     Else
-        $oArrDescriptors = _cveOutputArrayFromMat($matDescriptors)
+        If $bDescriptorsCreate Then
+            $descriptors = Call("_cve" & $typeOfDescriptors & "Create", $descriptors)
+        EndIf
+        $oArrDescriptors = Call("_cveOutputArrayFrom" & $typeOfDescriptors, $descriptors)
     EndIf
 
     _CvFeature2DCompute($feature2D, $iArrImage, $keypoints, $oArrDescriptors)
 
     If $bDescriptorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatDescriptors)
+        Call("_VectorOf" & $typeOfDescriptors & "Release", $vectorDescriptors)
     EndIf
 
-    _cveOutputArrayRelease($oArrDescriptors)
+    If $typeOfDescriptors <> Default Then
+        _cveOutputArrayRelease($oArrDescriptors)
+        If $bDescriptorsCreate Then
+            Call("_cve" & $typeOfDescriptors & "Release", $descriptors)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_CvFeature2DComputeTyped
+
+Func _CvFeature2DComputeMat($feature2D, $image, $keypoints, $descriptors)
+    ; CvFeature2DCompute using cv::Mat instead of _*Array
+    _CvFeature2DComputeTyped($feature2D, "Mat", $image, $keypoints, "Mat", $descriptors)
 EndFunc   ;==>_CvFeature2DComputeMat
 
 Func _CvFeature2DGetDescriptorSize($feature2D)
@@ -2531,32 +2987,47 @@ Func _cveBOWKMeansTrainerCluster($trainer, $cluster)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBOWKMeansTrainerCluster", $sTrainerDllType, $trainer, $sClusterDllType, $cluster), "cveBOWKMeansTrainerCluster", @error)
 EndFunc   ;==>_cveBOWKMeansTrainerCluster
 
-Func _cveBOWKMeansTrainerClusterMat($trainer, $matCluster)
-    ; cveBOWKMeansTrainerCluster using cv::Mat instead of _*Array
+Func _cveBOWKMeansTrainerClusterTyped($trainer, $typeOfCluster, $cluster)
 
-    Local $oArrCluster, $vectorOfMatCluster, $iArrClusterSize
-    Local $bClusterIsArray = VarGetType($matCluster) == "Array"
+    Local $oArrCluster, $vectorCluster, $iArrClusterSize
+    Local $bClusterIsArray = IsArray($cluster)
+    Local $bClusterCreate = IsDllStruct($cluster) And $typeOfCluster == "Scalar"
 
-    If $bClusterIsArray Then
-        $vectorOfMatCluster = _VectorOfMatCreate()
+    If $typeOfCluster == Default Then
+        $oArrCluster = $cluster
+    ElseIf $bClusterIsArray Then
+        $vectorCluster = Call("_VectorOf" & $typeOfCluster & "Create")
 
-        $iArrClusterSize = UBound($matCluster)
+        $iArrClusterSize = UBound($cluster)
         For $i = 0 To $iArrClusterSize - 1
-            _VectorOfMatPush($vectorOfMatCluster, $matCluster[$i])
+            Call("_VectorOf" & $typeOfCluster & "Push", $vectorCluster, $cluster[$i])
         Next
 
-        $oArrCluster = _cveOutputArrayFromVectorOfMat($vectorOfMatCluster)
+        $oArrCluster = Call("_cveOutputArrayFromVectorOf" & $typeOfCluster, $vectorCluster)
     Else
-        $oArrCluster = _cveOutputArrayFromMat($matCluster)
+        If $bClusterCreate Then
+            $cluster = Call("_cve" & $typeOfCluster & "Create", $cluster)
+        EndIf
+        $oArrCluster = Call("_cveOutputArrayFrom" & $typeOfCluster, $cluster)
     EndIf
 
     _cveBOWKMeansTrainerCluster($trainer, $oArrCluster)
 
     If $bClusterIsArray Then
-        _VectorOfMatRelease($vectorOfMatCluster)
+        Call("_VectorOf" & $typeOfCluster & "Release", $vectorCluster)
     EndIf
 
-    _cveOutputArrayRelease($oArrCluster)
+    If $typeOfCluster <> Default Then
+        _cveOutputArrayRelease($oArrCluster)
+        If $bClusterCreate Then
+            Call("_cve" & $typeOfCluster & "Release", $cluster)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveBOWKMeansTrainerClusterTyped
+
+Func _cveBOWKMeansTrainerClusterMat($trainer, $cluster)
+    ; cveBOWKMeansTrainerCluster using cv::Mat instead of _*Array
+    _cveBOWKMeansTrainerClusterTyped($trainer, "Mat", $cluster)
 EndFunc   ;==>_cveBOWKMeansTrainerClusterMat
 
 Func _cveBOWImgDescriptorExtractorCreate($descriptorExtractor, $descriptorMatcher)
@@ -2631,7 +3102,7 @@ Func _cveBOWImgDescriptorExtractorCompute($bowImgDescriptorExtractor, $image, $k
     EndIf
 
     Local $vecKeypoints, $iArrKeypointsSize
-    Local $bKeypointsIsArray = VarGetType($keypoints) == "Array"
+    Local $bKeypointsIsArray = IsArray($keypoints)
 
     If $bKeypointsIsArray Then
         $vecKeypoints = _VectorOfKeyPointCreate()
@@ -2665,32 +3136,47 @@ Func _cveBOWImgDescriptorExtractorCompute($bowImgDescriptorExtractor, $image, $k
     EndIf
 EndFunc   ;==>_cveBOWImgDescriptorExtractorCompute
 
-Func _cveBOWImgDescriptorExtractorComputeMat($bowImgDescriptorExtractor, $matImage, $keypoints, $imgDescriptor)
-    ; cveBOWImgDescriptorExtractorCompute using cv::Mat instead of _*Array
+Func _cveBOWImgDescriptorExtractorComputeTyped($bowImgDescriptorExtractor, $typeOfImage, $image, $keypoints, $imgDescriptor)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
     _cveBOWImgDescriptorExtractorCompute($bowImgDescriptorExtractor, $iArrImage, $keypoints, $imgDescriptor)
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveBOWImgDescriptorExtractorComputeTyped
+
+Func _cveBOWImgDescriptorExtractorComputeMat($bowImgDescriptorExtractor, $image, $keypoints, $imgDescriptor)
+    ; cveBOWImgDescriptorExtractorCompute using cv::Mat instead of _*Array
+    _cveBOWImgDescriptorExtractorComputeTyped($bowImgDescriptorExtractor, "Mat", $image, $keypoints, $imgDescriptor)
 EndFunc   ;==>_cveBOWImgDescriptorExtractorComputeMat
 
 Func _cveKAZEDetectorCreate($extended, $upright, $threshold, $octaves, $sublevels, $diffusivity, $feature2D, $sharedPtr)

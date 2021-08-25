@@ -15,7 +15,7 @@ Func _VectorOfVideoCaptureGetSize($v)
     ; CVAPI(int) VectorOfVideoCaptureGetSize(std::vector<cv::VideoCapture>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVideoCaptureCreate()
@@ -48,7 +48,7 @@ Func _VectorOfVideoCapturePush($v, $value)
     ; CVAPI(void) VectorOfVideoCapturePush(std::vector<cv::VideoCapture>* v, cv::VideoCapture* value);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVideoCaptureCreate()
@@ -86,7 +86,7 @@ Func _VectorOfVideoCapturePushVector($v, $other)
     ; CVAPI(void) VectorOfVideoCapturePushVector(std::vector<cv::VideoCapture>* v, std::vector<cv::VideoCapture>* other);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVideoCaptureCreate()
@@ -107,7 +107,7 @@ Func _VectorOfVideoCapturePushVector($v, $other)
     EndIf
 
     Local $vecOther, $iArrOtherSize
-    Local $bOtherIsArray = VarGetType($other) == "Array"
+    Local $bOtherIsArray = IsArray($other)
 
     If $bOtherIsArray Then
         $vecOther = _VectorOfVideoCaptureCreate()
@@ -142,7 +142,7 @@ Func _VectorOfVideoCaptureGetStartAddress($v)
     ; CVAPI(cv::VideoCapture*) VectorOfVideoCaptureGetStartAddress(std::vector<cv::VideoCapture>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVideoCaptureCreate()
@@ -175,7 +175,7 @@ Func _VectorOfVideoCaptureGetEndAddress($v)
     ; CVAPI(void*) VectorOfVideoCaptureGetEndAddress(std::vector<cv::VideoCapture>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVideoCaptureCreate()
@@ -208,7 +208,7 @@ Func _VectorOfVideoCaptureClear($v)
     ; CVAPI(void) VectorOfVideoCaptureClear(std::vector<cv::VideoCapture>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVideoCaptureCreate()
@@ -239,7 +239,7 @@ Func _VectorOfVideoCaptureRelease($v)
     ; CVAPI(void) VectorOfVideoCaptureRelease(std::vector<cv::VideoCapture>** v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVideoCaptureCreate()
@@ -272,7 +272,7 @@ Func _VectorOfVideoCaptureCopyData($v, $data)
     ; CVAPI(void) VectorOfVideoCaptureCopyData(std::vector<cv::VideoCapture>* v, cv::VideoCapture* data);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVideoCaptureCreate()
@@ -310,7 +310,7 @@ Func _VectorOfVideoCaptureGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfVideoCaptureGetItemPtr(std::vector<cv::VideoCapture>* vec, int index, cv::VideoCapture** element);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfVideoCaptureCreate()
@@ -350,7 +350,7 @@ Func _cveInputArrayFromVectorOfVideoCapture($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfVideoCapture(std::vector<cv::VideoCapture>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfVideoCaptureCreate()
@@ -383,7 +383,7 @@ Func _cveOutputArrayFromVectorOfVideoCapture($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfVideoCapture(std::vector<cv::VideoCapture>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfVideoCaptureCreate()
@@ -416,7 +416,7 @@ Func _cveInputOutputArrayFromVectorOfVideoCapture($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfVideoCapture(std::vector<cv::VideoCapture>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfVideoCaptureCreate()

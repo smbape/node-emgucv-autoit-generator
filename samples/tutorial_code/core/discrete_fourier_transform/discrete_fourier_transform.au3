@@ -90,10 +90,10 @@ Func Main()
 	_cveMatGetSize($I, $tSize)
 
 	;;! [expand]
-    Local $padded = _cveMatCreate();                            ;;expand input image to optimal size
-    Local $m = _cveGetOptimalDFTSize( $tSize.height );
-    Local $n = _cveGetOptimalDFTSize( $tSize.width ); ; on the border add zero values
-    _cveCopyMakeBorderMat($I, $padded, 0, $m - $tSize.height, 0, $n - $tSize.width, $CV_BORDER_CONSTANT, _cvScalarAll(0));
+	Local $padded = _cveMatCreate();                            ;;expand input image to optimal size
+	Local $m = _cveGetOptimalDFTSize( $tSize.height );
+	Local $n = _cveGetOptimalDFTSize( $tSize.width ); ; on the border add zero values
+	_cveCopyMakeBorderMat($I, $padded, 0, $m - $tSize.height, 0, $n - $tSize.width, $CV_BORDER_CONSTANT, _cvScalarAll(0));
 	;;! [expand]
 
 	;;! [complex_and_real]
@@ -101,67 +101,59 @@ Func Main()
 	_cveMatConvertToMat($padded, $planes[0], $CV_32F, 1.0, 0.0)
 	_cveMatGetSize($padded, $tSize)
 	_cveMatOnes($tSize.height, $tSize.width, $CV_32F, $planes[1])
-    Local $complexI = _cveMatCreate();
-    _cveMergeMat($planes, $complexI);         ; Add to the expanded another plane with zeros
+	Local $complexI = _cveMatCreate();
+	_cveMergeMat($planes, $complexI);         ; Add to the expanded another plane with zeros
 	;;! [complex_and_real]
 
 	;;! [dft]
-    _cveDftMat($complexI, $complexI);            ; this way the result may fit in the source matrix
+	_cveDftMat($complexI, $complexI);            ; this way the result may fit in the source matrix
 	;;! [dft]
 
-    ; compute the magnitude and switch to logarithmic scale
-    ; => log(1 + sqrt(Re(DFT(I))^2 + Im(DFT(I))^2))
+	; compute the magnitude and switch to logarithmic scale
+	; => log(1 + sqrt(Re(DFT(I))^2 + Im(DFT(I))^2))
 	;;! [magnitude]
 	Local $magI = _cveMatCreate()
 	Local $angleI = _cveMatCreate()
-    _cveSplitMat($complexI, $planes);                   ; planes[0] = Re(DFT(I), planes[1] = Im(DFT(I))
-    _cveCartToPolarMat($planes[0], $planes[1], $magI, $angleI);
+	_cveSplitMat($complexI, $planes);                   ; planes[0] = Re(DFT(I), planes[1] = Im(DFT(I))
+	_cveCartToPolarMat($planes[0], $planes[1], $magI, $angleI);
 	_cveMatRelease($angleI)
 	;;! [magnitude]
 
 	;;! [log]
-	Local $scalar = _cveScalarCreate(_cvScalarAll(1))
-	Local $i_arr_scalar = _cveInputArrayFromScalar($scalar)
-	Local $i_arr_magI = _cveInputArrayFromMat($magI)
-	Local $o_arr_magI = _cveOutputArrayFromMat($magI)
-	_cveAdd($i_arr_magI, $i_arr_scalar, $o_arr_magI) ; switch to logarithmic scale
-    _cveOutputArrayRelease($o_arr_magI)
-    _cveInputArrayRelease($i_arr_magI)
-    _cveInputArrayRelease($i_arr_scalar)
-    _cveScalarRelease($scalar)
-    _cveLogMat($magI, $magI);
+	_cveAddTyped("Mat", $magI, "Scalar", _cvScalarAll(1), "Mat", $magI) ; switch to logarithmic scale
+	_cveLogMat($magI, $magI);
 	;;! [log]
 
 	;;! [crop_rearrange]
-    ; crop the spectrum, if it has an odd number of rows or columns
+	; crop the spectrum, if it has an odd number of rows or columns
 	_cveMatGetSize($magI, $tSize)
-    Local $tRect = _cvRect(0, 0, BitAND($tSize.width, -2), BitAND($tSize.height, -2))
-    Local $_magI = $magI
-    $magI = _cveMatCreateFromRect($_magI, $tRect)
+	Local $tRect = _cvRect(0, 0, BitAND($tSize.width, -2), BitAND($tSize.height, -2))
+	Local $_magI = $magI
+	$magI = _cveMatCreateFromRect($_magI, $tRect)
 
-    ; rearrange the quadrants of Fourier image  so that the origin is at the image center
+	; rearrange the quadrants of Fourier image  so that the origin is at the image center
 	_cveMatGetSize($magI, $tSize)
-    Local $cx = $tSize.width / 2;
-    Local $cy = $tSize.height / 2;
+	Local $cx = $tSize.width / 2;
+	Local $cy = $tSize.height / 2;
 
-    Local $q0 = _cveMatCreateFromRect($magI, _cvRect(0, 0, $cx, $cy));     ; Top-Left - Create a ROI per quadrant
-    Local $q1 = _cveMatCreateFromRect($magI, _cvRect($cx, 0, $cx, $cy));   ; Top-Right
-    Local $q2 = _cveMatCreateFromRect($magI, _cvRect(0, $cy, $cx, $cy));   ; Bottom-Left
-    Local $q3 = _cveMatCreateFromRect($magI, _cvRect($cx, $cy, $cx, $cy)); ; Bottom-Right
+	Local $q0 = _cveMatCreateFromRect($magI, _cvRect(0, 0, $cx, $cy));     ; Top-Left - Create a ROI per quadrant
+	Local $q1 = _cveMatCreateFromRect($magI, _cvRect($cx, 0, $cx, $cy));   ; Top-Right
+	Local $q2 = _cveMatCreateFromRect($magI, _cvRect(0, $cy, $cx, $cy));   ; Bottom-Left
+	Local $q3 = _cveMatCreateFromRect($magI, _cvRect($cx, $cy, $cx, $cy)); ; Bottom-Right
 
-    Local $tmp = _cveMatCreate();                  ; swap quadrants (Top-Left with Bottom-Right)
-    _cveMatCopyToMat($q0, $tmp, _cveNoArrayMat());
-    _cveMatCopyToMat($q3, $q0, _cveNoArrayMat());
-    _cveMatCopyToMat($tmp, $q3, _cveNoArrayMat());
+	Local $tmp = _cveMatCreate();                  ; swap quadrants (Top-Left with Bottom-Right)
+	_cveMatCopyToMat($q0, $tmp, _cveNoArrayMat());
+	_cveMatCopyToMat($q3, $q0, _cveNoArrayMat());
+	_cveMatCopyToMat($tmp, $q3, _cveNoArrayMat());
 
-    _cveMatCopyToMat($q1, $tmp, _cveNoArrayMat()); ; swap quadrant (Top-Right with Bottom-Left)
-    _cveMatCopyToMat($q2, $q1, _cveNoArrayMat());
-    _cveMatCopyToMat($tmp, $q2, _cveNoArrayMat());
+	_cveMatCopyToMat($q1, $tmp, _cveNoArrayMat()); ; swap quadrant (Top-Right with Bottom-Left)
+	_cveMatCopyToMat($q2, $q1, _cveNoArrayMat());
+	_cveMatCopyToMat($tmp, $q2, _cveNoArrayMat());
 	;;! [crop_rearrange]
 
 	;;! [normalize]
-    _cveNormalizeMat($magI, $magI, 0, 1, $CV_NORM_MINMAX); ; Transform the matrix with float values into a
-                                            ; viewable image form (float between values 0 and 1).
+	_cveNormalizeMat($magI, $magI, 0, 1, $CV_NORM_MINMAX); ; Transform the matrix with float values into a
+											; viewable image form (float between values 0 and 1).
 	;;! [normalize]
 
 	;;! [Display]

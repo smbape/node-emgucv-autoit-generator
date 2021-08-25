@@ -28,76 +28,113 @@ Func _cveFtCreateKernel($A, $B, $kernel, $chn)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtCreateKernel", $sADllType, $A, $sBDllType, $B, $sKernelDllType, $kernel, "int", $chn), "cveFtCreateKernel", @error)
 EndFunc   ;==>_cveFtCreateKernel
 
-Func _cveFtCreateKernelMat($matA, $matB, $matKernel, $chn)
-    ; cveFtCreateKernel using cv::Mat instead of _*Array
+Func _cveFtCreateKernelTyped($typeOfA, $A, $typeOfB, $B, $typeOfKernel, $kernel, $chn)
 
-    Local $iArrA, $vectorOfMatA, $iArrASize
-    Local $bAIsArray = VarGetType($matA) == "Array"
+    Local $iArrA, $vectorA, $iArrASize
+    Local $bAIsArray = IsArray($A)
+    Local $bACreate = IsDllStruct($A) And $typeOfA == "Scalar"
 
-    If $bAIsArray Then
-        $vectorOfMatA = _VectorOfMatCreate()
+    If $typeOfA == Default Then
+        $iArrA = $A
+    ElseIf $bAIsArray Then
+        $vectorA = Call("_VectorOf" & $typeOfA & "Create")
 
-        $iArrASize = UBound($matA)
+        $iArrASize = UBound($A)
         For $i = 0 To $iArrASize - 1
-            _VectorOfMatPush($vectorOfMatA, $matA[$i])
+            Call("_VectorOf" & $typeOfA & "Push", $vectorA, $A[$i])
         Next
 
-        $iArrA = _cveInputArrayFromVectorOfMat($vectorOfMatA)
+        $iArrA = Call("_cveInputArrayFromVectorOf" & $typeOfA, $vectorA)
     Else
-        $iArrA = _cveInputArrayFromMat($matA)
+        If $bACreate Then
+            $A = Call("_cve" & $typeOfA & "Create", $A)
+        EndIf
+        $iArrA = Call("_cveInputArrayFrom" & $typeOfA, $A)
     EndIf
 
-    Local $iArrB, $vectorOfMatB, $iArrBSize
-    Local $bBIsArray = VarGetType($matB) == "Array"
+    Local $iArrB, $vectorB, $iArrBSize
+    Local $bBIsArray = IsArray($B)
+    Local $bBCreate = IsDllStruct($B) And $typeOfB == "Scalar"
 
-    If $bBIsArray Then
-        $vectorOfMatB = _VectorOfMatCreate()
+    If $typeOfB == Default Then
+        $iArrB = $B
+    ElseIf $bBIsArray Then
+        $vectorB = Call("_VectorOf" & $typeOfB & "Create")
 
-        $iArrBSize = UBound($matB)
+        $iArrBSize = UBound($B)
         For $i = 0 To $iArrBSize - 1
-            _VectorOfMatPush($vectorOfMatB, $matB[$i])
+            Call("_VectorOf" & $typeOfB & "Push", $vectorB, $B[$i])
         Next
 
-        $iArrB = _cveInputArrayFromVectorOfMat($vectorOfMatB)
+        $iArrB = Call("_cveInputArrayFromVectorOf" & $typeOfB, $vectorB)
     Else
-        $iArrB = _cveInputArrayFromMat($matB)
+        If $bBCreate Then
+            $B = Call("_cve" & $typeOfB & "Create", $B)
+        EndIf
+        $iArrB = Call("_cveInputArrayFrom" & $typeOfB, $B)
     EndIf
 
-    Local $oArrKernel, $vectorOfMatKernel, $iArrKernelSize
-    Local $bKernelIsArray = VarGetType($matKernel) == "Array"
+    Local $oArrKernel, $vectorKernel, $iArrKernelSize
+    Local $bKernelIsArray = IsArray($kernel)
+    Local $bKernelCreate = IsDllStruct($kernel) And $typeOfKernel == "Scalar"
 
-    If $bKernelIsArray Then
-        $vectorOfMatKernel = _VectorOfMatCreate()
+    If $typeOfKernel == Default Then
+        $oArrKernel = $kernel
+    ElseIf $bKernelIsArray Then
+        $vectorKernel = Call("_VectorOf" & $typeOfKernel & "Create")
 
-        $iArrKernelSize = UBound($matKernel)
+        $iArrKernelSize = UBound($kernel)
         For $i = 0 To $iArrKernelSize - 1
-            _VectorOfMatPush($vectorOfMatKernel, $matKernel[$i])
+            Call("_VectorOf" & $typeOfKernel & "Push", $vectorKernel, $kernel[$i])
         Next
 
-        $oArrKernel = _cveOutputArrayFromVectorOfMat($vectorOfMatKernel)
+        $oArrKernel = Call("_cveOutputArrayFromVectorOf" & $typeOfKernel, $vectorKernel)
     Else
-        $oArrKernel = _cveOutputArrayFromMat($matKernel)
+        If $bKernelCreate Then
+            $kernel = Call("_cve" & $typeOfKernel & "Create", $kernel)
+        EndIf
+        $oArrKernel = Call("_cveOutputArrayFrom" & $typeOfKernel, $kernel)
     EndIf
 
     _cveFtCreateKernel($iArrA, $iArrB, $oArrKernel, $chn)
 
     If $bKernelIsArray Then
-        _VectorOfMatRelease($vectorOfMatKernel)
+        Call("_VectorOf" & $typeOfKernel & "Release", $vectorKernel)
     EndIf
 
-    _cveOutputArrayRelease($oArrKernel)
+    If $typeOfKernel <> Default Then
+        _cveOutputArrayRelease($oArrKernel)
+        If $bKernelCreate Then
+            Call("_cve" & $typeOfKernel & "Release", $kernel)
+        EndIf
+    EndIf
 
     If $bBIsArray Then
-        _VectorOfMatRelease($vectorOfMatB)
+        Call("_VectorOf" & $typeOfB & "Release", $vectorB)
     EndIf
 
-    _cveInputArrayRelease($iArrB)
+    If $typeOfB <> Default Then
+        _cveInputArrayRelease($iArrB)
+        If $bBCreate Then
+            Call("_cve" & $typeOfB & "Release", $B)
+        EndIf
+    EndIf
 
     If $bAIsArray Then
-        _VectorOfMatRelease($vectorOfMatA)
+        Call("_VectorOf" & $typeOfA & "Release", $vectorA)
     EndIf
 
-    _cveInputArrayRelease($iArrA)
+    If $typeOfA <> Default Then
+        _cveInputArrayRelease($iArrA)
+        If $bACreate Then
+            Call("_cve" & $typeOfA & "Release", $A)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveFtCreateKernelTyped
+
+Func _cveFtCreateKernelMat($A, $B, $kernel, $chn)
+    ; cveFtCreateKernel using cv::Mat instead of _*Array
+    _cveFtCreateKernelTyped("Mat", $A, "Mat", $B, "Mat", $kernel, $chn)
 EndFunc   ;==>_cveFtCreateKernelMat
 
 Func _cveFtcreateKernelFromFunction($function, $radius, $kernel, $chn)
@@ -113,32 +150,47 @@ Func _cveFtcreateKernelFromFunction($function, $radius, $kernel, $chn)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFtcreateKernelFromFunction", "int", $function, "int", $radius, $sKernelDllType, $kernel, "int", $chn), "cveFtcreateKernelFromFunction", @error)
 EndFunc   ;==>_cveFtcreateKernelFromFunction
 
-Func _cveFtcreateKernelFromFunctionMat($function, $radius, $matKernel, $chn)
-    ; cveFtcreateKernelFromFunction using cv::Mat instead of _*Array
+Func _cveFtcreateKernelFromFunctionTyped($function, $radius, $typeOfKernel, $kernel, $chn)
 
-    Local $oArrKernel, $vectorOfMatKernel, $iArrKernelSize
-    Local $bKernelIsArray = VarGetType($matKernel) == "Array"
+    Local $oArrKernel, $vectorKernel, $iArrKernelSize
+    Local $bKernelIsArray = IsArray($kernel)
+    Local $bKernelCreate = IsDllStruct($kernel) And $typeOfKernel == "Scalar"
 
-    If $bKernelIsArray Then
-        $vectorOfMatKernel = _VectorOfMatCreate()
+    If $typeOfKernel == Default Then
+        $oArrKernel = $kernel
+    ElseIf $bKernelIsArray Then
+        $vectorKernel = Call("_VectorOf" & $typeOfKernel & "Create")
 
-        $iArrKernelSize = UBound($matKernel)
+        $iArrKernelSize = UBound($kernel)
         For $i = 0 To $iArrKernelSize - 1
-            _VectorOfMatPush($vectorOfMatKernel, $matKernel[$i])
+            Call("_VectorOf" & $typeOfKernel & "Push", $vectorKernel, $kernel[$i])
         Next
 
-        $oArrKernel = _cveOutputArrayFromVectorOfMat($vectorOfMatKernel)
+        $oArrKernel = Call("_cveOutputArrayFromVectorOf" & $typeOfKernel, $vectorKernel)
     Else
-        $oArrKernel = _cveOutputArrayFromMat($matKernel)
+        If $bKernelCreate Then
+            $kernel = Call("_cve" & $typeOfKernel & "Create", $kernel)
+        EndIf
+        $oArrKernel = Call("_cveOutputArrayFrom" & $typeOfKernel, $kernel)
     EndIf
 
     _cveFtcreateKernelFromFunction($function, $radius, $oArrKernel, $chn)
 
     If $bKernelIsArray Then
-        _VectorOfMatRelease($vectorOfMatKernel)
+        Call("_VectorOf" & $typeOfKernel & "Release", $vectorKernel)
     EndIf
 
-    _cveOutputArrayRelease($oArrKernel)
+    If $typeOfKernel <> Default Then
+        _cveOutputArrayRelease($oArrKernel)
+        If $bKernelCreate Then
+            Call("_cve" & $typeOfKernel & "Release", $kernel)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveFtcreateKernelFromFunctionTyped
+
+Func _cveFtcreateKernelFromFunctionMat($function, $radius, $kernel, $chn)
+    ; cveFtcreateKernelFromFunction using cv::Mat instead of _*Array
+    _cveFtcreateKernelFromFunctionTyped($function, $radius, "Mat", $kernel, $chn)
 EndFunc   ;==>_cveFtcreateKernelFromFunctionMat
 
 Func _cveFtInpaint($image, $mask, $output, $radius, $function, $algorithm)

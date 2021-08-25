@@ -11,7 +11,7 @@ Func _cvePlatformInfoName($obj, $str)
         $sObjDllType = "ptr"
     EndIf
 
-    Local $bStrIsString = VarGetType($str) == "String"
+    Local $bStrIsString = IsString($str)
     If $bStrIsString Then
         $str = _cveStringCreateFromStr($str)
     EndIf
@@ -40,7 +40,7 @@ Func _cvePlatformInfoVersion($obj, $str)
         $sObjDllType = "ptr"
     EndIf
 
-    Local $bStrIsString = VarGetType($str) == "String"
+    Local $bStrIsString = IsString($str)
     If $bStrIsString Then
         $str = _cveStringCreateFromStr($str)
     EndIf
@@ -69,7 +69,7 @@ Func _cvePlatformInfoVendor($obj, $str)
         $sObjDllType = "ptr"
     EndIf
 
-    Local $bStrIsString = VarGetType($str) == "String"
+    Local $bStrIsString = IsString($str)
     If $bStrIsString Then
         $str = _cveStringCreateFromStr($str)
     EndIf

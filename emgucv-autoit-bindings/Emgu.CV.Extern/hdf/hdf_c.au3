@@ -4,7 +4,7 @@
 Func _cveHDF5Create($fileName, $sharedPtr)
     ; CVAPI(cv::hdf::HDF5*) cveHDF5Create(cv::String* fileName, cv::Ptr<cv::hdf::HDF5>** sharedPtr);
 
-    Local $bFileNameIsString = VarGetType($fileName) == "String"
+    Local $bFileNameIsString = IsString($fileName)
     If $bFileNameIsString Then
         $fileName = _cveStringCreateFromStr($fileName)
     EndIf
@@ -59,7 +59,7 @@ Func _cveHDF5GrCreate($hdf, $grlabel)
         $sHdfDllType = "ptr"
     EndIf
 
-    Local $bGrlabelIsString = VarGetType($grlabel) == "String"
+    Local $bGrlabelIsString = IsString($grlabel)
     If $bGrlabelIsString Then
         $grlabel = _cveStringCreateFromStr($grlabel)
     EndIf
@@ -88,7 +88,7 @@ Func _cveHDF5HlExists($hdf, $label)
         $sHdfDllType = "ptr"
     EndIf
 
-    Local $bLabelIsString = VarGetType($label) == "String"
+    Local $bLabelIsString = IsString($label)
     If $bLabelIsString Then
         $label = _cveStringCreateFromStr($label)
     EndIf
@@ -119,7 +119,7 @@ Func _cveHDF5DsCreate($hdf, $rows, $cols, $type, $dslabel, $compresslevel, $dims
         $sHdfDllType = "ptr"
     EndIf
 
-    Local $bDslabelIsString = VarGetType($dslabel) == "String"
+    Local $bDslabelIsString = IsString($dslabel)
     If $bDslabelIsString Then
         $dslabel = _cveStringCreateFromStr($dslabel)
     EndIf
@@ -132,7 +132,7 @@ Func _cveHDF5DsCreate($hdf, $rows, $cols, $type, $dslabel, $compresslevel, $dims
     EndIf
 
     Local $vecDims_chunks, $iArrDims_chunksSize
-    Local $bDims_chunksIsArray = VarGetType($dims_chunks) == "Array"
+    Local $bDims_chunksIsArray = IsArray($dims_chunks)
 
     If $bDims_chunksIsArray Then
         $vecDims_chunks = _VectorOfIntCreate()
@@ -180,7 +180,7 @@ Func _cveHDF5DsWrite($hdf, $Array, $dslabel)
         $sArrayDllType = "ptr"
     EndIf
 
-    Local $bDslabelIsString = VarGetType($dslabel) == "String"
+    Local $bDslabelIsString = IsString($dslabel)
     If $bDslabelIsString Then
         $dslabel = _cveStringCreateFromStr($dslabel)
     EndIf
@@ -199,32 +199,47 @@ Func _cveHDF5DsWrite($hdf, $Array, $dslabel)
     EndIf
 EndFunc   ;==>_cveHDF5DsWrite
 
-Func _cveHDF5DsWriteMat($hdf, $matArray, $dslabel)
-    ; cveHDF5DsWrite using cv::Mat instead of _*Array
+Func _cveHDF5DsWriteTyped($hdf, $typeOfArray, $Array, $dslabel)
 
-    Local $iArrArray, $vectorOfMatArray, $iArrArraySize
-    Local $bArrayIsArray = VarGetType($matArray) == "Array"
+    Local $iArrArray, $vectorArray, $iArrArraySize
+    Local $bArrayIsArray = IsArray($Array)
+    Local $bArrayCreate = IsDllStruct($Array) And $typeOfArray == "Scalar"
 
-    If $bArrayIsArray Then
-        $vectorOfMatArray = _VectorOfMatCreate()
+    If $typeOfArray == Default Then
+        $iArrArray = $Array
+    ElseIf $bArrayIsArray Then
+        $vectorArray = Call("_VectorOf" & $typeOfArray & "Create")
 
-        $iArrArraySize = UBound($matArray)
+        $iArrArraySize = UBound($Array)
         For $i = 0 To $iArrArraySize - 1
-            _VectorOfMatPush($vectorOfMatArray, $matArray[$i])
+            Call("_VectorOf" & $typeOfArray & "Push", $vectorArray, $Array[$i])
         Next
 
-        $iArrArray = _cveInputArrayFromVectorOfMat($vectorOfMatArray)
+        $iArrArray = Call("_cveInputArrayFromVectorOf" & $typeOfArray, $vectorArray)
     Else
-        $iArrArray = _cveInputArrayFromMat($matArray)
+        If $bArrayCreate Then
+            $Array = Call("_cve" & $typeOfArray & "Create", $Array)
+        EndIf
+        $iArrArray = Call("_cveInputArrayFrom" & $typeOfArray, $Array)
     EndIf
 
     _cveHDF5DsWrite($hdf, $iArrArray, $dslabel)
 
     If $bArrayIsArray Then
-        _VectorOfMatRelease($vectorOfMatArray)
+        Call("_VectorOf" & $typeOfArray & "Release", $vectorArray)
     EndIf
 
-    _cveInputArrayRelease($iArrArray)
+    If $typeOfArray <> Default Then
+        _cveInputArrayRelease($iArrArray)
+        If $bArrayCreate Then
+            Call("_cve" & $typeOfArray & "Release", $Array)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveHDF5DsWriteTyped
+
+Func _cveHDF5DsWriteMat($hdf, $Array, $dslabel)
+    ; cveHDF5DsWrite using cv::Mat instead of _*Array
+    _cveHDF5DsWriteTyped($hdf, "Mat", $Array, $dslabel)
 EndFunc   ;==>_cveHDF5DsWriteMat
 
 Func _cveHDF5DsRead($hdf, $Array, $dslabel)
@@ -244,7 +259,7 @@ Func _cveHDF5DsRead($hdf, $Array, $dslabel)
         $sArrayDllType = "ptr"
     EndIf
 
-    Local $bDslabelIsString = VarGetType($dslabel) == "String"
+    Local $bDslabelIsString = IsString($dslabel)
     If $bDslabelIsString Then
         $dslabel = _cveStringCreateFromStr($dslabel)
     EndIf
@@ -263,32 +278,47 @@ Func _cveHDF5DsRead($hdf, $Array, $dslabel)
     EndIf
 EndFunc   ;==>_cveHDF5DsRead
 
-Func _cveHDF5DsReadMat($hdf, $matArray, $dslabel)
-    ; cveHDF5DsRead using cv::Mat instead of _*Array
+Func _cveHDF5DsReadTyped($hdf, $typeOfArray, $Array, $dslabel)
 
-    Local $oArrArray, $vectorOfMatArray, $iArrArraySize
-    Local $bArrayIsArray = VarGetType($matArray) == "Array"
+    Local $oArrArray, $vectorArray, $iArrArraySize
+    Local $bArrayIsArray = IsArray($Array)
+    Local $bArrayCreate = IsDllStruct($Array) And $typeOfArray == "Scalar"
 
-    If $bArrayIsArray Then
-        $vectorOfMatArray = _VectorOfMatCreate()
+    If $typeOfArray == Default Then
+        $oArrArray = $Array
+    ElseIf $bArrayIsArray Then
+        $vectorArray = Call("_VectorOf" & $typeOfArray & "Create")
 
-        $iArrArraySize = UBound($matArray)
+        $iArrArraySize = UBound($Array)
         For $i = 0 To $iArrArraySize - 1
-            _VectorOfMatPush($vectorOfMatArray, $matArray[$i])
+            Call("_VectorOf" & $typeOfArray & "Push", $vectorArray, $Array[$i])
         Next
 
-        $oArrArray = _cveOutputArrayFromVectorOfMat($vectorOfMatArray)
+        $oArrArray = Call("_cveOutputArrayFromVectorOf" & $typeOfArray, $vectorArray)
     Else
-        $oArrArray = _cveOutputArrayFromMat($matArray)
+        If $bArrayCreate Then
+            $Array = Call("_cve" & $typeOfArray & "Create", $Array)
+        EndIf
+        $oArrArray = Call("_cveOutputArrayFrom" & $typeOfArray, $Array)
     EndIf
 
     _cveHDF5DsRead($hdf, $oArrArray, $dslabel)
 
     If $bArrayIsArray Then
-        _VectorOfMatRelease($vectorOfMatArray)
+        Call("_VectorOf" & $typeOfArray & "Release", $vectorArray)
     EndIf
 
-    _cveOutputArrayRelease($oArrArray)
+    If $typeOfArray <> Default Then
+        _cveOutputArrayRelease($oArrArray)
+        If $bArrayCreate Then
+            Call("_cve" & $typeOfArray & "Release", $Array)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveHDF5DsReadTyped
+
+Func _cveHDF5DsReadMat($hdf, $Array, $dslabel)
+    ; cveHDF5DsRead using cv::Mat instead of _*Array
+    _cveHDF5DsReadTyped($hdf, "Mat", $Array, $dslabel)
 EndFunc   ;==>_cveHDF5DsReadMat
 
 Func _cveHDF5AtExists($hdf, $atlabel)
@@ -301,7 +331,7 @@ Func _cveHDF5AtExists($hdf, $atlabel)
         $sHdfDllType = "ptr"
     EndIf
 
-    Local $bAtlabelIsString = VarGetType($atlabel) == "String"
+    Local $bAtlabelIsString = IsString($atlabel)
     If $bAtlabelIsString Then
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
@@ -332,7 +362,7 @@ Func _cveHDF5AtDelete($hdf, $atlabel)
         $sHdfDllType = "ptr"
     EndIf
 
-    Local $bAtlabelIsString = VarGetType($atlabel) == "String"
+    Local $bAtlabelIsString = IsString($atlabel)
     If $bAtlabelIsString Then
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
@@ -361,7 +391,7 @@ Func _cveHDF5AtWriteInt($hdf, $value, $atlabel)
         $sHdfDllType = "ptr"
     EndIf
 
-    Local $bAtlabelIsString = VarGetType($atlabel) == "String"
+    Local $bAtlabelIsString = IsString($atlabel)
     If $bAtlabelIsString Then
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
@@ -397,7 +427,7 @@ Func _cveHDF5AtReadInt($hdf, $value, $atlabel)
         $sValueDllType = "int*"
     EndIf
 
-    Local $bAtlabelIsString = VarGetType($atlabel) == "String"
+    Local $bAtlabelIsString = IsString($atlabel)
     If $bAtlabelIsString Then
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
@@ -426,7 +456,7 @@ Func _cveHDF5AtWriteDouble($hdf, $value, $atlabel)
         $sHdfDllType = "ptr"
     EndIf
 
-    Local $bAtlabelIsString = VarGetType($atlabel) == "String"
+    Local $bAtlabelIsString = IsString($atlabel)
     If $bAtlabelIsString Then
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
@@ -462,7 +492,7 @@ Func _cveHDF5AtReadDouble($hdf, $value, $atlabel)
         $sValueDllType = "double*"
     EndIf
 
-    Local $bAtlabelIsString = VarGetType($atlabel) == "String"
+    Local $bAtlabelIsString = IsString($atlabel)
     If $bAtlabelIsString Then
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
@@ -491,7 +521,7 @@ Func _cveHDF5AtWriteString($hdf, $value, $atlabel)
         $sHdfDllType = "ptr"
     EndIf
 
-    Local $bValueIsString = VarGetType($value) == "String"
+    Local $bValueIsString = IsString($value)
     If $bValueIsString Then
         $value = _cveStringCreateFromStr($value)
     EndIf
@@ -503,7 +533,7 @@ Func _cveHDF5AtWriteString($hdf, $value, $atlabel)
         $sValueDllType = "ptr"
     EndIf
 
-    Local $bAtlabelIsString = VarGetType($atlabel) == "String"
+    Local $bAtlabelIsString = IsString($atlabel)
     If $bAtlabelIsString Then
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
@@ -536,7 +566,7 @@ Func _cveHDF5AtReadString($hdf, $value, $atlabel)
         $sHdfDllType = "ptr"
     EndIf
 
-    Local $bValueIsString = VarGetType($value) == "String"
+    Local $bValueIsString = IsString($value)
     If $bValueIsString Then
         $value = _cveStringCreateFromStr($value)
     EndIf
@@ -548,7 +578,7 @@ Func _cveHDF5AtReadString($hdf, $value, $atlabel)
         $sValueDllType = "ptr"
     EndIf
 
-    Local $bAtlabelIsString = VarGetType($atlabel) == "String"
+    Local $bAtlabelIsString = IsString($atlabel)
     If $bAtlabelIsString Then
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
@@ -588,7 +618,7 @@ Func _cveHDF5AtReadArray($hdf, $value, $atlabel)
         $sValueDllType = "ptr"
     EndIf
 
-    Local $bAtlabelIsString = VarGetType($atlabel) == "String"
+    Local $bAtlabelIsString = IsString($atlabel)
     If $bAtlabelIsString Then
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
@@ -607,32 +637,47 @@ Func _cveHDF5AtReadArray($hdf, $value, $atlabel)
     EndIf
 EndFunc   ;==>_cveHDF5AtReadArray
 
-Func _cveHDF5AtReadArrayMat($hdf, $matValue, $atlabel)
-    ; cveHDF5AtReadArray using cv::Mat instead of _*Array
+Func _cveHDF5AtReadArrayTyped($hdf, $typeOfValue, $value, $atlabel)
 
-    Local $oArrValue, $vectorOfMatValue, $iArrValueSize
-    Local $bValueIsArray = VarGetType($matValue) == "Array"
+    Local $oArrValue, $vectorValue, $iArrValueSize
+    Local $bValueIsArray = IsArray($value)
+    Local $bValueCreate = IsDllStruct($value) And $typeOfValue == "Scalar"
 
-    If $bValueIsArray Then
-        $vectorOfMatValue = _VectorOfMatCreate()
+    If $typeOfValue == Default Then
+        $oArrValue = $value
+    ElseIf $bValueIsArray Then
+        $vectorValue = Call("_VectorOf" & $typeOfValue & "Create")
 
-        $iArrValueSize = UBound($matValue)
+        $iArrValueSize = UBound($value)
         For $i = 0 To $iArrValueSize - 1
-            _VectorOfMatPush($vectorOfMatValue, $matValue[$i])
+            Call("_VectorOf" & $typeOfValue & "Push", $vectorValue, $value[$i])
         Next
 
-        $oArrValue = _cveOutputArrayFromVectorOfMat($vectorOfMatValue)
+        $oArrValue = Call("_cveOutputArrayFromVectorOf" & $typeOfValue, $vectorValue)
     Else
-        $oArrValue = _cveOutputArrayFromMat($matValue)
+        If $bValueCreate Then
+            $value = Call("_cve" & $typeOfValue & "Create", $value)
+        EndIf
+        $oArrValue = Call("_cveOutputArrayFrom" & $typeOfValue, $value)
     EndIf
 
     _cveHDF5AtReadArray($hdf, $oArrValue, $atlabel)
 
     If $bValueIsArray Then
-        _VectorOfMatRelease($vectorOfMatValue)
+        Call("_VectorOf" & $typeOfValue & "Release", $vectorValue)
     EndIf
 
-    _cveOutputArrayRelease($oArrValue)
+    If $typeOfValue <> Default Then
+        _cveOutputArrayRelease($oArrValue)
+        If $bValueCreate Then
+            Call("_cve" & $typeOfValue & "Release", $value)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveHDF5AtReadArrayTyped
+
+Func _cveHDF5AtReadArrayMat($hdf, $value, $atlabel)
+    ; cveHDF5AtReadArray using cv::Mat instead of _*Array
+    _cveHDF5AtReadArrayTyped($hdf, "Mat", $value, $atlabel)
 EndFunc   ;==>_cveHDF5AtReadArrayMat
 
 Func _cveHDF5AtWriteArray($hdf, $value, $atlabel)
@@ -652,7 +697,7 @@ Func _cveHDF5AtWriteArray($hdf, $value, $atlabel)
         $sValueDllType = "ptr"
     EndIf
 
-    Local $bAtlabelIsString = VarGetType($atlabel) == "String"
+    Local $bAtlabelIsString = IsString($atlabel)
     If $bAtlabelIsString Then
         $atlabel = _cveStringCreateFromStr($atlabel)
     EndIf
@@ -671,32 +716,47 @@ Func _cveHDF5AtWriteArray($hdf, $value, $atlabel)
     EndIf
 EndFunc   ;==>_cveHDF5AtWriteArray
 
-Func _cveHDF5AtWriteArrayMat($hdf, $matValue, $atlabel)
-    ; cveHDF5AtWriteArray using cv::Mat instead of _*Array
+Func _cveHDF5AtWriteArrayTyped($hdf, $typeOfValue, $value, $atlabel)
 
-    Local $iArrValue, $vectorOfMatValue, $iArrValueSize
-    Local $bValueIsArray = VarGetType($matValue) == "Array"
+    Local $iArrValue, $vectorValue, $iArrValueSize
+    Local $bValueIsArray = IsArray($value)
+    Local $bValueCreate = IsDllStruct($value) And $typeOfValue == "Scalar"
 
-    If $bValueIsArray Then
-        $vectorOfMatValue = _VectorOfMatCreate()
+    If $typeOfValue == Default Then
+        $iArrValue = $value
+    ElseIf $bValueIsArray Then
+        $vectorValue = Call("_VectorOf" & $typeOfValue & "Create")
 
-        $iArrValueSize = UBound($matValue)
+        $iArrValueSize = UBound($value)
         For $i = 0 To $iArrValueSize - 1
-            _VectorOfMatPush($vectorOfMatValue, $matValue[$i])
+            Call("_VectorOf" & $typeOfValue & "Push", $vectorValue, $value[$i])
         Next
 
-        $iArrValue = _cveInputArrayFromVectorOfMat($vectorOfMatValue)
+        $iArrValue = Call("_cveInputArrayFromVectorOf" & $typeOfValue, $vectorValue)
     Else
-        $iArrValue = _cveInputArrayFromMat($matValue)
+        If $bValueCreate Then
+            $value = Call("_cve" & $typeOfValue & "Create", $value)
+        EndIf
+        $iArrValue = Call("_cveInputArrayFrom" & $typeOfValue, $value)
     EndIf
 
     _cveHDF5AtWriteArray($hdf, $iArrValue, $atlabel)
 
     If $bValueIsArray Then
-        _VectorOfMatRelease($vectorOfMatValue)
+        Call("_VectorOf" & $typeOfValue & "Release", $vectorValue)
     EndIf
 
-    _cveInputArrayRelease($iArrValue)
+    If $typeOfValue <> Default Then
+        _cveInputArrayRelease($iArrValue)
+        If $bValueCreate Then
+            Call("_cve" & $typeOfValue & "Release", $value)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveHDF5AtWriteArrayTyped
+
+Func _cveHDF5AtWriteArrayMat($hdf, $value, $atlabel)
+    ; cveHDF5AtWriteArray using cv::Mat instead of _*Array
+    _cveHDF5AtWriteArrayTyped($hdf, "Mat", $value, $atlabel)
 EndFunc   ;==>_cveHDF5AtWriteArrayMat
 
 Func _cveHDF5KpRead($hdf, $keypoints, $kplabel, $offset, $counts)
@@ -710,7 +770,7 @@ Func _cveHDF5KpRead($hdf, $keypoints, $kplabel, $offset, $counts)
     EndIf
 
     Local $vecKeypoints, $iArrKeypointsSize
-    Local $bKeypointsIsArray = VarGetType($keypoints) == "Array"
+    Local $bKeypointsIsArray = IsArray($keypoints)
 
     If $bKeypointsIsArray Then
         $vecKeypoints = _VectorOfKeyPointCreate()
@@ -730,7 +790,7 @@ Func _cveHDF5KpRead($hdf, $keypoints, $kplabel, $offset, $counts)
         $sKeypointsDllType = "ptr"
     EndIf
 
-    Local $bKplabelIsString = VarGetType($kplabel) == "String"
+    Local $bKplabelIsString = IsString($kplabel)
     If $bKplabelIsString Then
         $kplabel = _cveStringCreateFromStr($kplabel)
     EndIf
@@ -764,7 +824,7 @@ Func _cveHDF5KpWrite($hdf, $keypoints, $kplabel, $offset, $counts)
     EndIf
 
     Local $vecKeypoints, $iArrKeypointsSize
-    Local $bKeypointsIsArray = VarGetType($keypoints) == "Array"
+    Local $bKeypointsIsArray = IsArray($keypoints)
 
     If $bKeypointsIsArray Then
         $vecKeypoints = _VectorOfKeyPointCreate()
@@ -784,7 +844,7 @@ Func _cveHDF5KpWrite($hdf, $keypoints, $kplabel, $offset, $counts)
         $sKeypointsDllType = "ptr"
     EndIf
 
-    Local $bKplabelIsString = VarGetType($kplabel) == "String"
+    Local $bKplabelIsString = IsString($kplabel)
     If $bKplabelIsString Then
         $kplabel = _cveStringCreateFromStr($kplabel)
     EndIf

@@ -94,32 +94,47 @@ Func _cveArucoDrawMarker($dictionary, $id, $sidePixels, $img, $borderBits)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawMarker", $sDictionaryDllType, $dictionary, "int", $id, "int", $sidePixels, $sImgDllType, $img, "int", $borderBits), "cveArucoDrawMarker", @error)
 EndFunc   ;==>_cveArucoDrawMarker
 
-Func _cveArucoDrawMarkerMat($dictionary, $id, $sidePixels, $matImg, $borderBits)
-    ; cveArucoDrawMarker using cv::Mat instead of _*Array
+Func _cveArucoDrawMarkerTyped($dictionary, $id, $sidePixels, $typeOfImg, $img, $borderBits)
 
-    Local $oArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $oArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $oArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $oArrImg = _cveOutputArrayFromVectorOfMat($vectorOfMatImg)
+        $oArrImg = Call("_cveOutputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $oArrImg = _cveOutputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $oArrImg = Call("_cveOutputArrayFrom" & $typeOfImg, $img)
     EndIf
 
     _cveArucoDrawMarker($dictionary, $id, $sidePixels, $oArrImg, $borderBits)
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveOutputArrayRelease($oArrImg)
+    If $typeOfImg <> Default Then
+        _cveOutputArrayRelease($oArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveArucoDrawMarkerTyped
+
+Func _cveArucoDrawMarkerMat($dictionary, $id, $sidePixels, $img, $borderBits)
+    ; cveArucoDrawMarker using cv::Mat instead of _*Array
+    _cveArucoDrawMarkerTyped($dictionary, $id, $sidePixels, "Mat", $img, $borderBits)
 EndFunc   ;==>_cveArucoDrawMarkerMat
 
 Func _cveArucoDrawAxis($image, $cameraMatrix, $distCoeffs, $rvec, $tvec, $length)
@@ -163,120 +178,179 @@ Func _cveArucoDrawAxis($image, $cameraMatrix, $distCoeffs, $rvec, $tvec, $length
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawAxis", $sImageDllType, $image, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRvecDllType, $rvec, $sTvecDllType, $tvec, "float", $length), "cveArucoDrawAxis", @error)
 EndFunc   ;==>_cveArucoDrawAxis
 
-Func _cveArucoDrawAxisMat($matImage, $matCameraMatrix, $matDistCoeffs, $matRvec, $matTvec, $length)
-    ; cveArucoDrawAxis using cv::Mat instead of _*Array
+Func _cveArucoDrawAxisTyped($typeOfImage, $image, $typeOfCameraMatrix, $cameraMatrix, $typeOfDistCoeffs, $distCoeffs, $typeOfRvec, $rvec, $typeOfTvec, $tvec, $length)
 
-    Local $ioArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $ioArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $ioArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $ioArrImage = _cveInputOutputArrayFromVectorOfMat($vectorOfMatImage)
+        $ioArrImage = Call("_cveInputOutputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $ioArrImage = _cveInputOutputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $ioArrImage = Call("_cveInputOutputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $iArrCameraMatrix, $vectorOfMatCameraMatrix, $iArrCameraMatrixSize
-    Local $bCameraMatrixIsArray = VarGetType($matCameraMatrix) == "Array"
+    Local $iArrCameraMatrix, $vectorCameraMatrix, $iArrCameraMatrixSize
+    Local $bCameraMatrixIsArray = IsArray($cameraMatrix)
+    Local $bCameraMatrixCreate = IsDllStruct($cameraMatrix) And $typeOfCameraMatrix == "Scalar"
 
-    If $bCameraMatrixIsArray Then
-        $vectorOfMatCameraMatrix = _VectorOfMatCreate()
+    If $typeOfCameraMatrix == Default Then
+        $iArrCameraMatrix = $cameraMatrix
+    ElseIf $bCameraMatrixIsArray Then
+        $vectorCameraMatrix = Call("_VectorOf" & $typeOfCameraMatrix & "Create")
 
-        $iArrCameraMatrixSize = UBound($matCameraMatrix)
+        $iArrCameraMatrixSize = UBound($cameraMatrix)
         For $i = 0 To $iArrCameraMatrixSize - 1
-            _VectorOfMatPush($vectorOfMatCameraMatrix, $matCameraMatrix[$i])
+            Call("_VectorOf" & $typeOfCameraMatrix & "Push", $vectorCameraMatrix, $cameraMatrix[$i])
         Next
 
-        $iArrCameraMatrix = _cveInputArrayFromVectorOfMat($vectorOfMatCameraMatrix)
+        $iArrCameraMatrix = Call("_cveInputArrayFromVectorOf" & $typeOfCameraMatrix, $vectorCameraMatrix)
     Else
-        $iArrCameraMatrix = _cveInputArrayFromMat($matCameraMatrix)
+        If $bCameraMatrixCreate Then
+            $cameraMatrix = Call("_cve" & $typeOfCameraMatrix & "Create", $cameraMatrix)
+        EndIf
+        $iArrCameraMatrix = Call("_cveInputArrayFrom" & $typeOfCameraMatrix, $cameraMatrix)
     EndIf
 
-    Local $iArrDistCoeffs, $vectorOfMatDistCoeffs, $iArrDistCoeffsSize
-    Local $bDistCoeffsIsArray = VarGetType($matDistCoeffs) == "Array"
+    Local $iArrDistCoeffs, $vectorDistCoeffs, $iArrDistCoeffsSize
+    Local $bDistCoeffsIsArray = IsArray($distCoeffs)
+    Local $bDistCoeffsCreate = IsDllStruct($distCoeffs) And $typeOfDistCoeffs == "Scalar"
 
-    If $bDistCoeffsIsArray Then
-        $vectorOfMatDistCoeffs = _VectorOfMatCreate()
+    If $typeOfDistCoeffs == Default Then
+        $iArrDistCoeffs = $distCoeffs
+    ElseIf $bDistCoeffsIsArray Then
+        $vectorDistCoeffs = Call("_VectorOf" & $typeOfDistCoeffs & "Create")
 
-        $iArrDistCoeffsSize = UBound($matDistCoeffs)
+        $iArrDistCoeffsSize = UBound($distCoeffs)
         For $i = 0 To $iArrDistCoeffsSize - 1
-            _VectorOfMatPush($vectorOfMatDistCoeffs, $matDistCoeffs[$i])
+            Call("_VectorOf" & $typeOfDistCoeffs & "Push", $vectorDistCoeffs, $distCoeffs[$i])
         Next
 
-        $iArrDistCoeffs = _cveInputArrayFromVectorOfMat($vectorOfMatDistCoeffs)
+        $iArrDistCoeffs = Call("_cveInputArrayFromVectorOf" & $typeOfDistCoeffs, $vectorDistCoeffs)
     Else
-        $iArrDistCoeffs = _cveInputArrayFromMat($matDistCoeffs)
+        If $bDistCoeffsCreate Then
+            $distCoeffs = Call("_cve" & $typeOfDistCoeffs & "Create", $distCoeffs)
+        EndIf
+        $iArrDistCoeffs = Call("_cveInputArrayFrom" & $typeOfDistCoeffs, $distCoeffs)
     EndIf
 
-    Local $iArrRvec, $vectorOfMatRvec, $iArrRvecSize
-    Local $bRvecIsArray = VarGetType($matRvec) == "Array"
+    Local $iArrRvec, $vectorRvec, $iArrRvecSize
+    Local $bRvecIsArray = IsArray($rvec)
+    Local $bRvecCreate = IsDllStruct($rvec) And $typeOfRvec == "Scalar"
 
-    If $bRvecIsArray Then
-        $vectorOfMatRvec = _VectorOfMatCreate()
+    If $typeOfRvec == Default Then
+        $iArrRvec = $rvec
+    ElseIf $bRvecIsArray Then
+        $vectorRvec = Call("_VectorOf" & $typeOfRvec & "Create")
 
-        $iArrRvecSize = UBound($matRvec)
+        $iArrRvecSize = UBound($rvec)
         For $i = 0 To $iArrRvecSize - 1
-            _VectorOfMatPush($vectorOfMatRvec, $matRvec[$i])
+            Call("_VectorOf" & $typeOfRvec & "Push", $vectorRvec, $rvec[$i])
         Next
 
-        $iArrRvec = _cveInputArrayFromVectorOfMat($vectorOfMatRvec)
+        $iArrRvec = Call("_cveInputArrayFromVectorOf" & $typeOfRvec, $vectorRvec)
     Else
-        $iArrRvec = _cveInputArrayFromMat($matRvec)
+        If $bRvecCreate Then
+            $rvec = Call("_cve" & $typeOfRvec & "Create", $rvec)
+        EndIf
+        $iArrRvec = Call("_cveInputArrayFrom" & $typeOfRvec, $rvec)
     EndIf
 
-    Local $iArrTvec, $vectorOfMatTvec, $iArrTvecSize
-    Local $bTvecIsArray = VarGetType($matTvec) == "Array"
+    Local $iArrTvec, $vectorTvec, $iArrTvecSize
+    Local $bTvecIsArray = IsArray($tvec)
+    Local $bTvecCreate = IsDllStruct($tvec) And $typeOfTvec == "Scalar"
 
-    If $bTvecIsArray Then
-        $vectorOfMatTvec = _VectorOfMatCreate()
+    If $typeOfTvec == Default Then
+        $iArrTvec = $tvec
+    ElseIf $bTvecIsArray Then
+        $vectorTvec = Call("_VectorOf" & $typeOfTvec & "Create")
 
-        $iArrTvecSize = UBound($matTvec)
+        $iArrTvecSize = UBound($tvec)
         For $i = 0 To $iArrTvecSize - 1
-            _VectorOfMatPush($vectorOfMatTvec, $matTvec[$i])
+            Call("_VectorOf" & $typeOfTvec & "Push", $vectorTvec, $tvec[$i])
         Next
 
-        $iArrTvec = _cveInputArrayFromVectorOfMat($vectorOfMatTvec)
+        $iArrTvec = Call("_cveInputArrayFromVectorOf" & $typeOfTvec, $vectorTvec)
     Else
-        $iArrTvec = _cveInputArrayFromMat($matTvec)
+        If $bTvecCreate Then
+            $tvec = Call("_cve" & $typeOfTvec & "Create", $tvec)
+        EndIf
+        $iArrTvec = Call("_cveInputArrayFrom" & $typeOfTvec, $tvec)
     EndIf
 
     _cveArucoDrawAxis($ioArrImage, $iArrCameraMatrix, $iArrDistCoeffs, $iArrRvec, $iArrTvec, $length)
 
     If $bTvecIsArray Then
-        _VectorOfMatRelease($vectorOfMatTvec)
+        Call("_VectorOf" & $typeOfTvec & "Release", $vectorTvec)
     EndIf
 
-    _cveInputArrayRelease($iArrTvec)
+    If $typeOfTvec <> Default Then
+        _cveInputArrayRelease($iArrTvec)
+        If $bTvecCreate Then
+            Call("_cve" & $typeOfTvec & "Release", $tvec)
+        EndIf
+    EndIf
 
     If $bRvecIsArray Then
-        _VectorOfMatRelease($vectorOfMatRvec)
+        Call("_VectorOf" & $typeOfRvec & "Release", $vectorRvec)
     EndIf
 
-    _cveInputArrayRelease($iArrRvec)
+    If $typeOfRvec <> Default Then
+        _cveInputArrayRelease($iArrRvec)
+        If $bRvecCreate Then
+            Call("_cve" & $typeOfRvec & "Release", $rvec)
+        EndIf
+    EndIf
 
     If $bDistCoeffsIsArray Then
-        _VectorOfMatRelease($vectorOfMatDistCoeffs)
+        Call("_VectorOf" & $typeOfDistCoeffs & "Release", $vectorDistCoeffs)
     EndIf
 
-    _cveInputArrayRelease($iArrDistCoeffs)
+    If $typeOfDistCoeffs <> Default Then
+        _cveInputArrayRelease($iArrDistCoeffs)
+        If $bDistCoeffsCreate Then
+            Call("_cve" & $typeOfDistCoeffs & "Release", $distCoeffs)
+        EndIf
+    EndIf
 
     If $bCameraMatrixIsArray Then
-        _VectorOfMatRelease($vectorOfMatCameraMatrix)
+        Call("_VectorOf" & $typeOfCameraMatrix & "Release", $vectorCameraMatrix)
     EndIf
 
-    _cveInputArrayRelease($iArrCameraMatrix)
+    If $typeOfCameraMatrix <> Default Then
+        _cveInputArrayRelease($iArrCameraMatrix)
+        If $bCameraMatrixCreate Then
+            Call("_cve" & $typeOfCameraMatrix & "Release", $cameraMatrix)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputOutputArrayRelease($ioArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveArucoDrawAxisTyped
+
+Func _cveArucoDrawAxisMat($image, $cameraMatrix, $distCoeffs, $rvec, $tvec, $length)
+    ; cveArucoDrawAxis using cv::Mat instead of _*Array
+    _cveArucoDrawAxisTyped("Mat", $image, "Mat", $cameraMatrix, "Mat", $distCoeffs, "Mat", $rvec, "Mat", $tvec, $length)
 EndFunc   ;==>_cveArucoDrawAxisMat
 
 Func _cveArucoDetectMarkers($image, $dictionary, $corners, $ids, $parameters, $rejectedImgPoints)
@@ -327,98 +401,146 @@ Func _cveArucoDetectMarkers($image, $dictionary, $corners, $ids, $parameters, $r
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDetectMarkers", $sImageDllType, $image, $sDictionaryDllType, $dictionary, $sCornersDllType, $corners, $sIdsDllType, $ids, $sParametersDllType, $parameters, $sRejectedImgPointsDllType, $rejectedImgPoints), "cveArucoDetectMarkers", @error)
 EndFunc   ;==>_cveArucoDetectMarkers
 
-Func _cveArucoDetectMarkersMat($matImage, $dictionary, $matCorners, $matIds, $parameters, $matRejectedImgPoints)
-    ; cveArucoDetectMarkers using cv::Mat instead of _*Array
+Func _cveArucoDetectMarkersTyped($typeOfImage, $image, $dictionary, $typeOfCorners, $corners, $typeOfIds, $ids, $parameters, $typeOfRejectedImgPoints, $rejectedImgPoints)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $oArrCorners, $vectorOfMatCorners, $iArrCornersSize
-    Local $bCornersIsArray = VarGetType($matCorners) == "Array"
+    Local $oArrCorners, $vectorCorners, $iArrCornersSize
+    Local $bCornersIsArray = IsArray($corners)
+    Local $bCornersCreate = IsDllStruct($corners) And $typeOfCorners == "Scalar"
 
-    If $bCornersIsArray Then
-        $vectorOfMatCorners = _VectorOfMatCreate()
+    If $typeOfCorners == Default Then
+        $oArrCorners = $corners
+    ElseIf $bCornersIsArray Then
+        $vectorCorners = Call("_VectorOf" & $typeOfCorners & "Create")
 
-        $iArrCornersSize = UBound($matCorners)
+        $iArrCornersSize = UBound($corners)
         For $i = 0 To $iArrCornersSize - 1
-            _VectorOfMatPush($vectorOfMatCorners, $matCorners[$i])
+            Call("_VectorOf" & $typeOfCorners & "Push", $vectorCorners, $corners[$i])
         Next
 
-        $oArrCorners = _cveOutputArrayFromVectorOfMat($vectorOfMatCorners)
+        $oArrCorners = Call("_cveOutputArrayFromVectorOf" & $typeOfCorners, $vectorCorners)
     Else
-        $oArrCorners = _cveOutputArrayFromMat($matCorners)
+        If $bCornersCreate Then
+            $corners = Call("_cve" & $typeOfCorners & "Create", $corners)
+        EndIf
+        $oArrCorners = Call("_cveOutputArrayFrom" & $typeOfCorners, $corners)
     EndIf
 
-    Local $oArrIds, $vectorOfMatIds, $iArrIdsSize
-    Local $bIdsIsArray = VarGetType($matIds) == "Array"
+    Local $oArrIds, $vectorIds, $iArrIdsSize
+    Local $bIdsIsArray = IsArray($ids)
+    Local $bIdsCreate = IsDllStruct($ids) And $typeOfIds == "Scalar"
 
-    If $bIdsIsArray Then
-        $vectorOfMatIds = _VectorOfMatCreate()
+    If $typeOfIds == Default Then
+        $oArrIds = $ids
+    ElseIf $bIdsIsArray Then
+        $vectorIds = Call("_VectorOf" & $typeOfIds & "Create")
 
-        $iArrIdsSize = UBound($matIds)
+        $iArrIdsSize = UBound($ids)
         For $i = 0 To $iArrIdsSize - 1
-            _VectorOfMatPush($vectorOfMatIds, $matIds[$i])
+            Call("_VectorOf" & $typeOfIds & "Push", $vectorIds, $ids[$i])
         Next
 
-        $oArrIds = _cveOutputArrayFromVectorOfMat($vectorOfMatIds)
+        $oArrIds = Call("_cveOutputArrayFromVectorOf" & $typeOfIds, $vectorIds)
     Else
-        $oArrIds = _cveOutputArrayFromMat($matIds)
+        If $bIdsCreate Then
+            $ids = Call("_cve" & $typeOfIds & "Create", $ids)
+        EndIf
+        $oArrIds = Call("_cveOutputArrayFrom" & $typeOfIds, $ids)
     EndIf
 
-    Local $oArrRejectedImgPoints, $vectorOfMatRejectedImgPoints, $iArrRejectedImgPointsSize
-    Local $bRejectedImgPointsIsArray = VarGetType($matRejectedImgPoints) == "Array"
+    Local $oArrRejectedImgPoints, $vectorRejectedImgPoints, $iArrRejectedImgPointsSize
+    Local $bRejectedImgPointsIsArray = IsArray($rejectedImgPoints)
+    Local $bRejectedImgPointsCreate = IsDllStruct($rejectedImgPoints) And $typeOfRejectedImgPoints == "Scalar"
 
-    If $bRejectedImgPointsIsArray Then
-        $vectorOfMatRejectedImgPoints = _VectorOfMatCreate()
+    If $typeOfRejectedImgPoints == Default Then
+        $oArrRejectedImgPoints = $rejectedImgPoints
+    ElseIf $bRejectedImgPointsIsArray Then
+        $vectorRejectedImgPoints = Call("_VectorOf" & $typeOfRejectedImgPoints & "Create")
 
-        $iArrRejectedImgPointsSize = UBound($matRejectedImgPoints)
+        $iArrRejectedImgPointsSize = UBound($rejectedImgPoints)
         For $i = 0 To $iArrRejectedImgPointsSize - 1
-            _VectorOfMatPush($vectorOfMatRejectedImgPoints, $matRejectedImgPoints[$i])
+            Call("_VectorOf" & $typeOfRejectedImgPoints & "Push", $vectorRejectedImgPoints, $rejectedImgPoints[$i])
         Next
 
-        $oArrRejectedImgPoints = _cveOutputArrayFromVectorOfMat($vectorOfMatRejectedImgPoints)
+        $oArrRejectedImgPoints = Call("_cveOutputArrayFromVectorOf" & $typeOfRejectedImgPoints, $vectorRejectedImgPoints)
     Else
-        $oArrRejectedImgPoints = _cveOutputArrayFromMat($matRejectedImgPoints)
+        If $bRejectedImgPointsCreate Then
+            $rejectedImgPoints = Call("_cve" & $typeOfRejectedImgPoints & "Create", $rejectedImgPoints)
+        EndIf
+        $oArrRejectedImgPoints = Call("_cveOutputArrayFrom" & $typeOfRejectedImgPoints, $rejectedImgPoints)
     EndIf
 
     _cveArucoDetectMarkers($iArrImage, $dictionary, $oArrCorners, $oArrIds, $parameters, $oArrRejectedImgPoints)
 
     If $bRejectedImgPointsIsArray Then
-        _VectorOfMatRelease($vectorOfMatRejectedImgPoints)
+        Call("_VectorOf" & $typeOfRejectedImgPoints & "Release", $vectorRejectedImgPoints)
     EndIf
 
-    _cveOutputArrayRelease($oArrRejectedImgPoints)
+    If $typeOfRejectedImgPoints <> Default Then
+        _cveOutputArrayRelease($oArrRejectedImgPoints)
+        If $bRejectedImgPointsCreate Then
+            Call("_cve" & $typeOfRejectedImgPoints & "Release", $rejectedImgPoints)
+        EndIf
+    EndIf
 
     If $bIdsIsArray Then
-        _VectorOfMatRelease($vectorOfMatIds)
+        Call("_VectorOf" & $typeOfIds & "Release", $vectorIds)
     EndIf
 
-    _cveOutputArrayRelease($oArrIds)
+    If $typeOfIds <> Default Then
+        _cveOutputArrayRelease($oArrIds)
+        If $bIdsCreate Then
+            Call("_cve" & $typeOfIds & "Release", $ids)
+        EndIf
+    EndIf
 
     If $bCornersIsArray Then
-        _VectorOfMatRelease($vectorOfMatCorners)
+        Call("_VectorOf" & $typeOfCorners & "Release", $vectorCorners)
     EndIf
 
-    _cveOutputArrayRelease($oArrCorners)
+    If $typeOfCorners <> Default Then
+        _cveOutputArrayRelease($oArrCorners)
+        If $bCornersCreate Then
+            Call("_cve" & $typeOfCorners & "Release", $corners)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveArucoDetectMarkersTyped
+
+Func _cveArucoDetectMarkersMat($image, $dictionary, $corners, $ids, $parameters, $rejectedImgPoints)
+    ; cveArucoDetectMarkers using cv::Mat instead of _*Array
+    _cveArucoDetectMarkersTyped("Mat", $image, $dictionary, "Mat", $corners, "Mat", $ids, $parameters, "Mat", $rejectedImgPoints)
 EndFunc   ;==>_cveArucoDetectMarkersMat
 
 Func _cveArucoEstimatePoseSingleMarkers($corners, $markerLength, $cameraMatrix, $distCoeffs, $rvecs, $tvecs)
@@ -462,120 +584,179 @@ Func _cveArucoEstimatePoseSingleMarkers($corners, $markerLength, $cameraMatrix, 
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoEstimatePoseSingleMarkers", $sCornersDllType, $corners, "float", $markerLength, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRvecsDllType, $rvecs, $sTvecsDllType, $tvecs), "cveArucoEstimatePoseSingleMarkers", @error)
 EndFunc   ;==>_cveArucoEstimatePoseSingleMarkers
 
-Func _cveArucoEstimatePoseSingleMarkersMat($matCorners, $markerLength, $matCameraMatrix, $matDistCoeffs, $matRvecs, $matTvecs)
-    ; cveArucoEstimatePoseSingleMarkers using cv::Mat instead of _*Array
+Func _cveArucoEstimatePoseSingleMarkersTyped($typeOfCorners, $corners, $markerLength, $typeOfCameraMatrix, $cameraMatrix, $typeOfDistCoeffs, $distCoeffs, $typeOfRvecs, $rvecs, $typeOfTvecs, $tvecs)
 
-    Local $iArrCorners, $vectorOfMatCorners, $iArrCornersSize
-    Local $bCornersIsArray = VarGetType($matCorners) == "Array"
+    Local $iArrCorners, $vectorCorners, $iArrCornersSize
+    Local $bCornersIsArray = IsArray($corners)
+    Local $bCornersCreate = IsDllStruct($corners) And $typeOfCorners == "Scalar"
 
-    If $bCornersIsArray Then
-        $vectorOfMatCorners = _VectorOfMatCreate()
+    If $typeOfCorners == Default Then
+        $iArrCorners = $corners
+    ElseIf $bCornersIsArray Then
+        $vectorCorners = Call("_VectorOf" & $typeOfCorners & "Create")
 
-        $iArrCornersSize = UBound($matCorners)
+        $iArrCornersSize = UBound($corners)
         For $i = 0 To $iArrCornersSize - 1
-            _VectorOfMatPush($vectorOfMatCorners, $matCorners[$i])
+            Call("_VectorOf" & $typeOfCorners & "Push", $vectorCorners, $corners[$i])
         Next
 
-        $iArrCorners = _cveInputArrayFromVectorOfMat($vectorOfMatCorners)
+        $iArrCorners = Call("_cveInputArrayFromVectorOf" & $typeOfCorners, $vectorCorners)
     Else
-        $iArrCorners = _cveInputArrayFromMat($matCorners)
+        If $bCornersCreate Then
+            $corners = Call("_cve" & $typeOfCorners & "Create", $corners)
+        EndIf
+        $iArrCorners = Call("_cveInputArrayFrom" & $typeOfCorners, $corners)
     EndIf
 
-    Local $iArrCameraMatrix, $vectorOfMatCameraMatrix, $iArrCameraMatrixSize
-    Local $bCameraMatrixIsArray = VarGetType($matCameraMatrix) == "Array"
+    Local $iArrCameraMatrix, $vectorCameraMatrix, $iArrCameraMatrixSize
+    Local $bCameraMatrixIsArray = IsArray($cameraMatrix)
+    Local $bCameraMatrixCreate = IsDllStruct($cameraMatrix) And $typeOfCameraMatrix == "Scalar"
 
-    If $bCameraMatrixIsArray Then
-        $vectorOfMatCameraMatrix = _VectorOfMatCreate()
+    If $typeOfCameraMatrix == Default Then
+        $iArrCameraMatrix = $cameraMatrix
+    ElseIf $bCameraMatrixIsArray Then
+        $vectorCameraMatrix = Call("_VectorOf" & $typeOfCameraMatrix & "Create")
 
-        $iArrCameraMatrixSize = UBound($matCameraMatrix)
+        $iArrCameraMatrixSize = UBound($cameraMatrix)
         For $i = 0 To $iArrCameraMatrixSize - 1
-            _VectorOfMatPush($vectorOfMatCameraMatrix, $matCameraMatrix[$i])
+            Call("_VectorOf" & $typeOfCameraMatrix & "Push", $vectorCameraMatrix, $cameraMatrix[$i])
         Next
 
-        $iArrCameraMatrix = _cveInputArrayFromVectorOfMat($vectorOfMatCameraMatrix)
+        $iArrCameraMatrix = Call("_cveInputArrayFromVectorOf" & $typeOfCameraMatrix, $vectorCameraMatrix)
     Else
-        $iArrCameraMatrix = _cveInputArrayFromMat($matCameraMatrix)
+        If $bCameraMatrixCreate Then
+            $cameraMatrix = Call("_cve" & $typeOfCameraMatrix & "Create", $cameraMatrix)
+        EndIf
+        $iArrCameraMatrix = Call("_cveInputArrayFrom" & $typeOfCameraMatrix, $cameraMatrix)
     EndIf
 
-    Local $iArrDistCoeffs, $vectorOfMatDistCoeffs, $iArrDistCoeffsSize
-    Local $bDistCoeffsIsArray = VarGetType($matDistCoeffs) == "Array"
+    Local $iArrDistCoeffs, $vectorDistCoeffs, $iArrDistCoeffsSize
+    Local $bDistCoeffsIsArray = IsArray($distCoeffs)
+    Local $bDistCoeffsCreate = IsDllStruct($distCoeffs) And $typeOfDistCoeffs == "Scalar"
 
-    If $bDistCoeffsIsArray Then
-        $vectorOfMatDistCoeffs = _VectorOfMatCreate()
+    If $typeOfDistCoeffs == Default Then
+        $iArrDistCoeffs = $distCoeffs
+    ElseIf $bDistCoeffsIsArray Then
+        $vectorDistCoeffs = Call("_VectorOf" & $typeOfDistCoeffs & "Create")
 
-        $iArrDistCoeffsSize = UBound($matDistCoeffs)
+        $iArrDistCoeffsSize = UBound($distCoeffs)
         For $i = 0 To $iArrDistCoeffsSize - 1
-            _VectorOfMatPush($vectorOfMatDistCoeffs, $matDistCoeffs[$i])
+            Call("_VectorOf" & $typeOfDistCoeffs & "Push", $vectorDistCoeffs, $distCoeffs[$i])
         Next
 
-        $iArrDistCoeffs = _cveInputArrayFromVectorOfMat($vectorOfMatDistCoeffs)
+        $iArrDistCoeffs = Call("_cveInputArrayFromVectorOf" & $typeOfDistCoeffs, $vectorDistCoeffs)
     Else
-        $iArrDistCoeffs = _cveInputArrayFromMat($matDistCoeffs)
+        If $bDistCoeffsCreate Then
+            $distCoeffs = Call("_cve" & $typeOfDistCoeffs & "Create", $distCoeffs)
+        EndIf
+        $iArrDistCoeffs = Call("_cveInputArrayFrom" & $typeOfDistCoeffs, $distCoeffs)
     EndIf
 
-    Local $oArrRvecs, $vectorOfMatRvecs, $iArrRvecsSize
-    Local $bRvecsIsArray = VarGetType($matRvecs) == "Array"
+    Local $oArrRvecs, $vectorRvecs, $iArrRvecsSize
+    Local $bRvecsIsArray = IsArray($rvecs)
+    Local $bRvecsCreate = IsDllStruct($rvecs) And $typeOfRvecs == "Scalar"
 
-    If $bRvecsIsArray Then
-        $vectorOfMatRvecs = _VectorOfMatCreate()
+    If $typeOfRvecs == Default Then
+        $oArrRvecs = $rvecs
+    ElseIf $bRvecsIsArray Then
+        $vectorRvecs = Call("_VectorOf" & $typeOfRvecs & "Create")
 
-        $iArrRvecsSize = UBound($matRvecs)
+        $iArrRvecsSize = UBound($rvecs)
         For $i = 0 To $iArrRvecsSize - 1
-            _VectorOfMatPush($vectorOfMatRvecs, $matRvecs[$i])
+            Call("_VectorOf" & $typeOfRvecs & "Push", $vectorRvecs, $rvecs[$i])
         Next
 
-        $oArrRvecs = _cveOutputArrayFromVectorOfMat($vectorOfMatRvecs)
+        $oArrRvecs = Call("_cveOutputArrayFromVectorOf" & $typeOfRvecs, $vectorRvecs)
     Else
-        $oArrRvecs = _cveOutputArrayFromMat($matRvecs)
+        If $bRvecsCreate Then
+            $rvecs = Call("_cve" & $typeOfRvecs & "Create", $rvecs)
+        EndIf
+        $oArrRvecs = Call("_cveOutputArrayFrom" & $typeOfRvecs, $rvecs)
     EndIf
 
-    Local $oArrTvecs, $vectorOfMatTvecs, $iArrTvecsSize
-    Local $bTvecsIsArray = VarGetType($matTvecs) == "Array"
+    Local $oArrTvecs, $vectorTvecs, $iArrTvecsSize
+    Local $bTvecsIsArray = IsArray($tvecs)
+    Local $bTvecsCreate = IsDllStruct($tvecs) And $typeOfTvecs == "Scalar"
 
-    If $bTvecsIsArray Then
-        $vectorOfMatTvecs = _VectorOfMatCreate()
+    If $typeOfTvecs == Default Then
+        $oArrTvecs = $tvecs
+    ElseIf $bTvecsIsArray Then
+        $vectorTvecs = Call("_VectorOf" & $typeOfTvecs & "Create")
 
-        $iArrTvecsSize = UBound($matTvecs)
+        $iArrTvecsSize = UBound($tvecs)
         For $i = 0 To $iArrTvecsSize - 1
-            _VectorOfMatPush($vectorOfMatTvecs, $matTvecs[$i])
+            Call("_VectorOf" & $typeOfTvecs & "Push", $vectorTvecs, $tvecs[$i])
         Next
 
-        $oArrTvecs = _cveOutputArrayFromVectorOfMat($vectorOfMatTvecs)
+        $oArrTvecs = Call("_cveOutputArrayFromVectorOf" & $typeOfTvecs, $vectorTvecs)
     Else
-        $oArrTvecs = _cveOutputArrayFromMat($matTvecs)
+        If $bTvecsCreate Then
+            $tvecs = Call("_cve" & $typeOfTvecs & "Create", $tvecs)
+        EndIf
+        $oArrTvecs = Call("_cveOutputArrayFrom" & $typeOfTvecs, $tvecs)
     EndIf
 
     _cveArucoEstimatePoseSingleMarkers($iArrCorners, $markerLength, $iArrCameraMatrix, $iArrDistCoeffs, $oArrRvecs, $oArrTvecs)
 
     If $bTvecsIsArray Then
-        _VectorOfMatRelease($vectorOfMatTvecs)
+        Call("_VectorOf" & $typeOfTvecs & "Release", $vectorTvecs)
     EndIf
 
-    _cveOutputArrayRelease($oArrTvecs)
+    If $typeOfTvecs <> Default Then
+        _cveOutputArrayRelease($oArrTvecs)
+        If $bTvecsCreate Then
+            Call("_cve" & $typeOfTvecs & "Release", $tvecs)
+        EndIf
+    EndIf
 
     If $bRvecsIsArray Then
-        _VectorOfMatRelease($vectorOfMatRvecs)
+        Call("_VectorOf" & $typeOfRvecs & "Release", $vectorRvecs)
     EndIf
 
-    _cveOutputArrayRelease($oArrRvecs)
+    If $typeOfRvecs <> Default Then
+        _cveOutputArrayRelease($oArrRvecs)
+        If $bRvecsCreate Then
+            Call("_cve" & $typeOfRvecs & "Release", $rvecs)
+        EndIf
+    EndIf
 
     If $bDistCoeffsIsArray Then
-        _VectorOfMatRelease($vectorOfMatDistCoeffs)
+        Call("_VectorOf" & $typeOfDistCoeffs & "Release", $vectorDistCoeffs)
     EndIf
 
-    _cveInputArrayRelease($iArrDistCoeffs)
+    If $typeOfDistCoeffs <> Default Then
+        _cveInputArrayRelease($iArrDistCoeffs)
+        If $bDistCoeffsCreate Then
+            Call("_cve" & $typeOfDistCoeffs & "Release", $distCoeffs)
+        EndIf
+    EndIf
 
     If $bCameraMatrixIsArray Then
-        _VectorOfMatRelease($vectorOfMatCameraMatrix)
+        Call("_VectorOf" & $typeOfCameraMatrix & "Release", $vectorCameraMatrix)
     EndIf
 
-    _cveInputArrayRelease($iArrCameraMatrix)
+    If $typeOfCameraMatrix <> Default Then
+        _cveInputArrayRelease($iArrCameraMatrix)
+        If $bCameraMatrixCreate Then
+            Call("_cve" & $typeOfCameraMatrix & "Release", $cameraMatrix)
+        EndIf
+    EndIf
 
     If $bCornersIsArray Then
-        _VectorOfMatRelease($vectorOfMatCorners)
+        Call("_VectorOf" & $typeOfCorners & "Release", $vectorCorners)
     EndIf
 
-    _cveInputArrayRelease($iArrCorners)
+    If $typeOfCorners <> Default Then
+        _cveInputArrayRelease($iArrCorners)
+        If $bCornersCreate Then
+            Call("_cve" & $typeOfCorners & "Release", $corners)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveArucoEstimatePoseSingleMarkersTyped
+
+Func _cveArucoEstimatePoseSingleMarkersMat($corners, $markerLength, $cameraMatrix, $distCoeffs, $rvecs, $tvecs)
+    ; cveArucoEstimatePoseSingleMarkers using cv::Mat instead of _*Array
+    _cveArucoEstimatePoseSingleMarkersTyped("Mat", $corners, $markerLength, "Mat", $cameraMatrix, "Mat", $distCoeffs, "Mat", $rvecs, "Mat", $tvecs)
 EndFunc   ;==>_cveArucoEstimatePoseSingleMarkersMat
 
 Func _cveArucoGridBoardCreate($markersX, $markersY, $markerLength, $markerSeparation, $dictionary, $firstMarker, $boardPtr, $sharedPtr)
@@ -635,32 +816,47 @@ Func _cveArucoGridBoardDraw($gridBoard, $outSize, $img, $marginSize, $borderBits
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoGridBoardDraw", $sGridBoardDllType, $gridBoard, $sOutSizeDllType, $outSize, $sImgDllType, $img, "int", $marginSize, "int", $borderBits), "cveArucoGridBoardDraw", @error)
 EndFunc   ;==>_cveArucoGridBoardDraw
 
-Func _cveArucoGridBoardDrawMat($gridBoard, $outSize, $matImg, $marginSize, $borderBits)
-    ; cveArucoGridBoardDraw using cv::Mat instead of _*Array
+Func _cveArucoGridBoardDrawTyped($gridBoard, $outSize, $typeOfImg, $img, $marginSize, $borderBits)
 
-    Local $oArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $oArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $oArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $oArrImg = _cveOutputArrayFromVectorOfMat($vectorOfMatImg)
+        $oArrImg = Call("_cveOutputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $oArrImg = _cveOutputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $oArrImg = Call("_cveOutputArrayFrom" & $typeOfImg, $img)
     EndIf
 
     _cveArucoGridBoardDraw($gridBoard, $outSize, $oArrImg, $marginSize, $borderBits)
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveOutputArrayRelease($oArrImg)
+    If $typeOfImg <> Default Then
+        _cveOutputArrayRelease($oArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveArucoGridBoardDrawTyped
+
+Func _cveArucoGridBoardDrawMat($gridBoard, $outSize, $img, $marginSize, $borderBits)
+    ; cveArucoGridBoardDraw using cv::Mat instead of _*Array
+    _cveArucoGridBoardDrawTyped($gridBoard, $outSize, "Mat", $img, $marginSize, $borderBits)
 EndFunc   ;==>_cveArucoGridBoardDrawMat
 
 Func _cveArucoGridBoardRelease($gridBoard, $sharedPtr)
@@ -744,32 +940,47 @@ Func _cveCharucoBoardDraw($charucoBoard, $outSize, $img, $marginSize, $borderBit
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCharucoBoardDraw", $sCharucoBoardDllType, $charucoBoard, $sOutSizeDllType, $outSize, $sImgDllType, $img, "int", $marginSize, "int", $borderBits), "cveCharucoBoardDraw", @error)
 EndFunc   ;==>_cveCharucoBoardDraw
 
-Func _cveCharucoBoardDrawMat($charucoBoard, $outSize, $matImg, $marginSize, $borderBits)
-    ; cveCharucoBoardDraw using cv::Mat instead of _*Array
+Func _cveCharucoBoardDrawTyped($charucoBoard, $outSize, $typeOfImg, $img, $marginSize, $borderBits)
 
-    Local $oArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $oArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $oArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $oArrImg = _cveOutputArrayFromVectorOfMat($vectorOfMatImg)
+        $oArrImg = Call("_cveOutputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $oArrImg = _cveOutputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $oArrImg = Call("_cveOutputArrayFrom" & $typeOfImg, $img)
     EndIf
 
     _cveCharucoBoardDraw($charucoBoard, $outSize, $oArrImg, $marginSize, $borderBits)
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveOutputArrayRelease($oArrImg)
+    If $typeOfImg <> Default Then
+        _cveOutputArrayRelease($oArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCharucoBoardDrawTyped
+
+Func _cveCharucoBoardDrawMat($charucoBoard, $outSize, $img, $marginSize, $borderBits)
+    ; cveCharucoBoardDraw using cv::Mat instead of _*Array
+    _cveCharucoBoardDrawTyped($charucoBoard, $outSize, "Mat", $img, $marginSize, $borderBits)
 EndFunc   ;==>_cveCharucoBoardDrawMat
 
 Func _cveCharucoBoardRelease($charucoBoard, $sharedPtr)
@@ -865,164 +1076,245 @@ Func _cveArucoRefineDetectedMarkers($image, $board, $detectedCorners, $detectedI
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoRefineDetectedMarkers", $sImageDllType, $image, $sBoardDllType, $board, $sDetectedCornersDllType, $detectedCorners, $sDetectedIdsDllType, $detectedIds, $sRejectedCornersDllType, $rejectedCorners, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, "float", $minRepDistance, "float", $errorCorrectionRate, "boolean", $checkAllOrders, $sRecoveredIdxsDllType, $recoveredIdxs, $sParametersDllType, $parameters), "cveArucoRefineDetectedMarkers", @error)
 EndFunc   ;==>_cveArucoRefineDetectedMarkers
 
-Func _cveArucoRefineDetectedMarkersMat($matImage, $board, $matDetectedCorners, $matDetectedIds, $matRejectedCorners, $matCameraMatrix, $matDistCoeffs, $minRepDistance, $errorCorrectionRate, $checkAllOrders, $matRecoveredIdxs, $parameters)
-    ; cveArucoRefineDetectedMarkers using cv::Mat instead of _*Array
+Func _cveArucoRefineDetectedMarkersTyped($typeOfImage, $image, $board, $typeOfDetectedCorners, $detectedCorners, $typeOfDetectedIds, $detectedIds, $typeOfRejectedCorners, $rejectedCorners, $typeOfCameraMatrix, $cameraMatrix, $typeOfDistCoeffs, $distCoeffs, $minRepDistance, $errorCorrectionRate, $checkAllOrders, $typeOfRecoveredIdxs, $recoveredIdxs, $parameters)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $ioArrDetectedCorners, $vectorOfMatDetectedCorners, $iArrDetectedCornersSize
-    Local $bDetectedCornersIsArray = VarGetType($matDetectedCorners) == "Array"
+    Local $ioArrDetectedCorners, $vectorDetectedCorners, $iArrDetectedCornersSize
+    Local $bDetectedCornersIsArray = IsArray($detectedCorners)
+    Local $bDetectedCornersCreate = IsDllStruct($detectedCorners) And $typeOfDetectedCorners == "Scalar"
 
-    If $bDetectedCornersIsArray Then
-        $vectorOfMatDetectedCorners = _VectorOfMatCreate()
+    If $typeOfDetectedCorners == Default Then
+        $ioArrDetectedCorners = $detectedCorners
+    ElseIf $bDetectedCornersIsArray Then
+        $vectorDetectedCorners = Call("_VectorOf" & $typeOfDetectedCorners & "Create")
 
-        $iArrDetectedCornersSize = UBound($matDetectedCorners)
+        $iArrDetectedCornersSize = UBound($detectedCorners)
         For $i = 0 To $iArrDetectedCornersSize - 1
-            _VectorOfMatPush($vectorOfMatDetectedCorners, $matDetectedCorners[$i])
+            Call("_VectorOf" & $typeOfDetectedCorners & "Push", $vectorDetectedCorners, $detectedCorners[$i])
         Next
 
-        $ioArrDetectedCorners = _cveInputOutputArrayFromVectorOfMat($vectorOfMatDetectedCorners)
+        $ioArrDetectedCorners = Call("_cveInputOutputArrayFromVectorOf" & $typeOfDetectedCorners, $vectorDetectedCorners)
     Else
-        $ioArrDetectedCorners = _cveInputOutputArrayFromMat($matDetectedCorners)
+        If $bDetectedCornersCreate Then
+            $detectedCorners = Call("_cve" & $typeOfDetectedCorners & "Create", $detectedCorners)
+        EndIf
+        $ioArrDetectedCorners = Call("_cveInputOutputArrayFrom" & $typeOfDetectedCorners, $detectedCorners)
     EndIf
 
-    Local $ioArrDetectedIds, $vectorOfMatDetectedIds, $iArrDetectedIdsSize
-    Local $bDetectedIdsIsArray = VarGetType($matDetectedIds) == "Array"
+    Local $ioArrDetectedIds, $vectorDetectedIds, $iArrDetectedIdsSize
+    Local $bDetectedIdsIsArray = IsArray($detectedIds)
+    Local $bDetectedIdsCreate = IsDllStruct($detectedIds) And $typeOfDetectedIds == "Scalar"
 
-    If $bDetectedIdsIsArray Then
-        $vectorOfMatDetectedIds = _VectorOfMatCreate()
+    If $typeOfDetectedIds == Default Then
+        $ioArrDetectedIds = $detectedIds
+    ElseIf $bDetectedIdsIsArray Then
+        $vectorDetectedIds = Call("_VectorOf" & $typeOfDetectedIds & "Create")
 
-        $iArrDetectedIdsSize = UBound($matDetectedIds)
+        $iArrDetectedIdsSize = UBound($detectedIds)
         For $i = 0 To $iArrDetectedIdsSize - 1
-            _VectorOfMatPush($vectorOfMatDetectedIds, $matDetectedIds[$i])
+            Call("_VectorOf" & $typeOfDetectedIds & "Push", $vectorDetectedIds, $detectedIds[$i])
         Next
 
-        $ioArrDetectedIds = _cveInputOutputArrayFromVectorOfMat($vectorOfMatDetectedIds)
+        $ioArrDetectedIds = Call("_cveInputOutputArrayFromVectorOf" & $typeOfDetectedIds, $vectorDetectedIds)
     Else
-        $ioArrDetectedIds = _cveInputOutputArrayFromMat($matDetectedIds)
+        If $bDetectedIdsCreate Then
+            $detectedIds = Call("_cve" & $typeOfDetectedIds & "Create", $detectedIds)
+        EndIf
+        $ioArrDetectedIds = Call("_cveInputOutputArrayFrom" & $typeOfDetectedIds, $detectedIds)
     EndIf
 
-    Local $ioArrRejectedCorners, $vectorOfMatRejectedCorners, $iArrRejectedCornersSize
-    Local $bRejectedCornersIsArray = VarGetType($matRejectedCorners) == "Array"
+    Local $ioArrRejectedCorners, $vectorRejectedCorners, $iArrRejectedCornersSize
+    Local $bRejectedCornersIsArray = IsArray($rejectedCorners)
+    Local $bRejectedCornersCreate = IsDllStruct($rejectedCorners) And $typeOfRejectedCorners == "Scalar"
 
-    If $bRejectedCornersIsArray Then
-        $vectorOfMatRejectedCorners = _VectorOfMatCreate()
+    If $typeOfRejectedCorners == Default Then
+        $ioArrRejectedCorners = $rejectedCorners
+    ElseIf $bRejectedCornersIsArray Then
+        $vectorRejectedCorners = Call("_VectorOf" & $typeOfRejectedCorners & "Create")
 
-        $iArrRejectedCornersSize = UBound($matRejectedCorners)
+        $iArrRejectedCornersSize = UBound($rejectedCorners)
         For $i = 0 To $iArrRejectedCornersSize - 1
-            _VectorOfMatPush($vectorOfMatRejectedCorners, $matRejectedCorners[$i])
+            Call("_VectorOf" & $typeOfRejectedCorners & "Push", $vectorRejectedCorners, $rejectedCorners[$i])
         Next
 
-        $ioArrRejectedCorners = _cveInputOutputArrayFromVectorOfMat($vectorOfMatRejectedCorners)
+        $ioArrRejectedCorners = Call("_cveInputOutputArrayFromVectorOf" & $typeOfRejectedCorners, $vectorRejectedCorners)
     Else
-        $ioArrRejectedCorners = _cveInputOutputArrayFromMat($matRejectedCorners)
+        If $bRejectedCornersCreate Then
+            $rejectedCorners = Call("_cve" & $typeOfRejectedCorners & "Create", $rejectedCorners)
+        EndIf
+        $ioArrRejectedCorners = Call("_cveInputOutputArrayFrom" & $typeOfRejectedCorners, $rejectedCorners)
     EndIf
 
-    Local $iArrCameraMatrix, $vectorOfMatCameraMatrix, $iArrCameraMatrixSize
-    Local $bCameraMatrixIsArray = VarGetType($matCameraMatrix) == "Array"
+    Local $iArrCameraMatrix, $vectorCameraMatrix, $iArrCameraMatrixSize
+    Local $bCameraMatrixIsArray = IsArray($cameraMatrix)
+    Local $bCameraMatrixCreate = IsDllStruct($cameraMatrix) And $typeOfCameraMatrix == "Scalar"
 
-    If $bCameraMatrixIsArray Then
-        $vectorOfMatCameraMatrix = _VectorOfMatCreate()
+    If $typeOfCameraMatrix == Default Then
+        $iArrCameraMatrix = $cameraMatrix
+    ElseIf $bCameraMatrixIsArray Then
+        $vectorCameraMatrix = Call("_VectorOf" & $typeOfCameraMatrix & "Create")
 
-        $iArrCameraMatrixSize = UBound($matCameraMatrix)
+        $iArrCameraMatrixSize = UBound($cameraMatrix)
         For $i = 0 To $iArrCameraMatrixSize - 1
-            _VectorOfMatPush($vectorOfMatCameraMatrix, $matCameraMatrix[$i])
+            Call("_VectorOf" & $typeOfCameraMatrix & "Push", $vectorCameraMatrix, $cameraMatrix[$i])
         Next
 
-        $iArrCameraMatrix = _cveInputArrayFromVectorOfMat($vectorOfMatCameraMatrix)
+        $iArrCameraMatrix = Call("_cveInputArrayFromVectorOf" & $typeOfCameraMatrix, $vectorCameraMatrix)
     Else
-        $iArrCameraMatrix = _cveInputArrayFromMat($matCameraMatrix)
+        If $bCameraMatrixCreate Then
+            $cameraMatrix = Call("_cve" & $typeOfCameraMatrix & "Create", $cameraMatrix)
+        EndIf
+        $iArrCameraMatrix = Call("_cveInputArrayFrom" & $typeOfCameraMatrix, $cameraMatrix)
     EndIf
 
-    Local $iArrDistCoeffs, $vectorOfMatDistCoeffs, $iArrDistCoeffsSize
-    Local $bDistCoeffsIsArray = VarGetType($matDistCoeffs) == "Array"
+    Local $iArrDistCoeffs, $vectorDistCoeffs, $iArrDistCoeffsSize
+    Local $bDistCoeffsIsArray = IsArray($distCoeffs)
+    Local $bDistCoeffsCreate = IsDllStruct($distCoeffs) And $typeOfDistCoeffs == "Scalar"
 
-    If $bDistCoeffsIsArray Then
-        $vectorOfMatDistCoeffs = _VectorOfMatCreate()
+    If $typeOfDistCoeffs == Default Then
+        $iArrDistCoeffs = $distCoeffs
+    ElseIf $bDistCoeffsIsArray Then
+        $vectorDistCoeffs = Call("_VectorOf" & $typeOfDistCoeffs & "Create")
 
-        $iArrDistCoeffsSize = UBound($matDistCoeffs)
+        $iArrDistCoeffsSize = UBound($distCoeffs)
         For $i = 0 To $iArrDistCoeffsSize - 1
-            _VectorOfMatPush($vectorOfMatDistCoeffs, $matDistCoeffs[$i])
+            Call("_VectorOf" & $typeOfDistCoeffs & "Push", $vectorDistCoeffs, $distCoeffs[$i])
         Next
 
-        $iArrDistCoeffs = _cveInputArrayFromVectorOfMat($vectorOfMatDistCoeffs)
+        $iArrDistCoeffs = Call("_cveInputArrayFromVectorOf" & $typeOfDistCoeffs, $vectorDistCoeffs)
     Else
-        $iArrDistCoeffs = _cveInputArrayFromMat($matDistCoeffs)
+        If $bDistCoeffsCreate Then
+            $distCoeffs = Call("_cve" & $typeOfDistCoeffs & "Create", $distCoeffs)
+        EndIf
+        $iArrDistCoeffs = Call("_cveInputArrayFrom" & $typeOfDistCoeffs, $distCoeffs)
     EndIf
 
-    Local $oArrRecoveredIdxs, $vectorOfMatRecoveredIdxs, $iArrRecoveredIdxsSize
-    Local $bRecoveredIdxsIsArray = VarGetType($matRecoveredIdxs) == "Array"
+    Local $oArrRecoveredIdxs, $vectorRecoveredIdxs, $iArrRecoveredIdxsSize
+    Local $bRecoveredIdxsIsArray = IsArray($recoveredIdxs)
+    Local $bRecoveredIdxsCreate = IsDllStruct($recoveredIdxs) And $typeOfRecoveredIdxs == "Scalar"
 
-    If $bRecoveredIdxsIsArray Then
-        $vectorOfMatRecoveredIdxs = _VectorOfMatCreate()
+    If $typeOfRecoveredIdxs == Default Then
+        $oArrRecoveredIdxs = $recoveredIdxs
+    ElseIf $bRecoveredIdxsIsArray Then
+        $vectorRecoveredIdxs = Call("_VectorOf" & $typeOfRecoveredIdxs & "Create")
 
-        $iArrRecoveredIdxsSize = UBound($matRecoveredIdxs)
+        $iArrRecoveredIdxsSize = UBound($recoveredIdxs)
         For $i = 0 To $iArrRecoveredIdxsSize - 1
-            _VectorOfMatPush($vectorOfMatRecoveredIdxs, $matRecoveredIdxs[$i])
+            Call("_VectorOf" & $typeOfRecoveredIdxs & "Push", $vectorRecoveredIdxs, $recoveredIdxs[$i])
         Next
 
-        $oArrRecoveredIdxs = _cveOutputArrayFromVectorOfMat($vectorOfMatRecoveredIdxs)
+        $oArrRecoveredIdxs = Call("_cveOutputArrayFromVectorOf" & $typeOfRecoveredIdxs, $vectorRecoveredIdxs)
     Else
-        $oArrRecoveredIdxs = _cveOutputArrayFromMat($matRecoveredIdxs)
+        If $bRecoveredIdxsCreate Then
+            $recoveredIdxs = Call("_cve" & $typeOfRecoveredIdxs & "Create", $recoveredIdxs)
+        EndIf
+        $oArrRecoveredIdxs = Call("_cveOutputArrayFrom" & $typeOfRecoveredIdxs, $recoveredIdxs)
     EndIf
 
     _cveArucoRefineDetectedMarkers($iArrImage, $board, $ioArrDetectedCorners, $ioArrDetectedIds, $ioArrRejectedCorners, $iArrCameraMatrix, $iArrDistCoeffs, $minRepDistance, $errorCorrectionRate, $checkAllOrders, $oArrRecoveredIdxs, $parameters)
 
     If $bRecoveredIdxsIsArray Then
-        _VectorOfMatRelease($vectorOfMatRecoveredIdxs)
+        Call("_VectorOf" & $typeOfRecoveredIdxs & "Release", $vectorRecoveredIdxs)
     EndIf
 
-    _cveOutputArrayRelease($oArrRecoveredIdxs)
+    If $typeOfRecoveredIdxs <> Default Then
+        _cveOutputArrayRelease($oArrRecoveredIdxs)
+        If $bRecoveredIdxsCreate Then
+            Call("_cve" & $typeOfRecoveredIdxs & "Release", $recoveredIdxs)
+        EndIf
+    EndIf
 
     If $bDistCoeffsIsArray Then
-        _VectorOfMatRelease($vectorOfMatDistCoeffs)
+        Call("_VectorOf" & $typeOfDistCoeffs & "Release", $vectorDistCoeffs)
     EndIf
 
-    _cveInputArrayRelease($iArrDistCoeffs)
+    If $typeOfDistCoeffs <> Default Then
+        _cveInputArrayRelease($iArrDistCoeffs)
+        If $bDistCoeffsCreate Then
+            Call("_cve" & $typeOfDistCoeffs & "Release", $distCoeffs)
+        EndIf
+    EndIf
 
     If $bCameraMatrixIsArray Then
-        _VectorOfMatRelease($vectorOfMatCameraMatrix)
+        Call("_VectorOf" & $typeOfCameraMatrix & "Release", $vectorCameraMatrix)
     EndIf
 
-    _cveInputArrayRelease($iArrCameraMatrix)
+    If $typeOfCameraMatrix <> Default Then
+        _cveInputArrayRelease($iArrCameraMatrix)
+        If $bCameraMatrixCreate Then
+            Call("_cve" & $typeOfCameraMatrix & "Release", $cameraMatrix)
+        EndIf
+    EndIf
 
     If $bRejectedCornersIsArray Then
-        _VectorOfMatRelease($vectorOfMatRejectedCorners)
+        Call("_VectorOf" & $typeOfRejectedCorners & "Release", $vectorRejectedCorners)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrRejectedCorners)
+    If $typeOfRejectedCorners <> Default Then
+        _cveInputOutputArrayRelease($ioArrRejectedCorners)
+        If $bRejectedCornersCreate Then
+            Call("_cve" & $typeOfRejectedCorners & "Release", $rejectedCorners)
+        EndIf
+    EndIf
 
     If $bDetectedIdsIsArray Then
-        _VectorOfMatRelease($vectorOfMatDetectedIds)
+        Call("_VectorOf" & $typeOfDetectedIds & "Release", $vectorDetectedIds)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrDetectedIds)
+    If $typeOfDetectedIds <> Default Then
+        _cveInputOutputArrayRelease($ioArrDetectedIds)
+        If $bDetectedIdsCreate Then
+            Call("_cve" & $typeOfDetectedIds & "Release", $detectedIds)
+        EndIf
+    EndIf
 
     If $bDetectedCornersIsArray Then
-        _VectorOfMatRelease($vectorOfMatDetectedCorners)
+        Call("_VectorOf" & $typeOfDetectedCorners & "Release", $vectorDetectedCorners)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrDetectedCorners)
+    If $typeOfDetectedCorners <> Default Then
+        _cveInputOutputArrayRelease($ioArrDetectedCorners)
+        If $bDetectedCornersCreate Then
+            Call("_cve" & $typeOfDetectedCorners & "Release", $detectedCorners)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveArucoRefineDetectedMarkersTyped
+
+Func _cveArucoRefineDetectedMarkersMat($image, $board, $detectedCorners, $detectedIds, $rejectedCorners, $cameraMatrix, $distCoeffs, $minRepDistance, $errorCorrectionRate, $checkAllOrders, $recoveredIdxs, $parameters)
+    ; cveArucoRefineDetectedMarkers using cv::Mat instead of _*Array
+    _cveArucoRefineDetectedMarkersTyped("Mat", $image, $board, "Mat", $detectedCorners, "Mat", $detectedIds, "Mat", $rejectedCorners, "Mat", $cameraMatrix, "Mat", $distCoeffs, $minRepDistance, $errorCorrectionRate, $checkAllOrders, "Mat", $recoveredIdxs, $parameters)
 EndFunc   ;==>_cveArucoRefineDetectedMarkersMat
 
 Func _cveArucoDrawDetectedMarkers($image, $corners, $ids, $borderColor)
@@ -1059,76 +1351,113 @@ Func _cveArucoDrawDetectedMarkers($image, $corners, $ids, $borderColor)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawDetectedMarkers", $sImageDllType, $image, $sCornersDllType, $corners, $sIdsDllType, $ids, $sBorderColorDllType, $borderColor), "cveArucoDrawDetectedMarkers", @error)
 EndFunc   ;==>_cveArucoDrawDetectedMarkers
 
-Func _cveArucoDrawDetectedMarkersMat($matImage, $matCorners, $matIds, $borderColor)
-    ; cveArucoDrawDetectedMarkers using cv::Mat instead of _*Array
+Func _cveArucoDrawDetectedMarkersTyped($typeOfImage, $image, $typeOfCorners, $corners, $typeOfIds, $ids, $borderColor)
 
-    Local $ioArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $ioArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $ioArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $ioArrImage = _cveInputOutputArrayFromVectorOfMat($vectorOfMatImage)
+        $ioArrImage = Call("_cveInputOutputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $ioArrImage = _cveInputOutputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $ioArrImage = Call("_cveInputOutputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $iArrCorners, $vectorOfMatCorners, $iArrCornersSize
-    Local $bCornersIsArray = VarGetType($matCorners) == "Array"
+    Local $iArrCorners, $vectorCorners, $iArrCornersSize
+    Local $bCornersIsArray = IsArray($corners)
+    Local $bCornersCreate = IsDllStruct($corners) And $typeOfCorners == "Scalar"
 
-    If $bCornersIsArray Then
-        $vectorOfMatCorners = _VectorOfMatCreate()
+    If $typeOfCorners == Default Then
+        $iArrCorners = $corners
+    ElseIf $bCornersIsArray Then
+        $vectorCorners = Call("_VectorOf" & $typeOfCorners & "Create")
 
-        $iArrCornersSize = UBound($matCorners)
+        $iArrCornersSize = UBound($corners)
         For $i = 0 To $iArrCornersSize - 1
-            _VectorOfMatPush($vectorOfMatCorners, $matCorners[$i])
+            Call("_VectorOf" & $typeOfCorners & "Push", $vectorCorners, $corners[$i])
         Next
 
-        $iArrCorners = _cveInputArrayFromVectorOfMat($vectorOfMatCorners)
+        $iArrCorners = Call("_cveInputArrayFromVectorOf" & $typeOfCorners, $vectorCorners)
     Else
-        $iArrCorners = _cveInputArrayFromMat($matCorners)
+        If $bCornersCreate Then
+            $corners = Call("_cve" & $typeOfCorners & "Create", $corners)
+        EndIf
+        $iArrCorners = Call("_cveInputArrayFrom" & $typeOfCorners, $corners)
     EndIf
 
-    Local $iArrIds, $vectorOfMatIds, $iArrIdsSize
-    Local $bIdsIsArray = VarGetType($matIds) == "Array"
+    Local $iArrIds, $vectorIds, $iArrIdsSize
+    Local $bIdsIsArray = IsArray($ids)
+    Local $bIdsCreate = IsDllStruct($ids) And $typeOfIds == "Scalar"
 
-    If $bIdsIsArray Then
-        $vectorOfMatIds = _VectorOfMatCreate()
+    If $typeOfIds == Default Then
+        $iArrIds = $ids
+    ElseIf $bIdsIsArray Then
+        $vectorIds = Call("_VectorOf" & $typeOfIds & "Create")
 
-        $iArrIdsSize = UBound($matIds)
+        $iArrIdsSize = UBound($ids)
         For $i = 0 To $iArrIdsSize - 1
-            _VectorOfMatPush($vectorOfMatIds, $matIds[$i])
+            Call("_VectorOf" & $typeOfIds & "Push", $vectorIds, $ids[$i])
         Next
 
-        $iArrIds = _cveInputArrayFromVectorOfMat($vectorOfMatIds)
+        $iArrIds = Call("_cveInputArrayFromVectorOf" & $typeOfIds, $vectorIds)
     Else
-        $iArrIds = _cveInputArrayFromMat($matIds)
+        If $bIdsCreate Then
+            $ids = Call("_cve" & $typeOfIds & "Create", $ids)
+        EndIf
+        $iArrIds = Call("_cveInputArrayFrom" & $typeOfIds, $ids)
     EndIf
 
     _cveArucoDrawDetectedMarkers($ioArrImage, $iArrCorners, $iArrIds, $borderColor)
 
     If $bIdsIsArray Then
-        _VectorOfMatRelease($vectorOfMatIds)
+        Call("_VectorOf" & $typeOfIds & "Release", $vectorIds)
     EndIf
 
-    _cveInputArrayRelease($iArrIds)
+    If $typeOfIds <> Default Then
+        _cveInputArrayRelease($iArrIds)
+        If $bIdsCreate Then
+            Call("_cve" & $typeOfIds & "Release", $ids)
+        EndIf
+    EndIf
 
     If $bCornersIsArray Then
-        _VectorOfMatRelease($vectorOfMatCorners)
+        Call("_VectorOf" & $typeOfCorners & "Release", $vectorCorners)
     EndIf
 
-    _cveInputArrayRelease($iArrCorners)
+    If $typeOfCorners <> Default Then
+        _cveInputArrayRelease($iArrCorners)
+        If $bCornersCreate Then
+            Call("_cve" & $typeOfCorners & "Release", $corners)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputOutputArrayRelease($ioArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveArucoDrawDetectedMarkersTyped
+
+Func _cveArucoDrawDetectedMarkersMat($image, $corners, $ids, $borderColor)
+    ; cveArucoDrawDetectedMarkers using cv::Mat instead of _*Array
+    _cveArucoDrawDetectedMarkersTyped("Mat", $image, "Mat", $corners, "Mat", $ids, $borderColor)
 EndFunc   ;==>_cveArucoDrawDetectedMarkersMat
 
 Func _cveArucoCalibrateCameraAruco($corners, $ids, $counter, $board, $imageSize, $cameraMatrix, $distCoeffs, $rvecs, $tvecs, $stdDeviationsIntrinsics, $stdDeviationsExtrinsics, $perViewErrors, $flags, $criteria)
@@ -1227,230 +1556,346 @@ Func _cveArucoCalibrateCameraAruco($corners, $ids, $counter, $board, $imageSize,
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveArucoCalibrateCameraAruco", $sCornersDllType, $corners, $sIdsDllType, $ids, $sCounterDllType, $counter, $sBoardDllType, $board, $sImageSizeDllType, $imageSize, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRvecsDllType, $rvecs, $sTvecsDllType, $tvecs, $sStdDeviationsIntrinsicsDllType, $stdDeviationsIntrinsics, $sStdDeviationsExtrinsicsDllType, $stdDeviationsExtrinsics, $sPerViewErrorsDllType, $perViewErrors, "int", $flags, $sCriteriaDllType, $criteria), "cveArucoCalibrateCameraAruco", @error)
 EndFunc   ;==>_cveArucoCalibrateCameraAruco
 
-Func _cveArucoCalibrateCameraArucoMat($matCorners, $matIds, $matCounter, $board, $imageSize, $matCameraMatrix, $matDistCoeffs, $matRvecs, $matTvecs, $matStdDeviationsIntrinsics, $matStdDeviationsExtrinsics, $matPerViewErrors, $flags, $criteria)
-    ; cveArucoCalibrateCameraAruco using cv::Mat instead of _*Array
+Func _cveArucoCalibrateCameraArucoTyped($typeOfCorners, $corners, $typeOfIds, $ids, $typeOfCounter, $counter, $board, $imageSize, $typeOfCameraMatrix, $cameraMatrix, $typeOfDistCoeffs, $distCoeffs, $typeOfRvecs, $rvecs, $typeOfTvecs, $tvecs, $typeOfStdDeviationsIntrinsics, $stdDeviationsIntrinsics, $typeOfStdDeviationsExtrinsics, $stdDeviationsExtrinsics, $typeOfPerViewErrors, $perViewErrors, $flags, $criteria)
 
-    Local $iArrCorners, $vectorOfMatCorners, $iArrCornersSize
-    Local $bCornersIsArray = VarGetType($matCorners) == "Array"
+    Local $iArrCorners, $vectorCorners, $iArrCornersSize
+    Local $bCornersIsArray = IsArray($corners)
+    Local $bCornersCreate = IsDllStruct($corners) And $typeOfCorners == "Scalar"
 
-    If $bCornersIsArray Then
-        $vectorOfMatCorners = _VectorOfMatCreate()
+    If $typeOfCorners == Default Then
+        $iArrCorners = $corners
+    ElseIf $bCornersIsArray Then
+        $vectorCorners = Call("_VectorOf" & $typeOfCorners & "Create")
 
-        $iArrCornersSize = UBound($matCorners)
+        $iArrCornersSize = UBound($corners)
         For $i = 0 To $iArrCornersSize - 1
-            _VectorOfMatPush($vectorOfMatCorners, $matCorners[$i])
+            Call("_VectorOf" & $typeOfCorners & "Push", $vectorCorners, $corners[$i])
         Next
 
-        $iArrCorners = _cveInputArrayFromVectorOfMat($vectorOfMatCorners)
+        $iArrCorners = Call("_cveInputArrayFromVectorOf" & $typeOfCorners, $vectorCorners)
     Else
-        $iArrCorners = _cveInputArrayFromMat($matCorners)
+        If $bCornersCreate Then
+            $corners = Call("_cve" & $typeOfCorners & "Create", $corners)
+        EndIf
+        $iArrCorners = Call("_cveInputArrayFrom" & $typeOfCorners, $corners)
     EndIf
 
-    Local $iArrIds, $vectorOfMatIds, $iArrIdsSize
-    Local $bIdsIsArray = VarGetType($matIds) == "Array"
+    Local $iArrIds, $vectorIds, $iArrIdsSize
+    Local $bIdsIsArray = IsArray($ids)
+    Local $bIdsCreate = IsDllStruct($ids) And $typeOfIds == "Scalar"
 
-    If $bIdsIsArray Then
-        $vectorOfMatIds = _VectorOfMatCreate()
+    If $typeOfIds == Default Then
+        $iArrIds = $ids
+    ElseIf $bIdsIsArray Then
+        $vectorIds = Call("_VectorOf" & $typeOfIds & "Create")
 
-        $iArrIdsSize = UBound($matIds)
+        $iArrIdsSize = UBound($ids)
         For $i = 0 To $iArrIdsSize - 1
-            _VectorOfMatPush($vectorOfMatIds, $matIds[$i])
+            Call("_VectorOf" & $typeOfIds & "Push", $vectorIds, $ids[$i])
         Next
 
-        $iArrIds = _cveInputArrayFromVectorOfMat($vectorOfMatIds)
+        $iArrIds = Call("_cveInputArrayFromVectorOf" & $typeOfIds, $vectorIds)
     Else
-        $iArrIds = _cveInputArrayFromMat($matIds)
+        If $bIdsCreate Then
+            $ids = Call("_cve" & $typeOfIds & "Create", $ids)
+        EndIf
+        $iArrIds = Call("_cveInputArrayFrom" & $typeOfIds, $ids)
     EndIf
 
-    Local $iArrCounter, $vectorOfMatCounter, $iArrCounterSize
-    Local $bCounterIsArray = VarGetType($matCounter) == "Array"
+    Local $iArrCounter, $vectorCounter, $iArrCounterSize
+    Local $bCounterIsArray = IsArray($counter)
+    Local $bCounterCreate = IsDllStruct($counter) And $typeOfCounter == "Scalar"
 
-    If $bCounterIsArray Then
-        $vectorOfMatCounter = _VectorOfMatCreate()
+    If $typeOfCounter == Default Then
+        $iArrCounter = $counter
+    ElseIf $bCounterIsArray Then
+        $vectorCounter = Call("_VectorOf" & $typeOfCounter & "Create")
 
-        $iArrCounterSize = UBound($matCounter)
+        $iArrCounterSize = UBound($counter)
         For $i = 0 To $iArrCounterSize - 1
-            _VectorOfMatPush($vectorOfMatCounter, $matCounter[$i])
+            Call("_VectorOf" & $typeOfCounter & "Push", $vectorCounter, $counter[$i])
         Next
 
-        $iArrCounter = _cveInputArrayFromVectorOfMat($vectorOfMatCounter)
+        $iArrCounter = Call("_cveInputArrayFromVectorOf" & $typeOfCounter, $vectorCounter)
     Else
-        $iArrCounter = _cveInputArrayFromMat($matCounter)
+        If $bCounterCreate Then
+            $counter = Call("_cve" & $typeOfCounter & "Create", $counter)
+        EndIf
+        $iArrCounter = Call("_cveInputArrayFrom" & $typeOfCounter, $counter)
     EndIf
 
-    Local $ioArrCameraMatrix, $vectorOfMatCameraMatrix, $iArrCameraMatrixSize
-    Local $bCameraMatrixIsArray = VarGetType($matCameraMatrix) == "Array"
+    Local $ioArrCameraMatrix, $vectorCameraMatrix, $iArrCameraMatrixSize
+    Local $bCameraMatrixIsArray = IsArray($cameraMatrix)
+    Local $bCameraMatrixCreate = IsDllStruct($cameraMatrix) And $typeOfCameraMatrix == "Scalar"
 
-    If $bCameraMatrixIsArray Then
-        $vectorOfMatCameraMatrix = _VectorOfMatCreate()
+    If $typeOfCameraMatrix == Default Then
+        $ioArrCameraMatrix = $cameraMatrix
+    ElseIf $bCameraMatrixIsArray Then
+        $vectorCameraMatrix = Call("_VectorOf" & $typeOfCameraMatrix & "Create")
 
-        $iArrCameraMatrixSize = UBound($matCameraMatrix)
+        $iArrCameraMatrixSize = UBound($cameraMatrix)
         For $i = 0 To $iArrCameraMatrixSize - 1
-            _VectorOfMatPush($vectorOfMatCameraMatrix, $matCameraMatrix[$i])
+            Call("_VectorOf" & $typeOfCameraMatrix & "Push", $vectorCameraMatrix, $cameraMatrix[$i])
         Next
 
-        $ioArrCameraMatrix = _cveInputOutputArrayFromVectorOfMat($vectorOfMatCameraMatrix)
+        $ioArrCameraMatrix = Call("_cveInputOutputArrayFromVectorOf" & $typeOfCameraMatrix, $vectorCameraMatrix)
     Else
-        $ioArrCameraMatrix = _cveInputOutputArrayFromMat($matCameraMatrix)
+        If $bCameraMatrixCreate Then
+            $cameraMatrix = Call("_cve" & $typeOfCameraMatrix & "Create", $cameraMatrix)
+        EndIf
+        $ioArrCameraMatrix = Call("_cveInputOutputArrayFrom" & $typeOfCameraMatrix, $cameraMatrix)
     EndIf
 
-    Local $ioArrDistCoeffs, $vectorOfMatDistCoeffs, $iArrDistCoeffsSize
-    Local $bDistCoeffsIsArray = VarGetType($matDistCoeffs) == "Array"
+    Local $ioArrDistCoeffs, $vectorDistCoeffs, $iArrDistCoeffsSize
+    Local $bDistCoeffsIsArray = IsArray($distCoeffs)
+    Local $bDistCoeffsCreate = IsDllStruct($distCoeffs) And $typeOfDistCoeffs == "Scalar"
 
-    If $bDistCoeffsIsArray Then
-        $vectorOfMatDistCoeffs = _VectorOfMatCreate()
+    If $typeOfDistCoeffs == Default Then
+        $ioArrDistCoeffs = $distCoeffs
+    ElseIf $bDistCoeffsIsArray Then
+        $vectorDistCoeffs = Call("_VectorOf" & $typeOfDistCoeffs & "Create")
 
-        $iArrDistCoeffsSize = UBound($matDistCoeffs)
+        $iArrDistCoeffsSize = UBound($distCoeffs)
         For $i = 0 To $iArrDistCoeffsSize - 1
-            _VectorOfMatPush($vectorOfMatDistCoeffs, $matDistCoeffs[$i])
+            Call("_VectorOf" & $typeOfDistCoeffs & "Push", $vectorDistCoeffs, $distCoeffs[$i])
         Next
 
-        $ioArrDistCoeffs = _cveInputOutputArrayFromVectorOfMat($vectorOfMatDistCoeffs)
+        $ioArrDistCoeffs = Call("_cveInputOutputArrayFromVectorOf" & $typeOfDistCoeffs, $vectorDistCoeffs)
     Else
-        $ioArrDistCoeffs = _cveInputOutputArrayFromMat($matDistCoeffs)
+        If $bDistCoeffsCreate Then
+            $distCoeffs = Call("_cve" & $typeOfDistCoeffs & "Create", $distCoeffs)
+        EndIf
+        $ioArrDistCoeffs = Call("_cveInputOutputArrayFrom" & $typeOfDistCoeffs, $distCoeffs)
     EndIf
 
-    Local $oArrRvecs, $vectorOfMatRvecs, $iArrRvecsSize
-    Local $bRvecsIsArray = VarGetType($matRvecs) == "Array"
+    Local $oArrRvecs, $vectorRvecs, $iArrRvecsSize
+    Local $bRvecsIsArray = IsArray($rvecs)
+    Local $bRvecsCreate = IsDllStruct($rvecs) And $typeOfRvecs == "Scalar"
 
-    If $bRvecsIsArray Then
-        $vectorOfMatRvecs = _VectorOfMatCreate()
+    If $typeOfRvecs == Default Then
+        $oArrRvecs = $rvecs
+    ElseIf $bRvecsIsArray Then
+        $vectorRvecs = Call("_VectorOf" & $typeOfRvecs & "Create")
 
-        $iArrRvecsSize = UBound($matRvecs)
+        $iArrRvecsSize = UBound($rvecs)
         For $i = 0 To $iArrRvecsSize - 1
-            _VectorOfMatPush($vectorOfMatRvecs, $matRvecs[$i])
+            Call("_VectorOf" & $typeOfRvecs & "Push", $vectorRvecs, $rvecs[$i])
         Next
 
-        $oArrRvecs = _cveOutputArrayFromVectorOfMat($vectorOfMatRvecs)
+        $oArrRvecs = Call("_cveOutputArrayFromVectorOf" & $typeOfRvecs, $vectorRvecs)
     Else
-        $oArrRvecs = _cveOutputArrayFromMat($matRvecs)
+        If $bRvecsCreate Then
+            $rvecs = Call("_cve" & $typeOfRvecs & "Create", $rvecs)
+        EndIf
+        $oArrRvecs = Call("_cveOutputArrayFrom" & $typeOfRvecs, $rvecs)
     EndIf
 
-    Local $oArrTvecs, $vectorOfMatTvecs, $iArrTvecsSize
-    Local $bTvecsIsArray = VarGetType($matTvecs) == "Array"
+    Local $oArrTvecs, $vectorTvecs, $iArrTvecsSize
+    Local $bTvecsIsArray = IsArray($tvecs)
+    Local $bTvecsCreate = IsDllStruct($tvecs) And $typeOfTvecs == "Scalar"
 
-    If $bTvecsIsArray Then
-        $vectorOfMatTvecs = _VectorOfMatCreate()
+    If $typeOfTvecs == Default Then
+        $oArrTvecs = $tvecs
+    ElseIf $bTvecsIsArray Then
+        $vectorTvecs = Call("_VectorOf" & $typeOfTvecs & "Create")
 
-        $iArrTvecsSize = UBound($matTvecs)
+        $iArrTvecsSize = UBound($tvecs)
         For $i = 0 To $iArrTvecsSize - 1
-            _VectorOfMatPush($vectorOfMatTvecs, $matTvecs[$i])
+            Call("_VectorOf" & $typeOfTvecs & "Push", $vectorTvecs, $tvecs[$i])
         Next
 
-        $oArrTvecs = _cveOutputArrayFromVectorOfMat($vectorOfMatTvecs)
+        $oArrTvecs = Call("_cveOutputArrayFromVectorOf" & $typeOfTvecs, $vectorTvecs)
     Else
-        $oArrTvecs = _cveOutputArrayFromMat($matTvecs)
+        If $bTvecsCreate Then
+            $tvecs = Call("_cve" & $typeOfTvecs & "Create", $tvecs)
+        EndIf
+        $oArrTvecs = Call("_cveOutputArrayFrom" & $typeOfTvecs, $tvecs)
     EndIf
 
-    Local $oArrStdDeviationsIntrinsics, $vectorOfMatStdDeviationsIntrinsics, $iArrStdDeviationsIntrinsicsSize
-    Local $bStdDeviationsIntrinsicsIsArray = VarGetType($matStdDeviationsIntrinsics) == "Array"
+    Local $oArrStdDeviationsIntrinsics, $vectorStdDeviationsIntrinsics, $iArrStdDeviationsIntrinsicsSize
+    Local $bStdDeviationsIntrinsicsIsArray = IsArray($stdDeviationsIntrinsics)
+    Local $bStdDeviationsIntrinsicsCreate = IsDllStruct($stdDeviationsIntrinsics) And $typeOfStdDeviationsIntrinsics == "Scalar"
 
-    If $bStdDeviationsIntrinsicsIsArray Then
-        $vectorOfMatStdDeviationsIntrinsics = _VectorOfMatCreate()
+    If $typeOfStdDeviationsIntrinsics == Default Then
+        $oArrStdDeviationsIntrinsics = $stdDeviationsIntrinsics
+    ElseIf $bStdDeviationsIntrinsicsIsArray Then
+        $vectorStdDeviationsIntrinsics = Call("_VectorOf" & $typeOfStdDeviationsIntrinsics & "Create")
 
-        $iArrStdDeviationsIntrinsicsSize = UBound($matStdDeviationsIntrinsics)
+        $iArrStdDeviationsIntrinsicsSize = UBound($stdDeviationsIntrinsics)
         For $i = 0 To $iArrStdDeviationsIntrinsicsSize - 1
-            _VectorOfMatPush($vectorOfMatStdDeviationsIntrinsics, $matStdDeviationsIntrinsics[$i])
+            Call("_VectorOf" & $typeOfStdDeviationsIntrinsics & "Push", $vectorStdDeviationsIntrinsics, $stdDeviationsIntrinsics[$i])
         Next
 
-        $oArrStdDeviationsIntrinsics = _cveOutputArrayFromVectorOfMat($vectorOfMatStdDeviationsIntrinsics)
+        $oArrStdDeviationsIntrinsics = Call("_cveOutputArrayFromVectorOf" & $typeOfStdDeviationsIntrinsics, $vectorStdDeviationsIntrinsics)
     Else
-        $oArrStdDeviationsIntrinsics = _cveOutputArrayFromMat($matStdDeviationsIntrinsics)
+        If $bStdDeviationsIntrinsicsCreate Then
+            $stdDeviationsIntrinsics = Call("_cve" & $typeOfStdDeviationsIntrinsics & "Create", $stdDeviationsIntrinsics)
+        EndIf
+        $oArrStdDeviationsIntrinsics = Call("_cveOutputArrayFrom" & $typeOfStdDeviationsIntrinsics, $stdDeviationsIntrinsics)
     EndIf
 
-    Local $oArrStdDeviationsExtrinsics, $vectorOfMatStdDeviationsExtrinsics, $iArrStdDeviationsExtrinsicsSize
-    Local $bStdDeviationsExtrinsicsIsArray = VarGetType($matStdDeviationsExtrinsics) == "Array"
+    Local $oArrStdDeviationsExtrinsics, $vectorStdDeviationsExtrinsics, $iArrStdDeviationsExtrinsicsSize
+    Local $bStdDeviationsExtrinsicsIsArray = IsArray($stdDeviationsExtrinsics)
+    Local $bStdDeviationsExtrinsicsCreate = IsDllStruct($stdDeviationsExtrinsics) And $typeOfStdDeviationsExtrinsics == "Scalar"
 
-    If $bStdDeviationsExtrinsicsIsArray Then
-        $vectorOfMatStdDeviationsExtrinsics = _VectorOfMatCreate()
+    If $typeOfStdDeviationsExtrinsics == Default Then
+        $oArrStdDeviationsExtrinsics = $stdDeviationsExtrinsics
+    ElseIf $bStdDeviationsExtrinsicsIsArray Then
+        $vectorStdDeviationsExtrinsics = Call("_VectorOf" & $typeOfStdDeviationsExtrinsics & "Create")
 
-        $iArrStdDeviationsExtrinsicsSize = UBound($matStdDeviationsExtrinsics)
+        $iArrStdDeviationsExtrinsicsSize = UBound($stdDeviationsExtrinsics)
         For $i = 0 To $iArrStdDeviationsExtrinsicsSize - 1
-            _VectorOfMatPush($vectorOfMatStdDeviationsExtrinsics, $matStdDeviationsExtrinsics[$i])
+            Call("_VectorOf" & $typeOfStdDeviationsExtrinsics & "Push", $vectorStdDeviationsExtrinsics, $stdDeviationsExtrinsics[$i])
         Next
 
-        $oArrStdDeviationsExtrinsics = _cveOutputArrayFromVectorOfMat($vectorOfMatStdDeviationsExtrinsics)
+        $oArrStdDeviationsExtrinsics = Call("_cveOutputArrayFromVectorOf" & $typeOfStdDeviationsExtrinsics, $vectorStdDeviationsExtrinsics)
     Else
-        $oArrStdDeviationsExtrinsics = _cveOutputArrayFromMat($matStdDeviationsExtrinsics)
+        If $bStdDeviationsExtrinsicsCreate Then
+            $stdDeviationsExtrinsics = Call("_cve" & $typeOfStdDeviationsExtrinsics & "Create", $stdDeviationsExtrinsics)
+        EndIf
+        $oArrStdDeviationsExtrinsics = Call("_cveOutputArrayFrom" & $typeOfStdDeviationsExtrinsics, $stdDeviationsExtrinsics)
     EndIf
 
-    Local $oArrPerViewErrors, $vectorOfMatPerViewErrors, $iArrPerViewErrorsSize
-    Local $bPerViewErrorsIsArray = VarGetType($matPerViewErrors) == "Array"
+    Local $oArrPerViewErrors, $vectorPerViewErrors, $iArrPerViewErrorsSize
+    Local $bPerViewErrorsIsArray = IsArray($perViewErrors)
+    Local $bPerViewErrorsCreate = IsDllStruct($perViewErrors) And $typeOfPerViewErrors == "Scalar"
 
-    If $bPerViewErrorsIsArray Then
-        $vectorOfMatPerViewErrors = _VectorOfMatCreate()
+    If $typeOfPerViewErrors == Default Then
+        $oArrPerViewErrors = $perViewErrors
+    ElseIf $bPerViewErrorsIsArray Then
+        $vectorPerViewErrors = Call("_VectorOf" & $typeOfPerViewErrors & "Create")
 
-        $iArrPerViewErrorsSize = UBound($matPerViewErrors)
+        $iArrPerViewErrorsSize = UBound($perViewErrors)
         For $i = 0 To $iArrPerViewErrorsSize - 1
-            _VectorOfMatPush($vectorOfMatPerViewErrors, $matPerViewErrors[$i])
+            Call("_VectorOf" & $typeOfPerViewErrors & "Push", $vectorPerViewErrors, $perViewErrors[$i])
         Next
 
-        $oArrPerViewErrors = _cveOutputArrayFromVectorOfMat($vectorOfMatPerViewErrors)
+        $oArrPerViewErrors = Call("_cveOutputArrayFromVectorOf" & $typeOfPerViewErrors, $vectorPerViewErrors)
     Else
-        $oArrPerViewErrors = _cveOutputArrayFromMat($matPerViewErrors)
+        If $bPerViewErrorsCreate Then
+            $perViewErrors = Call("_cve" & $typeOfPerViewErrors & "Create", $perViewErrors)
+        EndIf
+        $oArrPerViewErrors = Call("_cveOutputArrayFrom" & $typeOfPerViewErrors, $perViewErrors)
     EndIf
 
     Local $retval = _cveArucoCalibrateCameraAruco($iArrCorners, $iArrIds, $iArrCounter, $board, $imageSize, $ioArrCameraMatrix, $ioArrDistCoeffs, $oArrRvecs, $oArrTvecs, $oArrStdDeviationsIntrinsics, $oArrStdDeviationsExtrinsics, $oArrPerViewErrors, $flags, $criteria)
 
     If $bPerViewErrorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatPerViewErrors)
+        Call("_VectorOf" & $typeOfPerViewErrors & "Release", $vectorPerViewErrors)
     EndIf
 
-    _cveOutputArrayRelease($oArrPerViewErrors)
+    If $typeOfPerViewErrors <> Default Then
+        _cveOutputArrayRelease($oArrPerViewErrors)
+        If $bPerViewErrorsCreate Then
+            Call("_cve" & $typeOfPerViewErrors & "Release", $perViewErrors)
+        EndIf
+    EndIf
 
     If $bStdDeviationsExtrinsicsIsArray Then
-        _VectorOfMatRelease($vectorOfMatStdDeviationsExtrinsics)
+        Call("_VectorOf" & $typeOfStdDeviationsExtrinsics & "Release", $vectorStdDeviationsExtrinsics)
     EndIf
 
-    _cveOutputArrayRelease($oArrStdDeviationsExtrinsics)
+    If $typeOfStdDeviationsExtrinsics <> Default Then
+        _cveOutputArrayRelease($oArrStdDeviationsExtrinsics)
+        If $bStdDeviationsExtrinsicsCreate Then
+            Call("_cve" & $typeOfStdDeviationsExtrinsics & "Release", $stdDeviationsExtrinsics)
+        EndIf
+    EndIf
 
     If $bStdDeviationsIntrinsicsIsArray Then
-        _VectorOfMatRelease($vectorOfMatStdDeviationsIntrinsics)
+        Call("_VectorOf" & $typeOfStdDeviationsIntrinsics & "Release", $vectorStdDeviationsIntrinsics)
     EndIf
 
-    _cveOutputArrayRelease($oArrStdDeviationsIntrinsics)
+    If $typeOfStdDeviationsIntrinsics <> Default Then
+        _cveOutputArrayRelease($oArrStdDeviationsIntrinsics)
+        If $bStdDeviationsIntrinsicsCreate Then
+            Call("_cve" & $typeOfStdDeviationsIntrinsics & "Release", $stdDeviationsIntrinsics)
+        EndIf
+    EndIf
 
     If $bTvecsIsArray Then
-        _VectorOfMatRelease($vectorOfMatTvecs)
+        Call("_VectorOf" & $typeOfTvecs & "Release", $vectorTvecs)
     EndIf
 
-    _cveOutputArrayRelease($oArrTvecs)
+    If $typeOfTvecs <> Default Then
+        _cveOutputArrayRelease($oArrTvecs)
+        If $bTvecsCreate Then
+            Call("_cve" & $typeOfTvecs & "Release", $tvecs)
+        EndIf
+    EndIf
 
     If $bRvecsIsArray Then
-        _VectorOfMatRelease($vectorOfMatRvecs)
+        Call("_VectorOf" & $typeOfRvecs & "Release", $vectorRvecs)
     EndIf
 
-    _cveOutputArrayRelease($oArrRvecs)
+    If $typeOfRvecs <> Default Then
+        _cveOutputArrayRelease($oArrRvecs)
+        If $bRvecsCreate Then
+            Call("_cve" & $typeOfRvecs & "Release", $rvecs)
+        EndIf
+    EndIf
 
     If $bDistCoeffsIsArray Then
-        _VectorOfMatRelease($vectorOfMatDistCoeffs)
+        Call("_VectorOf" & $typeOfDistCoeffs & "Release", $vectorDistCoeffs)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrDistCoeffs)
+    If $typeOfDistCoeffs <> Default Then
+        _cveInputOutputArrayRelease($ioArrDistCoeffs)
+        If $bDistCoeffsCreate Then
+            Call("_cve" & $typeOfDistCoeffs & "Release", $distCoeffs)
+        EndIf
+    EndIf
 
     If $bCameraMatrixIsArray Then
-        _VectorOfMatRelease($vectorOfMatCameraMatrix)
+        Call("_VectorOf" & $typeOfCameraMatrix & "Release", $vectorCameraMatrix)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrCameraMatrix)
+    If $typeOfCameraMatrix <> Default Then
+        _cveInputOutputArrayRelease($ioArrCameraMatrix)
+        If $bCameraMatrixCreate Then
+            Call("_cve" & $typeOfCameraMatrix & "Release", $cameraMatrix)
+        EndIf
+    EndIf
 
     If $bCounterIsArray Then
-        _VectorOfMatRelease($vectorOfMatCounter)
+        Call("_VectorOf" & $typeOfCounter & "Release", $vectorCounter)
     EndIf
 
-    _cveInputArrayRelease($iArrCounter)
+    If $typeOfCounter <> Default Then
+        _cveInputArrayRelease($iArrCounter)
+        If $bCounterCreate Then
+            Call("_cve" & $typeOfCounter & "Release", $counter)
+        EndIf
+    EndIf
 
     If $bIdsIsArray Then
-        _VectorOfMatRelease($vectorOfMatIds)
+        Call("_VectorOf" & $typeOfIds & "Release", $vectorIds)
     EndIf
 
-    _cveInputArrayRelease($iArrIds)
+    If $typeOfIds <> Default Then
+        _cveInputArrayRelease($iArrIds)
+        If $bIdsCreate Then
+            Call("_cve" & $typeOfIds & "Release", $ids)
+        EndIf
+    EndIf
 
     If $bCornersIsArray Then
-        _VectorOfMatRelease($vectorOfMatCorners)
+        Call("_VectorOf" & $typeOfCorners & "Release", $vectorCorners)
     EndIf
 
-    _cveInputArrayRelease($iArrCorners)
+    If $typeOfCorners <> Default Then
+        _cveInputArrayRelease($iArrCorners)
+        If $bCornersCreate Then
+            Call("_cve" & $typeOfCorners & "Release", $corners)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveArucoCalibrateCameraArucoTyped
+
+Func _cveArucoCalibrateCameraArucoMat($corners, $ids, $counter, $board, $imageSize, $cameraMatrix, $distCoeffs, $rvecs, $tvecs, $stdDeviationsIntrinsics, $stdDeviationsExtrinsics, $perViewErrors, $flags, $criteria)
+    ; cveArucoCalibrateCameraAruco using cv::Mat instead of _*Array
+    Local $retval = _cveArucoCalibrateCameraArucoTyped("Mat", $corners, "Mat", $ids, "Mat", $counter, $board, $imageSize, "Mat", $cameraMatrix, "Mat", $distCoeffs, "Mat", $rvecs, "Mat", $tvecs, "Mat", $stdDeviationsIntrinsics, "Mat", $stdDeviationsExtrinsics, "Mat", $perViewErrors, $flags, $criteria)
 
     Return $retval
 EndFunc   ;==>_cveArucoCalibrateCameraArucoMat
@@ -1544,208 +1989,313 @@ Func _cveArucoCalibrateCameraCharuco($charucoCorners, $charucoIds, $board, $imag
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveArucoCalibrateCameraCharuco", $sCharucoCornersDllType, $charucoCorners, $sCharucoIdsDllType, $charucoIds, $sBoardDllType, $board, $sImageSizeDllType, $imageSize, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRvecsDllType, $rvecs, $sTvecsDllType, $tvecs, $sStdDeviationsIntrinsicsDllType, $stdDeviationsIntrinsics, $sStdDeviationsExtrinsicsDllType, $stdDeviationsExtrinsics, $sPerViewErrorsDllType, $perViewErrors, "int", $flags, $sCriteriaDllType, $criteria), "cveArucoCalibrateCameraCharuco", @error)
 EndFunc   ;==>_cveArucoCalibrateCameraCharuco
 
-Func _cveArucoCalibrateCameraCharucoMat($matCharucoCorners, $matCharucoIds, $board, $imageSize, $matCameraMatrix, $matDistCoeffs, $matRvecs, $matTvecs, $matStdDeviationsIntrinsics, $matStdDeviationsExtrinsics, $matPerViewErrors, $flags, $criteria)
-    ; cveArucoCalibrateCameraCharuco using cv::Mat instead of _*Array
+Func _cveArucoCalibrateCameraCharucoTyped($typeOfCharucoCorners, $charucoCorners, $typeOfCharucoIds, $charucoIds, $board, $imageSize, $typeOfCameraMatrix, $cameraMatrix, $typeOfDistCoeffs, $distCoeffs, $typeOfRvecs, $rvecs, $typeOfTvecs, $tvecs, $typeOfStdDeviationsIntrinsics, $stdDeviationsIntrinsics, $typeOfStdDeviationsExtrinsics, $stdDeviationsExtrinsics, $typeOfPerViewErrors, $perViewErrors, $flags, $criteria)
 
-    Local $iArrCharucoCorners, $vectorOfMatCharucoCorners, $iArrCharucoCornersSize
-    Local $bCharucoCornersIsArray = VarGetType($matCharucoCorners) == "Array"
+    Local $iArrCharucoCorners, $vectorCharucoCorners, $iArrCharucoCornersSize
+    Local $bCharucoCornersIsArray = IsArray($charucoCorners)
+    Local $bCharucoCornersCreate = IsDllStruct($charucoCorners) And $typeOfCharucoCorners == "Scalar"
 
-    If $bCharucoCornersIsArray Then
-        $vectorOfMatCharucoCorners = _VectorOfMatCreate()
+    If $typeOfCharucoCorners == Default Then
+        $iArrCharucoCorners = $charucoCorners
+    ElseIf $bCharucoCornersIsArray Then
+        $vectorCharucoCorners = Call("_VectorOf" & $typeOfCharucoCorners & "Create")
 
-        $iArrCharucoCornersSize = UBound($matCharucoCorners)
+        $iArrCharucoCornersSize = UBound($charucoCorners)
         For $i = 0 To $iArrCharucoCornersSize - 1
-            _VectorOfMatPush($vectorOfMatCharucoCorners, $matCharucoCorners[$i])
+            Call("_VectorOf" & $typeOfCharucoCorners & "Push", $vectorCharucoCorners, $charucoCorners[$i])
         Next
 
-        $iArrCharucoCorners = _cveInputArrayFromVectorOfMat($vectorOfMatCharucoCorners)
+        $iArrCharucoCorners = Call("_cveInputArrayFromVectorOf" & $typeOfCharucoCorners, $vectorCharucoCorners)
     Else
-        $iArrCharucoCorners = _cveInputArrayFromMat($matCharucoCorners)
+        If $bCharucoCornersCreate Then
+            $charucoCorners = Call("_cve" & $typeOfCharucoCorners & "Create", $charucoCorners)
+        EndIf
+        $iArrCharucoCorners = Call("_cveInputArrayFrom" & $typeOfCharucoCorners, $charucoCorners)
     EndIf
 
-    Local $iArrCharucoIds, $vectorOfMatCharucoIds, $iArrCharucoIdsSize
-    Local $bCharucoIdsIsArray = VarGetType($matCharucoIds) == "Array"
+    Local $iArrCharucoIds, $vectorCharucoIds, $iArrCharucoIdsSize
+    Local $bCharucoIdsIsArray = IsArray($charucoIds)
+    Local $bCharucoIdsCreate = IsDllStruct($charucoIds) And $typeOfCharucoIds == "Scalar"
 
-    If $bCharucoIdsIsArray Then
-        $vectorOfMatCharucoIds = _VectorOfMatCreate()
+    If $typeOfCharucoIds == Default Then
+        $iArrCharucoIds = $charucoIds
+    ElseIf $bCharucoIdsIsArray Then
+        $vectorCharucoIds = Call("_VectorOf" & $typeOfCharucoIds & "Create")
 
-        $iArrCharucoIdsSize = UBound($matCharucoIds)
+        $iArrCharucoIdsSize = UBound($charucoIds)
         For $i = 0 To $iArrCharucoIdsSize - 1
-            _VectorOfMatPush($vectorOfMatCharucoIds, $matCharucoIds[$i])
+            Call("_VectorOf" & $typeOfCharucoIds & "Push", $vectorCharucoIds, $charucoIds[$i])
         Next
 
-        $iArrCharucoIds = _cveInputArrayFromVectorOfMat($vectorOfMatCharucoIds)
+        $iArrCharucoIds = Call("_cveInputArrayFromVectorOf" & $typeOfCharucoIds, $vectorCharucoIds)
     Else
-        $iArrCharucoIds = _cveInputArrayFromMat($matCharucoIds)
+        If $bCharucoIdsCreate Then
+            $charucoIds = Call("_cve" & $typeOfCharucoIds & "Create", $charucoIds)
+        EndIf
+        $iArrCharucoIds = Call("_cveInputArrayFrom" & $typeOfCharucoIds, $charucoIds)
     EndIf
 
-    Local $ioArrCameraMatrix, $vectorOfMatCameraMatrix, $iArrCameraMatrixSize
-    Local $bCameraMatrixIsArray = VarGetType($matCameraMatrix) == "Array"
+    Local $ioArrCameraMatrix, $vectorCameraMatrix, $iArrCameraMatrixSize
+    Local $bCameraMatrixIsArray = IsArray($cameraMatrix)
+    Local $bCameraMatrixCreate = IsDllStruct($cameraMatrix) And $typeOfCameraMatrix == "Scalar"
 
-    If $bCameraMatrixIsArray Then
-        $vectorOfMatCameraMatrix = _VectorOfMatCreate()
+    If $typeOfCameraMatrix == Default Then
+        $ioArrCameraMatrix = $cameraMatrix
+    ElseIf $bCameraMatrixIsArray Then
+        $vectorCameraMatrix = Call("_VectorOf" & $typeOfCameraMatrix & "Create")
 
-        $iArrCameraMatrixSize = UBound($matCameraMatrix)
+        $iArrCameraMatrixSize = UBound($cameraMatrix)
         For $i = 0 To $iArrCameraMatrixSize - 1
-            _VectorOfMatPush($vectorOfMatCameraMatrix, $matCameraMatrix[$i])
+            Call("_VectorOf" & $typeOfCameraMatrix & "Push", $vectorCameraMatrix, $cameraMatrix[$i])
         Next
 
-        $ioArrCameraMatrix = _cveInputOutputArrayFromVectorOfMat($vectorOfMatCameraMatrix)
+        $ioArrCameraMatrix = Call("_cveInputOutputArrayFromVectorOf" & $typeOfCameraMatrix, $vectorCameraMatrix)
     Else
-        $ioArrCameraMatrix = _cveInputOutputArrayFromMat($matCameraMatrix)
+        If $bCameraMatrixCreate Then
+            $cameraMatrix = Call("_cve" & $typeOfCameraMatrix & "Create", $cameraMatrix)
+        EndIf
+        $ioArrCameraMatrix = Call("_cveInputOutputArrayFrom" & $typeOfCameraMatrix, $cameraMatrix)
     EndIf
 
-    Local $ioArrDistCoeffs, $vectorOfMatDistCoeffs, $iArrDistCoeffsSize
-    Local $bDistCoeffsIsArray = VarGetType($matDistCoeffs) == "Array"
+    Local $ioArrDistCoeffs, $vectorDistCoeffs, $iArrDistCoeffsSize
+    Local $bDistCoeffsIsArray = IsArray($distCoeffs)
+    Local $bDistCoeffsCreate = IsDllStruct($distCoeffs) And $typeOfDistCoeffs == "Scalar"
 
-    If $bDistCoeffsIsArray Then
-        $vectorOfMatDistCoeffs = _VectorOfMatCreate()
+    If $typeOfDistCoeffs == Default Then
+        $ioArrDistCoeffs = $distCoeffs
+    ElseIf $bDistCoeffsIsArray Then
+        $vectorDistCoeffs = Call("_VectorOf" & $typeOfDistCoeffs & "Create")
 
-        $iArrDistCoeffsSize = UBound($matDistCoeffs)
+        $iArrDistCoeffsSize = UBound($distCoeffs)
         For $i = 0 To $iArrDistCoeffsSize - 1
-            _VectorOfMatPush($vectorOfMatDistCoeffs, $matDistCoeffs[$i])
+            Call("_VectorOf" & $typeOfDistCoeffs & "Push", $vectorDistCoeffs, $distCoeffs[$i])
         Next
 
-        $ioArrDistCoeffs = _cveInputOutputArrayFromVectorOfMat($vectorOfMatDistCoeffs)
+        $ioArrDistCoeffs = Call("_cveInputOutputArrayFromVectorOf" & $typeOfDistCoeffs, $vectorDistCoeffs)
     Else
-        $ioArrDistCoeffs = _cveInputOutputArrayFromMat($matDistCoeffs)
+        If $bDistCoeffsCreate Then
+            $distCoeffs = Call("_cve" & $typeOfDistCoeffs & "Create", $distCoeffs)
+        EndIf
+        $ioArrDistCoeffs = Call("_cveInputOutputArrayFrom" & $typeOfDistCoeffs, $distCoeffs)
     EndIf
 
-    Local $oArrRvecs, $vectorOfMatRvecs, $iArrRvecsSize
-    Local $bRvecsIsArray = VarGetType($matRvecs) == "Array"
+    Local $oArrRvecs, $vectorRvecs, $iArrRvecsSize
+    Local $bRvecsIsArray = IsArray($rvecs)
+    Local $bRvecsCreate = IsDllStruct($rvecs) And $typeOfRvecs == "Scalar"
 
-    If $bRvecsIsArray Then
-        $vectorOfMatRvecs = _VectorOfMatCreate()
+    If $typeOfRvecs == Default Then
+        $oArrRvecs = $rvecs
+    ElseIf $bRvecsIsArray Then
+        $vectorRvecs = Call("_VectorOf" & $typeOfRvecs & "Create")
 
-        $iArrRvecsSize = UBound($matRvecs)
+        $iArrRvecsSize = UBound($rvecs)
         For $i = 0 To $iArrRvecsSize - 1
-            _VectorOfMatPush($vectorOfMatRvecs, $matRvecs[$i])
+            Call("_VectorOf" & $typeOfRvecs & "Push", $vectorRvecs, $rvecs[$i])
         Next
 
-        $oArrRvecs = _cveOutputArrayFromVectorOfMat($vectorOfMatRvecs)
+        $oArrRvecs = Call("_cveOutputArrayFromVectorOf" & $typeOfRvecs, $vectorRvecs)
     Else
-        $oArrRvecs = _cveOutputArrayFromMat($matRvecs)
+        If $bRvecsCreate Then
+            $rvecs = Call("_cve" & $typeOfRvecs & "Create", $rvecs)
+        EndIf
+        $oArrRvecs = Call("_cveOutputArrayFrom" & $typeOfRvecs, $rvecs)
     EndIf
 
-    Local $oArrTvecs, $vectorOfMatTvecs, $iArrTvecsSize
-    Local $bTvecsIsArray = VarGetType($matTvecs) == "Array"
+    Local $oArrTvecs, $vectorTvecs, $iArrTvecsSize
+    Local $bTvecsIsArray = IsArray($tvecs)
+    Local $bTvecsCreate = IsDllStruct($tvecs) And $typeOfTvecs == "Scalar"
 
-    If $bTvecsIsArray Then
-        $vectorOfMatTvecs = _VectorOfMatCreate()
+    If $typeOfTvecs == Default Then
+        $oArrTvecs = $tvecs
+    ElseIf $bTvecsIsArray Then
+        $vectorTvecs = Call("_VectorOf" & $typeOfTvecs & "Create")
 
-        $iArrTvecsSize = UBound($matTvecs)
+        $iArrTvecsSize = UBound($tvecs)
         For $i = 0 To $iArrTvecsSize - 1
-            _VectorOfMatPush($vectorOfMatTvecs, $matTvecs[$i])
+            Call("_VectorOf" & $typeOfTvecs & "Push", $vectorTvecs, $tvecs[$i])
         Next
 
-        $oArrTvecs = _cveOutputArrayFromVectorOfMat($vectorOfMatTvecs)
+        $oArrTvecs = Call("_cveOutputArrayFromVectorOf" & $typeOfTvecs, $vectorTvecs)
     Else
-        $oArrTvecs = _cveOutputArrayFromMat($matTvecs)
+        If $bTvecsCreate Then
+            $tvecs = Call("_cve" & $typeOfTvecs & "Create", $tvecs)
+        EndIf
+        $oArrTvecs = Call("_cveOutputArrayFrom" & $typeOfTvecs, $tvecs)
     EndIf
 
-    Local $oArrStdDeviationsIntrinsics, $vectorOfMatStdDeviationsIntrinsics, $iArrStdDeviationsIntrinsicsSize
-    Local $bStdDeviationsIntrinsicsIsArray = VarGetType($matStdDeviationsIntrinsics) == "Array"
+    Local $oArrStdDeviationsIntrinsics, $vectorStdDeviationsIntrinsics, $iArrStdDeviationsIntrinsicsSize
+    Local $bStdDeviationsIntrinsicsIsArray = IsArray($stdDeviationsIntrinsics)
+    Local $bStdDeviationsIntrinsicsCreate = IsDllStruct($stdDeviationsIntrinsics) And $typeOfStdDeviationsIntrinsics == "Scalar"
 
-    If $bStdDeviationsIntrinsicsIsArray Then
-        $vectorOfMatStdDeviationsIntrinsics = _VectorOfMatCreate()
+    If $typeOfStdDeviationsIntrinsics == Default Then
+        $oArrStdDeviationsIntrinsics = $stdDeviationsIntrinsics
+    ElseIf $bStdDeviationsIntrinsicsIsArray Then
+        $vectorStdDeviationsIntrinsics = Call("_VectorOf" & $typeOfStdDeviationsIntrinsics & "Create")
 
-        $iArrStdDeviationsIntrinsicsSize = UBound($matStdDeviationsIntrinsics)
+        $iArrStdDeviationsIntrinsicsSize = UBound($stdDeviationsIntrinsics)
         For $i = 0 To $iArrStdDeviationsIntrinsicsSize - 1
-            _VectorOfMatPush($vectorOfMatStdDeviationsIntrinsics, $matStdDeviationsIntrinsics[$i])
+            Call("_VectorOf" & $typeOfStdDeviationsIntrinsics & "Push", $vectorStdDeviationsIntrinsics, $stdDeviationsIntrinsics[$i])
         Next
 
-        $oArrStdDeviationsIntrinsics = _cveOutputArrayFromVectorOfMat($vectorOfMatStdDeviationsIntrinsics)
+        $oArrStdDeviationsIntrinsics = Call("_cveOutputArrayFromVectorOf" & $typeOfStdDeviationsIntrinsics, $vectorStdDeviationsIntrinsics)
     Else
-        $oArrStdDeviationsIntrinsics = _cveOutputArrayFromMat($matStdDeviationsIntrinsics)
+        If $bStdDeviationsIntrinsicsCreate Then
+            $stdDeviationsIntrinsics = Call("_cve" & $typeOfStdDeviationsIntrinsics & "Create", $stdDeviationsIntrinsics)
+        EndIf
+        $oArrStdDeviationsIntrinsics = Call("_cveOutputArrayFrom" & $typeOfStdDeviationsIntrinsics, $stdDeviationsIntrinsics)
     EndIf
 
-    Local $oArrStdDeviationsExtrinsics, $vectorOfMatStdDeviationsExtrinsics, $iArrStdDeviationsExtrinsicsSize
-    Local $bStdDeviationsExtrinsicsIsArray = VarGetType($matStdDeviationsExtrinsics) == "Array"
+    Local $oArrStdDeviationsExtrinsics, $vectorStdDeviationsExtrinsics, $iArrStdDeviationsExtrinsicsSize
+    Local $bStdDeviationsExtrinsicsIsArray = IsArray($stdDeviationsExtrinsics)
+    Local $bStdDeviationsExtrinsicsCreate = IsDllStruct($stdDeviationsExtrinsics) And $typeOfStdDeviationsExtrinsics == "Scalar"
 
-    If $bStdDeviationsExtrinsicsIsArray Then
-        $vectorOfMatStdDeviationsExtrinsics = _VectorOfMatCreate()
+    If $typeOfStdDeviationsExtrinsics == Default Then
+        $oArrStdDeviationsExtrinsics = $stdDeviationsExtrinsics
+    ElseIf $bStdDeviationsExtrinsicsIsArray Then
+        $vectorStdDeviationsExtrinsics = Call("_VectorOf" & $typeOfStdDeviationsExtrinsics & "Create")
 
-        $iArrStdDeviationsExtrinsicsSize = UBound($matStdDeviationsExtrinsics)
+        $iArrStdDeviationsExtrinsicsSize = UBound($stdDeviationsExtrinsics)
         For $i = 0 To $iArrStdDeviationsExtrinsicsSize - 1
-            _VectorOfMatPush($vectorOfMatStdDeviationsExtrinsics, $matStdDeviationsExtrinsics[$i])
+            Call("_VectorOf" & $typeOfStdDeviationsExtrinsics & "Push", $vectorStdDeviationsExtrinsics, $stdDeviationsExtrinsics[$i])
         Next
 
-        $oArrStdDeviationsExtrinsics = _cveOutputArrayFromVectorOfMat($vectorOfMatStdDeviationsExtrinsics)
+        $oArrStdDeviationsExtrinsics = Call("_cveOutputArrayFromVectorOf" & $typeOfStdDeviationsExtrinsics, $vectorStdDeviationsExtrinsics)
     Else
-        $oArrStdDeviationsExtrinsics = _cveOutputArrayFromMat($matStdDeviationsExtrinsics)
+        If $bStdDeviationsExtrinsicsCreate Then
+            $stdDeviationsExtrinsics = Call("_cve" & $typeOfStdDeviationsExtrinsics & "Create", $stdDeviationsExtrinsics)
+        EndIf
+        $oArrStdDeviationsExtrinsics = Call("_cveOutputArrayFrom" & $typeOfStdDeviationsExtrinsics, $stdDeviationsExtrinsics)
     EndIf
 
-    Local $oArrPerViewErrors, $vectorOfMatPerViewErrors, $iArrPerViewErrorsSize
-    Local $bPerViewErrorsIsArray = VarGetType($matPerViewErrors) == "Array"
+    Local $oArrPerViewErrors, $vectorPerViewErrors, $iArrPerViewErrorsSize
+    Local $bPerViewErrorsIsArray = IsArray($perViewErrors)
+    Local $bPerViewErrorsCreate = IsDllStruct($perViewErrors) And $typeOfPerViewErrors == "Scalar"
 
-    If $bPerViewErrorsIsArray Then
-        $vectorOfMatPerViewErrors = _VectorOfMatCreate()
+    If $typeOfPerViewErrors == Default Then
+        $oArrPerViewErrors = $perViewErrors
+    ElseIf $bPerViewErrorsIsArray Then
+        $vectorPerViewErrors = Call("_VectorOf" & $typeOfPerViewErrors & "Create")
 
-        $iArrPerViewErrorsSize = UBound($matPerViewErrors)
+        $iArrPerViewErrorsSize = UBound($perViewErrors)
         For $i = 0 To $iArrPerViewErrorsSize - 1
-            _VectorOfMatPush($vectorOfMatPerViewErrors, $matPerViewErrors[$i])
+            Call("_VectorOf" & $typeOfPerViewErrors & "Push", $vectorPerViewErrors, $perViewErrors[$i])
         Next
 
-        $oArrPerViewErrors = _cveOutputArrayFromVectorOfMat($vectorOfMatPerViewErrors)
+        $oArrPerViewErrors = Call("_cveOutputArrayFromVectorOf" & $typeOfPerViewErrors, $vectorPerViewErrors)
     Else
-        $oArrPerViewErrors = _cveOutputArrayFromMat($matPerViewErrors)
+        If $bPerViewErrorsCreate Then
+            $perViewErrors = Call("_cve" & $typeOfPerViewErrors & "Create", $perViewErrors)
+        EndIf
+        $oArrPerViewErrors = Call("_cveOutputArrayFrom" & $typeOfPerViewErrors, $perViewErrors)
     EndIf
 
     Local $retval = _cveArucoCalibrateCameraCharuco($iArrCharucoCorners, $iArrCharucoIds, $board, $imageSize, $ioArrCameraMatrix, $ioArrDistCoeffs, $oArrRvecs, $oArrTvecs, $oArrStdDeviationsIntrinsics, $oArrStdDeviationsExtrinsics, $oArrPerViewErrors, $flags, $criteria)
 
     If $bPerViewErrorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatPerViewErrors)
+        Call("_VectorOf" & $typeOfPerViewErrors & "Release", $vectorPerViewErrors)
     EndIf
 
-    _cveOutputArrayRelease($oArrPerViewErrors)
+    If $typeOfPerViewErrors <> Default Then
+        _cveOutputArrayRelease($oArrPerViewErrors)
+        If $bPerViewErrorsCreate Then
+            Call("_cve" & $typeOfPerViewErrors & "Release", $perViewErrors)
+        EndIf
+    EndIf
 
     If $bStdDeviationsExtrinsicsIsArray Then
-        _VectorOfMatRelease($vectorOfMatStdDeviationsExtrinsics)
+        Call("_VectorOf" & $typeOfStdDeviationsExtrinsics & "Release", $vectorStdDeviationsExtrinsics)
     EndIf
 
-    _cveOutputArrayRelease($oArrStdDeviationsExtrinsics)
+    If $typeOfStdDeviationsExtrinsics <> Default Then
+        _cveOutputArrayRelease($oArrStdDeviationsExtrinsics)
+        If $bStdDeviationsExtrinsicsCreate Then
+            Call("_cve" & $typeOfStdDeviationsExtrinsics & "Release", $stdDeviationsExtrinsics)
+        EndIf
+    EndIf
 
     If $bStdDeviationsIntrinsicsIsArray Then
-        _VectorOfMatRelease($vectorOfMatStdDeviationsIntrinsics)
+        Call("_VectorOf" & $typeOfStdDeviationsIntrinsics & "Release", $vectorStdDeviationsIntrinsics)
     EndIf
 
-    _cveOutputArrayRelease($oArrStdDeviationsIntrinsics)
+    If $typeOfStdDeviationsIntrinsics <> Default Then
+        _cveOutputArrayRelease($oArrStdDeviationsIntrinsics)
+        If $bStdDeviationsIntrinsicsCreate Then
+            Call("_cve" & $typeOfStdDeviationsIntrinsics & "Release", $stdDeviationsIntrinsics)
+        EndIf
+    EndIf
 
     If $bTvecsIsArray Then
-        _VectorOfMatRelease($vectorOfMatTvecs)
+        Call("_VectorOf" & $typeOfTvecs & "Release", $vectorTvecs)
     EndIf
 
-    _cveOutputArrayRelease($oArrTvecs)
+    If $typeOfTvecs <> Default Then
+        _cveOutputArrayRelease($oArrTvecs)
+        If $bTvecsCreate Then
+            Call("_cve" & $typeOfTvecs & "Release", $tvecs)
+        EndIf
+    EndIf
 
     If $bRvecsIsArray Then
-        _VectorOfMatRelease($vectorOfMatRvecs)
+        Call("_VectorOf" & $typeOfRvecs & "Release", $vectorRvecs)
     EndIf
 
-    _cveOutputArrayRelease($oArrRvecs)
+    If $typeOfRvecs <> Default Then
+        _cveOutputArrayRelease($oArrRvecs)
+        If $bRvecsCreate Then
+            Call("_cve" & $typeOfRvecs & "Release", $rvecs)
+        EndIf
+    EndIf
 
     If $bDistCoeffsIsArray Then
-        _VectorOfMatRelease($vectorOfMatDistCoeffs)
+        Call("_VectorOf" & $typeOfDistCoeffs & "Release", $vectorDistCoeffs)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrDistCoeffs)
+    If $typeOfDistCoeffs <> Default Then
+        _cveInputOutputArrayRelease($ioArrDistCoeffs)
+        If $bDistCoeffsCreate Then
+            Call("_cve" & $typeOfDistCoeffs & "Release", $distCoeffs)
+        EndIf
+    EndIf
 
     If $bCameraMatrixIsArray Then
-        _VectorOfMatRelease($vectorOfMatCameraMatrix)
+        Call("_VectorOf" & $typeOfCameraMatrix & "Release", $vectorCameraMatrix)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrCameraMatrix)
+    If $typeOfCameraMatrix <> Default Then
+        _cveInputOutputArrayRelease($ioArrCameraMatrix)
+        If $bCameraMatrixCreate Then
+            Call("_cve" & $typeOfCameraMatrix & "Release", $cameraMatrix)
+        EndIf
+    EndIf
 
     If $bCharucoIdsIsArray Then
-        _VectorOfMatRelease($vectorOfMatCharucoIds)
+        Call("_VectorOf" & $typeOfCharucoIds & "Release", $vectorCharucoIds)
     EndIf
 
-    _cveInputArrayRelease($iArrCharucoIds)
+    If $typeOfCharucoIds <> Default Then
+        _cveInputArrayRelease($iArrCharucoIds)
+        If $bCharucoIdsCreate Then
+            Call("_cve" & $typeOfCharucoIds & "Release", $charucoIds)
+        EndIf
+    EndIf
 
     If $bCharucoCornersIsArray Then
-        _VectorOfMatRelease($vectorOfMatCharucoCorners)
+        Call("_VectorOf" & $typeOfCharucoCorners & "Release", $vectorCharucoCorners)
     EndIf
 
-    _cveInputArrayRelease($iArrCharucoCorners)
+    If $typeOfCharucoCorners <> Default Then
+        _cveInputArrayRelease($iArrCharucoCorners)
+        If $bCharucoCornersCreate Then
+            Call("_cve" & $typeOfCharucoCorners & "Release", $charucoCorners)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveArucoCalibrateCameraCharucoTyped
+
+Func _cveArucoCalibrateCameraCharucoMat($charucoCorners, $charucoIds, $board, $imageSize, $cameraMatrix, $distCoeffs, $rvecs, $tvecs, $stdDeviationsIntrinsics, $stdDeviationsExtrinsics, $perViewErrors, $flags, $criteria)
+    ; cveArucoCalibrateCameraCharuco using cv::Mat instead of _*Array
+    Local $retval = _cveArucoCalibrateCameraCharucoTyped("Mat", $charucoCorners, "Mat", $charucoIds, $board, $imageSize, "Mat", $cameraMatrix, "Mat", $distCoeffs, "Mat", $rvecs, "Mat", $tvecs, "Mat", $stdDeviationsIntrinsics, "Mat", $stdDeviationsExtrinsics, "Mat", $perViewErrors, $flags, $criteria)
 
     Return $retval
 EndFunc   ;==>_cveArucoCalibrateCameraCharucoMat
@@ -1824,164 +2374,247 @@ Func _cveArucoInterpolateCornersCharuco($markerCorners, $markerIds, $image, $boa
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveArucoInterpolateCornersCharuco", $sMarkerCornersDllType, $markerCorners, $sMarkerIdsDllType, $markerIds, $sImageDllType, $image, $sBoardDllType, $board, $sCharucoCornersDllType, $charucoCorners, $sCharucoIdsDllType, $charucoIds, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, "int", $minMarkers), "cveArucoInterpolateCornersCharuco", @error)
 EndFunc   ;==>_cveArucoInterpolateCornersCharuco
 
-Func _cveArucoInterpolateCornersCharucoMat($matMarkerCorners, $matMarkerIds, $matImage, $board, $matCharucoCorners, $matCharucoIds, $matCameraMatrix, $matDistCoeffs, $minMarkers)
-    ; cveArucoInterpolateCornersCharuco using cv::Mat instead of _*Array
+Func _cveArucoInterpolateCornersCharucoTyped($typeOfMarkerCorners, $markerCorners, $typeOfMarkerIds, $markerIds, $typeOfImage, $image, $board, $typeOfCharucoCorners, $charucoCorners, $typeOfCharucoIds, $charucoIds, $typeOfCameraMatrix, $cameraMatrix, $typeOfDistCoeffs, $distCoeffs, $minMarkers)
 
-    Local $iArrMarkerCorners, $vectorOfMatMarkerCorners, $iArrMarkerCornersSize
-    Local $bMarkerCornersIsArray = VarGetType($matMarkerCorners) == "Array"
+    Local $iArrMarkerCorners, $vectorMarkerCorners, $iArrMarkerCornersSize
+    Local $bMarkerCornersIsArray = IsArray($markerCorners)
+    Local $bMarkerCornersCreate = IsDllStruct($markerCorners) And $typeOfMarkerCorners == "Scalar"
 
-    If $bMarkerCornersIsArray Then
-        $vectorOfMatMarkerCorners = _VectorOfMatCreate()
+    If $typeOfMarkerCorners == Default Then
+        $iArrMarkerCorners = $markerCorners
+    ElseIf $bMarkerCornersIsArray Then
+        $vectorMarkerCorners = Call("_VectorOf" & $typeOfMarkerCorners & "Create")
 
-        $iArrMarkerCornersSize = UBound($matMarkerCorners)
+        $iArrMarkerCornersSize = UBound($markerCorners)
         For $i = 0 To $iArrMarkerCornersSize - 1
-            _VectorOfMatPush($vectorOfMatMarkerCorners, $matMarkerCorners[$i])
+            Call("_VectorOf" & $typeOfMarkerCorners & "Push", $vectorMarkerCorners, $markerCorners[$i])
         Next
 
-        $iArrMarkerCorners = _cveInputArrayFromVectorOfMat($vectorOfMatMarkerCorners)
+        $iArrMarkerCorners = Call("_cveInputArrayFromVectorOf" & $typeOfMarkerCorners, $vectorMarkerCorners)
     Else
-        $iArrMarkerCorners = _cveInputArrayFromMat($matMarkerCorners)
+        If $bMarkerCornersCreate Then
+            $markerCorners = Call("_cve" & $typeOfMarkerCorners & "Create", $markerCorners)
+        EndIf
+        $iArrMarkerCorners = Call("_cveInputArrayFrom" & $typeOfMarkerCorners, $markerCorners)
     EndIf
 
-    Local $iArrMarkerIds, $vectorOfMatMarkerIds, $iArrMarkerIdsSize
-    Local $bMarkerIdsIsArray = VarGetType($matMarkerIds) == "Array"
+    Local $iArrMarkerIds, $vectorMarkerIds, $iArrMarkerIdsSize
+    Local $bMarkerIdsIsArray = IsArray($markerIds)
+    Local $bMarkerIdsCreate = IsDllStruct($markerIds) And $typeOfMarkerIds == "Scalar"
 
-    If $bMarkerIdsIsArray Then
-        $vectorOfMatMarkerIds = _VectorOfMatCreate()
+    If $typeOfMarkerIds == Default Then
+        $iArrMarkerIds = $markerIds
+    ElseIf $bMarkerIdsIsArray Then
+        $vectorMarkerIds = Call("_VectorOf" & $typeOfMarkerIds & "Create")
 
-        $iArrMarkerIdsSize = UBound($matMarkerIds)
+        $iArrMarkerIdsSize = UBound($markerIds)
         For $i = 0 To $iArrMarkerIdsSize - 1
-            _VectorOfMatPush($vectorOfMatMarkerIds, $matMarkerIds[$i])
+            Call("_VectorOf" & $typeOfMarkerIds & "Push", $vectorMarkerIds, $markerIds[$i])
         Next
 
-        $iArrMarkerIds = _cveInputArrayFromVectorOfMat($vectorOfMatMarkerIds)
+        $iArrMarkerIds = Call("_cveInputArrayFromVectorOf" & $typeOfMarkerIds, $vectorMarkerIds)
     Else
-        $iArrMarkerIds = _cveInputArrayFromMat($matMarkerIds)
+        If $bMarkerIdsCreate Then
+            $markerIds = Call("_cve" & $typeOfMarkerIds & "Create", $markerIds)
+        EndIf
+        $iArrMarkerIds = Call("_cveInputArrayFrom" & $typeOfMarkerIds, $markerIds)
     EndIf
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $oArrCharucoCorners, $vectorOfMatCharucoCorners, $iArrCharucoCornersSize
-    Local $bCharucoCornersIsArray = VarGetType($matCharucoCorners) == "Array"
+    Local $oArrCharucoCorners, $vectorCharucoCorners, $iArrCharucoCornersSize
+    Local $bCharucoCornersIsArray = IsArray($charucoCorners)
+    Local $bCharucoCornersCreate = IsDllStruct($charucoCorners) And $typeOfCharucoCorners == "Scalar"
 
-    If $bCharucoCornersIsArray Then
-        $vectorOfMatCharucoCorners = _VectorOfMatCreate()
+    If $typeOfCharucoCorners == Default Then
+        $oArrCharucoCorners = $charucoCorners
+    ElseIf $bCharucoCornersIsArray Then
+        $vectorCharucoCorners = Call("_VectorOf" & $typeOfCharucoCorners & "Create")
 
-        $iArrCharucoCornersSize = UBound($matCharucoCorners)
+        $iArrCharucoCornersSize = UBound($charucoCorners)
         For $i = 0 To $iArrCharucoCornersSize - 1
-            _VectorOfMatPush($vectorOfMatCharucoCorners, $matCharucoCorners[$i])
+            Call("_VectorOf" & $typeOfCharucoCorners & "Push", $vectorCharucoCorners, $charucoCorners[$i])
         Next
 
-        $oArrCharucoCorners = _cveOutputArrayFromVectorOfMat($vectorOfMatCharucoCorners)
+        $oArrCharucoCorners = Call("_cveOutputArrayFromVectorOf" & $typeOfCharucoCorners, $vectorCharucoCorners)
     Else
-        $oArrCharucoCorners = _cveOutputArrayFromMat($matCharucoCorners)
+        If $bCharucoCornersCreate Then
+            $charucoCorners = Call("_cve" & $typeOfCharucoCorners & "Create", $charucoCorners)
+        EndIf
+        $oArrCharucoCorners = Call("_cveOutputArrayFrom" & $typeOfCharucoCorners, $charucoCorners)
     EndIf
 
-    Local $oArrCharucoIds, $vectorOfMatCharucoIds, $iArrCharucoIdsSize
-    Local $bCharucoIdsIsArray = VarGetType($matCharucoIds) == "Array"
+    Local $oArrCharucoIds, $vectorCharucoIds, $iArrCharucoIdsSize
+    Local $bCharucoIdsIsArray = IsArray($charucoIds)
+    Local $bCharucoIdsCreate = IsDllStruct($charucoIds) And $typeOfCharucoIds == "Scalar"
 
-    If $bCharucoIdsIsArray Then
-        $vectorOfMatCharucoIds = _VectorOfMatCreate()
+    If $typeOfCharucoIds == Default Then
+        $oArrCharucoIds = $charucoIds
+    ElseIf $bCharucoIdsIsArray Then
+        $vectorCharucoIds = Call("_VectorOf" & $typeOfCharucoIds & "Create")
 
-        $iArrCharucoIdsSize = UBound($matCharucoIds)
+        $iArrCharucoIdsSize = UBound($charucoIds)
         For $i = 0 To $iArrCharucoIdsSize - 1
-            _VectorOfMatPush($vectorOfMatCharucoIds, $matCharucoIds[$i])
+            Call("_VectorOf" & $typeOfCharucoIds & "Push", $vectorCharucoIds, $charucoIds[$i])
         Next
 
-        $oArrCharucoIds = _cveOutputArrayFromVectorOfMat($vectorOfMatCharucoIds)
+        $oArrCharucoIds = Call("_cveOutputArrayFromVectorOf" & $typeOfCharucoIds, $vectorCharucoIds)
     Else
-        $oArrCharucoIds = _cveOutputArrayFromMat($matCharucoIds)
+        If $bCharucoIdsCreate Then
+            $charucoIds = Call("_cve" & $typeOfCharucoIds & "Create", $charucoIds)
+        EndIf
+        $oArrCharucoIds = Call("_cveOutputArrayFrom" & $typeOfCharucoIds, $charucoIds)
     EndIf
 
-    Local $iArrCameraMatrix, $vectorOfMatCameraMatrix, $iArrCameraMatrixSize
-    Local $bCameraMatrixIsArray = VarGetType($matCameraMatrix) == "Array"
+    Local $iArrCameraMatrix, $vectorCameraMatrix, $iArrCameraMatrixSize
+    Local $bCameraMatrixIsArray = IsArray($cameraMatrix)
+    Local $bCameraMatrixCreate = IsDllStruct($cameraMatrix) And $typeOfCameraMatrix == "Scalar"
 
-    If $bCameraMatrixIsArray Then
-        $vectorOfMatCameraMatrix = _VectorOfMatCreate()
+    If $typeOfCameraMatrix == Default Then
+        $iArrCameraMatrix = $cameraMatrix
+    ElseIf $bCameraMatrixIsArray Then
+        $vectorCameraMatrix = Call("_VectorOf" & $typeOfCameraMatrix & "Create")
 
-        $iArrCameraMatrixSize = UBound($matCameraMatrix)
+        $iArrCameraMatrixSize = UBound($cameraMatrix)
         For $i = 0 To $iArrCameraMatrixSize - 1
-            _VectorOfMatPush($vectorOfMatCameraMatrix, $matCameraMatrix[$i])
+            Call("_VectorOf" & $typeOfCameraMatrix & "Push", $vectorCameraMatrix, $cameraMatrix[$i])
         Next
 
-        $iArrCameraMatrix = _cveInputArrayFromVectorOfMat($vectorOfMatCameraMatrix)
+        $iArrCameraMatrix = Call("_cveInputArrayFromVectorOf" & $typeOfCameraMatrix, $vectorCameraMatrix)
     Else
-        $iArrCameraMatrix = _cveInputArrayFromMat($matCameraMatrix)
+        If $bCameraMatrixCreate Then
+            $cameraMatrix = Call("_cve" & $typeOfCameraMatrix & "Create", $cameraMatrix)
+        EndIf
+        $iArrCameraMatrix = Call("_cveInputArrayFrom" & $typeOfCameraMatrix, $cameraMatrix)
     EndIf
 
-    Local $iArrDistCoeffs, $vectorOfMatDistCoeffs, $iArrDistCoeffsSize
-    Local $bDistCoeffsIsArray = VarGetType($matDistCoeffs) == "Array"
+    Local $iArrDistCoeffs, $vectorDistCoeffs, $iArrDistCoeffsSize
+    Local $bDistCoeffsIsArray = IsArray($distCoeffs)
+    Local $bDistCoeffsCreate = IsDllStruct($distCoeffs) And $typeOfDistCoeffs == "Scalar"
 
-    If $bDistCoeffsIsArray Then
-        $vectorOfMatDistCoeffs = _VectorOfMatCreate()
+    If $typeOfDistCoeffs == Default Then
+        $iArrDistCoeffs = $distCoeffs
+    ElseIf $bDistCoeffsIsArray Then
+        $vectorDistCoeffs = Call("_VectorOf" & $typeOfDistCoeffs & "Create")
 
-        $iArrDistCoeffsSize = UBound($matDistCoeffs)
+        $iArrDistCoeffsSize = UBound($distCoeffs)
         For $i = 0 To $iArrDistCoeffsSize - 1
-            _VectorOfMatPush($vectorOfMatDistCoeffs, $matDistCoeffs[$i])
+            Call("_VectorOf" & $typeOfDistCoeffs & "Push", $vectorDistCoeffs, $distCoeffs[$i])
         Next
 
-        $iArrDistCoeffs = _cveInputArrayFromVectorOfMat($vectorOfMatDistCoeffs)
+        $iArrDistCoeffs = Call("_cveInputArrayFromVectorOf" & $typeOfDistCoeffs, $vectorDistCoeffs)
     Else
-        $iArrDistCoeffs = _cveInputArrayFromMat($matDistCoeffs)
+        If $bDistCoeffsCreate Then
+            $distCoeffs = Call("_cve" & $typeOfDistCoeffs & "Create", $distCoeffs)
+        EndIf
+        $iArrDistCoeffs = Call("_cveInputArrayFrom" & $typeOfDistCoeffs, $distCoeffs)
     EndIf
 
     Local $retval = _cveArucoInterpolateCornersCharuco($iArrMarkerCorners, $iArrMarkerIds, $iArrImage, $board, $oArrCharucoCorners, $oArrCharucoIds, $iArrCameraMatrix, $iArrDistCoeffs, $minMarkers)
 
     If $bDistCoeffsIsArray Then
-        _VectorOfMatRelease($vectorOfMatDistCoeffs)
+        Call("_VectorOf" & $typeOfDistCoeffs & "Release", $vectorDistCoeffs)
     EndIf
 
-    _cveInputArrayRelease($iArrDistCoeffs)
+    If $typeOfDistCoeffs <> Default Then
+        _cveInputArrayRelease($iArrDistCoeffs)
+        If $bDistCoeffsCreate Then
+            Call("_cve" & $typeOfDistCoeffs & "Release", $distCoeffs)
+        EndIf
+    EndIf
 
     If $bCameraMatrixIsArray Then
-        _VectorOfMatRelease($vectorOfMatCameraMatrix)
+        Call("_VectorOf" & $typeOfCameraMatrix & "Release", $vectorCameraMatrix)
     EndIf
 
-    _cveInputArrayRelease($iArrCameraMatrix)
+    If $typeOfCameraMatrix <> Default Then
+        _cveInputArrayRelease($iArrCameraMatrix)
+        If $bCameraMatrixCreate Then
+            Call("_cve" & $typeOfCameraMatrix & "Release", $cameraMatrix)
+        EndIf
+    EndIf
 
     If $bCharucoIdsIsArray Then
-        _VectorOfMatRelease($vectorOfMatCharucoIds)
+        Call("_VectorOf" & $typeOfCharucoIds & "Release", $vectorCharucoIds)
     EndIf
 
-    _cveOutputArrayRelease($oArrCharucoIds)
+    If $typeOfCharucoIds <> Default Then
+        _cveOutputArrayRelease($oArrCharucoIds)
+        If $bCharucoIdsCreate Then
+            Call("_cve" & $typeOfCharucoIds & "Release", $charucoIds)
+        EndIf
+    EndIf
 
     If $bCharucoCornersIsArray Then
-        _VectorOfMatRelease($vectorOfMatCharucoCorners)
+        Call("_VectorOf" & $typeOfCharucoCorners & "Release", $vectorCharucoCorners)
     EndIf
 
-    _cveOutputArrayRelease($oArrCharucoCorners)
+    If $typeOfCharucoCorners <> Default Then
+        _cveOutputArrayRelease($oArrCharucoCorners)
+        If $bCharucoCornersCreate Then
+            Call("_cve" & $typeOfCharucoCorners & "Release", $charucoCorners)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
 
     If $bMarkerIdsIsArray Then
-        _VectorOfMatRelease($vectorOfMatMarkerIds)
+        Call("_VectorOf" & $typeOfMarkerIds & "Release", $vectorMarkerIds)
     EndIf
 
-    _cveInputArrayRelease($iArrMarkerIds)
+    If $typeOfMarkerIds <> Default Then
+        _cveInputArrayRelease($iArrMarkerIds)
+        If $bMarkerIdsCreate Then
+            Call("_cve" & $typeOfMarkerIds & "Release", $markerIds)
+        EndIf
+    EndIf
 
     If $bMarkerCornersIsArray Then
-        _VectorOfMatRelease($vectorOfMatMarkerCorners)
+        Call("_VectorOf" & $typeOfMarkerCorners & "Release", $vectorMarkerCorners)
     EndIf
 
-    _cveInputArrayRelease($iArrMarkerCorners)
+    If $typeOfMarkerCorners <> Default Then
+        _cveInputArrayRelease($iArrMarkerCorners)
+        If $bMarkerCornersCreate Then
+            Call("_cve" & $typeOfMarkerCorners & "Release", $markerCorners)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveArucoInterpolateCornersCharucoTyped
+
+Func _cveArucoInterpolateCornersCharucoMat($markerCorners, $markerIds, $image, $board, $charucoCorners, $charucoIds, $cameraMatrix, $distCoeffs, $minMarkers)
+    ; cveArucoInterpolateCornersCharuco using cv::Mat instead of _*Array
+    Local $retval = _cveArucoInterpolateCornersCharucoTyped("Mat", $markerCorners, "Mat", $markerIds, "Mat", $image, $board, "Mat", $charucoCorners, "Mat", $charucoIds, "Mat", $cameraMatrix, "Mat", $distCoeffs, $minMarkers)
 
     Return $retval
 EndFunc   ;==>_cveArucoInterpolateCornersCharucoMat
@@ -2020,76 +2653,113 @@ Func _cveArucoDrawDetectedCornersCharuco($image, $charucoCorners, $charucoIds, $
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawDetectedCornersCharuco", $sImageDllType, $image, $sCharucoCornersDllType, $charucoCorners, $sCharucoIdsDllType, $charucoIds, $sCornerColorDllType, $cornerColor), "cveArucoDrawDetectedCornersCharuco", @error)
 EndFunc   ;==>_cveArucoDrawDetectedCornersCharuco
 
-Func _cveArucoDrawDetectedCornersCharucoMat($matImage, $matCharucoCorners, $matCharucoIds, $cornerColor)
-    ; cveArucoDrawDetectedCornersCharuco using cv::Mat instead of _*Array
+Func _cveArucoDrawDetectedCornersCharucoTyped($typeOfImage, $image, $typeOfCharucoCorners, $charucoCorners, $typeOfCharucoIds, $charucoIds, $cornerColor)
 
-    Local $ioArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $ioArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $ioArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $ioArrImage = _cveInputOutputArrayFromVectorOfMat($vectorOfMatImage)
+        $ioArrImage = Call("_cveInputOutputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $ioArrImage = _cveInputOutputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $ioArrImage = Call("_cveInputOutputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $iArrCharucoCorners, $vectorOfMatCharucoCorners, $iArrCharucoCornersSize
-    Local $bCharucoCornersIsArray = VarGetType($matCharucoCorners) == "Array"
+    Local $iArrCharucoCorners, $vectorCharucoCorners, $iArrCharucoCornersSize
+    Local $bCharucoCornersIsArray = IsArray($charucoCorners)
+    Local $bCharucoCornersCreate = IsDllStruct($charucoCorners) And $typeOfCharucoCorners == "Scalar"
 
-    If $bCharucoCornersIsArray Then
-        $vectorOfMatCharucoCorners = _VectorOfMatCreate()
+    If $typeOfCharucoCorners == Default Then
+        $iArrCharucoCorners = $charucoCorners
+    ElseIf $bCharucoCornersIsArray Then
+        $vectorCharucoCorners = Call("_VectorOf" & $typeOfCharucoCorners & "Create")
 
-        $iArrCharucoCornersSize = UBound($matCharucoCorners)
+        $iArrCharucoCornersSize = UBound($charucoCorners)
         For $i = 0 To $iArrCharucoCornersSize - 1
-            _VectorOfMatPush($vectorOfMatCharucoCorners, $matCharucoCorners[$i])
+            Call("_VectorOf" & $typeOfCharucoCorners & "Push", $vectorCharucoCorners, $charucoCorners[$i])
         Next
 
-        $iArrCharucoCorners = _cveInputArrayFromVectorOfMat($vectorOfMatCharucoCorners)
+        $iArrCharucoCorners = Call("_cveInputArrayFromVectorOf" & $typeOfCharucoCorners, $vectorCharucoCorners)
     Else
-        $iArrCharucoCorners = _cveInputArrayFromMat($matCharucoCorners)
+        If $bCharucoCornersCreate Then
+            $charucoCorners = Call("_cve" & $typeOfCharucoCorners & "Create", $charucoCorners)
+        EndIf
+        $iArrCharucoCorners = Call("_cveInputArrayFrom" & $typeOfCharucoCorners, $charucoCorners)
     EndIf
 
-    Local $iArrCharucoIds, $vectorOfMatCharucoIds, $iArrCharucoIdsSize
-    Local $bCharucoIdsIsArray = VarGetType($matCharucoIds) == "Array"
+    Local $iArrCharucoIds, $vectorCharucoIds, $iArrCharucoIdsSize
+    Local $bCharucoIdsIsArray = IsArray($charucoIds)
+    Local $bCharucoIdsCreate = IsDllStruct($charucoIds) And $typeOfCharucoIds == "Scalar"
 
-    If $bCharucoIdsIsArray Then
-        $vectorOfMatCharucoIds = _VectorOfMatCreate()
+    If $typeOfCharucoIds == Default Then
+        $iArrCharucoIds = $charucoIds
+    ElseIf $bCharucoIdsIsArray Then
+        $vectorCharucoIds = Call("_VectorOf" & $typeOfCharucoIds & "Create")
 
-        $iArrCharucoIdsSize = UBound($matCharucoIds)
+        $iArrCharucoIdsSize = UBound($charucoIds)
         For $i = 0 To $iArrCharucoIdsSize - 1
-            _VectorOfMatPush($vectorOfMatCharucoIds, $matCharucoIds[$i])
+            Call("_VectorOf" & $typeOfCharucoIds & "Push", $vectorCharucoIds, $charucoIds[$i])
         Next
 
-        $iArrCharucoIds = _cveInputArrayFromVectorOfMat($vectorOfMatCharucoIds)
+        $iArrCharucoIds = Call("_cveInputArrayFromVectorOf" & $typeOfCharucoIds, $vectorCharucoIds)
     Else
-        $iArrCharucoIds = _cveInputArrayFromMat($matCharucoIds)
+        If $bCharucoIdsCreate Then
+            $charucoIds = Call("_cve" & $typeOfCharucoIds & "Create", $charucoIds)
+        EndIf
+        $iArrCharucoIds = Call("_cveInputArrayFrom" & $typeOfCharucoIds, $charucoIds)
     EndIf
 
     _cveArucoDrawDetectedCornersCharuco($ioArrImage, $iArrCharucoCorners, $iArrCharucoIds, $cornerColor)
 
     If $bCharucoIdsIsArray Then
-        _VectorOfMatRelease($vectorOfMatCharucoIds)
+        Call("_VectorOf" & $typeOfCharucoIds & "Release", $vectorCharucoIds)
     EndIf
 
-    _cveInputArrayRelease($iArrCharucoIds)
+    If $typeOfCharucoIds <> Default Then
+        _cveInputArrayRelease($iArrCharucoIds)
+        If $bCharucoIdsCreate Then
+            Call("_cve" & $typeOfCharucoIds & "Release", $charucoIds)
+        EndIf
+    EndIf
 
     If $bCharucoCornersIsArray Then
-        _VectorOfMatRelease($vectorOfMatCharucoCorners)
+        Call("_VectorOf" & $typeOfCharucoCorners & "Release", $vectorCharucoCorners)
     EndIf
 
-    _cveInputArrayRelease($iArrCharucoCorners)
+    If $typeOfCharucoCorners <> Default Then
+        _cveInputArrayRelease($iArrCharucoCorners)
+        If $bCharucoCornersCreate Then
+            Call("_cve" & $typeOfCharucoCorners & "Release", $charucoCorners)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputOutputArrayRelease($ioArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveArucoDrawDetectedCornersCharucoTyped
+
+Func _cveArucoDrawDetectedCornersCharucoMat($image, $charucoCorners, $charucoIds, $cornerColor)
+    ; cveArucoDrawDetectedCornersCharuco using cv::Mat instead of _*Array
+    _cveArucoDrawDetectedCornersCharucoTyped("Mat", $image, "Mat", $charucoCorners, "Mat", $charucoIds, $cornerColor)
 EndFunc   ;==>_cveArucoDrawDetectedCornersCharucoMat
 
 Func _cveArucoEstimatePoseCharucoBoard($charucoCorners, $charucoIds, $board, $cameraMatrix, $distCoeffs, $rvec, $tvec, $useExtrinsicGuess)
@@ -2146,142 +2816,214 @@ Func _cveArucoEstimatePoseCharucoBoard($charucoCorners, $charucoIds, $board, $ca
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveArucoEstimatePoseCharucoBoard", $sCharucoCornersDllType, $charucoCorners, $sCharucoIdsDllType, $charucoIds, $sBoardDllType, $board, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRvecDllType, $rvec, $sTvecDllType, $tvec, "boolean", $useExtrinsicGuess), "cveArucoEstimatePoseCharucoBoard", @error)
 EndFunc   ;==>_cveArucoEstimatePoseCharucoBoard
 
-Func _cveArucoEstimatePoseCharucoBoardMat($matCharucoCorners, $matCharucoIds, $board, $matCameraMatrix, $matDistCoeffs, $matRvec, $matTvec, $useExtrinsicGuess)
-    ; cveArucoEstimatePoseCharucoBoard using cv::Mat instead of _*Array
+Func _cveArucoEstimatePoseCharucoBoardTyped($typeOfCharucoCorners, $charucoCorners, $typeOfCharucoIds, $charucoIds, $board, $typeOfCameraMatrix, $cameraMatrix, $typeOfDistCoeffs, $distCoeffs, $typeOfRvec, $rvec, $typeOfTvec, $tvec, $useExtrinsicGuess)
 
-    Local $iArrCharucoCorners, $vectorOfMatCharucoCorners, $iArrCharucoCornersSize
-    Local $bCharucoCornersIsArray = VarGetType($matCharucoCorners) == "Array"
+    Local $iArrCharucoCorners, $vectorCharucoCorners, $iArrCharucoCornersSize
+    Local $bCharucoCornersIsArray = IsArray($charucoCorners)
+    Local $bCharucoCornersCreate = IsDllStruct($charucoCorners) And $typeOfCharucoCorners == "Scalar"
 
-    If $bCharucoCornersIsArray Then
-        $vectorOfMatCharucoCorners = _VectorOfMatCreate()
+    If $typeOfCharucoCorners == Default Then
+        $iArrCharucoCorners = $charucoCorners
+    ElseIf $bCharucoCornersIsArray Then
+        $vectorCharucoCorners = Call("_VectorOf" & $typeOfCharucoCorners & "Create")
 
-        $iArrCharucoCornersSize = UBound($matCharucoCorners)
+        $iArrCharucoCornersSize = UBound($charucoCorners)
         For $i = 0 To $iArrCharucoCornersSize - 1
-            _VectorOfMatPush($vectorOfMatCharucoCorners, $matCharucoCorners[$i])
+            Call("_VectorOf" & $typeOfCharucoCorners & "Push", $vectorCharucoCorners, $charucoCorners[$i])
         Next
 
-        $iArrCharucoCorners = _cveInputArrayFromVectorOfMat($vectorOfMatCharucoCorners)
+        $iArrCharucoCorners = Call("_cveInputArrayFromVectorOf" & $typeOfCharucoCorners, $vectorCharucoCorners)
     Else
-        $iArrCharucoCorners = _cveInputArrayFromMat($matCharucoCorners)
+        If $bCharucoCornersCreate Then
+            $charucoCorners = Call("_cve" & $typeOfCharucoCorners & "Create", $charucoCorners)
+        EndIf
+        $iArrCharucoCorners = Call("_cveInputArrayFrom" & $typeOfCharucoCorners, $charucoCorners)
     EndIf
 
-    Local $iArrCharucoIds, $vectorOfMatCharucoIds, $iArrCharucoIdsSize
-    Local $bCharucoIdsIsArray = VarGetType($matCharucoIds) == "Array"
+    Local $iArrCharucoIds, $vectorCharucoIds, $iArrCharucoIdsSize
+    Local $bCharucoIdsIsArray = IsArray($charucoIds)
+    Local $bCharucoIdsCreate = IsDllStruct($charucoIds) And $typeOfCharucoIds == "Scalar"
 
-    If $bCharucoIdsIsArray Then
-        $vectorOfMatCharucoIds = _VectorOfMatCreate()
+    If $typeOfCharucoIds == Default Then
+        $iArrCharucoIds = $charucoIds
+    ElseIf $bCharucoIdsIsArray Then
+        $vectorCharucoIds = Call("_VectorOf" & $typeOfCharucoIds & "Create")
 
-        $iArrCharucoIdsSize = UBound($matCharucoIds)
+        $iArrCharucoIdsSize = UBound($charucoIds)
         For $i = 0 To $iArrCharucoIdsSize - 1
-            _VectorOfMatPush($vectorOfMatCharucoIds, $matCharucoIds[$i])
+            Call("_VectorOf" & $typeOfCharucoIds & "Push", $vectorCharucoIds, $charucoIds[$i])
         Next
 
-        $iArrCharucoIds = _cveInputArrayFromVectorOfMat($vectorOfMatCharucoIds)
+        $iArrCharucoIds = Call("_cveInputArrayFromVectorOf" & $typeOfCharucoIds, $vectorCharucoIds)
     Else
-        $iArrCharucoIds = _cveInputArrayFromMat($matCharucoIds)
+        If $bCharucoIdsCreate Then
+            $charucoIds = Call("_cve" & $typeOfCharucoIds & "Create", $charucoIds)
+        EndIf
+        $iArrCharucoIds = Call("_cveInputArrayFrom" & $typeOfCharucoIds, $charucoIds)
     EndIf
 
-    Local $iArrCameraMatrix, $vectorOfMatCameraMatrix, $iArrCameraMatrixSize
-    Local $bCameraMatrixIsArray = VarGetType($matCameraMatrix) == "Array"
+    Local $iArrCameraMatrix, $vectorCameraMatrix, $iArrCameraMatrixSize
+    Local $bCameraMatrixIsArray = IsArray($cameraMatrix)
+    Local $bCameraMatrixCreate = IsDllStruct($cameraMatrix) And $typeOfCameraMatrix == "Scalar"
 
-    If $bCameraMatrixIsArray Then
-        $vectorOfMatCameraMatrix = _VectorOfMatCreate()
+    If $typeOfCameraMatrix == Default Then
+        $iArrCameraMatrix = $cameraMatrix
+    ElseIf $bCameraMatrixIsArray Then
+        $vectorCameraMatrix = Call("_VectorOf" & $typeOfCameraMatrix & "Create")
 
-        $iArrCameraMatrixSize = UBound($matCameraMatrix)
+        $iArrCameraMatrixSize = UBound($cameraMatrix)
         For $i = 0 To $iArrCameraMatrixSize - 1
-            _VectorOfMatPush($vectorOfMatCameraMatrix, $matCameraMatrix[$i])
+            Call("_VectorOf" & $typeOfCameraMatrix & "Push", $vectorCameraMatrix, $cameraMatrix[$i])
         Next
 
-        $iArrCameraMatrix = _cveInputArrayFromVectorOfMat($vectorOfMatCameraMatrix)
+        $iArrCameraMatrix = Call("_cveInputArrayFromVectorOf" & $typeOfCameraMatrix, $vectorCameraMatrix)
     Else
-        $iArrCameraMatrix = _cveInputArrayFromMat($matCameraMatrix)
+        If $bCameraMatrixCreate Then
+            $cameraMatrix = Call("_cve" & $typeOfCameraMatrix & "Create", $cameraMatrix)
+        EndIf
+        $iArrCameraMatrix = Call("_cveInputArrayFrom" & $typeOfCameraMatrix, $cameraMatrix)
     EndIf
 
-    Local $iArrDistCoeffs, $vectorOfMatDistCoeffs, $iArrDistCoeffsSize
-    Local $bDistCoeffsIsArray = VarGetType($matDistCoeffs) == "Array"
+    Local $iArrDistCoeffs, $vectorDistCoeffs, $iArrDistCoeffsSize
+    Local $bDistCoeffsIsArray = IsArray($distCoeffs)
+    Local $bDistCoeffsCreate = IsDllStruct($distCoeffs) And $typeOfDistCoeffs == "Scalar"
 
-    If $bDistCoeffsIsArray Then
-        $vectorOfMatDistCoeffs = _VectorOfMatCreate()
+    If $typeOfDistCoeffs == Default Then
+        $iArrDistCoeffs = $distCoeffs
+    ElseIf $bDistCoeffsIsArray Then
+        $vectorDistCoeffs = Call("_VectorOf" & $typeOfDistCoeffs & "Create")
 
-        $iArrDistCoeffsSize = UBound($matDistCoeffs)
+        $iArrDistCoeffsSize = UBound($distCoeffs)
         For $i = 0 To $iArrDistCoeffsSize - 1
-            _VectorOfMatPush($vectorOfMatDistCoeffs, $matDistCoeffs[$i])
+            Call("_VectorOf" & $typeOfDistCoeffs & "Push", $vectorDistCoeffs, $distCoeffs[$i])
         Next
 
-        $iArrDistCoeffs = _cveInputArrayFromVectorOfMat($vectorOfMatDistCoeffs)
+        $iArrDistCoeffs = Call("_cveInputArrayFromVectorOf" & $typeOfDistCoeffs, $vectorDistCoeffs)
     Else
-        $iArrDistCoeffs = _cveInputArrayFromMat($matDistCoeffs)
+        If $bDistCoeffsCreate Then
+            $distCoeffs = Call("_cve" & $typeOfDistCoeffs & "Create", $distCoeffs)
+        EndIf
+        $iArrDistCoeffs = Call("_cveInputArrayFrom" & $typeOfDistCoeffs, $distCoeffs)
     EndIf
 
-    Local $ioArrRvec, $vectorOfMatRvec, $iArrRvecSize
-    Local $bRvecIsArray = VarGetType($matRvec) == "Array"
+    Local $ioArrRvec, $vectorRvec, $iArrRvecSize
+    Local $bRvecIsArray = IsArray($rvec)
+    Local $bRvecCreate = IsDllStruct($rvec) And $typeOfRvec == "Scalar"
 
-    If $bRvecIsArray Then
-        $vectorOfMatRvec = _VectorOfMatCreate()
+    If $typeOfRvec == Default Then
+        $ioArrRvec = $rvec
+    ElseIf $bRvecIsArray Then
+        $vectorRvec = Call("_VectorOf" & $typeOfRvec & "Create")
 
-        $iArrRvecSize = UBound($matRvec)
+        $iArrRvecSize = UBound($rvec)
         For $i = 0 To $iArrRvecSize - 1
-            _VectorOfMatPush($vectorOfMatRvec, $matRvec[$i])
+            Call("_VectorOf" & $typeOfRvec & "Push", $vectorRvec, $rvec[$i])
         Next
 
-        $ioArrRvec = _cveInputOutputArrayFromVectorOfMat($vectorOfMatRvec)
+        $ioArrRvec = Call("_cveInputOutputArrayFromVectorOf" & $typeOfRvec, $vectorRvec)
     Else
-        $ioArrRvec = _cveInputOutputArrayFromMat($matRvec)
+        If $bRvecCreate Then
+            $rvec = Call("_cve" & $typeOfRvec & "Create", $rvec)
+        EndIf
+        $ioArrRvec = Call("_cveInputOutputArrayFrom" & $typeOfRvec, $rvec)
     EndIf
 
-    Local $ioArrTvec, $vectorOfMatTvec, $iArrTvecSize
-    Local $bTvecIsArray = VarGetType($matTvec) == "Array"
+    Local $ioArrTvec, $vectorTvec, $iArrTvecSize
+    Local $bTvecIsArray = IsArray($tvec)
+    Local $bTvecCreate = IsDllStruct($tvec) And $typeOfTvec == "Scalar"
 
-    If $bTvecIsArray Then
-        $vectorOfMatTvec = _VectorOfMatCreate()
+    If $typeOfTvec == Default Then
+        $ioArrTvec = $tvec
+    ElseIf $bTvecIsArray Then
+        $vectorTvec = Call("_VectorOf" & $typeOfTvec & "Create")
 
-        $iArrTvecSize = UBound($matTvec)
+        $iArrTvecSize = UBound($tvec)
         For $i = 0 To $iArrTvecSize - 1
-            _VectorOfMatPush($vectorOfMatTvec, $matTvec[$i])
+            Call("_VectorOf" & $typeOfTvec & "Push", $vectorTvec, $tvec[$i])
         Next
 
-        $ioArrTvec = _cveInputOutputArrayFromVectorOfMat($vectorOfMatTvec)
+        $ioArrTvec = Call("_cveInputOutputArrayFromVectorOf" & $typeOfTvec, $vectorTvec)
     Else
-        $ioArrTvec = _cveInputOutputArrayFromMat($matTvec)
+        If $bTvecCreate Then
+            $tvec = Call("_cve" & $typeOfTvec & "Create", $tvec)
+        EndIf
+        $ioArrTvec = Call("_cveInputOutputArrayFrom" & $typeOfTvec, $tvec)
     EndIf
 
     Local $retval = _cveArucoEstimatePoseCharucoBoard($iArrCharucoCorners, $iArrCharucoIds, $board, $iArrCameraMatrix, $iArrDistCoeffs, $ioArrRvec, $ioArrTvec, $useExtrinsicGuess)
 
     If $bTvecIsArray Then
-        _VectorOfMatRelease($vectorOfMatTvec)
+        Call("_VectorOf" & $typeOfTvec & "Release", $vectorTvec)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrTvec)
+    If $typeOfTvec <> Default Then
+        _cveInputOutputArrayRelease($ioArrTvec)
+        If $bTvecCreate Then
+            Call("_cve" & $typeOfTvec & "Release", $tvec)
+        EndIf
+    EndIf
 
     If $bRvecIsArray Then
-        _VectorOfMatRelease($vectorOfMatRvec)
+        Call("_VectorOf" & $typeOfRvec & "Release", $vectorRvec)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrRvec)
+    If $typeOfRvec <> Default Then
+        _cveInputOutputArrayRelease($ioArrRvec)
+        If $bRvecCreate Then
+            Call("_cve" & $typeOfRvec & "Release", $rvec)
+        EndIf
+    EndIf
 
     If $bDistCoeffsIsArray Then
-        _VectorOfMatRelease($vectorOfMatDistCoeffs)
+        Call("_VectorOf" & $typeOfDistCoeffs & "Release", $vectorDistCoeffs)
     EndIf
 
-    _cveInputArrayRelease($iArrDistCoeffs)
+    If $typeOfDistCoeffs <> Default Then
+        _cveInputArrayRelease($iArrDistCoeffs)
+        If $bDistCoeffsCreate Then
+            Call("_cve" & $typeOfDistCoeffs & "Release", $distCoeffs)
+        EndIf
+    EndIf
 
     If $bCameraMatrixIsArray Then
-        _VectorOfMatRelease($vectorOfMatCameraMatrix)
+        Call("_VectorOf" & $typeOfCameraMatrix & "Release", $vectorCameraMatrix)
     EndIf
 
-    _cveInputArrayRelease($iArrCameraMatrix)
+    If $typeOfCameraMatrix <> Default Then
+        _cveInputArrayRelease($iArrCameraMatrix)
+        If $bCameraMatrixCreate Then
+            Call("_cve" & $typeOfCameraMatrix & "Release", $cameraMatrix)
+        EndIf
+    EndIf
 
     If $bCharucoIdsIsArray Then
-        _VectorOfMatRelease($vectorOfMatCharucoIds)
+        Call("_VectorOf" & $typeOfCharucoIds & "Release", $vectorCharucoIds)
     EndIf
 
-    _cveInputArrayRelease($iArrCharucoIds)
+    If $typeOfCharucoIds <> Default Then
+        _cveInputArrayRelease($iArrCharucoIds)
+        If $bCharucoIdsCreate Then
+            Call("_cve" & $typeOfCharucoIds & "Release", $charucoIds)
+        EndIf
+    EndIf
 
     If $bCharucoCornersIsArray Then
-        _VectorOfMatRelease($vectorOfMatCharucoCorners)
+        Call("_VectorOf" & $typeOfCharucoCorners & "Release", $vectorCharucoCorners)
     EndIf
 
-    _cveInputArrayRelease($iArrCharucoCorners)
+    If $typeOfCharucoCorners <> Default Then
+        _cveInputArrayRelease($iArrCharucoCorners)
+        If $bCharucoCornersCreate Then
+            Call("_cve" & $typeOfCharucoCorners & "Release", $charucoCorners)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveArucoEstimatePoseCharucoBoardTyped
+
+Func _cveArucoEstimatePoseCharucoBoardMat($charucoCorners, $charucoIds, $board, $cameraMatrix, $distCoeffs, $rvec, $tvec, $useExtrinsicGuess)
+    ; cveArucoEstimatePoseCharucoBoard using cv::Mat instead of _*Array
+    Local $retval = _cveArucoEstimatePoseCharucoBoardTyped("Mat", $charucoCorners, "Mat", $charucoIds, $board, "Mat", $cameraMatrix, "Mat", $distCoeffs, "Mat", $rvec, "Mat", $tvec, $useExtrinsicGuess)
 
     Return $retval
 EndFunc   ;==>_cveArucoEstimatePoseCharucoBoardMat
@@ -2341,164 +3083,245 @@ Func _cveArucoDetectCharucoDiamond($image, $markerCorners, $markerIds, $squareMa
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDetectCharucoDiamond", $sImageDllType, $image, $sMarkerCornersDllType, $markerCorners, $sMarkerIdsDllType, $markerIds, "float", $squareMarkerLengthRate, $sDiamondCornersDllType, $diamondCorners, $sDiamondIdsDllType, $diamondIds, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs), "cveArucoDetectCharucoDiamond", @error)
 EndFunc   ;==>_cveArucoDetectCharucoDiamond
 
-Func _cveArucoDetectCharucoDiamondMat($matImage, $matMarkerCorners, $matMarkerIds, $squareMarkerLengthRate, $matDiamondCorners, $matDiamondIds, $matCameraMatrix, $matDistCoeffs)
-    ; cveArucoDetectCharucoDiamond using cv::Mat instead of _*Array
+Func _cveArucoDetectCharucoDiamondTyped($typeOfImage, $image, $typeOfMarkerCorners, $markerCorners, $typeOfMarkerIds, $markerIds, $squareMarkerLengthRate, $typeOfDiamondCorners, $diamondCorners, $typeOfDiamondIds, $diamondIds, $typeOfCameraMatrix, $cameraMatrix, $typeOfDistCoeffs, $distCoeffs)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $iArrMarkerCorners, $vectorOfMatMarkerCorners, $iArrMarkerCornersSize
-    Local $bMarkerCornersIsArray = VarGetType($matMarkerCorners) == "Array"
+    Local $iArrMarkerCorners, $vectorMarkerCorners, $iArrMarkerCornersSize
+    Local $bMarkerCornersIsArray = IsArray($markerCorners)
+    Local $bMarkerCornersCreate = IsDllStruct($markerCorners) And $typeOfMarkerCorners == "Scalar"
 
-    If $bMarkerCornersIsArray Then
-        $vectorOfMatMarkerCorners = _VectorOfMatCreate()
+    If $typeOfMarkerCorners == Default Then
+        $iArrMarkerCorners = $markerCorners
+    ElseIf $bMarkerCornersIsArray Then
+        $vectorMarkerCorners = Call("_VectorOf" & $typeOfMarkerCorners & "Create")
 
-        $iArrMarkerCornersSize = UBound($matMarkerCorners)
+        $iArrMarkerCornersSize = UBound($markerCorners)
         For $i = 0 To $iArrMarkerCornersSize - 1
-            _VectorOfMatPush($vectorOfMatMarkerCorners, $matMarkerCorners[$i])
+            Call("_VectorOf" & $typeOfMarkerCorners & "Push", $vectorMarkerCorners, $markerCorners[$i])
         Next
 
-        $iArrMarkerCorners = _cveInputArrayFromVectorOfMat($vectorOfMatMarkerCorners)
+        $iArrMarkerCorners = Call("_cveInputArrayFromVectorOf" & $typeOfMarkerCorners, $vectorMarkerCorners)
     Else
-        $iArrMarkerCorners = _cveInputArrayFromMat($matMarkerCorners)
+        If $bMarkerCornersCreate Then
+            $markerCorners = Call("_cve" & $typeOfMarkerCorners & "Create", $markerCorners)
+        EndIf
+        $iArrMarkerCorners = Call("_cveInputArrayFrom" & $typeOfMarkerCorners, $markerCorners)
     EndIf
 
-    Local $iArrMarkerIds, $vectorOfMatMarkerIds, $iArrMarkerIdsSize
-    Local $bMarkerIdsIsArray = VarGetType($matMarkerIds) == "Array"
+    Local $iArrMarkerIds, $vectorMarkerIds, $iArrMarkerIdsSize
+    Local $bMarkerIdsIsArray = IsArray($markerIds)
+    Local $bMarkerIdsCreate = IsDllStruct($markerIds) And $typeOfMarkerIds == "Scalar"
 
-    If $bMarkerIdsIsArray Then
-        $vectorOfMatMarkerIds = _VectorOfMatCreate()
+    If $typeOfMarkerIds == Default Then
+        $iArrMarkerIds = $markerIds
+    ElseIf $bMarkerIdsIsArray Then
+        $vectorMarkerIds = Call("_VectorOf" & $typeOfMarkerIds & "Create")
 
-        $iArrMarkerIdsSize = UBound($matMarkerIds)
+        $iArrMarkerIdsSize = UBound($markerIds)
         For $i = 0 To $iArrMarkerIdsSize - 1
-            _VectorOfMatPush($vectorOfMatMarkerIds, $matMarkerIds[$i])
+            Call("_VectorOf" & $typeOfMarkerIds & "Push", $vectorMarkerIds, $markerIds[$i])
         Next
 
-        $iArrMarkerIds = _cveInputArrayFromVectorOfMat($vectorOfMatMarkerIds)
+        $iArrMarkerIds = Call("_cveInputArrayFromVectorOf" & $typeOfMarkerIds, $vectorMarkerIds)
     Else
-        $iArrMarkerIds = _cveInputArrayFromMat($matMarkerIds)
+        If $bMarkerIdsCreate Then
+            $markerIds = Call("_cve" & $typeOfMarkerIds & "Create", $markerIds)
+        EndIf
+        $iArrMarkerIds = Call("_cveInputArrayFrom" & $typeOfMarkerIds, $markerIds)
     EndIf
 
-    Local $oArrDiamondCorners, $vectorOfMatDiamondCorners, $iArrDiamondCornersSize
-    Local $bDiamondCornersIsArray = VarGetType($matDiamondCorners) == "Array"
+    Local $oArrDiamondCorners, $vectorDiamondCorners, $iArrDiamondCornersSize
+    Local $bDiamondCornersIsArray = IsArray($diamondCorners)
+    Local $bDiamondCornersCreate = IsDllStruct($diamondCorners) And $typeOfDiamondCorners == "Scalar"
 
-    If $bDiamondCornersIsArray Then
-        $vectorOfMatDiamondCorners = _VectorOfMatCreate()
+    If $typeOfDiamondCorners == Default Then
+        $oArrDiamondCorners = $diamondCorners
+    ElseIf $bDiamondCornersIsArray Then
+        $vectorDiamondCorners = Call("_VectorOf" & $typeOfDiamondCorners & "Create")
 
-        $iArrDiamondCornersSize = UBound($matDiamondCorners)
+        $iArrDiamondCornersSize = UBound($diamondCorners)
         For $i = 0 To $iArrDiamondCornersSize - 1
-            _VectorOfMatPush($vectorOfMatDiamondCorners, $matDiamondCorners[$i])
+            Call("_VectorOf" & $typeOfDiamondCorners & "Push", $vectorDiamondCorners, $diamondCorners[$i])
         Next
 
-        $oArrDiamondCorners = _cveOutputArrayFromVectorOfMat($vectorOfMatDiamondCorners)
+        $oArrDiamondCorners = Call("_cveOutputArrayFromVectorOf" & $typeOfDiamondCorners, $vectorDiamondCorners)
     Else
-        $oArrDiamondCorners = _cveOutputArrayFromMat($matDiamondCorners)
+        If $bDiamondCornersCreate Then
+            $diamondCorners = Call("_cve" & $typeOfDiamondCorners & "Create", $diamondCorners)
+        EndIf
+        $oArrDiamondCorners = Call("_cveOutputArrayFrom" & $typeOfDiamondCorners, $diamondCorners)
     EndIf
 
-    Local $oArrDiamondIds, $vectorOfMatDiamondIds, $iArrDiamondIdsSize
-    Local $bDiamondIdsIsArray = VarGetType($matDiamondIds) == "Array"
+    Local $oArrDiamondIds, $vectorDiamondIds, $iArrDiamondIdsSize
+    Local $bDiamondIdsIsArray = IsArray($diamondIds)
+    Local $bDiamondIdsCreate = IsDllStruct($diamondIds) And $typeOfDiamondIds == "Scalar"
 
-    If $bDiamondIdsIsArray Then
-        $vectorOfMatDiamondIds = _VectorOfMatCreate()
+    If $typeOfDiamondIds == Default Then
+        $oArrDiamondIds = $diamondIds
+    ElseIf $bDiamondIdsIsArray Then
+        $vectorDiamondIds = Call("_VectorOf" & $typeOfDiamondIds & "Create")
 
-        $iArrDiamondIdsSize = UBound($matDiamondIds)
+        $iArrDiamondIdsSize = UBound($diamondIds)
         For $i = 0 To $iArrDiamondIdsSize - 1
-            _VectorOfMatPush($vectorOfMatDiamondIds, $matDiamondIds[$i])
+            Call("_VectorOf" & $typeOfDiamondIds & "Push", $vectorDiamondIds, $diamondIds[$i])
         Next
 
-        $oArrDiamondIds = _cveOutputArrayFromVectorOfMat($vectorOfMatDiamondIds)
+        $oArrDiamondIds = Call("_cveOutputArrayFromVectorOf" & $typeOfDiamondIds, $vectorDiamondIds)
     Else
-        $oArrDiamondIds = _cveOutputArrayFromMat($matDiamondIds)
+        If $bDiamondIdsCreate Then
+            $diamondIds = Call("_cve" & $typeOfDiamondIds & "Create", $diamondIds)
+        EndIf
+        $oArrDiamondIds = Call("_cveOutputArrayFrom" & $typeOfDiamondIds, $diamondIds)
     EndIf
 
-    Local $iArrCameraMatrix, $vectorOfMatCameraMatrix, $iArrCameraMatrixSize
-    Local $bCameraMatrixIsArray = VarGetType($matCameraMatrix) == "Array"
+    Local $iArrCameraMatrix, $vectorCameraMatrix, $iArrCameraMatrixSize
+    Local $bCameraMatrixIsArray = IsArray($cameraMatrix)
+    Local $bCameraMatrixCreate = IsDllStruct($cameraMatrix) And $typeOfCameraMatrix == "Scalar"
 
-    If $bCameraMatrixIsArray Then
-        $vectorOfMatCameraMatrix = _VectorOfMatCreate()
+    If $typeOfCameraMatrix == Default Then
+        $iArrCameraMatrix = $cameraMatrix
+    ElseIf $bCameraMatrixIsArray Then
+        $vectorCameraMatrix = Call("_VectorOf" & $typeOfCameraMatrix & "Create")
 
-        $iArrCameraMatrixSize = UBound($matCameraMatrix)
+        $iArrCameraMatrixSize = UBound($cameraMatrix)
         For $i = 0 To $iArrCameraMatrixSize - 1
-            _VectorOfMatPush($vectorOfMatCameraMatrix, $matCameraMatrix[$i])
+            Call("_VectorOf" & $typeOfCameraMatrix & "Push", $vectorCameraMatrix, $cameraMatrix[$i])
         Next
 
-        $iArrCameraMatrix = _cveInputArrayFromVectorOfMat($vectorOfMatCameraMatrix)
+        $iArrCameraMatrix = Call("_cveInputArrayFromVectorOf" & $typeOfCameraMatrix, $vectorCameraMatrix)
     Else
-        $iArrCameraMatrix = _cveInputArrayFromMat($matCameraMatrix)
+        If $bCameraMatrixCreate Then
+            $cameraMatrix = Call("_cve" & $typeOfCameraMatrix & "Create", $cameraMatrix)
+        EndIf
+        $iArrCameraMatrix = Call("_cveInputArrayFrom" & $typeOfCameraMatrix, $cameraMatrix)
     EndIf
 
-    Local $iArrDistCoeffs, $vectorOfMatDistCoeffs, $iArrDistCoeffsSize
-    Local $bDistCoeffsIsArray = VarGetType($matDistCoeffs) == "Array"
+    Local $iArrDistCoeffs, $vectorDistCoeffs, $iArrDistCoeffsSize
+    Local $bDistCoeffsIsArray = IsArray($distCoeffs)
+    Local $bDistCoeffsCreate = IsDllStruct($distCoeffs) And $typeOfDistCoeffs == "Scalar"
 
-    If $bDistCoeffsIsArray Then
-        $vectorOfMatDistCoeffs = _VectorOfMatCreate()
+    If $typeOfDistCoeffs == Default Then
+        $iArrDistCoeffs = $distCoeffs
+    ElseIf $bDistCoeffsIsArray Then
+        $vectorDistCoeffs = Call("_VectorOf" & $typeOfDistCoeffs & "Create")
 
-        $iArrDistCoeffsSize = UBound($matDistCoeffs)
+        $iArrDistCoeffsSize = UBound($distCoeffs)
         For $i = 0 To $iArrDistCoeffsSize - 1
-            _VectorOfMatPush($vectorOfMatDistCoeffs, $matDistCoeffs[$i])
+            Call("_VectorOf" & $typeOfDistCoeffs & "Push", $vectorDistCoeffs, $distCoeffs[$i])
         Next
 
-        $iArrDistCoeffs = _cveInputArrayFromVectorOfMat($vectorOfMatDistCoeffs)
+        $iArrDistCoeffs = Call("_cveInputArrayFromVectorOf" & $typeOfDistCoeffs, $vectorDistCoeffs)
     Else
-        $iArrDistCoeffs = _cveInputArrayFromMat($matDistCoeffs)
+        If $bDistCoeffsCreate Then
+            $distCoeffs = Call("_cve" & $typeOfDistCoeffs & "Create", $distCoeffs)
+        EndIf
+        $iArrDistCoeffs = Call("_cveInputArrayFrom" & $typeOfDistCoeffs, $distCoeffs)
     EndIf
 
     _cveArucoDetectCharucoDiamond($iArrImage, $iArrMarkerCorners, $iArrMarkerIds, $squareMarkerLengthRate, $oArrDiamondCorners, $oArrDiamondIds, $iArrCameraMatrix, $iArrDistCoeffs)
 
     If $bDistCoeffsIsArray Then
-        _VectorOfMatRelease($vectorOfMatDistCoeffs)
+        Call("_VectorOf" & $typeOfDistCoeffs & "Release", $vectorDistCoeffs)
     EndIf
 
-    _cveInputArrayRelease($iArrDistCoeffs)
+    If $typeOfDistCoeffs <> Default Then
+        _cveInputArrayRelease($iArrDistCoeffs)
+        If $bDistCoeffsCreate Then
+            Call("_cve" & $typeOfDistCoeffs & "Release", $distCoeffs)
+        EndIf
+    EndIf
 
     If $bCameraMatrixIsArray Then
-        _VectorOfMatRelease($vectorOfMatCameraMatrix)
+        Call("_VectorOf" & $typeOfCameraMatrix & "Release", $vectorCameraMatrix)
     EndIf
 
-    _cveInputArrayRelease($iArrCameraMatrix)
+    If $typeOfCameraMatrix <> Default Then
+        _cveInputArrayRelease($iArrCameraMatrix)
+        If $bCameraMatrixCreate Then
+            Call("_cve" & $typeOfCameraMatrix & "Release", $cameraMatrix)
+        EndIf
+    EndIf
 
     If $bDiamondIdsIsArray Then
-        _VectorOfMatRelease($vectorOfMatDiamondIds)
+        Call("_VectorOf" & $typeOfDiamondIds & "Release", $vectorDiamondIds)
     EndIf
 
-    _cveOutputArrayRelease($oArrDiamondIds)
+    If $typeOfDiamondIds <> Default Then
+        _cveOutputArrayRelease($oArrDiamondIds)
+        If $bDiamondIdsCreate Then
+            Call("_cve" & $typeOfDiamondIds & "Release", $diamondIds)
+        EndIf
+    EndIf
 
     If $bDiamondCornersIsArray Then
-        _VectorOfMatRelease($vectorOfMatDiamondCorners)
+        Call("_VectorOf" & $typeOfDiamondCorners & "Release", $vectorDiamondCorners)
     EndIf
 
-    _cveOutputArrayRelease($oArrDiamondCorners)
+    If $typeOfDiamondCorners <> Default Then
+        _cveOutputArrayRelease($oArrDiamondCorners)
+        If $bDiamondCornersCreate Then
+            Call("_cve" & $typeOfDiamondCorners & "Release", $diamondCorners)
+        EndIf
+    EndIf
 
     If $bMarkerIdsIsArray Then
-        _VectorOfMatRelease($vectorOfMatMarkerIds)
+        Call("_VectorOf" & $typeOfMarkerIds & "Release", $vectorMarkerIds)
     EndIf
 
-    _cveInputArrayRelease($iArrMarkerIds)
+    If $typeOfMarkerIds <> Default Then
+        _cveInputArrayRelease($iArrMarkerIds)
+        If $bMarkerIdsCreate Then
+            Call("_cve" & $typeOfMarkerIds & "Release", $markerIds)
+        EndIf
+    EndIf
 
     If $bMarkerCornersIsArray Then
-        _VectorOfMatRelease($vectorOfMatMarkerCorners)
+        Call("_VectorOf" & $typeOfMarkerCorners & "Release", $vectorMarkerCorners)
     EndIf
 
-    _cveInputArrayRelease($iArrMarkerCorners)
+    If $typeOfMarkerCorners <> Default Then
+        _cveInputArrayRelease($iArrMarkerCorners)
+        If $bMarkerCornersCreate Then
+            Call("_cve" & $typeOfMarkerCorners & "Release", $markerCorners)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveArucoDetectCharucoDiamondTyped
+
+Func _cveArucoDetectCharucoDiamondMat($image, $markerCorners, $markerIds, $squareMarkerLengthRate, $diamondCorners, $diamondIds, $cameraMatrix, $distCoeffs)
+    ; cveArucoDetectCharucoDiamond using cv::Mat instead of _*Array
+    _cveArucoDetectCharucoDiamondTyped("Mat", $image, "Mat", $markerCorners, "Mat", $markerIds, $squareMarkerLengthRate, "Mat", $diamondCorners, "Mat", $diamondIds, "Mat", $cameraMatrix, "Mat", $distCoeffs)
 EndFunc   ;==>_cveArucoDetectCharucoDiamondMat
 
 Func _cveArucoDrawDetectedDiamonds($image, $diamondCorners, $diamondIds, $borderColor)
@@ -2535,76 +3358,113 @@ Func _cveArucoDrawDetectedDiamonds($image, $diamondCorners, $diamondIds, $border
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawDetectedDiamonds", $sImageDllType, $image, $sDiamondCornersDllType, $diamondCorners, $sDiamondIdsDllType, $diamondIds, $sBorderColorDllType, $borderColor), "cveArucoDrawDetectedDiamonds", @error)
 EndFunc   ;==>_cveArucoDrawDetectedDiamonds
 
-Func _cveArucoDrawDetectedDiamondsMat($matImage, $matDiamondCorners, $matDiamondIds, $borderColor)
-    ; cveArucoDrawDetectedDiamonds using cv::Mat instead of _*Array
+Func _cveArucoDrawDetectedDiamondsTyped($typeOfImage, $image, $typeOfDiamondCorners, $diamondCorners, $typeOfDiamondIds, $diamondIds, $borderColor)
 
-    Local $ioArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $ioArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $ioArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $ioArrImage = _cveInputOutputArrayFromVectorOfMat($vectorOfMatImage)
+        $ioArrImage = Call("_cveInputOutputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $ioArrImage = _cveInputOutputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $ioArrImage = Call("_cveInputOutputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $iArrDiamondCorners, $vectorOfMatDiamondCorners, $iArrDiamondCornersSize
-    Local $bDiamondCornersIsArray = VarGetType($matDiamondCorners) == "Array"
+    Local $iArrDiamondCorners, $vectorDiamondCorners, $iArrDiamondCornersSize
+    Local $bDiamondCornersIsArray = IsArray($diamondCorners)
+    Local $bDiamondCornersCreate = IsDllStruct($diamondCorners) And $typeOfDiamondCorners == "Scalar"
 
-    If $bDiamondCornersIsArray Then
-        $vectorOfMatDiamondCorners = _VectorOfMatCreate()
+    If $typeOfDiamondCorners == Default Then
+        $iArrDiamondCorners = $diamondCorners
+    ElseIf $bDiamondCornersIsArray Then
+        $vectorDiamondCorners = Call("_VectorOf" & $typeOfDiamondCorners & "Create")
 
-        $iArrDiamondCornersSize = UBound($matDiamondCorners)
+        $iArrDiamondCornersSize = UBound($diamondCorners)
         For $i = 0 To $iArrDiamondCornersSize - 1
-            _VectorOfMatPush($vectorOfMatDiamondCorners, $matDiamondCorners[$i])
+            Call("_VectorOf" & $typeOfDiamondCorners & "Push", $vectorDiamondCorners, $diamondCorners[$i])
         Next
 
-        $iArrDiamondCorners = _cveInputArrayFromVectorOfMat($vectorOfMatDiamondCorners)
+        $iArrDiamondCorners = Call("_cveInputArrayFromVectorOf" & $typeOfDiamondCorners, $vectorDiamondCorners)
     Else
-        $iArrDiamondCorners = _cveInputArrayFromMat($matDiamondCorners)
+        If $bDiamondCornersCreate Then
+            $diamondCorners = Call("_cve" & $typeOfDiamondCorners & "Create", $diamondCorners)
+        EndIf
+        $iArrDiamondCorners = Call("_cveInputArrayFrom" & $typeOfDiamondCorners, $diamondCorners)
     EndIf
 
-    Local $iArrDiamondIds, $vectorOfMatDiamondIds, $iArrDiamondIdsSize
-    Local $bDiamondIdsIsArray = VarGetType($matDiamondIds) == "Array"
+    Local $iArrDiamondIds, $vectorDiamondIds, $iArrDiamondIdsSize
+    Local $bDiamondIdsIsArray = IsArray($diamondIds)
+    Local $bDiamondIdsCreate = IsDllStruct($diamondIds) And $typeOfDiamondIds == "Scalar"
 
-    If $bDiamondIdsIsArray Then
-        $vectorOfMatDiamondIds = _VectorOfMatCreate()
+    If $typeOfDiamondIds == Default Then
+        $iArrDiamondIds = $diamondIds
+    ElseIf $bDiamondIdsIsArray Then
+        $vectorDiamondIds = Call("_VectorOf" & $typeOfDiamondIds & "Create")
 
-        $iArrDiamondIdsSize = UBound($matDiamondIds)
+        $iArrDiamondIdsSize = UBound($diamondIds)
         For $i = 0 To $iArrDiamondIdsSize - 1
-            _VectorOfMatPush($vectorOfMatDiamondIds, $matDiamondIds[$i])
+            Call("_VectorOf" & $typeOfDiamondIds & "Push", $vectorDiamondIds, $diamondIds[$i])
         Next
 
-        $iArrDiamondIds = _cveInputArrayFromVectorOfMat($vectorOfMatDiamondIds)
+        $iArrDiamondIds = Call("_cveInputArrayFromVectorOf" & $typeOfDiamondIds, $vectorDiamondIds)
     Else
-        $iArrDiamondIds = _cveInputArrayFromMat($matDiamondIds)
+        If $bDiamondIdsCreate Then
+            $diamondIds = Call("_cve" & $typeOfDiamondIds & "Create", $diamondIds)
+        EndIf
+        $iArrDiamondIds = Call("_cveInputArrayFrom" & $typeOfDiamondIds, $diamondIds)
     EndIf
 
     _cveArucoDrawDetectedDiamonds($ioArrImage, $iArrDiamondCorners, $iArrDiamondIds, $borderColor)
 
     If $bDiamondIdsIsArray Then
-        _VectorOfMatRelease($vectorOfMatDiamondIds)
+        Call("_VectorOf" & $typeOfDiamondIds & "Release", $vectorDiamondIds)
     EndIf
 
-    _cveInputArrayRelease($iArrDiamondIds)
+    If $typeOfDiamondIds <> Default Then
+        _cveInputArrayRelease($iArrDiamondIds)
+        If $bDiamondIdsCreate Then
+            Call("_cve" & $typeOfDiamondIds & "Release", $diamondIds)
+        EndIf
+    EndIf
 
     If $bDiamondCornersIsArray Then
-        _VectorOfMatRelease($vectorOfMatDiamondCorners)
+        Call("_VectorOf" & $typeOfDiamondCorners & "Release", $vectorDiamondCorners)
     EndIf
 
-    _cveInputArrayRelease($iArrDiamondCorners)
+    If $typeOfDiamondCorners <> Default Then
+        _cveInputArrayRelease($iArrDiamondCorners)
+        If $bDiamondCornersCreate Then
+            Call("_cve" & $typeOfDiamondCorners & "Release", $diamondCorners)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputOutputArrayRelease($ioArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveArucoDrawDetectedDiamondsTyped
+
+Func _cveArucoDrawDetectedDiamondsMat($image, $diamondCorners, $diamondIds, $borderColor)
+    ; cveArucoDrawDetectedDiamonds using cv::Mat instead of _*Array
+    _cveArucoDrawDetectedDiamondsTyped("Mat", $image, "Mat", $diamondCorners, "Mat", $diamondIds, $borderColor)
 EndFunc   ;==>_cveArucoDrawDetectedDiamondsMat
 
 Func _cveArucoDrawCharucoDiamond($dictionary, $ids, $squareLength, $markerLength, $img, $marginSize, $borderBits)
@@ -2634,32 +3494,47 @@ Func _cveArucoDrawCharucoDiamond($dictionary, $ids, $squareLength, $markerLength
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawCharucoDiamond", $sDictionaryDllType, $dictionary, $sIdsDllType, $ids, "int", $squareLength, "int", $markerLength, $sImgDllType, $img, "int", $marginSize, "int", $borderBits), "cveArucoDrawCharucoDiamond", @error)
 EndFunc   ;==>_cveArucoDrawCharucoDiamond
 
-Func _cveArucoDrawCharucoDiamondMat($dictionary, $ids, $squareLength, $markerLength, $matImg, $marginSize, $borderBits)
-    ; cveArucoDrawCharucoDiamond using cv::Mat instead of _*Array
+Func _cveArucoDrawCharucoDiamondTyped($dictionary, $ids, $squareLength, $markerLength, $typeOfImg, $img, $marginSize, $borderBits)
 
-    Local $oArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $oArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $oArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $oArrImg = _cveOutputArrayFromVectorOfMat($vectorOfMatImg)
+        $oArrImg = Call("_cveOutputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $oArrImg = _cveOutputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $oArrImg = Call("_cveOutputArrayFrom" & $typeOfImg, $img)
     EndIf
 
     _cveArucoDrawCharucoDiamond($dictionary, $ids, $squareLength, $markerLength, $oArrImg, $marginSize, $borderBits)
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveOutputArrayRelease($oArrImg)
+    If $typeOfImg <> Default Then
+        _cveOutputArrayRelease($oArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveArucoDrawCharucoDiamondTyped
+
+Func _cveArucoDrawCharucoDiamondMat($dictionary, $ids, $squareLength, $markerLength, $img, $marginSize, $borderBits)
+    ; cveArucoDrawCharucoDiamond using cv::Mat instead of _*Array
+    _cveArucoDrawCharucoDiamondTyped($dictionary, $ids, $squareLength, $markerLength, "Mat", $img, $marginSize, $borderBits)
 EndFunc   ;==>_cveArucoDrawCharucoDiamondMat
 
 Func _cveArucoDrawPlanarBoard($board, $outSize, $img, $marginSize, $borderBits)
@@ -2689,32 +3564,47 @@ Func _cveArucoDrawPlanarBoard($board, $outSize, $img, $marginSize, $borderBits)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoDrawPlanarBoard", $sBoardDllType, $board, $sOutSizeDllType, $outSize, $sImgDllType, $img, "int", $marginSize, "int", $borderBits), "cveArucoDrawPlanarBoard", @error)
 EndFunc   ;==>_cveArucoDrawPlanarBoard
 
-Func _cveArucoDrawPlanarBoardMat($board, $outSize, $matImg, $marginSize, $borderBits)
-    ; cveArucoDrawPlanarBoard using cv::Mat instead of _*Array
+Func _cveArucoDrawPlanarBoardTyped($board, $outSize, $typeOfImg, $img, $marginSize, $borderBits)
 
-    Local $oArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $oArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $oArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $oArrImg = _cveOutputArrayFromVectorOfMat($vectorOfMatImg)
+        $oArrImg = Call("_cveOutputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $oArrImg = _cveOutputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $oArrImg = Call("_cveOutputArrayFrom" & $typeOfImg, $img)
     EndIf
 
     _cveArucoDrawPlanarBoard($board, $outSize, $oArrImg, $marginSize, $borderBits)
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveOutputArrayRelease($oArrImg)
+    If $typeOfImg <> Default Then
+        _cveOutputArrayRelease($oArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveArucoDrawPlanarBoardTyped
+
+Func _cveArucoDrawPlanarBoardMat($board, $outSize, $img, $marginSize, $borderBits)
+    ; cveArucoDrawPlanarBoard using cv::Mat instead of _*Array
+    _cveArucoDrawPlanarBoardTyped($board, $outSize, "Mat", $img, $marginSize, $borderBits)
 EndFunc   ;==>_cveArucoDrawPlanarBoardMat
 
 Func _cveArucoEstimatePoseBoard($corners, $ids, $board, $cameraMatrix, $distCoeffs, $rvec, $tvec, $useExtrinsicGuess)
@@ -2771,142 +3661,214 @@ Func _cveArucoEstimatePoseBoard($corners, $ids, $board, $cameraMatrix, $distCoef
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveArucoEstimatePoseBoard", $sCornersDllType, $corners, $sIdsDllType, $ids, $sBoardDllType, $board, $sCameraMatrixDllType, $cameraMatrix, $sDistCoeffsDllType, $distCoeffs, $sRvecDllType, $rvec, $sTvecDllType, $tvec, "boolean", $useExtrinsicGuess), "cveArucoEstimatePoseBoard", @error)
 EndFunc   ;==>_cveArucoEstimatePoseBoard
 
-Func _cveArucoEstimatePoseBoardMat($matCorners, $matIds, $board, $matCameraMatrix, $matDistCoeffs, $matRvec, $matTvec, $useExtrinsicGuess)
-    ; cveArucoEstimatePoseBoard using cv::Mat instead of _*Array
+Func _cveArucoEstimatePoseBoardTyped($typeOfCorners, $corners, $typeOfIds, $ids, $board, $typeOfCameraMatrix, $cameraMatrix, $typeOfDistCoeffs, $distCoeffs, $typeOfRvec, $rvec, $typeOfTvec, $tvec, $useExtrinsicGuess)
 
-    Local $iArrCorners, $vectorOfMatCorners, $iArrCornersSize
-    Local $bCornersIsArray = VarGetType($matCorners) == "Array"
+    Local $iArrCorners, $vectorCorners, $iArrCornersSize
+    Local $bCornersIsArray = IsArray($corners)
+    Local $bCornersCreate = IsDllStruct($corners) And $typeOfCorners == "Scalar"
 
-    If $bCornersIsArray Then
-        $vectorOfMatCorners = _VectorOfMatCreate()
+    If $typeOfCorners == Default Then
+        $iArrCorners = $corners
+    ElseIf $bCornersIsArray Then
+        $vectorCorners = Call("_VectorOf" & $typeOfCorners & "Create")
 
-        $iArrCornersSize = UBound($matCorners)
+        $iArrCornersSize = UBound($corners)
         For $i = 0 To $iArrCornersSize - 1
-            _VectorOfMatPush($vectorOfMatCorners, $matCorners[$i])
+            Call("_VectorOf" & $typeOfCorners & "Push", $vectorCorners, $corners[$i])
         Next
 
-        $iArrCorners = _cveInputArrayFromVectorOfMat($vectorOfMatCorners)
+        $iArrCorners = Call("_cveInputArrayFromVectorOf" & $typeOfCorners, $vectorCorners)
     Else
-        $iArrCorners = _cveInputArrayFromMat($matCorners)
+        If $bCornersCreate Then
+            $corners = Call("_cve" & $typeOfCorners & "Create", $corners)
+        EndIf
+        $iArrCorners = Call("_cveInputArrayFrom" & $typeOfCorners, $corners)
     EndIf
 
-    Local $iArrIds, $vectorOfMatIds, $iArrIdsSize
-    Local $bIdsIsArray = VarGetType($matIds) == "Array"
+    Local $iArrIds, $vectorIds, $iArrIdsSize
+    Local $bIdsIsArray = IsArray($ids)
+    Local $bIdsCreate = IsDllStruct($ids) And $typeOfIds == "Scalar"
 
-    If $bIdsIsArray Then
-        $vectorOfMatIds = _VectorOfMatCreate()
+    If $typeOfIds == Default Then
+        $iArrIds = $ids
+    ElseIf $bIdsIsArray Then
+        $vectorIds = Call("_VectorOf" & $typeOfIds & "Create")
 
-        $iArrIdsSize = UBound($matIds)
+        $iArrIdsSize = UBound($ids)
         For $i = 0 To $iArrIdsSize - 1
-            _VectorOfMatPush($vectorOfMatIds, $matIds[$i])
+            Call("_VectorOf" & $typeOfIds & "Push", $vectorIds, $ids[$i])
         Next
 
-        $iArrIds = _cveInputArrayFromVectorOfMat($vectorOfMatIds)
+        $iArrIds = Call("_cveInputArrayFromVectorOf" & $typeOfIds, $vectorIds)
     Else
-        $iArrIds = _cveInputArrayFromMat($matIds)
+        If $bIdsCreate Then
+            $ids = Call("_cve" & $typeOfIds & "Create", $ids)
+        EndIf
+        $iArrIds = Call("_cveInputArrayFrom" & $typeOfIds, $ids)
     EndIf
 
-    Local $iArrCameraMatrix, $vectorOfMatCameraMatrix, $iArrCameraMatrixSize
-    Local $bCameraMatrixIsArray = VarGetType($matCameraMatrix) == "Array"
+    Local $iArrCameraMatrix, $vectorCameraMatrix, $iArrCameraMatrixSize
+    Local $bCameraMatrixIsArray = IsArray($cameraMatrix)
+    Local $bCameraMatrixCreate = IsDllStruct($cameraMatrix) And $typeOfCameraMatrix == "Scalar"
 
-    If $bCameraMatrixIsArray Then
-        $vectorOfMatCameraMatrix = _VectorOfMatCreate()
+    If $typeOfCameraMatrix == Default Then
+        $iArrCameraMatrix = $cameraMatrix
+    ElseIf $bCameraMatrixIsArray Then
+        $vectorCameraMatrix = Call("_VectorOf" & $typeOfCameraMatrix & "Create")
 
-        $iArrCameraMatrixSize = UBound($matCameraMatrix)
+        $iArrCameraMatrixSize = UBound($cameraMatrix)
         For $i = 0 To $iArrCameraMatrixSize - 1
-            _VectorOfMatPush($vectorOfMatCameraMatrix, $matCameraMatrix[$i])
+            Call("_VectorOf" & $typeOfCameraMatrix & "Push", $vectorCameraMatrix, $cameraMatrix[$i])
         Next
 
-        $iArrCameraMatrix = _cveInputArrayFromVectorOfMat($vectorOfMatCameraMatrix)
+        $iArrCameraMatrix = Call("_cveInputArrayFromVectorOf" & $typeOfCameraMatrix, $vectorCameraMatrix)
     Else
-        $iArrCameraMatrix = _cveInputArrayFromMat($matCameraMatrix)
+        If $bCameraMatrixCreate Then
+            $cameraMatrix = Call("_cve" & $typeOfCameraMatrix & "Create", $cameraMatrix)
+        EndIf
+        $iArrCameraMatrix = Call("_cveInputArrayFrom" & $typeOfCameraMatrix, $cameraMatrix)
     EndIf
 
-    Local $iArrDistCoeffs, $vectorOfMatDistCoeffs, $iArrDistCoeffsSize
-    Local $bDistCoeffsIsArray = VarGetType($matDistCoeffs) == "Array"
+    Local $iArrDistCoeffs, $vectorDistCoeffs, $iArrDistCoeffsSize
+    Local $bDistCoeffsIsArray = IsArray($distCoeffs)
+    Local $bDistCoeffsCreate = IsDllStruct($distCoeffs) And $typeOfDistCoeffs == "Scalar"
 
-    If $bDistCoeffsIsArray Then
-        $vectorOfMatDistCoeffs = _VectorOfMatCreate()
+    If $typeOfDistCoeffs == Default Then
+        $iArrDistCoeffs = $distCoeffs
+    ElseIf $bDistCoeffsIsArray Then
+        $vectorDistCoeffs = Call("_VectorOf" & $typeOfDistCoeffs & "Create")
 
-        $iArrDistCoeffsSize = UBound($matDistCoeffs)
+        $iArrDistCoeffsSize = UBound($distCoeffs)
         For $i = 0 To $iArrDistCoeffsSize - 1
-            _VectorOfMatPush($vectorOfMatDistCoeffs, $matDistCoeffs[$i])
+            Call("_VectorOf" & $typeOfDistCoeffs & "Push", $vectorDistCoeffs, $distCoeffs[$i])
         Next
 
-        $iArrDistCoeffs = _cveInputArrayFromVectorOfMat($vectorOfMatDistCoeffs)
+        $iArrDistCoeffs = Call("_cveInputArrayFromVectorOf" & $typeOfDistCoeffs, $vectorDistCoeffs)
     Else
-        $iArrDistCoeffs = _cveInputArrayFromMat($matDistCoeffs)
+        If $bDistCoeffsCreate Then
+            $distCoeffs = Call("_cve" & $typeOfDistCoeffs & "Create", $distCoeffs)
+        EndIf
+        $iArrDistCoeffs = Call("_cveInputArrayFrom" & $typeOfDistCoeffs, $distCoeffs)
     EndIf
 
-    Local $ioArrRvec, $vectorOfMatRvec, $iArrRvecSize
-    Local $bRvecIsArray = VarGetType($matRvec) == "Array"
+    Local $ioArrRvec, $vectorRvec, $iArrRvecSize
+    Local $bRvecIsArray = IsArray($rvec)
+    Local $bRvecCreate = IsDllStruct($rvec) And $typeOfRvec == "Scalar"
 
-    If $bRvecIsArray Then
-        $vectorOfMatRvec = _VectorOfMatCreate()
+    If $typeOfRvec == Default Then
+        $ioArrRvec = $rvec
+    ElseIf $bRvecIsArray Then
+        $vectorRvec = Call("_VectorOf" & $typeOfRvec & "Create")
 
-        $iArrRvecSize = UBound($matRvec)
+        $iArrRvecSize = UBound($rvec)
         For $i = 0 To $iArrRvecSize - 1
-            _VectorOfMatPush($vectorOfMatRvec, $matRvec[$i])
+            Call("_VectorOf" & $typeOfRvec & "Push", $vectorRvec, $rvec[$i])
         Next
 
-        $ioArrRvec = _cveInputOutputArrayFromVectorOfMat($vectorOfMatRvec)
+        $ioArrRvec = Call("_cveInputOutputArrayFromVectorOf" & $typeOfRvec, $vectorRvec)
     Else
-        $ioArrRvec = _cveInputOutputArrayFromMat($matRvec)
+        If $bRvecCreate Then
+            $rvec = Call("_cve" & $typeOfRvec & "Create", $rvec)
+        EndIf
+        $ioArrRvec = Call("_cveInputOutputArrayFrom" & $typeOfRvec, $rvec)
     EndIf
 
-    Local $ioArrTvec, $vectorOfMatTvec, $iArrTvecSize
-    Local $bTvecIsArray = VarGetType($matTvec) == "Array"
+    Local $ioArrTvec, $vectorTvec, $iArrTvecSize
+    Local $bTvecIsArray = IsArray($tvec)
+    Local $bTvecCreate = IsDllStruct($tvec) And $typeOfTvec == "Scalar"
 
-    If $bTvecIsArray Then
-        $vectorOfMatTvec = _VectorOfMatCreate()
+    If $typeOfTvec == Default Then
+        $ioArrTvec = $tvec
+    ElseIf $bTvecIsArray Then
+        $vectorTvec = Call("_VectorOf" & $typeOfTvec & "Create")
 
-        $iArrTvecSize = UBound($matTvec)
+        $iArrTvecSize = UBound($tvec)
         For $i = 0 To $iArrTvecSize - 1
-            _VectorOfMatPush($vectorOfMatTvec, $matTvec[$i])
+            Call("_VectorOf" & $typeOfTvec & "Push", $vectorTvec, $tvec[$i])
         Next
 
-        $ioArrTvec = _cveInputOutputArrayFromVectorOfMat($vectorOfMatTvec)
+        $ioArrTvec = Call("_cveInputOutputArrayFromVectorOf" & $typeOfTvec, $vectorTvec)
     Else
-        $ioArrTvec = _cveInputOutputArrayFromMat($matTvec)
+        If $bTvecCreate Then
+            $tvec = Call("_cve" & $typeOfTvec & "Create", $tvec)
+        EndIf
+        $ioArrTvec = Call("_cveInputOutputArrayFrom" & $typeOfTvec, $tvec)
     EndIf
 
     Local $retval = _cveArucoEstimatePoseBoard($iArrCorners, $iArrIds, $board, $iArrCameraMatrix, $iArrDistCoeffs, $ioArrRvec, $ioArrTvec, $useExtrinsicGuess)
 
     If $bTvecIsArray Then
-        _VectorOfMatRelease($vectorOfMatTvec)
+        Call("_VectorOf" & $typeOfTvec & "Release", $vectorTvec)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrTvec)
+    If $typeOfTvec <> Default Then
+        _cveInputOutputArrayRelease($ioArrTvec)
+        If $bTvecCreate Then
+            Call("_cve" & $typeOfTvec & "Release", $tvec)
+        EndIf
+    EndIf
 
     If $bRvecIsArray Then
-        _VectorOfMatRelease($vectorOfMatRvec)
+        Call("_VectorOf" & $typeOfRvec & "Release", $vectorRvec)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrRvec)
+    If $typeOfRvec <> Default Then
+        _cveInputOutputArrayRelease($ioArrRvec)
+        If $bRvecCreate Then
+            Call("_cve" & $typeOfRvec & "Release", $rvec)
+        EndIf
+    EndIf
 
     If $bDistCoeffsIsArray Then
-        _VectorOfMatRelease($vectorOfMatDistCoeffs)
+        Call("_VectorOf" & $typeOfDistCoeffs & "Release", $vectorDistCoeffs)
     EndIf
 
-    _cveInputArrayRelease($iArrDistCoeffs)
+    If $typeOfDistCoeffs <> Default Then
+        _cveInputArrayRelease($iArrDistCoeffs)
+        If $bDistCoeffsCreate Then
+            Call("_cve" & $typeOfDistCoeffs & "Release", $distCoeffs)
+        EndIf
+    EndIf
 
     If $bCameraMatrixIsArray Then
-        _VectorOfMatRelease($vectorOfMatCameraMatrix)
+        Call("_VectorOf" & $typeOfCameraMatrix & "Release", $vectorCameraMatrix)
     EndIf
 
-    _cveInputArrayRelease($iArrCameraMatrix)
+    If $typeOfCameraMatrix <> Default Then
+        _cveInputArrayRelease($iArrCameraMatrix)
+        If $bCameraMatrixCreate Then
+            Call("_cve" & $typeOfCameraMatrix & "Release", $cameraMatrix)
+        EndIf
+    EndIf
 
     If $bIdsIsArray Then
-        _VectorOfMatRelease($vectorOfMatIds)
+        Call("_VectorOf" & $typeOfIds & "Release", $vectorIds)
     EndIf
 
-    _cveInputArrayRelease($iArrIds)
+    If $typeOfIds <> Default Then
+        _cveInputArrayRelease($iArrIds)
+        If $bIdsCreate Then
+            Call("_cve" & $typeOfIds & "Release", $ids)
+        EndIf
+    EndIf
 
     If $bCornersIsArray Then
-        _VectorOfMatRelease($vectorOfMatCorners)
+        Call("_VectorOf" & $typeOfCorners & "Release", $vectorCorners)
     EndIf
 
-    _cveInputArrayRelease($iArrCorners)
+    If $typeOfCorners <> Default Then
+        _cveInputArrayRelease($iArrCorners)
+        If $bCornersCreate Then
+            Call("_cve" & $typeOfCorners & "Release", $corners)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveArucoEstimatePoseBoardTyped
+
+Func _cveArucoEstimatePoseBoardMat($corners, $ids, $board, $cameraMatrix, $distCoeffs, $rvec, $tvec, $useExtrinsicGuess)
+    ; cveArucoEstimatePoseBoard using cv::Mat instead of _*Array
+    Local $retval = _cveArucoEstimatePoseBoardTyped("Mat", $corners, "Mat", $ids, $board, "Mat", $cameraMatrix, "Mat", $distCoeffs, "Mat", $rvec, "Mat", $tvec, $useExtrinsicGuess)
 
     Return $retval
 EndFunc   ;==>_cveArucoEstimatePoseBoardMat
@@ -2952,96 +3914,144 @@ Func _cveArucoGetBoardObjectAndImagePoints($board, $detectedCorners, $detectedId
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveArucoGetBoardObjectAndImagePoints", $sBoardDllType, $board, $sDetectedCornersDllType, $detectedCorners, $sDetectedIdsDllType, $detectedIds, $sObjPointsDllType, $objPoints, $sImgPointsDllType, $imgPoints), "cveArucoGetBoardObjectAndImagePoints", @error)
 EndFunc   ;==>_cveArucoGetBoardObjectAndImagePoints
 
-Func _cveArucoGetBoardObjectAndImagePointsMat($board, $matDetectedCorners, $matDetectedIds, $matObjPoints, $matImgPoints)
-    ; cveArucoGetBoardObjectAndImagePoints using cv::Mat instead of _*Array
+Func _cveArucoGetBoardObjectAndImagePointsTyped($board, $typeOfDetectedCorners, $detectedCorners, $typeOfDetectedIds, $detectedIds, $typeOfObjPoints, $objPoints, $typeOfImgPoints, $imgPoints)
 
-    Local $iArrDetectedCorners, $vectorOfMatDetectedCorners, $iArrDetectedCornersSize
-    Local $bDetectedCornersIsArray = VarGetType($matDetectedCorners) == "Array"
+    Local $iArrDetectedCorners, $vectorDetectedCorners, $iArrDetectedCornersSize
+    Local $bDetectedCornersIsArray = IsArray($detectedCorners)
+    Local $bDetectedCornersCreate = IsDllStruct($detectedCorners) And $typeOfDetectedCorners == "Scalar"
 
-    If $bDetectedCornersIsArray Then
-        $vectorOfMatDetectedCorners = _VectorOfMatCreate()
+    If $typeOfDetectedCorners == Default Then
+        $iArrDetectedCorners = $detectedCorners
+    ElseIf $bDetectedCornersIsArray Then
+        $vectorDetectedCorners = Call("_VectorOf" & $typeOfDetectedCorners & "Create")
 
-        $iArrDetectedCornersSize = UBound($matDetectedCorners)
+        $iArrDetectedCornersSize = UBound($detectedCorners)
         For $i = 0 To $iArrDetectedCornersSize - 1
-            _VectorOfMatPush($vectorOfMatDetectedCorners, $matDetectedCorners[$i])
+            Call("_VectorOf" & $typeOfDetectedCorners & "Push", $vectorDetectedCorners, $detectedCorners[$i])
         Next
 
-        $iArrDetectedCorners = _cveInputArrayFromVectorOfMat($vectorOfMatDetectedCorners)
+        $iArrDetectedCorners = Call("_cveInputArrayFromVectorOf" & $typeOfDetectedCorners, $vectorDetectedCorners)
     Else
-        $iArrDetectedCorners = _cveInputArrayFromMat($matDetectedCorners)
+        If $bDetectedCornersCreate Then
+            $detectedCorners = Call("_cve" & $typeOfDetectedCorners & "Create", $detectedCorners)
+        EndIf
+        $iArrDetectedCorners = Call("_cveInputArrayFrom" & $typeOfDetectedCorners, $detectedCorners)
     EndIf
 
-    Local $iArrDetectedIds, $vectorOfMatDetectedIds, $iArrDetectedIdsSize
-    Local $bDetectedIdsIsArray = VarGetType($matDetectedIds) == "Array"
+    Local $iArrDetectedIds, $vectorDetectedIds, $iArrDetectedIdsSize
+    Local $bDetectedIdsIsArray = IsArray($detectedIds)
+    Local $bDetectedIdsCreate = IsDllStruct($detectedIds) And $typeOfDetectedIds == "Scalar"
 
-    If $bDetectedIdsIsArray Then
-        $vectorOfMatDetectedIds = _VectorOfMatCreate()
+    If $typeOfDetectedIds == Default Then
+        $iArrDetectedIds = $detectedIds
+    ElseIf $bDetectedIdsIsArray Then
+        $vectorDetectedIds = Call("_VectorOf" & $typeOfDetectedIds & "Create")
 
-        $iArrDetectedIdsSize = UBound($matDetectedIds)
+        $iArrDetectedIdsSize = UBound($detectedIds)
         For $i = 0 To $iArrDetectedIdsSize - 1
-            _VectorOfMatPush($vectorOfMatDetectedIds, $matDetectedIds[$i])
+            Call("_VectorOf" & $typeOfDetectedIds & "Push", $vectorDetectedIds, $detectedIds[$i])
         Next
 
-        $iArrDetectedIds = _cveInputArrayFromVectorOfMat($vectorOfMatDetectedIds)
+        $iArrDetectedIds = Call("_cveInputArrayFromVectorOf" & $typeOfDetectedIds, $vectorDetectedIds)
     Else
-        $iArrDetectedIds = _cveInputArrayFromMat($matDetectedIds)
+        If $bDetectedIdsCreate Then
+            $detectedIds = Call("_cve" & $typeOfDetectedIds & "Create", $detectedIds)
+        EndIf
+        $iArrDetectedIds = Call("_cveInputArrayFrom" & $typeOfDetectedIds, $detectedIds)
     EndIf
 
-    Local $oArrObjPoints, $vectorOfMatObjPoints, $iArrObjPointsSize
-    Local $bObjPointsIsArray = VarGetType($matObjPoints) == "Array"
+    Local $oArrObjPoints, $vectorObjPoints, $iArrObjPointsSize
+    Local $bObjPointsIsArray = IsArray($objPoints)
+    Local $bObjPointsCreate = IsDllStruct($objPoints) And $typeOfObjPoints == "Scalar"
 
-    If $bObjPointsIsArray Then
-        $vectorOfMatObjPoints = _VectorOfMatCreate()
+    If $typeOfObjPoints == Default Then
+        $oArrObjPoints = $objPoints
+    ElseIf $bObjPointsIsArray Then
+        $vectorObjPoints = Call("_VectorOf" & $typeOfObjPoints & "Create")
 
-        $iArrObjPointsSize = UBound($matObjPoints)
+        $iArrObjPointsSize = UBound($objPoints)
         For $i = 0 To $iArrObjPointsSize - 1
-            _VectorOfMatPush($vectorOfMatObjPoints, $matObjPoints[$i])
+            Call("_VectorOf" & $typeOfObjPoints & "Push", $vectorObjPoints, $objPoints[$i])
         Next
 
-        $oArrObjPoints = _cveOutputArrayFromVectorOfMat($vectorOfMatObjPoints)
+        $oArrObjPoints = Call("_cveOutputArrayFromVectorOf" & $typeOfObjPoints, $vectorObjPoints)
     Else
-        $oArrObjPoints = _cveOutputArrayFromMat($matObjPoints)
+        If $bObjPointsCreate Then
+            $objPoints = Call("_cve" & $typeOfObjPoints & "Create", $objPoints)
+        EndIf
+        $oArrObjPoints = Call("_cveOutputArrayFrom" & $typeOfObjPoints, $objPoints)
     EndIf
 
-    Local $oArrImgPoints, $vectorOfMatImgPoints, $iArrImgPointsSize
-    Local $bImgPointsIsArray = VarGetType($matImgPoints) == "Array"
+    Local $oArrImgPoints, $vectorImgPoints, $iArrImgPointsSize
+    Local $bImgPointsIsArray = IsArray($imgPoints)
+    Local $bImgPointsCreate = IsDllStruct($imgPoints) And $typeOfImgPoints == "Scalar"
 
-    If $bImgPointsIsArray Then
-        $vectorOfMatImgPoints = _VectorOfMatCreate()
+    If $typeOfImgPoints == Default Then
+        $oArrImgPoints = $imgPoints
+    ElseIf $bImgPointsIsArray Then
+        $vectorImgPoints = Call("_VectorOf" & $typeOfImgPoints & "Create")
 
-        $iArrImgPointsSize = UBound($matImgPoints)
+        $iArrImgPointsSize = UBound($imgPoints)
         For $i = 0 To $iArrImgPointsSize - 1
-            _VectorOfMatPush($vectorOfMatImgPoints, $matImgPoints[$i])
+            Call("_VectorOf" & $typeOfImgPoints & "Push", $vectorImgPoints, $imgPoints[$i])
         Next
 
-        $oArrImgPoints = _cveOutputArrayFromVectorOfMat($vectorOfMatImgPoints)
+        $oArrImgPoints = Call("_cveOutputArrayFromVectorOf" & $typeOfImgPoints, $vectorImgPoints)
     Else
-        $oArrImgPoints = _cveOutputArrayFromMat($matImgPoints)
+        If $bImgPointsCreate Then
+            $imgPoints = Call("_cve" & $typeOfImgPoints & "Create", $imgPoints)
+        EndIf
+        $oArrImgPoints = Call("_cveOutputArrayFrom" & $typeOfImgPoints, $imgPoints)
     EndIf
 
     _cveArucoGetBoardObjectAndImagePoints($board, $iArrDetectedCorners, $iArrDetectedIds, $oArrObjPoints, $oArrImgPoints)
 
     If $bImgPointsIsArray Then
-        _VectorOfMatRelease($vectorOfMatImgPoints)
+        Call("_VectorOf" & $typeOfImgPoints & "Release", $vectorImgPoints)
     EndIf
 
-    _cveOutputArrayRelease($oArrImgPoints)
+    If $typeOfImgPoints <> Default Then
+        _cveOutputArrayRelease($oArrImgPoints)
+        If $bImgPointsCreate Then
+            Call("_cve" & $typeOfImgPoints & "Release", $imgPoints)
+        EndIf
+    EndIf
 
     If $bObjPointsIsArray Then
-        _VectorOfMatRelease($vectorOfMatObjPoints)
+        Call("_VectorOf" & $typeOfObjPoints & "Release", $vectorObjPoints)
     EndIf
 
-    _cveOutputArrayRelease($oArrObjPoints)
+    If $typeOfObjPoints <> Default Then
+        _cveOutputArrayRelease($oArrObjPoints)
+        If $bObjPointsCreate Then
+            Call("_cve" & $typeOfObjPoints & "Release", $objPoints)
+        EndIf
+    EndIf
 
     If $bDetectedIdsIsArray Then
-        _VectorOfMatRelease($vectorOfMatDetectedIds)
+        Call("_VectorOf" & $typeOfDetectedIds & "Release", $vectorDetectedIds)
     EndIf
 
-    _cveInputArrayRelease($iArrDetectedIds)
+    If $typeOfDetectedIds <> Default Then
+        _cveInputArrayRelease($iArrDetectedIds)
+        If $bDetectedIdsCreate Then
+            Call("_cve" & $typeOfDetectedIds & "Release", $detectedIds)
+        EndIf
+    EndIf
 
     If $bDetectedCornersIsArray Then
-        _VectorOfMatRelease($vectorOfMatDetectedCorners)
+        Call("_VectorOf" & $typeOfDetectedCorners & "Release", $vectorDetectedCorners)
     EndIf
 
-    _cveInputArrayRelease($iArrDetectedCorners)
+    If $typeOfDetectedCorners <> Default Then
+        _cveInputArrayRelease($iArrDetectedCorners)
+        If $bDetectedCornersCreate Then
+            Call("_cve" & $typeOfDetectedCorners & "Release", $detectedCorners)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveArucoGetBoardObjectAndImagePointsTyped
+
+Func _cveArucoGetBoardObjectAndImagePointsMat($board, $detectedCorners, $detectedIds, $objPoints, $imgPoints)
+    ; cveArucoGetBoardObjectAndImagePoints using cv::Mat instead of _*Array
+    _cveArucoGetBoardObjectAndImagePointsTyped($board, "Mat", $detectedCorners, "Mat", $detectedIds, "Mat", $objPoints, "Mat", $imgPoints)
 EndFunc   ;==>_cveArucoGetBoardObjectAndImagePointsMat

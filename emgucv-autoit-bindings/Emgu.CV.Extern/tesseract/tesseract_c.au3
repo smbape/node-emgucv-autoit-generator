@@ -21,7 +21,7 @@ Func _TessBaseAPIInit($ocr, $dataPath, $language, $mode)
         $sOcrDllType = "ptr"
     EndIf
 
-    Local $bDataPathIsString = VarGetType($dataPath) == "String"
+    Local $bDataPathIsString = IsString($dataPath)
     If $bDataPathIsString Then
         $dataPath = _cveStringCreateFromStr($dataPath)
     EndIf
@@ -33,7 +33,7 @@ Func _TessBaseAPIInit($ocr, $dataPath, $language, $mode)
         $sDataPathDllType = "ptr"
     EndIf
 
-    Local $bLanguageIsString = VarGetType($language) == "String"
+    Local $bLanguageIsString = IsString($language)
     If $bLanguageIsString Then
         $language = _cveStringCreateFromStr($language)
     EndIf
@@ -105,32 +105,47 @@ Func _TessBaseAPISetImage($ocr, $mat)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "TessBaseAPISetImage", $sOcrDllType, $ocr, $sMatDllType, $mat), "TessBaseAPISetImage", @error)
 EndFunc   ;==>_TessBaseAPISetImage
 
-Func _TessBaseAPISetImageMat($ocr, $matMat)
-    ; TessBaseAPISetImage using cv::Mat instead of _*Array
+Func _TessBaseAPISetImageTyped($ocr, $typeOfMat, $mat)
 
-    Local $iArrMat, $vectorOfMatMat, $iArrMatSize
-    Local $bMatIsArray = VarGetType($matMat) == "Array"
+    Local $iArrMat, $vectorMat, $iArrMatSize
+    Local $bMatIsArray = IsArray($mat)
+    Local $bMatCreate = IsDllStruct($mat) And $typeOfMat == "Scalar"
 
-    If $bMatIsArray Then
-        $vectorOfMatMat = _VectorOfMatCreate()
+    If $typeOfMat == Default Then
+        $iArrMat = $mat
+    ElseIf $bMatIsArray Then
+        $vectorMat = Call("_VectorOf" & $typeOfMat & "Create")
 
-        $iArrMatSize = UBound($matMat)
+        $iArrMatSize = UBound($mat)
         For $i = 0 To $iArrMatSize - 1
-            _VectorOfMatPush($vectorOfMatMat, $matMat[$i])
+            Call("_VectorOf" & $typeOfMat & "Push", $vectorMat, $mat[$i])
         Next
 
-        $iArrMat = _cveInputArrayFromVectorOfMat($vectorOfMatMat)
+        $iArrMat = Call("_cveInputArrayFromVectorOf" & $typeOfMat, $vectorMat)
     Else
-        $iArrMat = _cveInputArrayFromMat($matMat)
+        If $bMatCreate Then
+            $mat = Call("_cve" & $typeOfMat & "Create", $mat)
+        EndIf
+        $iArrMat = Call("_cveInputArrayFrom" & $typeOfMat, $mat)
     EndIf
 
     _TessBaseAPISetImage($ocr, $iArrMat)
 
     If $bMatIsArray Then
-        _VectorOfMatRelease($vectorOfMatMat)
+        Call("_VectorOf" & $typeOfMat & "Release", $vectorMat)
     EndIf
 
-    _cveInputArrayRelease($iArrMat)
+    If $typeOfMat <> Default Then
+        _cveInputArrayRelease($iArrMat)
+        If $bMatCreate Then
+            Call("_cve" & $typeOfMat & "Release", $mat)
+        EndIf
+    EndIf
+EndFunc   ;==>_TessBaseAPISetImageTyped
+
+Func _TessBaseAPISetImageMat($ocr, $mat)
+    ; TessBaseAPISetImage using cv::Mat instead of _*Array
+    _TessBaseAPISetImageTyped($ocr, "Mat", $mat)
 EndFunc   ;==>_TessBaseAPISetImageMat
 
 Func _TessBaseAPISetImagePix($ocr, $pix)
@@ -164,7 +179,7 @@ Func _TessBaseAPIGetUTF8Text($ocr, $vectorOfByte)
     EndIf
 
     Local $vecVectorOfByte, $iArrVectorOfByteSize
-    Local $bVectorOfByteIsArray = VarGetType($vectorOfByte) == "Array"
+    Local $bVectorOfByteIsArray = IsArray($vectorOfByte)
 
     If $bVectorOfByteIsArray Then
         $vecVectorOfByte = _VectorOfByteCreate()
@@ -202,7 +217,7 @@ Func _TessBaseAPIGetHOCRText($ocr, $pageNumber, $vectorOfByte)
     EndIf
 
     Local $vecVectorOfByte, $iArrVectorOfByteSize
-    Local $bVectorOfByteIsArray = VarGetType($vectorOfByte) == "Array"
+    Local $bVectorOfByteIsArray = IsArray($vectorOfByte)
 
     If $bVectorOfByteIsArray Then
         $vecVectorOfByte = _VectorOfByteCreate()
@@ -240,7 +255,7 @@ Func _TessBaseAPIGetTSVText($ocr, $pageNumber, $vectorOfByte)
     EndIf
 
     Local $vecVectorOfByte, $iArrVectorOfByteSize
-    Local $bVectorOfByteIsArray = VarGetType($vectorOfByte) == "Array"
+    Local $bVectorOfByteIsArray = IsArray($vectorOfByte)
 
     If $bVectorOfByteIsArray Then
         $vecVectorOfByte = _VectorOfByteCreate()
@@ -278,7 +293,7 @@ Func _TessBaseAPIGetBoxText($ocr, $pageNumber, $vectorOfByte)
     EndIf
 
     Local $vecVectorOfByte, $iArrVectorOfByteSize
-    Local $bVectorOfByteIsArray = VarGetType($vectorOfByte) == "Array"
+    Local $bVectorOfByteIsArray = IsArray($vectorOfByte)
 
     If $bVectorOfByteIsArray Then
         $vecVectorOfByte = _VectorOfByteCreate()
@@ -316,7 +331,7 @@ Func _TessBaseAPIGetUNLVText($ocr, $vectorOfByte)
     EndIf
 
     Local $vecVectorOfByte, $iArrVectorOfByteSize
-    Local $bVectorOfByteIsArray = VarGetType($vectorOfByte) == "Array"
+    Local $bVectorOfByteIsArray = IsArray($vectorOfByte)
 
     If $bVectorOfByteIsArray Then
         $vecVectorOfByte = _VectorOfByteCreate()
@@ -354,7 +369,7 @@ Func _TessBaseAPIGetOsdText($ocr, $pageNumber, $vectorOfByte)
     EndIf
 
     Local $vecVectorOfByte, $iArrVectorOfByteSize
-    Local $bVectorOfByteIsArray = VarGetType($vectorOfByte) == "Array"
+    Local $bVectorOfByteIsArray = IsArray($vectorOfByte)
 
     If $bVectorOfByteIsArray Then
         $vecVectorOfByte = _VectorOfByteCreate()
@@ -392,7 +407,7 @@ Func _TessBaseAPIExtractResult($ocr, $charSeq, $resultSeq)
     EndIf
 
     Local $vecCharSeq, $iArrCharSeqSize
-    Local $bCharSeqIsArray = VarGetType($charSeq) == "Array"
+    Local $bCharSeqIsArray = IsArray($charSeq)
 
     If $bCharSeqIsArray Then
         $vecCharSeq = _VectorOfByteCreate()
@@ -413,7 +428,7 @@ Func _TessBaseAPIExtractResult($ocr, $charSeq, $resultSeq)
     EndIf
 
     Local $vecResultSeq, $iArrResultSeqSize
-    Local $bResultSeqIsArray = VarGetType($resultSeq) == "Array"
+    Local $bResultSeqIsArray = IsArray($resultSeq)
 
     If $bResultSeqIsArray Then
         $vecResultSeq = _VectorOfTesseractResultCreate()
@@ -461,7 +476,7 @@ Func _TessBaseAPIProcessPage($ocr, $pix, $pageIndex, $filename, $retryConfig, $t
         $sPixDllType = "ptr"
     EndIf
 
-    Local $bFilenameIsString = VarGetType($filename) == "String"
+    Local $bFilenameIsString = IsString($filename)
     If $bFilenameIsString Then
         $filename = _cveStringCreateFromStr($filename)
     EndIf
@@ -473,7 +488,7 @@ Func _TessBaseAPIProcessPage($ocr, $pix, $pageIndex, $filename, $retryConfig, $t
         $sFilenameDllType = "ptr"
     EndIf
 
-    Local $bRetryConfigIsString = VarGetType($retryConfig) == "String"
+    Local $bRetryConfigIsString = IsString($retryConfig)
     If $bRetryConfigIsString Then
         $retryConfig = _cveStringCreateFromStr($retryConfig)
     EndIf
@@ -723,7 +738,7 @@ EndFunc   ;==>_TessBaseAPIGetOem
 Func _TessPDFRendererCreate($outputbase, $datadir, $textonly, $resultRenderer)
     ; CVAPI(tesseract::TessPDFRenderer*) TessPDFRendererCreate(cv::String* outputbase, cv::String* datadir, bool textonly, tesseract::TessResultRenderer** resultRenderer);
 
-    Local $bOutputbaseIsString = VarGetType($outputbase) == "String"
+    Local $bOutputbaseIsString = IsString($outputbase)
     If $bOutputbaseIsString Then
         $outputbase = _cveStringCreateFromStr($outputbase)
     EndIf
@@ -735,7 +750,7 @@ Func _TessPDFRendererCreate($outputbase, $datadir, $textonly, $resultRenderer)
         $sOutputbaseDllType = "ptr"
     EndIf
 
-    Local $bDatadirIsString = VarGetType($datadir) == "String"
+    Local $bDatadirIsString = IsString($datadir)
     If $bDatadirIsString Then
         $datadir = _cveStringCreateFromStr($datadir)
     EndIf

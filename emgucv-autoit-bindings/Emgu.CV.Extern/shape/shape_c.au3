@@ -173,7 +173,7 @@ Func _cveShapeTransformerEstimateTransformation($transformer, $transformingShape
     EndIf
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfDMatchCreate()
@@ -200,54 +200,80 @@ Func _cveShapeTransformerEstimateTransformation($transformer, $transformingShape
     EndIf
 EndFunc   ;==>_cveShapeTransformerEstimateTransformation
 
-Func _cveShapeTransformerEstimateTransformationMat($transformer, $matTransformingShape, $matTargetShape, $matches)
-    ; cveShapeTransformerEstimateTransformation using cv::Mat instead of _*Array
+Func _cveShapeTransformerEstimateTransformationTyped($transformer, $typeOfTransformingShape, $transformingShape, $typeOfTargetShape, $targetShape, $matches)
 
-    Local $iArrTransformingShape, $vectorOfMatTransformingShape, $iArrTransformingShapeSize
-    Local $bTransformingShapeIsArray = VarGetType($matTransformingShape) == "Array"
+    Local $iArrTransformingShape, $vectorTransformingShape, $iArrTransformingShapeSize
+    Local $bTransformingShapeIsArray = IsArray($transformingShape)
+    Local $bTransformingShapeCreate = IsDllStruct($transformingShape) And $typeOfTransformingShape == "Scalar"
 
-    If $bTransformingShapeIsArray Then
-        $vectorOfMatTransformingShape = _VectorOfMatCreate()
+    If $typeOfTransformingShape == Default Then
+        $iArrTransformingShape = $transformingShape
+    ElseIf $bTransformingShapeIsArray Then
+        $vectorTransformingShape = Call("_VectorOf" & $typeOfTransformingShape & "Create")
 
-        $iArrTransformingShapeSize = UBound($matTransformingShape)
+        $iArrTransformingShapeSize = UBound($transformingShape)
         For $i = 0 To $iArrTransformingShapeSize - 1
-            _VectorOfMatPush($vectorOfMatTransformingShape, $matTransformingShape[$i])
+            Call("_VectorOf" & $typeOfTransformingShape & "Push", $vectorTransformingShape, $transformingShape[$i])
         Next
 
-        $iArrTransformingShape = _cveInputArrayFromVectorOfMat($vectorOfMatTransformingShape)
+        $iArrTransformingShape = Call("_cveInputArrayFromVectorOf" & $typeOfTransformingShape, $vectorTransformingShape)
     Else
-        $iArrTransformingShape = _cveInputArrayFromMat($matTransformingShape)
+        If $bTransformingShapeCreate Then
+            $transformingShape = Call("_cve" & $typeOfTransformingShape & "Create", $transformingShape)
+        EndIf
+        $iArrTransformingShape = Call("_cveInputArrayFrom" & $typeOfTransformingShape, $transformingShape)
     EndIf
 
-    Local $iArrTargetShape, $vectorOfMatTargetShape, $iArrTargetShapeSize
-    Local $bTargetShapeIsArray = VarGetType($matTargetShape) == "Array"
+    Local $iArrTargetShape, $vectorTargetShape, $iArrTargetShapeSize
+    Local $bTargetShapeIsArray = IsArray($targetShape)
+    Local $bTargetShapeCreate = IsDllStruct($targetShape) And $typeOfTargetShape == "Scalar"
 
-    If $bTargetShapeIsArray Then
-        $vectorOfMatTargetShape = _VectorOfMatCreate()
+    If $typeOfTargetShape == Default Then
+        $iArrTargetShape = $targetShape
+    ElseIf $bTargetShapeIsArray Then
+        $vectorTargetShape = Call("_VectorOf" & $typeOfTargetShape & "Create")
 
-        $iArrTargetShapeSize = UBound($matTargetShape)
+        $iArrTargetShapeSize = UBound($targetShape)
         For $i = 0 To $iArrTargetShapeSize - 1
-            _VectorOfMatPush($vectorOfMatTargetShape, $matTargetShape[$i])
+            Call("_VectorOf" & $typeOfTargetShape & "Push", $vectorTargetShape, $targetShape[$i])
         Next
 
-        $iArrTargetShape = _cveInputArrayFromVectorOfMat($vectorOfMatTargetShape)
+        $iArrTargetShape = Call("_cveInputArrayFromVectorOf" & $typeOfTargetShape, $vectorTargetShape)
     Else
-        $iArrTargetShape = _cveInputArrayFromMat($matTargetShape)
+        If $bTargetShapeCreate Then
+            $targetShape = Call("_cve" & $typeOfTargetShape & "Create", $targetShape)
+        EndIf
+        $iArrTargetShape = Call("_cveInputArrayFrom" & $typeOfTargetShape, $targetShape)
     EndIf
 
     _cveShapeTransformerEstimateTransformation($transformer, $iArrTransformingShape, $iArrTargetShape, $matches)
 
     If $bTargetShapeIsArray Then
-        _VectorOfMatRelease($vectorOfMatTargetShape)
+        Call("_VectorOf" & $typeOfTargetShape & "Release", $vectorTargetShape)
     EndIf
 
-    _cveInputArrayRelease($iArrTargetShape)
+    If $typeOfTargetShape <> Default Then
+        _cveInputArrayRelease($iArrTargetShape)
+        If $bTargetShapeCreate Then
+            Call("_cve" & $typeOfTargetShape & "Release", $targetShape)
+        EndIf
+    EndIf
 
     If $bTransformingShapeIsArray Then
-        _VectorOfMatRelease($vectorOfMatTransformingShape)
+        Call("_VectorOf" & $typeOfTransformingShape & "Release", $vectorTransformingShape)
     EndIf
 
-    _cveInputArrayRelease($iArrTransformingShape)
+    If $typeOfTransformingShape <> Default Then
+        _cveInputArrayRelease($iArrTransformingShape)
+        If $bTransformingShapeCreate Then
+            Call("_cve" & $typeOfTransformingShape & "Release", $transformingShape)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveShapeTransformerEstimateTransformationTyped
+
+Func _cveShapeTransformerEstimateTransformationMat($transformer, $transformingShape, $targetShape, $matches)
+    ; cveShapeTransformerEstimateTransformation using cv::Mat instead of _*Array
+    _cveShapeTransformerEstimateTransformationTyped($transformer, "Mat", $transformingShape, "Mat", $targetShape, $matches)
 EndFunc   ;==>_cveShapeTransformerEstimateTransformationMat
 
 Func _cveShapeTransformerApplyTransformation($transformer, $input, $output)
@@ -276,54 +302,82 @@ Func _cveShapeTransformerApplyTransformation($transformer, $input, $output)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveShapeTransformerApplyTransformation", $sTransformerDllType, $transformer, $sInputDllType, $input, $sOutputDllType, $output), "cveShapeTransformerApplyTransformation", @error)
 EndFunc   ;==>_cveShapeTransformerApplyTransformation
 
-Func _cveShapeTransformerApplyTransformationMat($transformer, $matInput, $matOutput)
-    ; cveShapeTransformerApplyTransformation using cv::Mat instead of _*Array
+Func _cveShapeTransformerApplyTransformationTyped($transformer, $typeOfInput, $input, $typeOfOutput, $output)
 
-    Local $iArrInput, $vectorOfMatInput, $iArrInputSize
-    Local $bInputIsArray = VarGetType($matInput) == "Array"
+    Local $iArrInput, $vectorInput, $iArrInputSize
+    Local $bInputIsArray = IsArray($input)
+    Local $bInputCreate = IsDllStruct($input) And $typeOfInput == "Scalar"
 
-    If $bInputIsArray Then
-        $vectorOfMatInput = _VectorOfMatCreate()
+    If $typeOfInput == Default Then
+        $iArrInput = $input
+    ElseIf $bInputIsArray Then
+        $vectorInput = Call("_VectorOf" & $typeOfInput & "Create")
 
-        $iArrInputSize = UBound($matInput)
+        $iArrInputSize = UBound($input)
         For $i = 0 To $iArrInputSize - 1
-            _VectorOfMatPush($vectorOfMatInput, $matInput[$i])
+            Call("_VectorOf" & $typeOfInput & "Push", $vectorInput, $input[$i])
         Next
 
-        $iArrInput = _cveInputArrayFromVectorOfMat($vectorOfMatInput)
+        $iArrInput = Call("_cveInputArrayFromVectorOf" & $typeOfInput, $vectorInput)
     Else
-        $iArrInput = _cveInputArrayFromMat($matInput)
+        If $bInputCreate Then
+            $input = Call("_cve" & $typeOfInput & "Create", $input)
+        EndIf
+        $iArrInput = Call("_cveInputArrayFrom" & $typeOfInput, $input)
     EndIf
 
-    Local $oArrOutput, $vectorOfMatOutput, $iArrOutputSize
-    Local $bOutputIsArray = VarGetType($matOutput) == "Array"
+    Local $oArrOutput, $vectorOutput, $iArrOutputSize
+    Local $bOutputIsArray = IsArray($output)
+    Local $bOutputCreate = IsDllStruct($output) And $typeOfOutput == "Scalar"
 
-    If $bOutputIsArray Then
-        $vectorOfMatOutput = _VectorOfMatCreate()
+    If $typeOfOutput == Default Then
+        $oArrOutput = $output
+    ElseIf $bOutputIsArray Then
+        $vectorOutput = Call("_VectorOf" & $typeOfOutput & "Create")
 
-        $iArrOutputSize = UBound($matOutput)
+        $iArrOutputSize = UBound($output)
         For $i = 0 To $iArrOutputSize - 1
-            _VectorOfMatPush($vectorOfMatOutput, $matOutput[$i])
+            Call("_VectorOf" & $typeOfOutput & "Push", $vectorOutput, $output[$i])
         Next
 
-        $oArrOutput = _cveOutputArrayFromVectorOfMat($vectorOfMatOutput)
+        $oArrOutput = Call("_cveOutputArrayFromVectorOf" & $typeOfOutput, $vectorOutput)
     Else
-        $oArrOutput = _cveOutputArrayFromMat($matOutput)
+        If $bOutputCreate Then
+            $output = Call("_cve" & $typeOfOutput & "Create", $output)
+        EndIf
+        $oArrOutput = Call("_cveOutputArrayFrom" & $typeOfOutput, $output)
     EndIf
 
     Local $retval = _cveShapeTransformerApplyTransformation($transformer, $iArrInput, $oArrOutput)
 
     If $bOutputIsArray Then
-        _VectorOfMatRelease($vectorOfMatOutput)
+        Call("_VectorOf" & $typeOfOutput & "Release", $vectorOutput)
     EndIf
 
-    _cveOutputArrayRelease($oArrOutput)
+    If $typeOfOutput <> Default Then
+        _cveOutputArrayRelease($oArrOutput)
+        If $bOutputCreate Then
+            Call("_cve" & $typeOfOutput & "Release", $output)
+        EndIf
+    EndIf
 
     If $bInputIsArray Then
-        _VectorOfMatRelease($vectorOfMatInput)
+        Call("_VectorOf" & $typeOfInput & "Release", $vectorInput)
     EndIf
 
-    _cveInputArrayRelease($iArrInput)
+    If $typeOfInput <> Default Then
+        _cveInputArrayRelease($iArrInput)
+        If $bInputCreate Then
+            Call("_cve" & $typeOfInput & "Release", $input)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveShapeTransformerApplyTransformationTyped
+
+Func _cveShapeTransformerApplyTransformationMat($transformer, $input, $output)
+    ; cveShapeTransformerApplyTransformation using cv::Mat instead of _*Array
+    Local $retval = _cveShapeTransformerApplyTransformationTyped($transformer, "Mat", $input, "Mat", $output)
 
     Return $retval
 EndFunc   ;==>_cveShapeTransformerApplyTransformationMat
@@ -362,54 +416,80 @@ Func _cveShapeTransformerWarpImage($transformer, $transformingImage, $output, $f
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveShapeTransformerWarpImage", $sTransformerDllType, $transformer, $sTransformingImageDllType, $transformingImage, $sOutputDllType, $output, "int", $flags, "int", $borderMode, $sBorderValueDllType, $borderValue), "cveShapeTransformerWarpImage", @error)
 EndFunc   ;==>_cveShapeTransformerWarpImage
 
-Func _cveShapeTransformerWarpImageMat($transformer, $matTransformingImage, $matOutput, $flags, $borderMode, $borderValue)
-    ; cveShapeTransformerWarpImage using cv::Mat instead of _*Array
+Func _cveShapeTransformerWarpImageTyped($transformer, $typeOfTransformingImage, $transformingImage, $typeOfOutput, $output, $flags, $borderMode, $borderValue)
 
-    Local $iArrTransformingImage, $vectorOfMatTransformingImage, $iArrTransformingImageSize
-    Local $bTransformingImageIsArray = VarGetType($matTransformingImage) == "Array"
+    Local $iArrTransformingImage, $vectorTransformingImage, $iArrTransformingImageSize
+    Local $bTransformingImageIsArray = IsArray($transformingImage)
+    Local $bTransformingImageCreate = IsDllStruct($transformingImage) And $typeOfTransformingImage == "Scalar"
 
-    If $bTransformingImageIsArray Then
-        $vectorOfMatTransformingImage = _VectorOfMatCreate()
+    If $typeOfTransformingImage == Default Then
+        $iArrTransformingImage = $transformingImage
+    ElseIf $bTransformingImageIsArray Then
+        $vectorTransformingImage = Call("_VectorOf" & $typeOfTransformingImage & "Create")
 
-        $iArrTransformingImageSize = UBound($matTransformingImage)
+        $iArrTransformingImageSize = UBound($transformingImage)
         For $i = 0 To $iArrTransformingImageSize - 1
-            _VectorOfMatPush($vectorOfMatTransformingImage, $matTransformingImage[$i])
+            Call("_VectorOf" & $typeOfTransformingImage & "Push", $vectorTransformingImage, $transformingImage[$i])
         Next
 
-        $iArrTransformingImage = _cveInputArrayFromVectorOfMat($vectorOfMatTransformingImage)
+        $iArrTransformingImage = Call("_cveInputArrayFromVectorOf" & $typeOfTransformingImage, $vectorTransformingImage)
     Else
-        $iArrTransformingImage = _cveInputArrayFromMat($matTransformingImage)
+        If $bTransformingImageCreate Then
+            $transformingImage = Call("_cve" & $typeOfTransformingImage & "Create", $transformingImage)
+        EndIf
+        $iArrTransformingImage = Call("_cveInputArrayFrom" & $typeOfTransformingImage, $transformingImage)
     EndIf
 
-    Local $oArrOutput, $vectorOfMatOutput, $iArrOutputSize
-    Local $bOutputIsArray = VarGetType($matOutput) == "Array"
+    Local $oArrOutput, $vectorOutput, $iArrOutputSize
+    Local $bOutputIsArray = IsArray($output)
+    Local $bOutputCreate = IsDllStruct($output) And $typeOfOutput == "Scalar"
 
-    If $bOutputIsArray Then
-        $vectorOfMatOutput = _VectorOfMatCreate()
+    If $typeOfOutput == Default Then
+        $oArrOutput = $output
+    ElseIf $bOutputIsArray Then
+        $vectorOutput = Call("_VectorOf" & $typeOfOutput & "Create")
 
-        $iArrOutputSize = UBound($matOutput)
+        $iArrOutputSize = UBound($output)
         For $i = 0 To $iArrOutputSize - 1
-            _VectorOfMatPush($vectorOfMatOutput, $matOutput[$i])
+            Call("_VectorOf" & $typeOfOutput & "Push", $vectorOutput, $output[$i])
         Next
 
-        $oArrOutput = _cveOutputArrayFromVectorOfMat($vectorOfMatOutput)
+        $oArrOutput = Call("_cveOutputArrayFromVectorOf" & $typeOfOutput, $vectorOutput)
     Else
-        $oArrOutput = _cveOutputArrayFromMat($matOutput)
+        If $bOutputCreate Then
+            $output = Call("_cve" & $typeOfOutput & "Create", $output)
+        EndIf
+        $oArrOutput = Call("_cveOutputArrayFrom" & $typeOfOutput, $output)
     EndIf
 
     _cveShapeTransformerWarpImage($transformer, $iArrTransformingImage, $oArrOutput, $flags, $borderMode, $borderValue)
 
     If $bOutputIsArray Then
-        _VectorOfMatRelease($vectorOfMatOutput)
+        Call("_VectorOf" & $typeOfOutput & "Release", $vectorOutput)
     EndIf
 
-    _cveOutputArrayRelease($oArrOutput)
+    If $typeOfOutput <> Default Then
+        _cveOutputArrayRelease($oArrOutput)
+        If $bOutputCreate Then
+            Call("_cve" & $typeOfOutput & "Release", $output)
+        EndIf
+    EndIf
 
     If $bTransformingImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatTransformingImage)
+        Call("_VectorOf" & $typeOfTransformingImage & "Release", $vectorTransformingImage)
     EndIf
 
-    _cveInputArrayRelease($iArrTransformingImage)
+    If $typeOfTransformingImage <> Default Then
+        _cveInputArrayRelease($iArrTransformingImage)
+        If $bTransformingImageCreate Then
+            Call("_cve" & $typeOfTransformingImage & "Release", $transformingImage)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveShapeTransformerWarpImageTyped
+
+Func _cveShapeTransformerWarpImageMat($transformer, $transformingImage, $output, $flags, $borderMode, $borderValue)
+    ; cveShapeTransformerWarpImage using cv::Mat instead of _*Array
+    _cveShapeTransformerWarpImageTyped($transformer, "Mat", $transformingImage, "Mat", $output, $flags, $borderMode, $borderValue)
 EndFunc   ;==>_cveShapeTransformerWarpImageMat
 
 Func _cveShapeDistanceExtractorComputeDistance($extractor, $contour1, $contour2)
@@ -438,54 +518,82 @@ Func _cveShapeDistanceExtractorComputeDistance($extractor, $contour1, $contour2)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveShapeDistanceExtractorComputeDistance", $sExtractorDllType, $extractor, $sContour1DllType, $contour1, $sContour2DllType, $contour2), "cveShapeDistanceExtractorComputeDistance", @error)
 EndFunc   ;==>_cveShapeDistanceExtractorComputeDistance
 
-Func _cveShapeDistanceExtractorComputeDistanceMat($extractor, $matContour1, $matContour2)
-    ; cveShapeDistanceExtractorComputeDistance using cv::Mat instead of _*Array
+Func _cveShapeDistanceExtractorComputeDistanceTyped($extractor, $typeOfContour1, $contour1, $typeOfContour2, $contour2)
 
-    Local $iArrContour1, $vectorOfMatContour1, $iArrContour1Size
-    Local $bContour1IsArray = VarGetType($matContour1) == "Array"
+    Local $iArrContour1, $vectorContour1, $iArrContour1Size
+    Local $bContour1IsArray = IsArray($contour1)
+    Local $bContour1Create = IsDllStruct($contour1) And $typeOfContour1 == "Scalar"
 
-    If $bContour1IsArray Then
-        $vectorOfMatContour1 = _VectorOfMatCreate()
+    If $typeOfContour1 == Default Then
+        $iArrContour1 = $contour1
+    ElseIf $bContour1IsArray Then
+        $vectorContour1 = Call("_VectorOf" & $typeOfContour1 & "Create")
 
-        $iArrContour1Size = UBound($matContour1)
+        $iArrContour1Size = UBound($contour1)
         For $i = 0 To $iArrContour1Size - 1
-            _VectorOfMatPush($vectorOfMatContour1, $matContour1[$i])
+            Call("_VectorOf" & $typeOfContour1 & "Push", $vectorContour1, $contour1[$i])
         Next
 
-        $iArrContour1 = _cveInputArrayFromVectorOfMat($vectorOfMatContour1)
+        $iArrContour1 = Call("_cveInputArrayFromVectorOf" & $typeOfContour1, $vectorContour1)
     Else
-        $iArrContour1 = _cveInputArrayFromMat($matContour1)
+        If $bContour1Create Then
+            $contour1 = Call("_cve" & $typeOfContour1 & "Create", $contour1)
+        EndIf
+        $iArrContour1 = Call("_cveInputArrayFrom" & $typeOfContour1, $contour1)
     EndIf
 
-    Local $iArrContour2, $vectorOfMatContour2, $iArrContour2Size
-    Local $bContour2IsArray = VarGetType($matContour2) == "Array"
+    Local $iArrContour2, $vectorContour2, $iArrContour2Size
+    Local $bContour2IsArray = IsArray($contour2)
+    Local $bContour2Create = IsDllStruct($contour2) And $typeOfContour2 == "Scalar"
 
-    If $bContour2IsArray Then
-        $vectorOfMatContour2 = _VectorOfMatCreate()
+    If $typeOfContour2 == Default Then
+        $iArrContour2 = $contour2
+    ElseIf $bContour2IsArray Then
+        $vectorContour2 = Call("_VectorOf" & $typeOfContour2 & "Create")
 
-        $iArrContour2Size = UBound($matContour2)
+        $iArrContour2Size = UBound($contour2)
         For $i = 0 To $iArrContour2Size - 1
-            _VectorOfMatPush($vectorOfMatContour2, $matContour2[$i])
+            Call("_VectorOf" & $typeOfContour2 & "Push", $vectorContour2, $contour2[$i])
         Next
 
-        $iArrContour2 = _cveInputArrayFromVectorOfMat($vectorOfMatContour2)
+        $iArrContour2 = Call("_cveInputArrayFromVectorOf" & $typeOfContour2, $vectorContour2)
     Else
-        $iArrContour2 = _cveInputArrayFromMat($matContour2)
+        If $bContour2Create Then
+            $contour2 = Call("_cve" & $typeOfContour2 & "Create", $contour2)
+        EndIf
+        $iArrContour2 = Call("_cveInputArrayFrom" & $typeOfContour2, $contour2)
     EndIf
 
     Local $retval = _cveShapeDistanceExtractorComputeDistance($extractor, $iArrContour1, $iArrContour2)
 
     If $bContour2IsArray Then
-        _VectorOfMatRelease($vectorOfMatContour2)
+        Call("_VectorOf" & $typeOfContour2 & "Release", $vectorContour2)
     EndIf
 
-    _cveInputArrayRelease($iArrContour2)
+    If $typeOfContour2 <> Default Then
+        _cveInputArrayRelease($iArrContour2)
+        If $bContour2Create Then
+            Call("_cve" & $typeOfContour2 & "Release", $contour2)
+        EndIf
+    EndIf
 
     If $bContour1IsArray Then
-        _VectorOfMatRelease($vectorOfMatContour1)
+        Call("_VectorOf" & $typeOfContour1 & "Release", $vectorContour1)
     EndIf
 
-    _cveInputArrayRelease($iArrContour1)
+    If $typeOfContour1 <> Default Then
+        _cveInputArrayRelease($iArrContour1)
+        If $bContour1Create Then
+            Call("_cve" & $typeOfContour1 & "Release", $contour1)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveShapeDistanceExtractorComputeDistanceTyped
+
+Func _cveShapeDistanceExtractorComputeDistanceMat($extractor, $contour1, $contour2)
+    ; cveShapeDistanceExtractorComputeDistance using cv::Mat instead of _*Array
+    Local $retval = _cveShapeDistanceExtractorComputeDistanceTyped($extractor, "Mat", $contour1, "Mat", $contour2)
 
     Return $retval
 EndFunc   ;==>_cveShapeDistanceExtractorComputeDistanceMat

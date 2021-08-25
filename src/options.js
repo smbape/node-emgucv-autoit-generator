@@ -35,7 +35,7 @@ const DECLARATION_MAP = {
 
         declarations.push(""); // new line
         declarations.push(...`
-            Local $b${ capitalCasedName }IsString = VarGetType(${ autoItArgName }) == "String"
+            Local $b${ capitalCasedName }IsString = IsString(${ autoItArgName })
             If $b${ capitalCasedName }IsString Then
                 ${ autoItArgName } = _cveStringCreateFromStr(${ autoItArgName })
             EndIf
@@ -67,7 +67,7 @@ const DECLARATION_MAP = {
         declarations.push(""); // new line
         declarations.push(...`
             Local ${ vector }, ${ size }
-            Local $b${ capitalCasedName }IsArray = VarGetType(${ autoItArgName }) == "Array"
+            Local $b${ capitalCasedName }IsArray = IsArray(${ autoItArgName })
 
             If $b${ capitalCasedName }IsArray Then
                 ${ vector } = _${ method }Create()
@@ -194,14 +194,22 @@ module.exports = {
 
     fnwrap(func, fnname, entry, options) {
         const [returnType, , args] = entry;
-        const autoItArgs = [];
-        const funcArgs = [];
-        const declarations = [];
-        const destructors = [];
         const {isbyref} = options;
+
+        const overridedFuncArgs = [];
+
+        const matAutoItArgs = [];
+        const matFuncArgs = [];
+
+        const typedAutoItArgs = [];
+        const typedDeclarations = [];
+        const typedDestructors = [];
 
         for (const arg of args) {
             const [argType, argName, defaultValue, , canDefault] = arg;
+
+            const autoItArgName = `$${ argName }`;
+            matAutoItArgs.push(autoItArgName);
 
             let byRef = arg[3];
             if (byRef === undefined) {
@@ -211,23 +219,23 @@ module.exports = {
             const match = /cv::_(Input|Output|InputOutput)Array\*/.exec(argType);
 
             if (match === null) {
-                const autoItArgName = `$${ argName }`;
-                // const isString = /^const char\*$/.test(argType);
+                matFuncArgs.push(autoItArgName);
+                overridedFuncArgs.push(autoItArgName);
+                typedAutoItArgs.push(autoItArgName);
 
                 if (canDefault !== false && defaultValue !== undefined) {
-                    autoItArgs.push(`${ autoItArgName } = ${ defaultValue === "_cveNoArray()" ? "_cveNoArrayMat()" : defaultValue }`);
-                } else {
-                    autoItArgs.push(autoItArgName);
+                    matAutoItArgs[matAutoItArgs.length - 1] += ` = ${ defaultValue === "_cveNoArray()" ? "_cveNoArrayMat()" : defaultValue }`;
+                    typedAutoItArgs[typedAutoItArgs.length - 1] += ` = ${ defaultValue }`;
                 }
 
-                funcArgs.push(autoItArgName);
                 continue;
             }
 
             const capitalCasedName = argName[0].toUpperCase() + argName.slice(1);
+
             const arrType = match[1];
-            const autoItArgName = `$mat${ capitalCasedName }`;
-            const vector = `$vectorOfMat${ capitalCasedName }`;
+            const type = `$typeOf${ capitalCasedName }`;
+            const vector = `$vector${ capitalCasedName }`;
             const size = `$iArr${ capitalCasedName }Size`;
 
             const ARRAY_PREFIXES = {
@@ -236,65 +244,92 @@ module.exports = {
                 InputOutput: "ioArr",
             };
 
-            const arrArgName = `$${ ARRAY_PREFIXES[arrType] }${ capitalCasedName }`;
+            const overridedArg = `$${ ARRAY_PREFIXES[arrType] }${ capitalCasedName }`;
+
+            typedAutoItArgs.push(type);
+            typedAutoItArgs.push(autoItArgName);
 
             if (canDefault !== false && defaultValue === "_cveNoArray()") {
-                autoItArgs.push(`${ autoItArgName } = _cveNoArrayMat()`);
-            } else {
-                autoItArgs.push(autoItArgName);
+                matAutoItArgs[matAutoItArgs.length - 1] += ` = ${ defaultValue === "_cveNoArray()" ? "_cveNoArrayMat()" : defaultValue }`;
+                typedAutoItArgs[typedAutoItArgs.length - 2] += " = Default";
+                typedAutoItArgs[typedAutoItArgs.length - 1] += ` = ${ defaultValue }`;
             }
 
-            funcArgs.push(arrArgName);
+            matFuncArgs.push("\"Mat\"");
+            matFuncArgs.push(autoItArgName);
 
-            declarations.push(""); // new line
-            declarations.push(...`
-                Local ${ arrArgName }, ${ vector }, ${ size }
-                Local $b${ capitalCasedName }IsArray = VarGetType(${ autoItArgName }) == "Array"
+            overridedFuncArgs.push(overridedArg);
 
-                If $b${ capitalCasedName }IsArray Then
-                    ${ vector } = _VectorOfMatCreate()
+            typedDeclarations.push(""); // new line
+            typedDeclarations.push(...`
+                Local ${ overridedArg }, ${ vector }, ${ size }
+                Local $b${ capitalCasedName }IsArray = IsArray(${ autoItArgName })
+                Local $b${ capitalCasedName }Create = IsDllStruct(${ autoItArgName }) And ${ type } == "Scalar"
+
+                If ${ type } == Default Then
+                    ${ overridedArg } = ${ autoItArgName }
+                ElseIf $b${ capitalCasedName }IsArray Then
+                    ${ vector } = Call("_VectorOf" & ${ type } & "Create")
 
                     ${ size } = UBound(${ autoItArgName })
                     For $i = 0 To ${ size } - 1
-                        _VectorOfMatPush(${ vector }, ${ autoItArgName }[$i])
+                        Call("_VectorOf" & ${ type } & "Push", ${ vector }, ${ autoItArgName }[$i])
                     Next
 
-                    ${ arrArgName } = _cve${ arrType }ArrayFromVectorOfMat(${ vector })
+                    ${ overridedArg } = Call("_cve${ arrType }ArrayFromVectorOf" & ${ type }, ${ vector })
                 Else
-                    ${ arrArgName } = _cve${ arrType }ArrayFromMat(${ autoItArgName })
+                    If $b${ capitalCasedName }Create Then
+                        ${ autoItArgName } = Call("_cve" & ${ type } & "Create", ${ autoItArgName })
+                    EndIf
+                    ${ overridedArg } = Call("_cve${ arrType }ArrayFrom" & ${ type }, ${ autoItArgName })
                 EndIf
             `.replace(/^ {16}/mg, "").trim().split("\n"));
 
-            destructors.unshift(...`
+            typedDestructors.unshift(...`
                 If $b${ capitalCasedName }IsArray Then
-                    _VectorOfMatRelease(${ vector })
+                    Call("_VectorOf" & ${ type } & "Release", ${ vector })
                 EndIf
 
-                _cve${ arrType }ArrayRelease(${ arrArgName })
+                If ${ type } <> Default Then
+                    _cve${ arrType }ArrayRelease(${ overridedArg })
+                    If $b${ capitalCasedName }Create Then
+                        Call("_cve" & ${ type } & "Release", ${ autoItArgName })
+                    EndIf
+                EndIf
             `.replace(/^ {16}/mg, "").trim().split("\n"));
-            destructors.unshift(""); // new line
+            typedDestructors.unshift(""); // new line
         }
 
-        if (declarations.length === 0) {
+        if (typedDeclarations.length === 0) {
             return func;
         }
 
         const indent = " ".repeat(16);
         const retval = returnType === "void" ? "" : "Local $retval = ";
         const ret = returnType === "void" ? "" : `\n\n${ indent }Return $retval`;
-        const body = [];
-        body.push(`; ${ fnname } using cv::Mat instead of _*Array`);
-        body.push(...declarations);
-        body.push(""); // new line
-        body.push(`${ retval }_${ fnname }(${ funcArgs.join(", ") })`);
-        body.push(...destructors);
 
-        const added = `
-            Func _${ fnname }Mat(${ autoItArgs.join(", ") })
-                ${ body.join(`\n${ indent }`) }${ ret }
+        const typedBody = [];
+        typedBody.push(...typedDeclarations);
+        typedBody.push(""); // new line
+        typedBody.push(`${ retval }_${ fnname }(${ overridedFuncArgs.join(", ") })`);
+        typedBody.push(...typedDestructors);
+
+        const typedFunc = `
+            Func _${ fnname }Typed(${ typedAutoItArgs.join(", ") })
+                ${ typedBody.join(`\n${ indent }`) }${ ret }
+            EndFunc   ;==>_${ fnname }Typed
+        `.replace(/^ {12}/mg, "").trim();
+
+        const matBody = [];
+        matBody.push(`; ${ fnname } using cv::Mat instead of _*Array`);
+        matBody.push(`${ retval }_${ fnname }Typed(${ matFuncArgs.join(", ") })`);
+
+        const matFunc = `
+            Func _${ fnname }Mat(${ matAutoItArgs.join(", ") })
+                ${ matBody.join(`\n${ indent }`) }${ ret }
             EndFunc   ;==>_${ fnname }Mat
         `.replace(/^ {12}/mg, "").trim();
 
-        return `${ func }\n\n${ added }`;
+        return `${ func }\n\n${ typedFunc }\n\n${ matFunc }`;
     }
 };

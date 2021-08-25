@@ -4,7 +4,7 @@
 Func _depthaiDeviceCreate($usb_device, $usb2_mode)
     ; CVAPI(Device*) depthaiDeviceCreate(cv::String* usb_device, bool usb2_mode);
 
-    Local $bUsb_deviceIsString = VarGetType($usb_device) == "String"
+    Local $bUsb_deviceIsString = IsString($usb_device)
     If $bUsb_deviceIsString Then
         $usb_device = _cveStringCreateFromStr($usb_device)
     EndIf
@@ -51,7 +51,7 @@ Func _depthaiDeviceGetAvailableStreams($usb_device, $availableStreams)
     EndIf
 
     Local $vecAvailableStreams, $iArrAvailableStreamsSize
-    Local $bAvailableStreamsIsArray = VarGetType($availableStreams) == "Array"
+    Local $bAvailableStreamsIsArray = IsArray($availableStreams)
 
     If $bAvailableStreamsIsArray Then
         $vecAvailableStreams = _VectorOfCvStringCreate()
@@ -88,7 +88,7 @@ Func _depthaiDeviceCreatePipeline($usb_device, $config_json_str, $hostedPipeline
         $sUsb_deviceDllType = "ptr"
     EndIf
 
-    Local $bConfig_json_strIsString = VarGetType($config_json_str) == "String"
+    Local $bConfig_json_strIsString = IsString($config_json_str)
     If $bConfig_json_strIsString Then
         $config_json_str = _cveStringCreateFromStr($config_json_str)
     EndIf
@@ -239,7 +239,7 @@ Func _depthaiHostDataPacketGetDimensions($packet, $dimensions)
     EndIf
 
     Local $vecDimensions, $iArrDimensionsSize
-    Local $bDimensionsIsArray = VarGetType($dimensions) == "Array"
+    Local $bDimensionsIsArray = IsArray($dimensions)
 
     If $bDimensionsIsArray Then
         $vecDimensions = _VectorOfIntCreate()

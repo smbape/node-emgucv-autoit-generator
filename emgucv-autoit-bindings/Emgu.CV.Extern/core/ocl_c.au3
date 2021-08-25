@@ -5,7 +5,7 @@ Func _oclGetPlatformsInfo($oclPlatforms)
     ; CVAPI(void) oclGetPlatformsInfo(std::vector<cv::ocl::PlatformInfo>* oclPlatforms);
 
     Local $vecOclPlatforms, $iArrOclPlatformsSize
-    Local $bOclPlatformsIsArray = VarGetType($oclPlatforms) == "Array"
+    Local $bOclPlatformsIsArray = IsArray($oclPlatforms)
 
     If $bOclPlatformsIsArray Then
         $vecOclPlatforms = _VectorOfOclPlatformInfoCreate()
@@ -102,7 +102,7 @@ Func _oclPlatformInfoGetVersion($oclPlatformInfo, $platformVersion)
         $sOclPlatformInfoDllType = "ptr"
     EndIf
 
-    Local $bPlatformVersionIsString = VarGetType($platformVersion) == "String"
+    Local $bPlatformVersionIsString = IsString($platformVersion)
     If $bPlatformVersionIsString Then
         $platformVersion = _cveStringCreateFromStr($platformVersion)
     EndIf
@@ -131,7 +131,7 @@ Func _oclPlatformInfoGetName($oclPlatformInfo, $platformName)
         $sOclPlatformInfoDllType = "ptr"
     EndIf
 
-    Local $bPlatformNameIsString = VarGetType($platformName) == "String"
+    Local $bPlatformNameIsString = IsString($platformName)
     If $bPlatformNameIsString Then
         $platformName = _cveStringCreateFromStr($platformName)
     EndIf
@@ -160,7 +160,7 @@ Func _oclPlatformInfoGetVender($oclPlatformInfo, $platformVender)
         $sOclPlatformInfoDllType = "ptr"
     EndIf
 
-    Local $bPlatformVenderIsString = VarGetType($platformVender) == "String"
+    Local $bPlatformVenderIsString = IsString($platformVender)
     If $bPlatformVenderIsString Then
         $platformVender = _cveStringCreateFromStr($platformVender)
     EndIf
@@ -325,7 +325,7 @@ Func _oclContextGetProg($context, $prog, $buildopt, $errmsg)
         $sProgDllType = "ptr"
     EndIf
 
-    Local $bBuildoptIsString = VarGetType($buildopt) == "String"
+    Local $bBuildoptIsString = IsString($buildopt)
     If $bBuildoptIsString Then
         $buildopt = _cveStringCreateFromStr($buildopt)
     EndIf
@@ -337,7 +337,7 @@ Func _oclContextGetProg($context, $prog, $buildopt, $errmsg)
         $sBuildoptDllType = "ptr"
     EndIf
 
-    Local $bErrmsgIsString = VarGetType($errmsg) == "String"
+    Local $bErrmsgIsString = IsString($errmsg)
     If $bErrmsgIsString Then
         $errmsg = _cveStringCreateFromStr($errmsg)
     EndIf
@@ -405,7 +405,7 @@ EndFunc   ;==>_oclProgramGetBinary
 Func _oclProgramSourceCreate($source)
     ; CVAPI(cv::ocl::ProgramSource*) oclProgramSourceCreate(cv::String* source);
 
-    Local $bSourceIsString = VarGetType($source) == "String"
+    Local $bSourceIsString = IsString($source)
     If $bSourceIsString Then
         $source = _cveStringCreateFromStr($source)
     EndIf
@@ -468,7 +468,7 @@ Func _oclKernelCreate($kernel, $kname, $source, $buildOpts, $errmsg)
         $sKernelDllType = "ptr"
     EndIf
 
-    Local $bKnameIsString = VarGetType($kname) == "String"
+    Local $bKnameIsString = IsString($kname)
     If $bKnameIsString Then
         $kname = _cveStringCreateFromStr($kname)
     EndIf
@@ -487,7 +487,7 @@ Func _oclKernelCreate($kernel, $kname, $source, $buildOpts, $errmsg)
         $sSourceDllType = "ptr"
     EndIf
 
-    Local $bBuildOptsIsString = VarGetType($buildOpts) == "String"
+    Local $bBuildOptsIsString = IsString($buildOpts)
     If $bBuildOptsIsString Then
         $buildOpts = _cveStringCreateFromStr($buildOpts)
     EndIf
@@ -499,7 +499,7 @@ Func _oclKernelCreate($kernel, $kname, $source, $buildOpts, $errmsg)
         $sBuildOptsDllType = "ptr"
     EndIf
 
-    Local $bErrmsgIsString = VarGetType($errmsg) == "String"
+    Local $bErrmsgIsString = IsString($errmsg)
     If $bErrmsgIsString Then
         $errmsg = _cveStringCreateFromStr($errmsg)
     EndIf
@@ -749,7 +749,7 @@ EndFunc   ;==>_oclQueueRelease
 Func _oclTypeToString($type, $str)
     ; CVAPI(void) oclTypeToString(int type, cv::String* str);
 
-    Local $bStrIsString = VarGetType($str) == "String"
+    Local $bStrIsString = IsString($str)
     If $bStrIsString Then
         $str = _cveStringCreateFromStr($str)
     EndIf

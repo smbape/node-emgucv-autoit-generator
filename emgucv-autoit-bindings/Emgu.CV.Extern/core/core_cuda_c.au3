@@ -208,54 +208,80 @@ Func _cudaConvertFp16($src, $dst, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaConvertFp16", $sSrcDllType, $src, $sDstDllType, $dst, $sStreamDllType, $stream), "cudaConvertFp16", @error)
 EndFunc   ;==>_cudaConvertFp16
 
-Func _cudaConvertFp16Mat($matSrc, $matDst, $stream)
-    ; cudaConvertFp16 using cv::Mat instead of _*Array
+Func _cudaConvertFp16Typed($typeOfSrc, $src, $typeOfDst, $dst, $stream)
 
-    Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
-    Local $bSrcIsArray = VarGetType($matSrc) == "Array"
+    Local $iArrSrc, $vectorSrc, $iArrSrcSize
+    Local $bSrcIsArray = IsArray($src)
+    Local $bSrcCreate = IsDllStruct($src) And $typeOfSrc == "Scalar"
 
-    If $bSrcIsArray Then
-        $vectorOfMatSrc = _VectorOfMatCreate()
+    If $typeOfSrc == Default Then
+        $iArrSrc = $src
+    ElseIf $bSrcIsArray Then
+        $vectorSrc = Call("_VectorOf" & $typeOfSrc & "Create")
 
-        $iArrSrcSize = UBound($matSrc)
+        $iArrSrcSize = UBound($src)
         For $i = 0 To $iArrSrcSize - 1
-            _VectorOfMatPush($vectorOfMatSrc, $matSrc[$i])
+            Call("_VectorOf" & $typeOfSrc & "Push", $vectorSrc, $src[$i])
         Next
 
-        $iArrSrc = _cveInputArrayFromVectorOfMat($vectorOfMatSrc)
+        $iArrSrc = Call("_cveInputArrayFromVectorOf" & $typeOfSrc, $vectorSrc)
     Else
-        $iArrSrc = _cveInputArrayFromMat($matSrc)
+        If $bSrcCreate Then
+            $src = Call("_cve" & $typeOfSrc & "Create", $src)
+        EndIf
+        $iArrSrc = Call("_cveInputArrayFrom" & $typeOfSrc, $src)
     EndIf
 
-    Local $oArrDst, $vectorOfMatDst, $iArrDstSize
-    Local $bDstIsArray = VarGetType($matDst) == "Array"
+    Local $oArrDst, $vectorDst, $iArrDstSize
+    Local $bDstIsArray = IsArray($dst)
+    Local $bDstCreate = IsDllStruct($dst) And $typeOfDst == "Scalar"
 
-    If $bDstIsArray Then
-        $vectorOfMatDst = _VectorOfMatCreate()
+    If $typeOfDst == Default Then
+        $oArrDst = $dst
+    ElseIf $bDstIsArray Then
+        $vectorDst = Call("_VectorOf" & $typeOfDst & "Create")
 
-        $iArrDstSize = UBound($matDst)
+        $iArrDstSize = UBound($dst)
         For $i = 0 To $iArrDstSize - 1
-            _VectorOfMatPush($vectorOfMatDst, $matDst[$i])
+            Call("_VectorOf" & $typeOfDst & "Push", $vectorDst, $dst[$i])
         Next
 
-        $oArrDst = _cveOutputArrayFromVectorOfMat($vectorOfMatDst)
+        $oArrDst = Call("_cveOutputArrayFromVectorOf" & $typeOfDst, $vectorDst)
     Else
-        $oArrDst = _cveOutputArrayFromMat($matDst)
+        If $bDstCreate Then
+            $dst = Call("_cve" & $typeOfDst & "Create", $dst)
+        EndIf
+        $oArrDst = Call("_cveOutputArrayFrom" & $typeOfDst, $dst)
     EndIf
 
     _cudaConvertFp16($iArrSrc, $oArrDst, $stream)
 
     If $bDstIsArray Then
-        _VectorOfMatRelease($vectorOfMatDst)
+        Call("_VectorOf" & $typeOfDst & "Release", $vectorDst)
     EndIf
 
-    _cveOutputArrayRelease($oArrDst)
+    If $typeOfDst <> Default Then
+        _cveOutputArrayRelease($oArrDst)
+        If $bDstCreate Then
+            Call("_cve" & $typeOfDst & "Release", $dst)
+        EndIf
+    EndIf
 
     If $bSrcIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrc)
+        Call("_VectorOf" & $typeOfSrc & "Release", $vectorSrc)
     EndIf
 
-    _cveInputArrayRelease($iArrSrc)
+    If $typeOfSrc <> Default Then
+        _cveInputArrayRelease($iArrSrc)
+        If $bSrcCreate Then
+            Call("_cve" & $typeOfSrc & "Release", $src)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaConvertFp16Typed
+
+Func _cudaConvertFp16Mat($src, $dst, $stream)
+    ; cudaConvertFp16 using cv::Mat instead of _*Array
+    _cudaConvertFp16Typed("Mat", $src, "Mat", $dst, $stream)
 EndFunc   ;==>_cudaConvertFp16Mat
 
 Func _targetArchsBuildWith($featureSet)
@@ -386,32 +412,49 @@ Func _gpuMatCreateFromInputArray($arr)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "gpuMatCreateFromInputArray", $sArrDllType, $arr), "gpuMatCreateFromInputArray", @error)
 EndFunc   ;==>_gpuMatCreateFromInputArray
 
-Func _gpuMatCreateFromInputArrayMat($matArr)
-    ; gpuMatCreateFromInputArray using cv::Mat instead of _*Array
+Func _gpuMatCreateFromInputArrayTyped($typeOfArr, $arr)
 
-    Local $iArrArr, $vectorOfMatArr, $iArrArrSize
-    Local $bArrIsArray = VarGetType($matArr) == "Array"
+    Local $iArrArr, $vectorArr, $iArrArrSize
+    Local $bArrIsArray = IsArray($arr)
+    Local $bArrCreate = IsDllStruct($arr) And $typeOfArr == "Scalar"
 
-    If $bArrIsArray Then
-        $vectorOfMatArr = _VectorOfMatCreate()
+    If $typeOfArr == Default Then
+        $iArrArr = $arr
+    ElseIf $bArrIsArray Then
+        $vectorArr = Call("_VectorOf" & $typeOfArr & "Create")
 
-        $iArrArrSize = UBound($matArr)
+        $iArrArrSize = UBound($arr)
         For $i = 0 To $iArrArrSize - 1
-            _VectorOfMatPush($vectorOfMatArr, $matArr[$i])
+            Call("_VectorOf" & $typeOfArr & "Push", $vectorArr, $arr[$i])
         Next
 
-        $iArrArr = _cveInputArrayFromVectorOfMat($vectorOfMatArr)
+        $iArrArr = Call("_cveInputArrayFromVectorOf" & $typeOfArr, $vectorArr)
     Else
-        $iArrArr = _cveInputArrayFromMat($matArr)
+        If $bArrCreate Then
+            $arr = Call("_cve" & $typeOfArr & "Create", $arr)
+        EndIf
+        $iArrArr = Call("_cveInputArrayFrom" & $typeOfArr, $arr)
     EndIf
 
     Local $retval = _gpuMatCreateFromInputArray($iArrArr)
 
     If $bArrIsArray Then
-        _VectorOfMatRelease($vectorOfMatArr)
+        Call("_VectorOf" & $typeOfArr & "Release", $vectorArr)
     EndIf
 
-    _cveInputArrayRelease($iArrArr)
+    If $typeOfArr <> Default Then
+        _cveInputArrayRelease($iArrArr)
+        If $bArrCreate Then
+            Call("_cve" & $typeOfArr & "Release", $arr)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_gpuMatCreateFromInputArrayTyped
+
+Func _gpuMatCreateFromInputArrayMat($arr)
+    ; gpuMatCreateFromInputArray using cv::Mat instead of _*Array
+    Local $retval = _gpuMatCreateFromInputArrayTyped("Mat", $arr)
 
     Return $retval
 EndFunc   ;==>_gpuMatCreateFromInputArrayMat
@@ -511,32 +554,47 @@ Func _gpuMatUpload($gpuMat, $arr, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "gpuMatUpload", $sGpuMatDllType, $gpuMat, $sArrDllType, $arr, $sStreamDllType, $stream), "gpuMatUpload", @error)
 EndFunc   ;==>_gpuMatUpload
 
-Func _gpuMatUploadMat($gpuMat, $matArr, $stream)
-    ; gpuMatUpload using cv::Mat instead of _*Array
+Func _gpuMatUploadTyped($gpuMat, $typeOfArr, $arr, $stream)
 
-    Local $iArrArr, $vectorOfMatArr, $iArrArrSize
-    Local $bArrIsArray = VarGetType($matArr) == "Array"
+    Local $iArrArr, $vectorArr, $iArrArrSize
+    Local $bArrIsArray = IsArray($arr)
+    Local $bArrCreate = IsDllStruct($arr) And $typeOfArr == "Scalar"
 
-    If $bArrIsArray Then
-        $vectorOfMatArr = _VectorOfMatCreate()
+    If $typeOfArr == Default Then
+        $iArrArr = $arr
+    ElseIf $bArrIsArray Then
+        $vectorArr = Call("_VectorOf" & $typeOfArr & "Create")
 
-        $iArrArrSize = UBound($matArr)
+        $iArrArrSize = UBound($arr)
         For $i = 0 To $iArrArrSize - 1
-            _VectorOfMatPush($vectorOfMatArr, $matArr[$i])
+            Call("_VectorOf" & $typeOfArr & "Push", $vectorArr, $arr[$i])
         Next
 
-        $iArrArr = _cveInputArrayFromVectorOfMat($vectorOfMatArr)
+        $iArrArr = Call("_cveInputArrayFromVectorOf" & $typeOfArr, $vectorArr)
     Else
-        $iArrArr = _cveInputArrayFromMat($matArr)
+        If $bArrCreate Then
+            $arr = Call("_cve" & $typeOfArr & "Create", $arr)
+        EndIf
+        $iArrArr = Call("_cveInputArrayFrom" & $typeOfArr, $arr)
     EndIf
 
     _gpuMatUpload($gpuMat, $iArrArr, $stream)
 
     If $bArrIsArray Then
-        _VectorOfMatRelease($vectorOfMatArr)
+        Call("_VectorOf" & $typeOfArr & "Release", $vectorArr)
     EndIf
 
-    _cveInputArrayRelease($iArrArr)
+    If $typeOfArr <> Default Then
+        _cveInputArrayRelease($iArrArr)
+        If $bArrCreate Then
+            Call("_cve" & $typeOfArr & "Release", $arr)
+        EndIf
+    EndIf
+EndFunc   ;==>_gpuMatUploadTyped
+
+Func _gpuMatUploadMat($gpuMat, $arr, $stream)
+    ; gpuMatUpload using cv::Mat instead of _*Array
+    _gpuMatUploadTyped($gpuMat, "Mat", $arr, $stream)
 EndFunc   ;==>_gpuMatUploadMat
 
 Func _gpuMatDownload($gpuMat, $arr, $stream)
@@ -566,32 +624,47 @@ Func _gpuMatDownload($gpuMat, $arr, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "gpuMatDownload", $sGpuMatDllType, $gpuMat, $sArrDllType, $arr, $sStreamDllType, $stream), "gpuMatDownload", @error)
 EndFunc   ;==>_gpuMatDownload
 
-Func _gpuMatDownloadMat($gpuMat, $matArr, $stream)
-    ; gpuMatDownload using cv::Mat instead of _*Array
+Func _gpuMatDownloadTyped($gpuMat, $typeOfArr, $arr, $stream)
 
-    Local $oArrArr, $vectorOfMatArr, $iArrArrSize
-    Local $bArrIsArray = VarGetType($matArr) == "Array"
+    Local $oArrArr, $vectorArr, $iArrArrSize
+    Local $bArrIsArray = IsArray($arr)
+    Local $bArrCreate = IsDllStruct($arr) And $typeOfArr == "Scalar"
 
-    If $bArrIsArray Then
-        $vectorOfMatArr = _VectorOfMatCreate()
+    If $typeOfArr == Default Then
+        $oArrArr = $arr
+    ElseIf $bArrIsArray Then
+        $vectorArr = Call("_VectorOf" & $typeOfArr & "Create")
 
-        $iArrArrSize = UBound($matArr)
+        $iArrArrSize = UBound($arr)
         For $i = 0 To $iArrArrSize - 1
-            _VectorOfMatPush($vectorOfMatArr, $matArr[$i])
+            Call("_VectorOf" & $typeOfArr & "Push", $vectorArr, $arr[$i])
         Next
 
-        $oArrArr = _cveOutputArrayFromVectorOfMat($vectorOfMatArr)
+        $oArrArr = Call("_cveOutputArrayFromVectorOf" & $typeOfArr, $vectorArr)
     Else
-        $oArrArr = _cveOutputArrayFromMat($matArr)
+        If $bArrCreate Then
+            $arr = Call("_cve" & $typeOfArr & "Create", $arr)
+        EndIf
+        $oArrArr = Call("_cveOutputArrayFrom" & $typeOfArr, $arr)
     EndIf
 
     _gpuMatDownload($gpuMat, $oArrArr, $stream)
 
     If $bArrIsArray Then
-        _VectorOfMatRelease($vectorOfMatArr)
+        Call("_VectorOf" & $typeOfArr & "Release", $vectorArr)
     EndIf
 
-    _cveOutputArrayRelease($oArrArr)
+    If $typeOfArr <> Default Then
+        _cveOutputArrayRelease($oArrArr)
+        If $bArrCreate Then
+            Call("_cve" & $typeOfArr & "Release", $arr)
+        EndIf
+    EndIf
+EndFunc   ;==>_gpuMatDownloadTyped
+
+Func _gpuMatDownloadMat($gpuMat, $arr, $stream)
+    ; gpuMatDownload using cv::Mat instead of _*Array
+    _gpuMatDownloadTyped($gpuMat, "Mat", $arr, $stream)
 EndFunc   ;==>_gpuMatDownloadMat
 
 Func _gpuMatConvertTo($src, $dst, $rtype, $alpha, $beta, $stream)
@@ -621,32 +694,47 @@ Func _gpuMatConvertTo($src, $dst, $rtype, $alpha, $beta, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "gpuMatConvertTo", $sSrcDllType, $src, $sDstDllType, $dst, "int", $rtype, "double", $alpha, "double", $beta, $sStreamDllType, $stream), "gpuMatConvertTo", @error)
 EndFunc   ;==>_gpuMatConvertTo
 
-Func _gpuMatConvertToMat($src, $matDst, $rtype, $alpha, $beta, $stream)
-    ; gpuMatConvertTo using cv::Mat instead of _*Array
+Func _gpuMatConvertToTyped($src, $typeOfDst, $dst, $rtype, $alpha, $beta, $stream)
 
-    Local $oArrDst, $vectorOfMatDst, $iArrDstSize
-    Local $bDstIsArray = VarGetType($matDst) == "Array"
+    Local $oArrDst, $vectorDst, $iArrDstSize
+    Local $bDstIsArray = IsArray($dst)
+    Local $bDstCreate = IsDllStruct($dst) And $typeOfDst == "Scalar"
 
-    If $bDstIsArray Then
-        $vectorOfMatDst = _VectorOfMatCreate()
+    If $typeOfDst == Default Then
+        $oArrDst = $dst
+    ElseIf $bDstIsArray Then
+        $vectorDst = Call("_VectorOf" & $typeOfDst & "Create")
 
-        $iArrDstSize = UBound($matDst)
+        $iArrDstSize = UBound($dst)
         For $i = 0 To $iArrDstSize - 1
-            _VectorOfMatPush($vectorOfMatDst, $matDst[$i])
+            Call("_VectorOf" & $typeOfDst & "Push", $vectorDst, $dst[$i])
         Next
 
-        $oArrDst = _cveOutputArrayFromVectorOfMat($vectorOfMatDst)
+        $oArrDst = Call("_cveOutputArrayFromVectorOf" & $typeOfDst, $vectorDst)
     Else
-        $oArrDst = _cveOutputArrayFromMat($matDst)
+        If $bDstCreate Then
+            $dst = Call("_cve" & $typeOfDst & "Create", $dst)
+        EndIf
+        $oArrDst = Call("_cveOutputArrayFrom" & $typeOfDst, $dst)
     EndIf
 
     _gpuMatConvertTo($src, $oArrDst, $rtype, $alpha, $beta, $stream)
 
     If $bDstIsArray Then
-        _VectorOfMatRelease($vectorOfMatDst)
+        Call("_VectorOf" & $typeOfDst & "Release", $vectorDst)
     EndIf
 
-    _cveOutputArrayRelease($oArrDst)
+    If $typeOfDst <> Default Then
+        _cveOutputArrayRelease($oArrDst)
+        If $bDstCreate Then
+            Call("_cve" & $typeOfDst & "Release", $dst)
+        EndIf
+    EndIf
+EndFunc   ;==>_gpuMatConvertToTyped
+
+Func _gpuMatConvertToMat($src, $dst, $rtype, $alpha, $beta, $stream)
+    ; gpuMatConvertTo using cv::Mat instead of _*Array
+    _gpuMatConvertToTyped($src, "Mat", $dst, $rtype, $alpha, $beta, $stream)
 EndFunc   ;==>_gpuMatConvertToMat
 
 Func _gpuMatCopyTo($src, $dst, $mask, $stream)
@@ -683,54 +771,80 @@ Func _gpuMatCopyTo($src, $dst, $mask, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "gpuMatCopyTo", $sSrcDllType, $src, $sDstDllType, $dst, $sMaskDllType, $mask, $sStreamDllType, $stream), "gpuMatCopyTo", @error)
 EndFunc   ;==>_gpuMatCopyTo
 
-Func _gpuMatCopyToMat($src, $matDst, $matMask, $stream)
-    ; gpuMatCopyTo using cv::Mat instead of _*Array
+Func _gpuMatCopyToTyped($src, $typeOfDst, $dst, $typeOfMask, $mask, $stream)
 
-    Local $oArrDst, $vectorOfMatDst, $iArrDstSize
-    Local $bDstIsArray = VarGetType($matDst) == "Array"
+    Local $oArrDst, $vectorDst, $iArrDstSize
+    Local $bDstIsArray = IsArray($dst)
+    Local $bDstCreate = IsDllStruct($dst) And $typeOfDst == "Scalar"
 
-    If $bDstIsArray Then
-        $vectorOfMatDst = _VectorOfMatCreate()
+    If $typeOfDst == Default Then
+        $oArrDst = $dst
+    ElseIf $bDstIsArray Then
+        $vectorDst = Call("_VectorOf" & $typeOfDst & "Create")
 
-        $iArrDstSize = UBound($matDst)
+        $iArrDstSize = UBound($dst)
         For $i = 0 To $iArrDstSize - 1
-            _VectorOfMatPush($vectorOfMatDst, $matDst[$i])
+            Call("_VectorOf" & $typeOfDst & "Push", $vectorDst, $dst[$i])
         Next
 
-        $oArrDst = _cveOutputArrayFromVectorOfMat($vectorOfMatDst)
+        $oArrDst = Call("_cveOutputArrayFromVectorOf" & $typeOfDst, $vectorDst)
     Else
-        $oArrDst = _cveOutputArrayFromMat($matDst)
+        If $bDstCreate Then
+            $dst = Call("_cve" & $typeOfDst & "Create", $dst)
+        EndIf
+        $oArrDst = Call("_cveOutputArrayFrom" & $typeOfDst, $dst)
     EndIf
 
-    Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $iArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $iArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $iArrMask = _cveInputArrayFromVectorOfMat($vectorOfMatMask)
+        $iArrMask = Call("_cveInputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $iArrMask = _cveInputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $iArrMask = Call("_cveInputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
     _gpuMatCopyTo($src, $oArrDst, $iArrMask, $stream)
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMask)
+    If $typeOfMask <> Default Then
+        _cveInputArrayRelease($iArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bDstIsArray Then
-        _VectorOfMatRelease($vectorOfMatDst)
+        Call("_VectorOf" & $typeOfDst & "Release", $vectorDst)
     EndIf
 
-    _cveOutputArrayRelease($oArrDst)
+    If $typeOfDst <> Default Then
+        _cveOutputArrayRelease($oArrDst)
+        If $bDstCreate Then
+            Call("_cve" & $typeOfDst & "Release", $dst)
+        EndIf
+    EndIf
+EndFunc   ;==>_gpuMatCopyToTyped
+
+Func _gpuMatCopyToMat($src, $dst, $mask, $stream)
+    ; gpuMatCopyTo using cv::Mat instead of _*Array
+    _gpuMatCopyToTyped($src, "Mat", $dst, "Mat", $mask, $stream)
 EndFunc   ;==>_gpuMatCopyToMat
 
 Func _gpuMatSetTo($mat, $s, $mask, $stream)
@@ -767,32 +881,47 @@ Func _gpuMatSetTo($mat, $s, $mask, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "gpuMatSetTo", $sMatDllType, $mat, $sSDllType, $s, $sMaskDllType, $mask, $sStreamDllType, $stream), "gpuMatSetTo", @error)
 EndFunc   ;==>_gpuMatSetTo
 
-Func _gpuMatSetToMat($mat, $s, $matMask, $stream)
-    ; gpuMatSetTo using cv::Mat instead of _*Array
+Func _gpuMatSetToTyped($mat, $s, $typeOfMask, $mask, $stream)
 
-    Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $iArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $iArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $iArrMask = _cveInputArrayFromVectorOfMat($vectorOfMatMask)
+        $iArrMask = Call("_cveInputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $iArrMask = _cveInputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $iArrMask = Call("_cveInputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
     _gpuMatSetTo($mat, $s, $iArrMask, $stream)
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMask)
+    If $typeOfMask <> Default Then
+        _cveInputArrayRelease($iArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
+EndFunc   ;==>_gpuMatSetToTyped
+
+Func _gpuMatSetToMat($mat, $s, $mask, $stream)
+    ; gpuMatSetTo using cv::Mat instead of _*Array
+    _gpuMatSetToTyped($mat, $s, "Mat", $mask, $stream)
 EndFunc   ;==>_gpuMatSetToMat
 
 Func _gpuMatReshape($src, $dst, $cn, $rows)

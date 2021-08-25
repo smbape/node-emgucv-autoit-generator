@@ -4,7 +4,7 @@
 Func _cveReadNetFromDarknet($cfgFile, $darknetModel)
     ; CVAPI(cv::dnn::Net*) cveReadNetFromDarknet(cv::String* cfgFile, cv::String* darknetModel);
 
-    Local $bCfgFileIsString = VarGetType($cfgFile) == "String"
+    Local $bCfgFileIsString = IsString($cfgFile)
     If $bCfgFileIsString Then
         $cfgFile = _cveStringCreateFromStr($cfgFile)
     EndIf
@@ -16,7 +16,7 @@ Func _cveReadNetFromDarknet($cfgFile, $darknetModel)
         $sCfgFileDllType = "ptr"
     EndIf
 
-    Local $bDarknetModelIsString = VarGetType($darknetModel) == "String"
+    Local $bDarknetModelIsString = IsString($darknetModel)
     If $bDarknetModelIsString Then
         $darknetModel = _cveStringCreateFromStr($darknetModel)
     EndIf
@@ -67,7 +67,7 @@ EndFunc   ;==>_cveReadNetFromDarknet2
 Func _cveReadNetFromCaffe($prototxt, $caffeModel)
     ; CVAPI(cv::dnn::Net*) cveReadNetFromCaffe(cv::String* prototxt, cv::String* caffeModel);
 
-    Local $bPrototxtIsString = VarGetType($prototxt) == "String"
+    Local $bPrototxtIsString = IsString($prototxt)
     If $bPrototxtIsString Then
         $prototxt = _cveStringCreateFromStr($prototxt)
     EndIf
@@ -79,7 +79,7 @@ Func _cveReadNetFromCaffe($prototxt, $caffeModel)
         $sPrototxtDllType = "ptr"
     EndIf
 
-    Local $bCaffeModelIsString = VarGetType($caffeModel) == "String"
+    Local $bCaffeModelIsString = IsString($caffeModel)
     If $bCaffeModelIsString Then
         $caffeModel = _cveStringCreateFromStr($caffeModel)
     EndIf
@@ -130,7 +130,7 @@ EndFunc   ;==>_cveReadNetFromCaffe2
 Func _cveReadNetFromTensorflow($model, $config)
     ; CVAPI(cv::dnn::Net*) cveReadNetFromTensorflow(cv::String* model, cv::String* config);
 
-    Local $bModelIsString = VarGetType($model) == "String"
+    Local $bModelIsString = IsString($model)
     If $bModelIsString Then
         $model = _cveStringCreateFromStr($model)
     EndIf
@@ -142,7 +142,7 @@ Func _cveReadNetFromTensorflow($model, $config)
         $sModelDllType = "ptr"
     EndIf
 
-    Local $bConfigIsString = VarGetType($config) == "String"
+    Local $bConfigIsString = IsString($config)
     If $bConfigIsString Then
         $config = _cveStringCreateFromStr($config)
     EndIf
@@ -193,7 +193,7 @@ EndFunc   ;==>_cveReadNetFromTensorflow2
 Func _cveReadNetFromONNX($onnxFile)
     ; CVAPI(cv::dnn::Net*) cveReadNetFromONNX(cv::String* onnxFile);
 
-    Local $bOnnxFileIsString = VarGetType($onnxFile) == "String"
+    Local $bOnnxFileIsString = IsString($onnxFile)
     If $bOnnxFileIsString Then
         $onnxFile = _cveStringCreateFromStr($onnxFile)
     EndIf
@@ -217,7 +217,7 @@ EndFunc   ;==>_cveReadNetFromONNX
 Func _cveReadTensorFromONNX($path, $tensor)
     ; CVAPI(void) cveReadTensorFromONNX(cv::String* path, cv::Mat* tensor);
 
-    Local $bPathIsString = VarGetType($path) == "String"
+    Local $bPathIsString = IsString($path)
     If $bPathIsString Then
         $path = _cveStringCreateFromStr($path)
     EndIf
@@ -246,7 +246,7 @@ EndFunc   ;==>_cveReadTensorFromONNX
 Func _cveReadNet($model, $config, $framework)
     ; CVAPI(cv::dnn::Net*) cveReadNet(cv::String* model, cv::String* config, cv::String* framework);
 
-    Local $bModelIsString = VarGetType($model) == "String"
+    Local $bModelIsString = IsString($model)
     If $bModelIsString Then
         $model = _cveStringCreateFromStr($model)
     EndIf
@@ -258,7 +258,7 @@ Func _cveReadNet($model, $config, $framework)
         $sModelDllType = "ptr"
     EndIf
 
-    Local $bConfigIsString = VarGetType($config) == "String"
+    Local $bConfigIsString = IsString($config)
     If $bConfigIsString Then
         $config = _cveStringCreateFromStr($config)
     EndIf
@@ -270,7 +270,7 @@ Func _cveReadNet($model, $config, $framework)
         $sConfigDllType = "ptr"
     EndIf
 
-    Local $bFrameworkIsString = VarGetType($framework) == "String"
+    Local $bFrameworkIsString = IsString($framework)
     If $bFrameworkIsString Then
         $framework = _cveStringCreateFromStr($framework)
     EndIf
@@ -302,7 +302,7 @@ EndFunc   ;==>_cveReadNet
 Func _cveReadNetFromModelOptimizer($xml, $bin)
     ; CVAPI(cv::dnn::Net*) cveReadNetFromModelOptimizer(cv::String* xml, cv::String* bin);
 
-    Local $bXmlIsString = VarGetType($xml) == "String"
+    Local $bXmlIsString = IsString($xml)
     If $bXmlIsString Then
         $xml = _cveStringCreateFromStr($xml)
     EndIf
@@ -314,7 +314,7 @@ Func _cveReadNetFromModelOptimizer($xml, $bin)
         $sXmlDllType = "ptr"
     EndIf
 
-    Local $bBinIsString = VarGetType($bin) == "String"
+    Local $bBinIsString = IsString($bin)
     If $bBinIsString Then
         $bin = _cveStringCreateFromStr($bin)
     EndIf
@@ -361,7 +361,7 @@ Func _cveDnnNetSetInput($net, $blob, $name, $scalefactor, $mean)
         $sBlobDllType = "ptr"
     EndIf
 
-    Local $bNameIsString = VarGetType($name) == "String"
+    Local $bNameIsString = IsString($name)
     If $bNameIsString Then
         $name = _cveStringCreateFromStr($name)
     EndIf
@@ -387,32 +387,47 @@ Func _cveDnnNetSetInput($net, $blob, $name, $scalefactor, $mean)
     EndIf
 EndFunc   ;==>_cveDnnNetSetInput
 
-Func _cveDnnNetSetInputMat($net, $matBlob, $name, $scalefactor, $mean)
-    ; cveDnnNetSetInput using cv::Mat instead of _*Array
+Func _cveDnnNetSetInputTyped($net, $typeOfBlob, $blob, $name, $scalefactor, $mean)
 
-    Local $iArrBlob, $vectorOfMatBlob, $iArrBlobSize
-    Local $bBlobIsArray = VarGetType($matBlob) == "Array"
+    Local $iArrBlob, $vectorBlob, $iArrBlobSize
+    Local $bBlobIsArray = IsArray($blob)
+    Local $bBlobCreate = IsDllStruct($blob) And $typeOfBlob == "Scalar"
 
-    If $bBlobIsArray Then
-        $vectorOfMatBlob = _VectorOfMatCreate()
+    If $typeOfBlob == Default Then
+        $iArrBlob = $blob
+    ElseIf $bBlobIsArray Then
+        $vectorBlob = Call("_VectorOf" & $typeOfBlob & "Create")
 
-        $iArrBlobSize = UBound($matBlob)
+        $iArrBlobSize = UBound($blob)
         For $i = 0 To $iArrBlobSize - 1
-            _VectorOfMatPush($vectorOfMatBlob, $matBlob[$i])
+            Call("_VectorOf" & $typeOfBlob & "Push", $vectorBlob, $blob[$i])
         Next
 
-        $iArrBlob = _cveInputArrayFromVectorOfMat($vectorOfMatBlob)
+        $iArrBlob = Call("_cveInputArrayFromVectorOf" & $typeOfBlob, $vectorBlob)
     Else
-        $iArrBlob = _cveInputArrayFromMat($matBlob)
+        If $bBlobCreate Then
+            $blob = Call("_cve" & $typeOfBlob & "Create", $blob)
+        EndIf
+        $iArrBlob = Call("_cveInputArrayFrom" & $typeOfBlob, $blob)
     EndIf
 
     _cveDnnNetSetInput($net, $iArrBlob, $name, $scalefactor, $mean)
 
     If $bBlobIsArray Then
-        _VectorOfMatRelease($vectorOfMatBlob)
+        Call("_VectorOf" & $typeOfBlob & "Release", $vectorBlob)
     EndIf
 
-    _cveInputArrayRelease($iArrBlob)
+    If $typeOfBlob <> Default Then
+        _cveInputArrayRelease($iArrBlob)
+        If $bBlobCreate Then
+            Call("_cve" & $typeOfBlob & "Release", $blob)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDnnNetSetInputTyped
+
+Func _cveDnnNetSetInputMat($net, $blob, $name, $scalefactor, $mean)
+    ; cveDnnNetSetInput using cv::Mat instead of _*Array
+    _cveDnnNetSetInputTyped($net, "Mat", $blob, $name, $scalefactor, $mean)
 EndFunc   ;==>_cveDnnNetSetInputMat
 
 Func _cveDnnNetForward($net, $outputName, $output)
@@ -425,7 +440,7 @@ Func _cveDnnNetForward($net, $outputName, $output)
         $sNetDllType = "ptr"
     EndIf
 
-    Local $bOutputNameIsString = VarGetType($outputName) == "String"
+    Local $bOutputNameIsString = IsString($outputName)
     If $bOutputNameIsString Then
         $outputName = _cveStringCreateFromStr($outputName)
     EndIf
@@ -468,7 +483,7 @@ Func _cveDnnNetForward2($net, $outputBlobs, $outputName)
         $sOutputBlobsDllType = "ptr"
     EndIf
 
-    Local $bOutputNameIsString = VarGetType($outputName) == "String"
+    Local $bOutputNameIsString = IsString($outputName)
     If $bOutputNameIsString Then
         $outputName = _cveStringCreateFromStr($outputName)
     EndIf
@@ -487,32 +502,47 @@ Func _cveDnnNetForward2($net, $outputBlobs, $outputName)
     EndIf
 EndFunc   ;==>_cveDnnNetForward2
 
-Func _cveDnnNetForward2Mat($net, $matOutputBlobs, $outputName)
-    ; cveDnnNetForward2 using cv::Mat instead of _*Array
+Func _cveDnnNetForward2Typed($net, $typeOfOutputBlobs, $outputBlobs, $outputName)
 
-    Local $oArrOutputBlobs, $vectorOfMatOutputBlobs, $iArrOutputBlobsSize
-    Local $bOutputBlobsIsArray = VarGetType($matOutputBlobs) == "Array"
+    Local $oArrOutputBlobs, $vectorOutputBlobs, $iArrOutputBlobsSize
+    Local $bOutputBlobsIsArray = IsArray($outputBlobs)
+    Local $bOutputBlobsCreate = IsDllStruct($outputBlobs) And $typeOfOutputBlobs == "Scalar"
 
-    If $bOutputBlobsIsArray Then
-        $vectorOfMatOutputBlobs = _VectorOfMatCreate()
+    If $typeOfOutputBlobs == Default Then
+        $oArrOutputBlobs = $outputBlobs
+    ElseIf $bOutputBlobsIsArray Then
+        $vectorOutputBlobs = Call("_VectorOf" & $typeOfOutputBlobs & "Create")
 
-        $iArrOutputBlobsSize = UBound($matOutputBlobs)
+        $iArrOutputBlobsSize = UBound($outputBlobs)
         For $i = 0 To $iArrOutputBlobsSize - 1
-            _VectorOfMatPush($vectorOfMatOutputBlobs, $matOutputBlobs[$i])
+            Call("_VectorOf" & $typeOfOutputBlobs & "Push", $vectorOutputBlobs, $outputBlobs[$i])
         Next
 
-        $oArrOutputBlobs = _cveOutputArrayFromVectorOfMat($vectorOfMatOutputBlobs)
+        $oArrOutputBlobs = Call("_cveOutputArrayFromVectorOf" & $typeOfOutputBlobs, $vectorOutputBlobs)
     Else
-        $oArrOutputBlobs = _cveOutputArrayFromMat($matOutputBlobs)
+        If $bOutputBlobsCreate Then
+            $outputBlobs = Call("_cve" & $typeOfOutputBlobs & "Create", $outputBlobs)
+        EndIf
+        $oArrOutputBlobs = Call("_cveOutputArrayFrom" & $typeOfOutputBlobs, $outputBlobs)
     EndIf
 
     _cveDnnNetForward2($net, $oArrOutputBlobs, $outputName)
 
     If $bOutputBlobsIsArray Then
-        _VectorOfMatRelease($vectorOfMatOutputBlobs)
+        Call("_VectorOf" & $typeOfOutputBlobs & "Release", $vectorOutputBlobs)
     EndIf
 
-    _cveOutputArrayRelease($oArrOutputBlobs)
+    If $typeOfOutputBlobs <> Default Then
+        _cveOutputArrayRelease($oArrOutputBlobs)
+        If $bOutputBlobsCreate Then
+            Call("_cve" & $typeOfOutputBlobs & "Release", $outputBlobs)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDnnNetForward2Typed
+
+Func _cveDnnNetForward2Mat($net, $outputBlobs, $outputName)
+    ; cveDnnNetForward2 using cv::Mat instead of _*Array
+    _cveDnnNetForward2Typed($net, "Mat", $outputBlobs, $outputName)
 EndFunc   ;==>_cveDnnNetForward2Mat
 
 Func _cveDnnNetForward3($net, $outputBlobs, $outBlobNames)
@@ -533,7 +563,7 @@ Func _cveDnnNetForward3($net, $outputBlobs, $outBlobNames)
     EndIf
 
     Local $vecOutBlobNames, $iArrOutBlobNamesSize
-    Local $bOutBlobNamesIsArray = VarGetType($outBlobNames) == "Array"
+    Local $bOutBlobNamesIsArray = IsArray($outBlobNames)
 
     If $bOutBlobNamesIsArray Then
         $vecOutBlobNames = _VectorOfCvStringCreate()
@@ -560,32 +590,47 @@ Func _cveDnnNetForward3($net, $outputBlobs, $outBlobNames)
     EndIf
 EndFunc   ;==>_cveDnnNetForward3
 
-Func _cveDnnNetForward3Mat($net, $matOutputBlobs, $outBlobNames)
-    ; cveDnnNetForward3 using cv::Mat instead of _*Array
+Func _cveDnnNetForward3Typed($net, $typeOfOutputBlobs, $outputBlobs, $outBlobNames)
 
-    Local $oArrOutputBlobs, $vectorOfMatOutputBlobs, $iArrOutputBlobsSize
-    Local $bOutputBlobsIsArray = VarGetType($matOutputBlobs) == "Array"
+    Local $oArrOutputBlobs, $vectorOutputBlobs, $iArrOutputBlobsSize
+    Local $bOutputBlobsIsArray = IsArray($outputBlobs)
+    Local $bOutputBlobsCreate = IsDllStruct($outputBlobs) And $typeOfOutputBlobs == "Scalar"
 
-    If $bOutputBlobsIsArray Then
-        $vectorOfMatOutputBlobs = _VectorOfMatCreate()
+    If $typeOfOutputBlobs == Default Then
+        $oArrOutputBlobs = $outputBlobs
+    ElseIf $bOutputBlobsIsArray Then
+        $vectorOutputBlobs = Call("_VectorOf" & $typeOfOutputBlobs & "Create")
 
-        $iArrOutputBlobsSize = UBound($matOutputBlobs)
+        $iArrOutputBlobsSize = UBound($outputBlobs)
         For $i = 0 To $iArrOutputBlobsSize - 1
-            _VectorOfMatPush($vectorOfMatOutputBlobs, $matOutputBlobs[$i])
+            Call("_VectorOf" & $typeOfOutputBlobs & "Push", $vectorOutputBlobs, $outputBlobs[$i])
         Next
 
-        $oArrOutputBlobs = _cveOutputArrayFromVectorOfMat($vectorOfMatOutputBlobs)
+        $oArrOutputBlobs = Call("_cveOutputArrayFromVectorOf" & $typeOfOutputBlobs, $vectorOutputBlobs)
     Else
-        $oArrOutputBlobs = _cveOutputArrayFromMat($matOutputBlobs)
+        If $bOutputBlobsCreate Then
+            $outputBlobs = Call("_cve" & $typeOfOutputBlobs & "Create", $outputBlobs)
+        EndIf
+        $oArrOutputBlobs = Call("_cveOutputArrayFrom" & $typeOfOutputBlobs, $outputBlobs)
     EndIf
 
     _cveDnnNetForward3($net, $oArrOutputBlobs, $outBlobNames)
 
     If $bOutputBlobsIsArray Then
-        _VectorOfMatRelease($vectorOfMatOutputBlobs)
+        Call("_VectorOf" & $typeOfOutputBlobs & "Release", $vectorOutputBlobs)
     EndIf
 
-    _cveOutputArrayRelease($oArrOutputBlobs)
+    If $typeOfOutputBlobs <> Default Then
+        _cveOutputArrayRelease($oArrOutputBlobs)
+        If $bOutputBlobsCreate Then
+            Call("_cve" & $typeOfOutputBlobs & "Release", $outputBlobs)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDnnNetForward3Typed
+
+Func _cveDnnNetForward3Mat($net, $outputBlobs, $outBlobNames)
+    ; cveDnnNetForward3 using cv::Mat instead of _*Array
+    _cveDnnNetForward3Typed($net, "Mat", $outputBlobs, $outBlobNames)
 EndFunc   ;==>_cveDnnNetForward3Mat
 
 Func _cveDnnNetRelease($net)
@@ -614,7 +659,7 @@ Func _cveDnnNetGetUnconnectedOutLayers($net, $layerIds)
     EndIf
 
     Local $vecLayerIds, $iArrLayerIdsSize
-    Local $bLayerIdsIsArray = VarGetType($layerIds) == "Array"
+    Local $bLayerIdsIsArray = IsArray($layerIds)
 
     If $bLayerIdsIsArray Then
         $vecLayerIds = _VectorOfIntCreate()
@@ -652,7 +697,7 @@ Func _cveDnnNetGetUnconnectedOutLayersNames($net, $layerNames)
     EndIf
 
     Local $vecLayerNames, $iArrLayerNamesSize
-    Local $bLayerNamesIsArray = VarGetType($layerNames) == "Array"
+    Local $bLayerNamesIsArray = IsArray($layerNames)
 
     If $bLayerNamesIsArray Then
         $vecLayerNames = _VectorOfCvStringCreate()
@@ -690,7 +735,7 @@ Func _cveDnnNetGetPerfProfile($net, $timings)
     EndIf
 
     Local $vecTimings, $iArrTimingsSize
-    Local $bTimingsIsArray = VarGetType($timings) == "Array"
+    Local $bTimingsIsArray = IsArray($timings)
 
     If $bTimingsIsArray Then
         $vecTimings = _VectorOfDoubleCreate()
@@ -729,7 +774,7 @@ Func _cveDnnNetDump($net, $string)
         $sNetDllType = "ptr"
     EndIf
 
-    Local $bStringIsString = VarGetType($string) == "String"
+    Local $bStringIsString = IsString($string)
     If $bStringIsString Then
         $string = _cveStringCreateFromStr($string)
     EndIf
@@ -758,7 +803,7 @@ Func _cveDnnNetDumpToFile($net, $path)
         $sNetDllType = "ptr"
     EndIf
 
-    Local $bPathIsString = VarGetType($path) == "String"
+    Local $bPathIsString = IsString($path)
     If $bPathIsString Then
         $path = _cveStringCreateFromStr($path)
     EndIf
@@ -799,7 +844,7 @@ Func _cveDnnGetLayerId($net, $layer)
         $sNetDllType = "ptr"
     EndIf
 
-    Local $bLayerIsString = VarGetType($layer) == "String"
+    Local $bLayerIsString = IsString($layer)
     If $bLayerIsString Then
         $layer = _cveStringCreateFromStr($layer)
     EndIf
@@ -830,7 +875,7 @@ Func _cveDnnGetLayerByName($net, $layerName, $sharedPtr)
         $sNetDllType = "ptr"
     EndIf
 
-    Local $bLayerNameIsString = VarGetType($layerName) == "String"
+    Local $bLayerNameIsString = IsString($layerName)
     If $bLayerNameIsString Then
         $layerName = _cveStringCreateFromStr($layerName)
     EndIf
@@ -942,54 +987,80 @@ Func _cveDnnBlobFromImage($image, $blob, $scalefactor, $size, $mean, $swapRB, $c
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnBlobFromImage", $sImageDllType, $image, $sBlobDllType, $blob, "double", $scalefactor, $sSizeDllType, $size, $sMeanDllType, $mean, "boolean", $swapRB, "boolean", $crop, "int", $ddepth), "cveDnnBlobFromImage", @error)
 EndFunc   ;==>_cveDnnBlobFromImage
 
-Func _cveDnnBlobFromImageMat($matImage, $matBlob, $scalefactor, $size, $mean, $swapRB, $crop, $ddepth)
-    ; cveDnnBlobFromImage using cv::Mat instead of _*Array
+Func _cveDnnBlobFromImageTyped($typeOfImage, $image, $typeOfBlob, $blob, $scalefactor, $size, $mean, $swapRB, $crop, $ddepth)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $oArrBlob, $vectorOfMatBlob, $iArrBlobSize
-    Local $bBlobIsArray = VarGetType($matBlob) == "Array"
+    Local $oArrBlob, $vectorBlob, $iArrBlobSize
+    Local $bBlobIsArray = IsArray($blob)
+    Local $bBlobCreate = IsDllStruct($blob) And $typeOfBlob == "Scalar"
 
-    If $bBlobIsArray Then
-        $vectorOfMatBlob = _VectorOfMatCreate()
+    If $typeOfBlob == Default Then
+        $oArrBlob = $blob
+    ElseIf $bBlobIsArray Then
+        $vectorBlob = Call("_VectorOf" & $typeOfBlob & "Create")
 
-        $iArrBlobSize = UBound($matBlob)
+        $iArrBlobSize = UBound($blob)
         For $i = 0 To $iArrBlobSize - 1
-            _VectorOfMatPush($vectorOfMatBlob, $matBlob[$i])
+            Call("_VectorOf" & $typeOfBlob & "Push", $vectorBlob, $blob[$i])
         Next
 
-        $oArrBlob = _cveOutputArrayFromVectorOfMat($vectorOfMatBlob)
+        $oArrBlob = Call("_cveOutputArrayFromVectorOf" & $typeOfBlob, $vectorBlob)
     Else
-        $oArrBlob = _cveOutputArrayFromMat($matBlob)
+        If $bBlobCreate Then
+            $blob = Call("_cve" & $typeOfBlob & "Create", $blob)
+        EndIf
+        $oArrBlob = Call("_cveOutputArrayFrom" & $typeOfBlob, $blob)
     EndIf
 
     _cveDnnBlobFromImage($iArrImage, $oArrBlob, $scalefactor, $size, $mean, $swapRB, $crop, $ddepth)
 
     If $bBlobIsArray Then
-        _VectorOfMatRelease($vectorOfMatBlob)
+        Call("_VectorOf" & $typeOfBlob & "Release", $vectorBlob)
     EndIf
 
-    _cveOutputArrayRelease($oArrBlob)
+    If $typeOfBlob <> Default Then
+        _cveOutputArrayRelease($oArrBlob)
+        If $bBlobCreate Then
+            Call("_cve" & $typeOfBlob & "Release", $blob)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDnnBlobFromImageTyped
+
+Func _cveDnnBlobFromImageMat($image, $blob, $scalefactor, $size, $mean, $swapRB, $crop, $ddepth)
+    ; cveDnnBlobFromImage using cv::Mat instead of _*Array
+    _cveDnnBlobFromImageTyped("Mat", $image, "Mat", $blob, $scalefactor, $size, $mean, $swapRB, $crop, $ddepth)
 EndFunc   ;==>_cveDnnBlobFromImageMat
 
 Func _cveDnnBlobFromImages($images, $blob, $scalefactor, $size, $mean, $swapRB, $crop, $ddepth)
@@ -1026,54 +1097,80 @@ Func _cveDnnBlobFromImages($images, $blob, $scalefactor, $size, $mean, $swapRB, 
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnBlobFromImages", $sImagesDllType, $images, $sBlobDllType, $blob, "double", $scalefactor, $sSizeDllType, $size, $sMeanDllType, $mean, "boolean", $swapRB, "boolean", $crop, "int", $ddepth), "cveDnnBlobFromImages", @error)
 EndFunc   ;==>_cveDnnBlobFromImages
 
-Func _cveDnnBlobFromImagesMat($matImages, $matBlob, $scalefactor, $size, $mean, $swapRB, $crop, $ddepth)
-    ; cveDnnBlobFromImages using cv::Mat instead of _*Array
+Func _cveDnnBlobFromImagesTyped($typeOfImages, $images, $typeOfBlob, $blob, $scalefactor, $size, $mean, $swapRB, $crop, $ddepth)
 
-    Local $iArrImages, $vectorOfMatImages, $iArrImagesSize
-    Local $bImagesIsArray = VarGetType($matImages) == "Array"
+    Local $iArrImages, $vectorImages, $iArrImagesSize
+    Local $bImagesIsArray = IsArray($images)
+    Local $bImagesCreate = IsDllStruct($images) And $typeOfImages == "Scalar"
 
-    If $bImagesIsArray Then
-        $vectorOfMatImages = _VectorOfMatCreate()
+    If $typeOfImages == Default Then
+        $iArrImages = $images
+    ElseIf $bImagesIsArray Then
+        $vectorImages = Call("_VectorOf" & $typeOfImages & "Create")
 
-        $iArrImagesSize = UBound($matImages)
+        $iArrImagesSize = UBound($images)
         For $i = 0 To $iArrImagesSize - 1
-            _VectorOfMatPush($vectorOfMatImages, $matImages[$i])
+            Call("_VectorOf" & $typeOfImages & "Push", $vectorImages, $images[$i])
         Next
 
-        $iArrImages = _cveInputArrayFromVectorOfMat($vectorOfMatImages)
+        $iArrImages = Call("_cveInputArrayFromVectorOf" & $typeOfImages, $vectorImages)
     Else
-        $iArrImages = _cveInputArrayFromMat($matImages)
+        If $bImagesCreate Then
+            $images = Call("_cve" & $typeOfImages & "Create", $images)
+        EndIf
+        $iArrImages = Call("_cveInputArrayFrom" & $typeOfImages, $images)
     EndIf
 
-    Local $oArrBlob, $vectorOfMatBlob, $iArrBlobSize
-    Local $bBlobIsArray = VarGetType($matBlob) == "Array"
+    Local $oArrBlob, $vectorBlob, $iArrBlobSize
+    Local $bBlobIsArray = IsArray($blob)
+    Local $bBlobCreate = IsDllStruct($blob) And $typeOfBlob == "Scalar"
 
-    If $bBlobIsArray Then
-        $vectorOfMatBlob = _VectorOfMatCreate()
+    If $typeOfBlob == Default Then
+        $oArrBlob = $blob
+    ElseIf $bBlobIsArray Then
+        $vectorBlob = Call("_VectorOf" & $typeOfBlob & "Create")
 
-        $iArrBlobSize = UBound($matBlob)
+        $iArrBlobSize = UBound($blob)
         For $i = 0 To $iArrBlobSize - 1
-            _VectorOfMatPush($vectorOfMatBlob, $matBlob[$i])
+            Call("_VectorOf" & $typeOfBlob & "Push", $vectorBlob, $blob[$i])
         Next
 
-        $oArrBlob = _cveOutputArrayFromVectorOfMat($vectorOfMatBlob)
+        $oArrBlob = Call("_cveOutputArrayFromVectorOf" & $typeOfBlob, $vectorBlob)
     Else
-        $oArrBlob = _cveOutputArrayFromMat($matBlob)
+        If $bBlobCreate Then
+            $blob = Call("_cve" & $typeOfBlob & "Create", $blob)
+        EndIf
+        $oArrBlob = Call("_cveOutputArrayFrom" & $typeOfBlob, $blob)
     EndIf
 
     _cveDnnBlobFromImages($iArrImages, $oArrBlob, $scalefactor, $size, $mean, $swapRB, $crop, $ddepth)
 
     If $bBlobIsArray Then
-        _VectorOfMatRelease($vectorOfMatBlob)
+        Call("_VectorOf" & $typeOfBlob & "Release", $vectorBlob)
     EndIf
 
-    _cveOutputArrayRelease($oArrBlob)
+    If $typeOfBlob <> Default Then
+        _cveOutputArrayRelease($oArrBlob)
+        If $bBlobCreate Then
+            Call("_cve" & $typeOfBlob & "Release", $blob)
+        EndIf
+    EndIf
 
     If $bImagesIsArray Then
-        _VectorOfMatRelease($vectorOfMatImages)
+        Call("_VectorOf" & $typeOfImages & "Release", $vectorImages)
     EndIf
 
-    _cveInputArrayRelease($iArrImages)
+    If $typeOfImages <> Default Then
+        _cveInputArrayRelease($iArrImages)
+        If $bImagesCreate Then
+            Call("_cve" & $typeOfImages & "Release", $images)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDnnBlobFromImagesTyped
+
+Func _cveDnnBlobFromImagesMat($images, $blob, $scalefactor, $size, $mean, $swapRB, $crop, $ddepth)
+    ; cveDnnBlobFromImages using cv::Mat instead of _*Array
+    _cveDnnBlobFromImagesTyped("Mat", $images, "Mat", $blob, $scalefactor, $size, $mean, $swapRB, $crop, $ddepth)
 EndFunc   ;==>_cveDnnBlobFromImagesMat
 
 Func _cveDnnImagesFromBlob($blob, $images)
@@ -1096,38 +1193,53 @@ Func _cveDnnImagesFromBlob($blob, $images)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnImagesFromBlob", $sBlobDllType, $blob, $sImagesDllType, $images), "cveDnnImagesFromBlob", @error)
 EndFunc   ;==>_cveDnnImagesFromBlob
 
-Func _cveDnnImagesFromBlobMat($blob, $matImages)
-    ; cveDnnImagesFromBlob using cv::Mat instead of _*Array
+Func _cveDnnImagesFromBlobTyped($blob, $typeOfImages, $images)
 
-    Local $oArrImages, $vectorOfMatImages, $iArrImagesSize
-    Local $bImagesIsArray = VarGetType($matImages) == "Array"
+    Local $oArrImages, $vectorImages, $iArrImagesSize
+    Local $bImagesIsArray = IsArray($images)
+    Local $bImagesCreate = IsDllStruct($images) And $typeOfImages == "Scalar"
 
-    If $bImagesIsArray Then
-        $vectorOfMatImages = _VectorOfMatCreate()
+    If $typeOfImages == Default Then
+        $oArrImages = $images
+    ElseIf $bImagesIsArray Then
+        $vectorImages = Call("_VectorOf" & $typeOfImages & "Create")
 
-        $iArrImagesSize = UBound($matImages)
+        $iArrImagesSize = UBound($images)
         For $i = 0 To $iArrImagesSize - 1
-            _VectorOfMatPush($vectorOfMatImages, $matImages[$i])
+            Call("_VectorOf" & $typeOfImages & "Push", $vectorImages, $images[$i])
         Next
 
-        $oArrImages = _cveOutputArrayFromVectorOfMat($vectorOfMatImages)
+        $oArrImages = Call("_cveOutputArrayFromVectorOf" & $typeOfImages, $vectorImages)
     Else
-        $oArrImages = _cveOutputArrayFromMat($matImages)
+        If $bImagesCreate Then
+            $images = Call("_cve" & $typeOfImages & "Create", $images)
+        EndIf
+        $oArrImages = Call("_cveOutputArrayFrom" & $typeOfImages, $images)
     EndIf
 
     _cveDnnImagesFromBlob($blob, $oArrImages)
 
     If $bImagesIsArray Then
-        _VectorOfMatRelease($vectorOfMatImages)
+        Call("_VectorOf" & $typeOfImages & "Release", $vectorImages)
     EndIf
 
-    _cveOutputArrayRelease($oArrImages)
+    If $typeOfImages <> Default Then
+        _cveOutputArrayRelease($oArrImages)
+        If $bImagesCreate Then
+            Call("_cve" & $typeOfImages & "Release", $images)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDnnImagesFromBlobTyped
+
+Func _cveDnnImagesFromBlobMat($blob, $images)
+    ; cveDnnImagesFromBlob using cv::Mat instead of _*Array
+    _cveDnnImagesFromBlobTyped($blob, "Mat", $images)
 EndFunc   ;==>_cveDnnImagesFromBlobMat
 
 Func _cveDnnShrinkCaffeModel($src, $dst)
     ; CVAPI(void) cveDnnShrinkCaffeModel(cv::String* src, cv::String* dst);
 
-    Local $bSrcIsString = VarGetType($src) == "String"
+    Local $bSrcIsString = IsString($src)
     If $bSrcIsString Then
         $src = _cveStringCreateFromStr($src)
     EndIf
@@ -1139,7 +1251,7 @@ Func _cveDnnShrinkCaffeModel($src, $dst)
         $sSrcDllType = "ptr"
     EndIf
 
-    Local $bDstIsString = VarGetType($dst) == "String"
+    Local $bDstIsString = IsString($dst)
     If $bDstIsString Then
         $dst = _cveStringCreateFromStr($dst)
     EndIf
@@ -1165,7 +1277,7 @@ EndFunc   ;==>_cveDnnShrinkCaffeModel
 Func _cveDnnWriteTextGraph($model, $output)
     ; CVAPI(void) cveDnnWriteTextGraph(cv::String* model, cv::String* output);
 
-    Local $bModelIsString = VarGetType($model) == "String"
+    Local $bModelIsString = IsString($model)
     If $bModelIsString Then
         $model = _cveStringCreateFromStr($model)
     EndIf
@@ -1177,7 +1289,7 @@ Func _cveDnnWriteTextGraph($model, $output)
         $sModelDllType = "ptr"
     EndIf
 
-    Local $bOutputIsString = VarGetType($output) == "String"
+    Local $bOutputIsString = IsString($output)
     If $bOutputIsString Then
         $output = _cveStringCreateFromStr($output)
     EndIf
@@ -1204,7 +1316,7 @@ Func _cveDnnNMSBoxes($bboxes, $scores, $scoreThreshold, $nmsThreshold, $indices,
     ; CVAPI(void) cveDnnNMSBoxes(std::vector<cv::Rect>* bboxes, std::vector<float>* scores, float scoreThreshold, float nmsThreshold, std::vector<int>* indices, float eta, int topK);
 
     Local $vecBboxes, $iArrBboxesSize
-    Local $bBboxesIsArray = VarGetType($bboxes) == "Array"
+    Local $bBboxesIsArray = IsArray($bboxes)
 
     If $bBboxesIsArray Then
         $vecBboxes = _VectorOfRectCreate()
@@ -1225,7 +1337,7 @@ Func _cveDnnNMSBoxes($bboxes, $scores, $scoreThreshold, $nmsThreshold, $indices,
     EndIf
 
     Local $vecScores, $iArrScoresSize
-    Local $bScoresIsArray = VarGetType($scores) == "Array"
+    Local $bScoresIsArray = IsArray($scores)
 
     If $bScoresIsArray Then
         $vecScores = _VectorOfFloatCreate()
@@ -1246,7 +1358,7 @@ Func _cveDnnNMSBoxes($bboxes, $scores, $scoreThreshold, $nmsThreshold, $indices,
     EndIf
 
     Local $vecIndices, $iArrIndicesSize
-    Local $bIndicesIsArray = VarGetType($indices) == "Array"
+    Local $bIndicesIsArray = IsArray($indices)
 
     If $bIndicesIsArray Then
         $vecIndices = _VectorOfIntCreate()
@@ -1285,7 +1397,7 @@ Func _cveDnnNMSBoxes2($bboxes, $scores, $scoreThreshold, $nmsThreshold, $indices
     ; CVAPI(void) cveDnnNMSBoxes2(std::vector<cv::RotatedRect>* bboxes, std::vector<float>* scores, float scoreThreshold, float nmsThreshold, std::vector<int>* indices, float eta, int topK);
 
     Local $vecBboxes, $iArrBboxesSize
-    Local $bBboxesIsArray = VarGetType($bboxes) == "Array"
+    Local $bBboxesIsArray = IsArray($bboxes)
 
     If $bBboxesIsArray Then
         $vecBboxes = _VectorOfRotatedRectCreate()
@@ -1306,7 +1418,7 @@ Func _cveDnnNMSBoxes2($bboxes, $scores, $scoreThreshold, $nmsThreshold, $indices
     EndIf
 
     Local $vecScores, $iArrScoresSize
-    Local $bScoresIsArray = VarGetType($scores) == "Array"
+    Local $bScoresIsArray = IsArray($scores)
 
     If $bScoresIsArray Then
         $vecScores = _VectorOfFloatCreate()
@@ -1327,7 +1439,7 @@ Func _cveDnnNMSBoxes2($bboxes, $scores, $scoreThreshold, $nmsThreshold, $indices
     EndIf
 
     Local $vecIndices, $iArrIndicesSize
-    Local $bIndicesIsArray = VarGetType($indices) == "Array"
+    Local $bIndicesIsArray = IsArray($indices)
 
     If $bIndicesIsArray Then
         $vecIndices = _VectorOfIntCreate()
@@ -1366,7 +1478,7 @@ Func _cveDNNGetAvailableBackends($backends, $targets)
     ; CVAPI(void) cveDNNGetAvailableBackends(std::vector<int>* backends, std::vector<int>* targets);
 
     Local $vecBackends, $iArrBackendsSize
-    Local $bBackendsIsArray = VarGetType($backends) == "Array"
+    Local $bBackendsIsArray = IsArray($backends)
 
     If $bBackendsIsArray Then
         $vecBackends = _VectorOfIntCreate()
@@ -1387,7 +1499,7 @@ Func _cveDNNGetAvailableBackends($backends, $targets)
     EndIf
 
     Local $vecTargets, $iArrTargetsSize
-    Local $bTargetsIsArray = VarGetType($targets) == "Array"
+    Local $bTargetsIsArray = IsArray($targets)
 
     If $bTargetsIsArray Then
         $vecTargets = _VectorOfIntCreate()
@@ -1421,7 +1533,7 @@ EndFunc   ;==>_cveDNNGetAvailableBackends
 Func _cveDnnTextDetectionModelDbCreate1($model, $config, $textDetectionModel, $baseModel)
     ; CVAPI(cv::dnn::TextDetectionModel_DB*) cveDnnTextDetectionModelDbCreate1(cv::String* model, cv::String* config, cv::dnn::TextDetectionModel** textDetectionModel, cv::dnn::Model** baseModel);
 
-    Local $bModelIsString = VarGetType($model) == "String"
+    Local $bModelIsString = IsString($model)
     If $bModelIsString Then
         $model = _cveStringCreateFromStr($model)
     EndIf
@@ -1433,7 +1545,7 @@ Func _cveDnnTextDetectionModelDbCreate1($model, $config, $textDetectionModel, $b
         $sModelDllType = "ptr"
     EndIf
 
-    Local $bConfigIsString = VarGetType($config) == "String"
+    Local $bConfigIsString = IsString($config)
     If $bConfigIsString Then
         $config = _cveStringCreateFromStr($config)
     EndIf
@@ -1524,7 +1636,7 @@ EndFunc   ;==>_cveDnnTextDetectionModelDbRelease
 Func _cveDnnTextDetectionModelEastCreate1($model, $config, $textDetectionModel, $baseModel)
     ; CVAPI(cv::dnn::TextDetectionModel_EAST*) cveDnnTextDetectionModelEastCreate1(cv::String* model, cv::String* config, cv::dnn::TextDetectionModel** textDetectionModel, cv::dnn::Model** baseModel);
 
-    Local $bModelIsString = VarGetType($model) == "String"
+    Local $bModelIsString = IsString($model)
     If $bModelIsString Then
         $model = _cveStringCreateFromStr($model)
     EndIf
@@ -1536,7 +1648,7 @@ Func _cveDnnTextDetectionModelEastCreate1($model, $config, $textDetectionModel, 
         $sModelDllType = "ptr"
     EndIf
 
-    Local $bConfigIsString = VarGetType($config) == "String"
+    Local $bConfigIsString = IsString($config)
     If $bConfigIsString Then
         $config = _cveStringCreateFromStr($config)
     EndIf
@@ -1642,7 +1754,7 @@ Func _cveDnnTextDetectionModelDetect($textDetectionModel, $frame, $detections, $
     EndIf
 
     Local $vecDetections, $iArrDetectionsSize
-    Local $bDetectionsIsArray = VarGetType($detections) == "Array"
+    Local $bDetectionsIsArray = IsArray($detections)
 
     If $bDetectionsIsArray Then
         $vecDetections = _VectorOfVectorOfPointCreate()
@@ -1663,7 +1775,7 @@ Func _cveDnnTextDetectionModelDetect($textDetectionModel, $frame, $detections, $
     EndIf
 
     Local $vecConfidences, $iArrConfidencesSize
-    Local $bConfidencesIsArray = VarGetType($confidences) == "Array"
+    Local $bConfidencesIsArray = IsArray($confidences)
 
     If $bConfidencesIsArray Then
         $vecConfidences = _VectorOfFloatCreate()
@@ -1694,32 +1806,47 @@ Func _cveDnnTextDetectionModelDetect($textDetectionModel, $frame, $detections, $
     EndIf
 EndFunc   ;==>_cveDnnTextDetectionModelDetect
 
-Func _cveDnnTextDetectionModelDetectMat($textDetectionModel, $matFrame, $detections, $confidences)
-    ; cveDnnTextDetectionModelDetect using cv::Mat instead of _*Array
+Func _cveDnnTextDetectionModelDetectTyped($textDetectionModel, $typeOfFrame, $frame, $detections, $confidences)
 
-    Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
-    Local $bFrameIsArray = VarGetType($matFrame) == "Array"
+    Local $iArrFrame, $vectorFrame, $iArrFrameSize
+    Local $bFrameIsArray = IsArray($frame)
+    Local $bFrameCreate = IsDllStruct($frame) And $typeOfFrame == "Scalar"
 
-    If $bFrameIsArray Then
-        $vectorOfMatFrame = _VectorOfMatCreate()
+    If $typeOfFrame == Default Then
+        $iArrFrame = $frame
+    ElseIf $bFrameIsArray Then
+        $vectorFrame = Call("_VectorOf" & $typeOfFrame & "Create")
 
-        $iArrFrameSize = UBound($matFrame)
+        $iArrFrameSize = UBound($frame)
         For $i = 0 To $iArrFrameSize - 1
-            _VectorOfMatPush($vectorOfMatFrame, $matFrame[$i])
+            Call("_VectorOf" & $typeOfFrame & "Push", $vectorFrame, $frame[$i])
         Next
 
-        $iArrFrame = _cveInputArrayFromVectorOfMat($vectorOfMatFrame)
+        $iArrFrame = Call("_cveInputArrayFromVectorOf" & $typeOfFrame, $vectorFrame)
     Else
-        $iArrFrame = _cveInputArrayFromMat($matFrame)
+        If $bFrameCreate Then
+            $frame = Call("_cve" & $typeOfFrame & "Create", $frame)
+        EndIf
+        $iArrFrame = Call("_cveInputArrayFrom" & $typeOfFrame, $frame)
     EndIf
 
     _cveDnnTextDetectionModelDetect($textDetectionModel, $iArrFrame, $detections, $confidences)
 
     If $bFrameIsArray Then
-        _VectorOfMatRelease($vectorOfMatFrame)
+        Call("_VectorOf" & $typeOfFrame & "Release", $vectorFrame)
     EndIf
 
-    _cveInputArrayRelease($iArrFrame)
+    If $typeOfFrame <> Default Then
+        _cveInputArrayRelease($iArrFrame)
+        If $bFrameCreate Then
+            Call("_cve" & $typeOfFrame & "Release", $frame)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDnnTextDetectionModelDetectTyped
+
+Func _cveDnnTextDetectionModelDetectMat($textDetectionModel, $frame, $detections, $confidences)
+    ; cveDnnTextDetectionModelDetect using cv::Mat instead of _*Array
+    _cveDnnTextDetectionModelDetectTyped($textDetectionModel, "Mat", $frame, $detections, $confidences)
 EndFunc   ;==>_cveDnnTextDetectionModelDetectMat
 
 Func _cveDnnTextDetectionModelDetectTextRectangles($textDetectionModel, $frame, $detections, $confidences)
@@ -1740,7 +1867,7 @@ Func _cveDnnTextDetectionModelDetectTextRectangles($textDetectionModel, $frame, 
     EndIf
 
     Local $vecDetections, $iArrDetectionsSize
-    Local $bDetectionsIsArray = VarGetType($detections) == "Array"
+    Local $bDetectionsIsArray = IsArray($detections)
 
     If $bDetectionsIsArray Then
         $vecDetections = _VectorOfRotatedRectCreate()
@@ -1761,7 +1888,7 @@ Func _cveDnnTextDetectionModelDetectTextRectangles($textDetectionModel, $frame, 
     EndIf
 
     Local $vecConfidences, $iArrConfidencesSize
-    Local $bConfidencesIsArray = VarGetType($confidences) == "Array"
+    Local $bConfidencesIsArray = IsArray($confidences)
 
     If $bConfidencesIsArray Then
         $vecConfidences = _VectorOfFloatCreate()
@@ -1792,38 +1919,53 @@ Func _cveDnnTextDetectionModelDetectTextRectangles($textDetectionModel, $frame, 
     EndIf
 EndFunc   ;==>_cveDnnTextDetectionModelDetectTextRectangles
 
-Func _cveDnnTextDetectionModelDetectTextRectanglesMat($textDetectionModel, $matFrame, $detections, $confidences)
-    ; cveDnnTextDetectionModelDetectTextRectangles using cv::Mat instead of _*Array
+Func _cveDnnTextDetectionModelDetectTextRectanglesTyped($textDetectionModel, $typeOfFrame, $frame, $detections, $confidences)
 
-    Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
-    Local $bFrameIsArray = VarGetType($matFrame) == "Array"
+    Local $iArrFrame, $vectorFrame, $iArrFrameSize
+    Local $bFrameIsArray = IsArray($frame)
+    Local $bFrameCreate = IsDllStruct($frame) And $typeOfFrame == "Scalar"
 
-    If $bFrameIsArray Then
-        $vectorOfMatFrame = _VectorOfMatCreate()
+    If $typeOfFrame == Default Then
+        $iArrFrame = $frame
+    ElseIf $bFrameIsArray Then
+        $vectorFrame = Call("_VectorOf" & $typeOfFrame & "Create")
 
-        $iArrFrameSize = UBound($matFrame)
+        $iArrFrameSize = UBound($frame)
         For $i = 0 To $iArrFrameSize - 1
-            _VectorOfMatPush($vectorOfMatFrame, $matFrame[$i])
+            Call("_VectorOf" & $typeOfFrame & "Push", $vectorFrame, $frame[$i])
         Next
 
-        $iArrFrame = _cveInputArrayFromVectorOfMat($vectorOfMatFrame)
+        $iArrFrame = Call("_cveInputArrayFromVectorOf" & $typeOfFrame, $vectorFrame)
     Else
-        $iArrFrame = _cveInputArrayFromMat($matFrame)
+        If $bFrameCreate Then
+            $frame = Call("_cve" & $typeOfFrame & "Create", $frame)
+        EndIf
+        $iArrFrame = Call("_cveInputArrayFrom" & $typeOfFrame, $frame)
     EndIf
 
     _cveDnnTextDetectionModelDetectTextRectangles($textDetectionModel, $iArrFrame, $detections, $confidences)
 
     If $bFrameIsArray Then
-        _VectorOfMatRelease($vectorOfMatFrame)
+        Call("_VectorOf" & $typeOfFrame & "Release", $vectorFrame)
     EndIf
 
-    _cveInputArrayRelease($iArrFrame)
+    If $typeOfFrame <> Default Then
+        _cveInputArrayRelease($iArrFrame)
+        If $bFrameCreate Then
+            Call("_cve" & $typeOfFrame & "Release", $frame)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDnnTextDetectionModelDetectTextRectanglesTyped
+
+Func _cveDnnTextDetectionModelDetectTextRectanglesMat($textDetectionModel, $frame, $detections, $confidences)
+    ; cveDnnTextDetectionModelDetectTextRectangles using cv::Mat instead of _*Array
+    _cveDnnTextDetectionModelDetectTextRectanglesTyped($textDetectionModel, "Mat", $frame, $detections, $confidences)
 EndFunc   ;==>_cveDnnTextDetectionModelDetectTextRectanglesMat
 
 Func _cveDnnTextRecognitionModelCreate1($model, $config, $baseModel)
     ; CVAPI(cv::dnn::TextRecognitionModel*) cveDnnTextRecognitionModelCreate1(cv::String* model, cv::String* config, cv::dnn::Model** baseModel);
 
-    Local $bModelIsString = VarGetType($model) == "String"
+    Local $bModelIsString = IsString($model)
     If $bModelIsString Then
         $model = _cveStringCreateFromStr($model)
     EndIf
@@ -1835,7 +1977,7 @@ Func _cveDnnTextRecognitionModelCreate1($model, $config, $baseModel)
         $sModelDllType = "ptr"
     EndIf
 
-    Local $bConfigIsString = VarGetType($config) == "String"
+    Local $bConfigIsString = IsString($config)
     If $bConfigIsString Then
         $config = _cveStringCreateFromStr($config)
     EndIf
@@ -1962,7 +2104,7 @@ Func _cveDnnTextRecognitionModelRecognize1($textRecognitionModel, $frame, $text)
         $sFrameDllType = "ptr"
     EndIf
 
-    Local $bTextIsString = VarGetType($text) == "String"
+    Local $bTextIsString = IsString($text)
     If $bTextIsString Then
         $text = _cveStringCreateFromStr($text)
     EndIf
@@ -1981,32 +2123,47 @@ Func _cveDnnTextRecognitionModelRecognize1($textRecognitionModel, $frame, $text)
     EndIf
 EndFunc   ;==>_cveDnnTextRecognitionModelRecognize1
 
-Func _cveDnnTextRecognitionModelRecognize1Mat($textRecognitionModel, $matFrame, $text)
-    ; cveDnnTextRecognitionModelRecognize1 using cv::Mat instead of _*Array
+Func _cveDnnTextRecognitionModelRecognize1Typed($textRecognitionModel, $typeOfFrame, $frame, $text)
 
-    Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
-    Local $bFrameIsArray = VarGetType($matFrame) == "Array"
+    Local $iArrFrame, $vectorFrame, $iArrFrameSize
+    Local $bFrameIsArray = IsArray($frame)
+    Local $bFrameCreate = IsDllStruct($frame) And $typeOfFrame == "Scalar"
 
-    If $bFrameIsArray Then
-        $vectorOfMatFrame = _VectorOfMatCreate()
+    If $typeOfFrame == Default Then
+        $iArrFrame = $frame
+    ElseIf $bFrameIsArray Then
+        $vectorFrame = Call("_VectorOf" & $typeOfFrame & "Create")
 
-        $iArrFrameSize = UBound($matFrame)
+        $iArrFrameSize = UBound($frame)
         For $i = 0 To $iArrFrameSize - 1
-            _VectorOfMatPush($vectorOfMatFrame, $matFrame[$i])
+            Call("_VectorOf" & $typeOfFrame & "Push", $vectorFrame, $frame[$i])
         Next
 
-        $iArrFrame = _cveInputArrayFromVectorOfMat($vectorOfMatFrame)
+        $iArrFrame = Call("_cveInputArrayFromVectorOf" & $typeOfFrame, $vectorFrame)
     Else
-        $iArrFrame = _cveInputArrayFromMat($matFrame)
+        If $bFrameCreate Then
+            $frame = Call("_cve" & $typeOfFrame & "Create", $frame)
+        EndIf
+        $iArrFrame = Call("_cveInputArrayFrom" & $typeOfFrame, $frame)
     EndIf
 
     _cveDnnTextRecognitionModelRecognize1($textRecognitionModel, $iArrFrame, $text)
 
     If $bFrameIsArray Then
-        _VectorOfMatRelease($vectorOfMatFrame)
+        Call("_VectorOf" & $typeOfFrame & "Release", $vectorFrame)
     EndIf
 
-    _cveInputArrayRelease($iArrFrame)
+    If $typeOfFrame <> Default Then
+        _cveInputArrayRelease($iArrFrame)
+        If $bFrameCreate Then
+            Call("_cve" & $typeOfFrame & "Release", $frame)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDnnTextRecognitionModelRecognize1Typed
+
+Func _cveDnnTextRecognitionModelRecognize1Mat($textRecognitionModel, $frame, $text)
+    ; cveDnnTextRecognitionModelRecognize1 using cv::Mat instead of _*Array
+    _cveDnnTextRecognitionModelRecognize1Typed($textRecognitionModel, "Mat", $frame, $text)
 EndFunc   ;==>_cveDnnTextRecognitionModelRecognize1Mat
 
 Func _cveDnnTextRecognitionModelRecognize2($textRecognitionModel, $frame, $roiRects, $results)
@@ -2043,60 +2200,86 @@ Func _cveDnnTextRecognitionModelRecognize2($textRecognitionModel, $frame, $roiRe
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnTextRecognitionModelRecognize2", $sTextRecognitionModelDllType, $textRecognitionModel, $sFrameDllType, $frame, $sRoiRectsDllType, $roiRects, $sResultsDllType, $results), "cveDnnTextRecognitionModelRecognize2", @error)
 EndFunc   ;==>_cveDnnTextRecognitionModelRecognize2
 
-Func _cveDnnTextRecognitionModelRecognize2Mat($textRecognitionModel, $matFrame, $matRoiRects, $results)
-    ; cveDnnTextRecognitionModelRecognize2 using cv::Mat instead of _*Array
+Func _cveDnnTextRecognitionModelRecognize2Typed($textRecognitionModel, $typeOfFrame, $frame, $typeOfRoiRects, $roiRects, $results)
 
-    Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
-    Local $bFrameIsArray = VarGetType($matFrame) == "Array"
+    Local $iArrFrame, $vectorFrame, $iArrFrameSize
+    Local $bFrameIsArray = IsArray($frame)
+    Local $bFrameCreate = IsDllStruct($frame) And $typeOfFrame == "Scalar"
 
-    If $bFrameIsArray Then
-        $vectorOfMatFrame = _VectorOfMatCreate()
+    If $typeOfFrame == Default Then
+        $iArrFrame = $frame
+    ElseIf $bFrameIsArray Then
+        $vectorFrame = Call("_VectorOf" & $typeOfFrame & "Create")
 
-        $iArrFrameSize = UBound($matFrame)
+        $iArrFrameSize = UBound($frame)
         For $i = 0 To $iArrFrameSize - 1
-            _VectorOfMatPush($vectorOfMatFrame, $matFrame[$i])
+            Call("_VectorOf" & $typeOfFrame & "Push", $vectorFrame, $frame[$i])
         Next
 
-        $iArrFrame = _cveInputArrayFromVectorOfMat($vectorOfMatFrame)
+        $iArrFrame = Call("_cveInputArrayFromVectorOf" & $typeOfFrame, $vectorFrame)
     Else
-        $iArrFrame = _cveInputArrayFromMat($matFrame)
+        If $bFrameCreate Then
+            $frame = Call("_cve" & $typeOfFrame & "Create", $frame)
+        EndIf
+        $iArrFrame = Call("_cveInputArrayFrom" & $typeOfFrame, $frame)
     EndIf
 
-    Local $iArrRoiRects, $vectorOfMatRoiRects, $iArrRoiRectsSize
-    Local $bRoiRectsIsArray = VarGetType($matRoiRects) == "Array"
+    Local $iArrRoiRects, $vectorRoiRects, $iArrRoiRectsSize
+    Local $bRoiRectsIsArray = IsArray($roiRects)
+    Local $bRoiRectsCreate = IsDllStruct($roiRects) And $typeOfRoiRects == "Scalar"
 
-    If $bRoiRectsIsArray Then
-        $vectorOfMatRoiRects = _VectorOfMatCreate()
+    If $typeOfRoiRects == Default Then
+        $iArrRoiRects = $roiRects
+    ElseIf $bRoiRectsIsArray Then
+        $vectorRoiRects = Call("_VectorOf" & $typeOfRoiRects & "Create")
 
-        $iArrRoiRectsSize = UBound($matRoiRects)
+        $iArrRoiRectsSize = UBound($roiRects)
         For $i = 0 To $iArrRoiRectsSize - 1
-            _VectorOfMatPush($vectorOfMatRoiRects, $matRoiRects[$i])
+            Call("_VectorOf" & $typeOfRoiRects & "Push", $vectorRoiRects, $roiRects[$i])
         Next
 
-        $iArrRoiRects = _cveInputArrayFromVectorOfMat($vectorOfMatRoiRects)
+        $iArrRoiRects = Call("_cveInputArrayFromVectorOf" & $typeOfRoiRects, $vectorRoiRects)
     Else
-        $iArrRoiRects = _cveInputArrayFromMat($matRoiRects)
+        If $bRoiRectsCreate Then
+            $roiRects = Call("_cve" & $typeOfRoiRects & "Create", $roiRects)
+        EndIf
+        $iArrRoiRects = Call("_cveInputArrayFrom" & $typeOfRoiRects, $roiRects)
     EndIf
 
     _cveDnnTextRecognitionModelRecognize2($textRecognitionModel, $iArrFrame, $iArrRoiRects, $results)
 
     If $bRoiRectsIsArray Then
-        _VectorOfMatRelease($vectorOfMatRoiRects)
+        Call("_VectorOf" & $typeOfRoiRects & "Release", $vectorRoiRects)
     EndIf
 
-    _cveInputArrayRelease($iArrRoiRects)
+    If $typeOfRoiRects <> Default Then
+        _cveInputArrayRelease($iArrRoiRects)
+        If $bRoiRectsCreate Then
+            Call("_cve" & $typeOfRoiRects & "Release", $roiRects)
+        EndIf
+    EndIf
 
     If $bFrameIsArray Then
-        _VectorOfMatRelease($vectorOfMatFrame)
+        Call("_VectorOf" & $typeOfFrame & "Release", $vectorFrame)
     EndIf
 
-    _cveInputArrayRelease($iArrFrame)
+    If $typeOfFrame <> Default Then
+        _cveInputArrayRelease($iArrFrame)
+        If $bFrameCreate Then
+            Call("_cve" & $typeOfFrame & "Release", $frame)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDnnTextRecognitionModelRecognize2Typed
+
+Func _cveDnnTextRecognitionModelRecognize2Mat($textRecognitionModel, $frame, $roiRects, $results)
+    ; cveDnnTextRecognitionModelRecognize2 using cv::Mat instead of _*Array
+    _cveDnnTextRecognitionModelRecognize2Typed($textRecognitionModel, "Mat", $frame, "Mat", $roiRects, $results)
 EndFunc   ;==>_cveDnnTextRecognitionModelRecognize2Mat
 
 Func _cveModelCreate($model, $config)
     ; CVAPI(cv::dnn::Model*) cveModelCreate(cv::String* model, cv::String* config);
 
-    Local $bModelIsString = VarGetType($model) == "String"
+    Local $bModelIsString = IsString($model)
     If $bModelIsString Then
         $model = _cveStringCreateFromStr($model)
     EndIf
@@ -2108,7 +2291,7 @@ Func _cveModelCreate($model, $config)
         $sModelDllType = "ptr"
     EndIf
 
-    Local $bConfigIsString = VarGetType($config) == "String"
+    Local $bConfigIsString = IsString($config)
     If $bConfigIsString Then
         $config = _cveStringCreateFromStr($config)
     EndIf
@@ -2187,54 +2370,80 @@ Func _cveModelPredict($model, $frame, $outs)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveModelPredict", $sModelDllType, $model, $sFrameDllType, $frame, $sOutsDllType, $outs), "cveModelPredict", @error)
 EndFunc   ;==>_cveModelPredict
 
-Func _cveModelPredictMat($model, $matFrame, $matOuts)
-    ; cveModelPredict using cv::Mat instead of _*Array
+Func _cveModelPredictTyped($model, $typeOfFrame, $frame, $typeOfOuts, $outs)
 
-    Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
-    Local $bFrameIsArray = VarGetType($matFrame) == "Array"
+    Local $iArrFrame, $vectorFrame, $iArrFrameSize
+    Local $bFrameIsArray = IsArray($frame)
+    Local $bFrameCreate = IsDllStruct($frame) And $typeOfFrame == "Scalar"
 
-    If $bFrameIsArray Then
-        $vectorOfMatFrame = _VectorOfMatCreate()
+    If $typeOfFrame == Default Then
+        $iArrFrame = $frame
+    ElseIf $bFrameIsArray Then
+        $vectorFrame = Call("_VectorOf" & $typeOfFrame & "Create")
 
-        $iArrFrameSize = UBound($matFrame)
+        $iArrFrameSize = UBound($frame)
         For $i = 0 To $iArrFrameSize - 1
-            _VectorOfMatPush($vectorOfMatFrame, $matFrame[$i])
+            Call("_VectorOf" & $typeOfFrame & "Push", $vectorFrame, $frame[$i])
         Next
 
-        $iArrFrame = _cveInputArrayFromVectorOfMat($vectorOfMatFrame)
+        $iArrFrame = Call("_cveInputArrayFromVectorOf" & $typeOfFrame, $vectorFrame)
     Else
-        $iArrFrame = _cveInputArrayFromMat($matFrame)
+        If $bFrameCreate Then
+            $frame = Call("_cve" & $typeOfFrame & "Create", $frame)
+        EndIf
+        $iArrFrame = Call("_cveInputArrayFrom" & $typeOfFrame, $frame)
     EndIf
 
-    Local $oArrOuts, $vectorOfMatOuts, $iArrOutsSize
-    Local $bOutsIsArray = VarGetType($matOuts) == "Array"
+    Local $oArrOuts, $vectorOuts, $iArrOutsSize
+    Local $bOutsIsArray = IsArray($outs)
+    Local $bOutsCreate = IsDllStruct($outs) And $typeOfOuts == "Scalar"
 
-    If $bOutsIsArray Then
-        $vectorOfMatOuts = _VectorOfMatCreate()
+    If $typeOfOuts == Default Then
+        $oArrOuts = $outs
+    ElseIf $bOutsIsArray Then
+        $vectorOuts = Call("_VectorOf" & $typeOfOuts & "Create")
 
-        $iArrOutsSize = UBound($matOuts)
+        $iArrOutsSize = UBound($outs)
         For $i = 0 To $iArrOutsSize - 1
-            _VectorOfMatPush($vectorOfMatOuts, $matOuts[$i])
+            Call("_VectorOf" & $typeOfOuts & "Push", $vectorOuts, $outs[$i])
         Next
 
-        $oArrOuts = _cveOutputArrayFromVectorOfMat($vectorOfMatOuts)
+        $oArrOuts = Call("_cveOutputArrayFromVectorOf" & $typeOfOuts, $vectorOuts)
     Else
-        $oArrOuts = _cveOutputArrayFromMat($matOuts)
+        If $bOutsCreate Then
+            $outs = Call("_cve" & $typeOfOuts & "Create", $outs)
+        EndIf
+        $oArrOuts = Call("_cveOutputArrayFrom" & $typeOfOuts, $outs)
     EndIf
 
     _cveModelPredict($model, $iArrFrame, $oArrOuts)
 
     If $bOutsIsArray Then
-        _VectorOfMatRelease($vectorOfMatOuts)
+        Call("_VectorOf" & $typeOfOuts & "Release", $vectorOuts)
     EndIf
 
-    _cveOutputArrayRelease($oArrOuts)
+    If $typeOfOuts <> Default Then
+        _cveOutputArrayRelease($oArrOuts)
+        If $bOutsCreate Then
+            Call("_cve" & $typeOfOuts & "Release", $outs)
+        EndIf
+    EndIf
 
     If $bFrameIsArray Then
-        _VectorOfMatRelease($vectorOfMatFrame)
+        Call("_VectorOf" & $typeOfFrame & "Release", $vectorFrame)
     EndIf
 
-    _cveInputArrayRelease($iArrFrame)
+    If $typeOfFrame <> Default Then
+        _cveInputArrayRelease($iArrFrame)
+        If $bFrameCreate Then
+            Call("_cve" & $typeOfFrame & "Release", $frame)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveModelPredictTyped
+
+Func _cveModelPredictMat($model, $frame, $outs)
+    ; cveModelPredict using cv::Mat instead of _*Array
+    _cveModelPredictTyped($model, "Mat", $frame, "Mat", $outs)
 EndFunc   ;==>_cveModelPredictMat
 
 Func _cveModelSetInputMean($model, $mean)
@@ -2345,7 +2554,7 @@ EndFunc   ;==>_cveModelSetPreferableTarget
 Func _cveDnnDetectionModelCreate1($model, $config, $baseModel)
     ; CVAPI(cv::dnn::DetectionModel*) cveDnnDetectionModelCreate1(cv::String* model, cv::String* config, cv::dnn::Model** baseModel);
 
-    Local $bModelIsString = VarGetType($model) == "String"
+    Local $bModelIsString = IsString($model)
     If $bModelIsString Then
         $model = _cveStringCreateFromStr($model)
     EndIf
@@ -2357,7 +2566,7 @@ Func _cveDnnDetectionModelCreate1($model, $config, $baseModel)
         $sModelDllType = "ptr"
     EndIf
 
-    Local $bConfigIsString = VarGetType($config) == "String"
+    Local $bConfigIsString = IsString($config)
     If $bConfigIsString Then
         $config = _cveStringCreateFromStr($config)
     EndIf
@@ -2445,7 +2654,7 @@ Func _cveDnnDetectionModelDetect($detectionModel, $frame, $classIds, $confidence
     EndIf
 
     Local $vecClassIds, $iArrClassIdsSize
-    Local $bClassIdsIsArray = VarGetType($classIds) == "Array"
+    Local $bClassIdsIsArray = IsArray($classIds)
 
     If $bClassIdsIsArray Then
         $vecClassIds = _VectorOfIntCreate()
@@ -2466,7 +2675,7 @@ Func _cveDnnDetectionModelDetect($detectionModel, $frame, $classIds, $confidence
     EndIf
 
     Local $vecConfidences, $iArrConfidencesSize
-    Local $bConfidencesIsArray = VarGetType($confidences) == "Array"
+    Local $bConfidencesIsArray = IsArray($confidences)
 
     If $bConfidencesIsArray Then
         $vecConfidences = _VectorOfFloatCreate()
@@ -2487,7 +2696,7 @@ Func _cveDnnDetectionModelDetect($detectionModel, $frame, $classIds, $confidence
     EndIf
 
     Local $vecBoxes, $iArrBoxesSize
-    Local $bBoxesIsArray = VarGetType($boxes) == "Array"
+    Local $bBoxesIsArray = IsArray($boxes)
 
     If $bBoxesIsArray Then
         $vecBoxes = _VectorOfRectCreate()
@@ -2522,38 +2731,53 @@ Func _cveDnnDetectionModelDetect($detectionModel, $frame, $classIds, $confidence
     EndIf
 EndFunc   ;==>_cveDnnDetectionModelDetect
 
-Func _cveDnnDetectionModelDetectMat($detectionModel, $matFrame, $classIds, $confidences, $boxes, $confThreshold, $nmsThreshold)
-    ; cveDnnDetectionModelDetect using cv::Mat instead of _*Array
+Func _cveDnnDetectionModelDetectTyped($detectionModel, $typeOfFrame, $frame, $classIds, $confidences, $boxes, $confThreshold, $nmsThreshold)
 
-    Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
-    Local $bFrameIsArray = VarGetType($matFrame) == "Array"
+    Local $iArrFrame, $vectorFrame, $iArrFrameSize
+    Local $bFrameIsArray = IsArray($frame)
+    Local $bFrameCreate = IsDllStruct($frame) And $typeOfFrame == "Scalar"
 
-    If $bFrameIsArray Then
-        $vectorOfMatFrame = _VectorOfMatCreate()
+    If $typeOfFrame == Default Then
+        $iArrFrame = $frame
+    ElseIf $bFrameIsArray Then
+        $vectorFrame = Call("_VectorOf" & $typeOfFrame & "Create")
 
-        $iArrFrameSize = UBound($matFrame)
+        $iArrFrameSize = UBound($frame)
         For $i = 0 To $iArrFrameSize - 1
-            _VectorOfMatPush($vectorOfMatFrame, $matFrame[$i])
+            Call("_VectorOf" & $typeOfFrame & "Push", $vectorFrame, $frame[$i])
         Next
 
-        $iArrFrame = _cveInputArrayFromVectorOfMat($vectorOfMatFrame)
+        $iArrFrame = Call("_cveInputArrayFromVectorOf" & $typeOfFrame, $vectorFrame)
     Else
-        $iArrFrame = _cveInputArrayFromMat($matFrame)
+        If $bFrameCreate Then
+            $frame = Call("_cve" & $typeOfFrame & "Create", $frame)
+        EndIf
+        $iArrFrame = Call("_cveInputArrayFrom" & $typeOfFrame, $frame)
     EndIf
 
     _cveDnnDetectionModelDetect($detectionModel, $iArrFrame, $classIds, $confidences, $boxes, $confThreshold, $nmsThreshold)
 
     If $bFrameIsArray Then
-        _VectorOfMatRelease($vectorOfMatFrame)
+        Call("_VectorOf" & $typeOfFrame & "Release", $vectorFrame)
     EndIf
 
-    _cveInputArrayRelease($iArrFrame)
+    If $typeOfFrame <> Default Then
+        _cveInputArrayRelease($iArrFrame)
+        If $bFrameCreate Then
+            Call("_cve" & $typeOfFrame & "Release", $frame)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDnnDetectionModelDetectTyped
+
+Func _cveDnnDetectionModelDetectMat($detectionModel, $frame, $classIds, $confidences, $boxes, $confThreshold, $nmsThreshold)
+    ; cveDnnDetectionModelDetect using cv::Mat instead of _*Array
+    _cveDnnDetectionModelDetectTyped($detectionModel, "Mat", $frame, $classIds, $confidences, $boxes, $confThreshold, $nmsThreshold)
 EndFunc   ;==>_cveDnnDetectionModelDetectMat
 
 Func _cveDnnClassificationModelCreate1($model, $config, $baseModel)
     ; CVAPI(cv::dnn::ClassificationModel*) cveDnnClassificationModelCreate1(cv::String* model, cv::String* config, cv::dnn::Model** baseModel);
 
-    Local $bModelIsString = VarGetType($model) == "String"
+    Local $bModelIsString = IsString($model)
     If $bModelIsString Then
         $model = _cveStringCreateFromStr($model)
     EndIf
@@ -2565,7 +2789,7 @@ Func _cveDnnClassificationModelCreate1($model, $config, $baseModel)
         $sModelDllType = "ptr"
     EndIf
 
-    Local $bConfigIsString = VarGetType($config) == "String"
+    Local $bConfigIsString = IsString($config)
     If $bConfigIsString Then
         $config = _cveStringCreateFromStr($config)
     EndIf
@@ -2669,38 +2893,53 @@ Func _cveDnnClassificationModelClassify($classificationModel, $frame, $classId, 
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnClassificationModelClassify", $sClassificationModelDllType, $classificationModel, $sFrameDllType, $frame, $sClassIdDllType, $classId, $sConfDllType, $conf), "cveDnnClassificationModelClassify", @error)
 EndFunc   ;==>_cveDnnClassificationModelClassify
 
-Func _cveDnnClassificationModelClassifyMat($classificationModel, $matFrame, $classId, $conf)
-    ; cveDnnClassificationModelClassify using cv::Mat instead of _*Array
+Func _cveDnnClassificationModelClassifyTyped($classificationModel, $typeOfFrame, $frame, $classId, $conf)
 
-    Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
-    Local $bFrameIsArray = VarGetType($matFrame) == "Array"
+    Local $iArrFrame, $vectorFrame, $iArrFrameSize
+    Local $bFrameIsArray = IsArray($frame)
+    Local $bFrameCreate = IsDllStruct($frame) And $typeOfFrame == "Scalar"
 
-    If $bFrameIsArray Then
-        $vectorOfMatFrame = _VectorOfMatCreate()
+    If $typeOfFrame == Default Then
+        $iArrFrame = $frame
+    ElseIf $bFrameIsArray Then
+        $vectorFrame = Call("_VectorOf" & $typeOfFrame & "Create")
 
-        $iArrFrameSize = UBound($matFrame)
+        $iArrFrameSize = UBound($frame)
         For $i = 0 To $iArrFrameSize - 1
-            _VectorOfMatPush($vectorOfMatFrame, $matFrame[$i])
+            Call("_VectorOf" & $typeOfFrame & "Push", $vectorFrame, $frame[$i])
         Next
 
-        $iArrFrame = _cveInputArrayFromVectorOfMat($vectorOfMatFrame)
+        $iArrFrame = Call("_cveInputArrayFromVectorOf" & $typeOfFrame, $vectorFrame)
     Else
-        $iArrFrame = _cveInputArrayFromMat($matFrame)
+        If $bFrameCreate Then
+            $frame = Call("_cve" & $typeOfFrame & "Create", $frame)
+        EndIf
+        $iArrFrame = Call("_cveInputArrayFrom" & $typeOfFrame, $frame)
     EndIf
 
     _cveDnnClassificationModelClassify($classificationModel, $iArrFrame, $classId, $conf)
 
     If $bFrameIsArray Then
-        _VectorOfMatRelease($vectorOfMatFrame)
+        Call("_VectorOf" & $typeOfFrame & "Release", $vectorFrame)
     EndIf
 
-    _cveInputArrayRelease($iArrFrame)
+    If $typeOfFrame <> Default Then
+        _cveInputArrayRelease($iArrFrame)
+        If $bFrameCreate Then
+            Call("_cve" & $typeOfFrame & "Release", $frame)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDnnClassificationModelClassifyTyped
+
+Func _cveDnnClassificationModelClassifyMat($classificationModel, $frame, $classId, $conf)
+    ; cveDnnClassificationModelClassify using cv::Mat instead of _*Array
+    _cveDnnClassificationModelClassifyTyped($classificationModel, "Mat", $frame, $classId, $conf)
 EndFunc   ;==>_cveDnnClassificationModelClassifyMat
 
 Func _cveDnnKeypointsModelCreate1($model, $config, $baseModel)
     ; CVAPI(cv::dnn::KeypointsModel*) cveDnnKeypointsModelCreate1(cv::String* model, cv::String* config, cv::dnn::Model** baseModel);
 
-    Local $bModelIsString = VarGetType($model) == "String"
+    Local $bModelIsString = IsString($model)
     If $bModelIsString Then
         $model = _cveStringCreateFromStr($model)
     EndIf
@@ -2712,7 +2951,7 @@ Func _cveDnnKeypointsModelCreate1($model, $config, $baseModel)
         $sModelDllType = "ptr"
     EndIf
 
-    Local $bConfigIsString = VarGetType($config) == "String"
+    Local $bConfigIsString = IsString($config)
     If $bConfigIsString Then
         $config = _cveStringCreateFromStr($config)
     EndIf
@@ -2800,7 +3039,7 @@ Func _cveDnnKeypointsModelEstimate($keypointsModel, $frame, $keypoints, $thresh)
     EndIf
 
     Local $vecKeypoints, $iArrKeypointsSize
-    Local $bKeypointsIsArray = VarGetType($keypoints) == "Array"
+    Local $bKeypointsIsArray = IsArray($keypoints)
 
     If $bKeypointsIsArray Then
         $vecKeypoints = _VectorOfPointFCreate()
@@ -2827,38 +3066,53 @@ Func _cveDnnKeypointsModelEstimate($keypointsModel, $frame, $keypoints, $thresh)
     EndIf
 EndFunc   ;==>_cveDnnKeypointsModelEstimate
 
-Func _cveDnnKeypointsModelEstimateMat($keypointsModel, $matFrame, $keypoints, $thresh)
-    ; cveDnnKeypointsModelEstimate using cv::Mat instead of _*Array
+Func _cveDnnKeypointsModelEstimateTyped($keypointsModel, $typeOfFrame, $frame, $keypoints, $thresh)
 
-    Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
-    Local $bFrameIsArray = VarGetType($matFrame) == "Array"
+    Local $iArrFrame, $vectorFrame, $iArrFrameSize
+    Local $bFrameIsArray = IsArray($frame)
+    Local $bFrameCreate = IsDllStruct($frame) And $typeOfFrame == "Scalar"
 
-    If $bFrameIsArray Then
-        $vectorOfMatFrame = _VectorOfMatCreate()
+    If $typeOfFrame == Default Then
+        $iArrFrame = $frame
+    ElseIf $bFrameIsArray Then
+        $vectorFrame = Call("_VectorOf" & $typeOfFrame & "Create")
 
-        $iArrFrameSize = UBound($matFrame)
+        $iArrFrameSize = UBound($frame)
         For $i = 0 To $iArrFrameSize - 1
-            _VectorOfMatPush($vectorOfMatFrame, $matFrame[$i])
+            Call("_VectorOf" & $typeOfFrame & "Push", $vectorFrame, $frame[$i])
         Next
 
-        $iArrFrame = _cveInputArrayFromVectorOfMat($vectorOfMatFrame)
+        $iArrFrame = Call("_cveInputArrayFromVectorOf" & $typeOfFrame, $vectorFrame)
     Else
-        $iArrFrame = _cveInputArrayFromMat($matFrame)
+        If $bFrameCreate Then
+            $frame = Call("_cve" & $typeOfFrame & "Create", $frame)
+        EndIf
+        $iArrFrame = Call("_cveInputArrayFrom" & $typeOfFrame, $frame)
     EndIf
 
     _cveDnnKeypointsModelEstimate($keypointsModel, $iArrFrame, $keypoints, $thresh)
 
     If $bFrameIsArray Then
-        _VectorOfMatRelease($vectorOfMatFrame)
+        Call("_VectorOf" & $typeOfFrame & "Release", $vectorFrame)
     EndIf
 
-    _cveInputArrayRelease($iArrFrame)
+    If $typeOfFrame <> Default Then
+        _cveInputArrayRelease($iArrFrame)
+        If $bFrameCreate Then
+            Call("_cve" & $typeOfFrame & "Release", $frame)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDnnKeypointsModelEstimateTyped
+
+Func _cveDnnKeypointsModelEstimateMat($keypointsModel, $frame, $keypoints, $thresh)
+    ; cveDnnKeypointsModelEstimate using cv::Mat instead of _*Array
+    _cveDnnKeypointsModelEstimateTyped($keypointsModel, "Mat", $frame, $keypoints, $thresh)
 EndFunc   ;==>_cveDnnKeypointsModelEstimateMat
 
 Func _cveDnnSegmentationModelCreate1($model, $config, $baseModel)
     ; CVAPI(cv::dnn::SegmentationModel*) cveDnnSegmentationModelCreate1(cv::String* model, cv::String* config, cv::dnn::Model** baseModel);
 
-    Local $bModelIsString = VarGetType($model) == "String"
+    Local $bModelIsString = IsString($model)
     If $bModelIsString Then
         $model = _cveStringCreateFromStr($model)
     EndIf
@@ -2870,7 +3124,7 @@ Func _cveDnnSegmentationModelCreate1($model, $config, $baseModel)
         $sModelDllType = "ptr"
     EndIf
 
-    Local $bConfigIsString = VarGetType($config) == "String"
+    Local $bConfigIsString = IsString($config)
     If $bConfigIsString Then
         $config = _cveStringCreateFromStr($config)
     EndIf
@@ -2967,52 +3221,78 @@ Func _cveDnnSegmentationModelSegment($segmentationModel, $frame, $mask)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveDnnSegmentationModelSegment", $sSegmentationModelDllType, $segmentationModel, $sFrameDllType, $frame, $sMaskDllType, $mask), "cveDnnSegmentationModelSegment", @error)
 EndFunc   ;==>_cveDnnSegmentationModelSegment
 
-Func _cveDnnSegmentationModelSegmentMat($segmentationModel, $matFrame, $matMask)
-    ; cveDnnSegmentationModelSegment using cv::Mat instead of _*Array
+Func _cveDnnSegmentationModelSegmentTyped($segmentationModel, $typeOfFrame, $frame, $typeOfMask, $mask)
 
-    Local $iArrFrame, $vectorOfMatFrame, $iArrFrameSize
-    Local $bFrameIsArray = VarGetType($matFrame) == "Array"
+    Local $iArrFrame, $vectorFrame, $iArrFrameSize
+    Local $bFrameIsArray = IsArray($frame)
+    Local $bFrameCreate = IsDllStruct($frame) And $typeOfFrame == "Scalar"
 
-    If $bFrameIsArray Then
-        $vectorOfMatFrame = _VectorOfMatCreate()
+    If $typeOfFrame == Default Then
+        $iArrFrame = $frame
+    ElseIf $bFrameIsArray Then
+        $vectorFrame = Call("_VectorOf" & $typeOfFrame & "Create")
 
-        $iArrFrameSize = UBound($matFrame)
+        $iArrFrameSize = UBound($frame)
         For $i = 0 To $iArrFrameSize - 1
-            _VectorOfMatPush($vectorOfMatFrame, $matFrame[$i])
+            Call("_VectorOf" & $typeOfFrame & "Push", $vectorFrame, $frame[$i])
         Next
 
-        $iArrFrame = _cveInputArrayFromVectorOfMat($vectorOfMatFrame)
+        $iArrFrame = Call("_cveInputArrayFromVectorOf" & $typeOfFrame, $vectorFrame)
     Else
-        $iArrFrame = _cveInputArrayFromMat($matFrame)
+        If $bFrameCreate Then
+            $frame = Call("_cve" & $typeOfFrame & "Create", $frame)
+        EndIf
+        $iArrFrame = Call("_cveInputArrayFrom" & $typeOfFrame, $frame)
     EndIf
 
-    Local $oArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $oArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $oArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $oArrMask = _cveOutputArrayFromVectorOfMat($vectorOfMatMask)
+        $oArrMask = Call("_cveOutputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $oArrMask = _cveOutputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $oArrMask = Call("_cveOutputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
     _cveDnnSegmentationModelSegment($segmentationModel, $iArrFrame, $oArrMask)
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveOutputArrayRelease($oArrMask)
+    If $typeOfMask <> Default Then
+        _cveOutputArrayRelease($oArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bFrameIsArray Then
-        _VectorOfMatRelease($vectorOfMatFrame)
+        Call("_VectorOf" & $typeOfFrame & "Release", $vectorFrame)
     EndIf
 
-    _cveInputArrayRelease($iArrFrame)
+    If $typeOfFrame <> Default Then
+        _cveInputArrayRelease($iArrFrame)
+        If $bFrameCreate Then
+            Call("_cve" & $typeOfFrame & "Release", $frame)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveDnnSegmentationModelSegmentTyped
+
+Func _cveDnnSegmentationModelSegmentMat($segmentationModel, $frame, $mask)
+    ; cveDnnSegmentationModelSegment using cv::Mat instead of _*Array
+    _cveDnnSegmentationModelSegmentTyped($segmentationModel, "Mat", $frame, "Mat", $mask)
 EndFunc   ;==>_cveDnnSegmentationModelSegmentMat

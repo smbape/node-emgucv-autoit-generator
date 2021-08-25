@@ -5,7 +5,7 @@ Func _cveDPMDetectorCreate($filenames, $classNames, $sharedPtr)
     ; CVAPI(DPMDetector*) cveDPMDetectorCreate(std::vector<cv::String>* filenames, std::vector<cv::String>* classNames, cv::Ptr<cv::dpm::DPMDetector>** sharedPtr);
 
     Local $vecFilenames, $iArrFilenamesSize
-    Local $bFilenamesIsArray = VarGetType($filenames) == "Array"
+    Local $bFilenamesIsArray = IsArray($filenames)
 
     If $bFilenamesIsArray Then
         $vecFilenames = _VectorOfCvStringCreate()
@@ -26,7 +26,7 @@ Func _cveDPMDetectorCreate($filenames, $classNames, $sharedPtr)
     EndIf
 
     Local $vecClassNames, $iArrClassNamesSize
-    Local $bClassNamesIsArray = VarGetType($classNames) == "Array"
+    Local $bClassNamesIsArray = IsArray($classNames)
 
     If $bClassNamesIsArray Then
         $vecClassNames = _VectorOfCvStringCreate()
@@ -93,7 +93,7 @@ Func _cveDPMDetectorDetect($dpm, $image, $rects, $scores, $classIds)
     EndIf
 
     Local $vecScores, $iArrScoresSize
-    Local $bScoresIsArray = VarGetType($scores) == "Array"
+    Local $bScoresIsArray = IsArray($scores)
 
     If $bScoresIsArray Then
         $vecScores = _VectorOfFloatCreate()
@@ -114,7 +114,7 @@ Func _cveDPMDetectorDetect($dpm, $image, $rects, $scores, $classIds)
     EndIf
 
     Local $vecClassIds, $iArrClassIdsSize
-    Local $bClassIdsIsArray = VarGetType($classIds) == "Array"
+    Local $bClassIdsIsArray = IsArray($classIds)
 
     If $bClassIdsIsArray Then
         $vecClassIds = _VectorOfIntCreate()
@@ -168,7 +168,7 @@ Func _cveDPMDetectorGetClassNames($dpm, $names)
     EndIf
 
     Local $vecNames, $iArrNamesSize
-    Local $bNamesIsArray = VarGetType($names) == "Array"
+    Local $bNamesIsArray = IsArray($names)
 
     If $bNamesIsArray Then
         $vecNames = _VectorOfCvStringCreate()

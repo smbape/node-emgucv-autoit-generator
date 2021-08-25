@@ -164,54 +164,80 @@ Func _cveMatCopyTo($mat, $m, $mask)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatCopyTo", $sMatDllType, $mat, $sMDllType, $m, $sMaskDllType, $mask), "cveMatCopyTo", @error)
 EndFunc   ;==>_cveMatCopyTo
 
-Func _cveMatCopyToMat($mat, $matM, $matMask)
-    ; cveMatCopyTo using cv::Mat instead of _*Array
+Func _cveMatCopyToTyped($mat, $typeOfM, $m, $typeOfMask, $mask)
 
-    Local $oArrM, $vectorOfMatM, $iArrMSize
-    Local $bMIsArray = VarGetType($matM) == "Array"
+    Local $oArrM, $vectorM, $iArrMSize
+    Local $bMIsArray = IsArray($m)
+    Local $bMCreate = IsDllStruct($m) And $typeOfM == "Scalar"
 
-    If $bMIsArray Then
-        $vectorOfMatM = _VectorOfMatCreate()
+    If $typeOfM == Default Then
+        $oArrM = $m
+    ElseIf $bMIsArray Then
+        $vectorM = Call("_VectorOf" & $typeOfM & "Create")
 
-        $iArrMSize = UBound($matM)
+        $iArrMSize = UBound($m)
         For $i = 0 To $iArrMSize - 1
-            _VectorOfMatPush($vectorOfMatM, $matM[$i])
+            Call("_VectorOf" & $typeOfM & "Push", $vectorM, $m[$i])
         Next
 
-        $oArrM = _cveOutputArrayFromVectorOfMat($vectorOfMatM)
+        $oArrM = Call("_cveOutputArrayFromVectorOf" & $typeOfM, $vectorM)
     Else
-        $oArrM = _cveOutputArrayFromMat($matM)
+        If $bMCreate Then
+            $m = Call("_cve" & $typeOfM & "Create", $m)
+        EndIf
+        $oArrM = Call("_cveOutputArrayFrom" & $typeOfM, $m)
     EndIf
 
-    Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $iArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $iArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $iArrMask = _cveInputArrayFromVectorOfMat($vectorOfMatMask)
+        $iArrMask = Call("_cveInputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $iArrMask = _cveInputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $iArrMask = Call("_cveInputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
     _cveMatCopyTo($mat, $oArrM, $iArrMask)
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMask)
+    If $typeOfMask <> Default Then
+        _cveInputArrayRelease($iArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bMIsArray Then
-        _VectorOfMatRelease($vectorOfMatM)
+        Call("_VectorOf" & $typeOfM & "Release", $vectorM)
     EndIf
 
-    _cveOutputArrayRelease($oArrM)
+    If $typeOfM <> Default Then
+        _cveOutputArrayRelease($oArrM)
+        If $bMCreate Then
+            Call("_cve" & $typeOfM & "Release", $m)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveMatCopyToTyped
+
+Func _cveMatCopyToMat($mat, $m, $mask)
+    ; cveMatCopyTo using cv::Mat instead of _*Array
+    _cveMatCopyToTyped($mat, "Mat", $m, "Mat", $mask)
 EndFunc   ;==>_cveMatCopyToMat
 
 Func _cveArrToMat($cvArray, $copyData, $allowND, $coiMode)
@@ -320,54 +346,80 @@ Func _cveMatSetTo($mat, $value, $mask)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatSetTo", $sMatDllType, $mat, $sValueDllType, $value, $sMaskDllType, $mask), "cveMatSetTo", @error)
 EndFunc   ;==>_cveMatSetTo
 
-Func _cveMatSetToMat($mat, $matValue, $matMask)
-    ; cveMatSetTo using cv::Mat instead of _*Array
+Func _cveMatSetToTyped($mat, $typeOfValue, $value, $typeOfMask, $mask)
 
-    Local $iArrValue, $vectorOfMatValue, $iArrValueSize
-    Local $bValueIsArray = VarGetType($matValue) == "Array"
+    Local $iArrValue, $vectorValue, $iArrValueSize
+    Local $bValueIsArray = IsArray($value)
+    Local $bValueCreate = IsDllStruct($value) And $typeOfValue == "Scalar"
 
-    If $bValueIsArray Then
-        $vectorOfMatValue = _VectorOfMatCreate()
+    If $typeOfValue == Default Then
+        $iArrValue = $value
+    ElseIf $bValueIsArray Then
+        $vectorValue = Call("_VectorOf" & $typeOfValue & "Create")
 
-        $iArrValueSize = UBound($matValue)
+        $iArrValueSize = UBound($value)
         For $i = 0 To $iArrValueSize - 1
-            _VectorOfMatPush($vectorOfMatValue, $matValue[$i])
+            Call("_VectorOf" & $typeOfValue & "Push", $vectorValue, $value[$i])
         Next
 
-        $iArrValue = _cveInputArrayFromVectorOfMat($vectorOfMatValue)
+        $iArrValue = Call("_cveInputArrayFromVectorOf" & $typeOfValue, $vectorValue)
     Else
-        $iArrValue = _cveInputArrayFromMat($matValue)
+        If $bValueCreate Then
+            $value = Call("_cve" & $typeOfValue & "Create", $value)
+        EndIf
+        $iArrValue = Call("_cveInputArrayFrom" & $typeOfValue, $value)
     EndIf
 
-    Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $iArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $iArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $iArrMask = _cveInputArrayFromVectorOfMat($vectorOfMatMask)
+        $iArrMask = Call("_cveInputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $iArrMask = _cveInputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $iArrMask = Call("_cveInputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
     _cveMatSetTo($mat, $iArrValue, $iArrMask)
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMask)
+    If $typeOfMask <> Default Then
+        _cveInputArrayRelease($iArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bValueIsArray Then
-        _VectorOfMatRelease($vectorOfMatValue)
+        Call("_VectorOf" & $typeOfValue & "Release", $vectorValue)
     EndIf
 
-    _cveInputArrayRelease($iArrValue)
+    If $typeOfValue <> Default Then
+        _cveInputArrayRelease($iArrValue)
+        If $bValueCreate Then
+            Call("_cve" & $typeOfValue & "Release", $value)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveMatSetToTyped
+
+Func _cveMatSetToMat($mat, $value, $mask)
+    ; cveMatSetTo using cv::Mat instead of _*Array
+    _cveMatSetToTyped($mat, "Mat", $value, "Mat", $mask)
 EndFunc   ;==>_cveMatSetToMat
 
 Func _cveMatGetUMat($mat, $access, $usageFlags)
@@ -402,32 +454,47 @@ Func _cveMatConvertTo($mat, $out, $rtype, $alpha, $beta)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatConvertTo", $sMatDllType, $mat, $sOutDllType, $out, "int", $rtype, "double", $alpha, "double", $beta), "cveMatConvertTo", @error)
 EndFunc   ;==>_cveMatConvertTo
 
-Func _cveMatConvertToMat($mat, $matOut, $rtype, $alpha, $beta)
-    ; cveMatConvertTo using cv::Mat instead of _*Array
+Func _cveMatConvertToTyped($mat, $typeOfOut, $out, $rtype, $alpha, $beta)
 
-    Local $oArrOut, $vectorOfMatOut, $iArrOutSize
-    Local $bOutIsArray = VarGetType($matOut) == "Array"
+    Local $oArrOut, $vectorOut, $iArrOutSize
+    Local $bOutIsArray = IsArray($out)
+    Local $bOutCreate = IsDllStruct($out) And $typeOfOut == "Scalar"
 
-    If $bOutIsArray Then
-        $vectorOfMatOut = _VectorOfMatCreate()
+    If $typeOfOut == Default Then
+        $oArrOut = $out
+    ElseIf $bOutIsArray Then
+        $vectorOut = Call("_VectorOf" & $typeOfOut & "Create")
 
-        $iArrOutSize = UBound($matOut)
+        $iArrOutSize = UBound($out)
         For $i = 0 To $iArrOutSize - 1
-            _VectorOfMatPush($vectorOfMatOut, $matOut[$i])
+            Call("_VectorOf" & $typeOfOut & "Push", $vectorOut, $out[$i])
         Next
 
-        $oArrOut = _cveOutputArrayFromVectorOfMat($vectorOfMatOut)
+        $oArrOut = Call("_cveOutputArrayFromVectorOf" & $typeOfOut, $vectorOut)
     Else
-        $oArrOut = _cveOutputArrayFromMat($matOut)
+        If $bOutCreate Then
+            $out = Call("_cve" & $typeOfOut & "Create", $out)
+        EndIf
+        $oArrOut = Call("_cveOutputArrayFrom" & $typeOfOut, $out)
     EndIf
 
     _cveMatConvertTo($mat, $oArrOut, $rtype, $alpha, $beta)
 
     If $bOutIsArray Then
-        _VectorOfMatRelease($vectorOfMatOut)
+        Call("_VectorOf" & $typeOfOut & "Release", $vectorOut)
     EndIf
 
-    _cveOutputArrayRelease($oArrOut)
+    If $typeOfOut <> Default Then
+        _cveOutputArrayRelease($oArrOut)
+        If $bOutCreate Then
+            Call("_cve" & $typeOfOut & "Release", $out)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveMatConvertToTyped
+
+Func _cveMatConvertToMat($mat, $out, $rtype, $alpha, $beta)
+    ; cveMatConvertTo using cv::Mat instead of _*Array
+    _cveMatConvertToTyped($mat, "Mat", $out, $rtype, $alpha, $beta)
 EndFunc   ;==>_cveMatConvertToMat
 
 Func _cveMatReshape($mat, $cn, $rows)
@@ -461,32 +528,49 @@ Func _cveMatDot($mat, $m)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveMatDot", $sMatDllType, $mat, $sMDllType, $m), "cveMatDot", @error)
 EndFunc   ;==>_cveMatDot
 
-Func _cveMatDotMat($mat, $matM)
-    ; cveMatDot using cv::Mat instead of _*Array
+Func _cveMatDotTyped($mat, $typeOfM, $m)
 
-    Local $iArrM, $vectorOfMatM, $iArrMSize
-    Local $bMIsArray = VarGetType($matM) == "Array"
+    Local $iArrM, $vectorM, $iArrMSize
+    Local $bMIsArray = IsArray($m)
+    Local $bMCreate = IsDllStruct($m) And $typeOfM == "Scalar"
 
-    If $bMIsArray Then
-        $vectorOfMatM = _VectorOfMatCreate()
+    If $typeOfM == Default Then
+        $iArrM = $m
+    ElseIf $bMIsArray Then
+        $vectorM = Call("_VectorOf" & $typeOfM & "Create")
 
-        $iArrMSize = UBound($matM)
+        $iArrMSize = UBound($m)
         For $i = 0 To $iArrMSize - 1
-            _VectorOfMatPush($vectorOfMatM, $matM[$i])
+            Call("_VectorOf" & $typeOfM & "Push", $vectorM, $m[$i])
         Next
 
-        $iArrM = _cveInputArrayFromVectorOfMat($vectorOfMatM)
+        $iArrM = Call("_cveInputArrayFromVectorOf" & $typeOfM, $vectorM)
     Else
-        $iArrM = _cveInputArrayFromMat($matM)
+        If $bMCreate Then
+            $m = Call("_cve" & $typeOfM & "Create", $m)
+        EndIf
+        $iArrM = Call("_cveInputArrayFrom" & $typeOfM, $m)
     EndIf
 
     Local $retval = _cveMatDot($mat, $iArrM)
 
     If $bMIsArray Then
-        _VectorOfMatRelease($vectorOfMatM)
+        Call("_VectorOf" & $typeOfM & "Release", $vectorM)
     EndIf
 
-    _cveInputArrayRelease($iArrM)
+    If $typeOfM <> Default Then
+        _cveInputArrayRelease($iArrM)
+        If $bMCreate Then
+            Call("_cve" & $typeOfM & "Release", $m)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveMatDotTyped
+
+Func _cveMatDotMat($mat, $m)
+    ; cveMatDot using cv::Mat instead of _*Array
+    Local $retval = _cveMatDotTyped($mat, "Mat", $m)
 
     Return $retval
 EndFunc   ;==>_cveMatDotMat
@@ -518,32 +602,47 @@ Func _cveMatCross($mat, $m, $result)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveMatCross", $sMatDllType, $mat, $sMDllType, $m, $sResultDllType, $result), "cveMatCross", @error)
 EndFunc   ;==>_cveMatCross
 
-Func _cveMatCrossMat($mat, $matM, $result)
-    ; cveMatCross using cv::Mat instead of _*Array
+Func _cveMatCrossTyped($mat, $typeOfM, $m, $result)
 
-    Local $iArrM, $vectorOfMatM, $iArrMSize
-    Local $bMIsArray = VarGetType($matM) == "Array"
+    Local $iArrM, $vectorM, $iArrMSize
+    Local $bMIsArray = IsArray($m)
+    Local $bMCreate = IsDllStruct($m) And $typeOfM == "Scalar"
 
-    If $bMIsArray Then
-        $vectorOfMatM = _VectorOfMatCreate()
+    If $typeOfM == Default Then
+        $iArrM = $m
+    ElseIf $bMIsArray Then
+        $vectorM = Call("_VectorOf" & $typeOfM & "Create")
 
-        $iArrMSize = UBound($matM)
+        $iArrMSize = UBound($m)
         For $i = 0 To $iArrMSize - 1
-            _VectorOfMatPush($vectorOfMatM, $matM[$i])
+            Call("_VectorOf" & $typeOfM & "Push", $vectorM, $m[$i])
         Next
 
-        $iArrM = _cveInputArrayFromVectorOfMat($vectorOfMatM)
+        $iArrM = Call("_cveInputArrayFromVectorOf" & $typeOfM, $vectorM)
     Else
-        $iArrM = _cveInputArrayFromMat($matM)
+        If $bMCreate Then
+            $m = Call("_cve" & $typeOfM & "Create", $m)
+        EndIf
+        $iArrM = Call("_cveInputArrayFrom" & $typeOfM, $m)
     EndIf
 
     _cveMatCross($mat, $iArrM, $result)
 
     If $bMIsArray Then
-        _VectorOfMatRelease($vectorOfMatM)
+        Call("_VectorOf" & $typeOfM & "Release", $vectorM)
     EndIf
 
-    _cveInputArrayRelease($iArrM)
+    If $typeOfM <> Default Then
+        _cveInputArrayRelease($iArrM)
+        If $bMCreate Then
+            Call("_cve" & $typeOfM & "Release", $m)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveMatCrossTyped
+
+Func _cveMatCrossMat($mat, $m, $result)
+    ; cveMatCross using cv::Mat instead of _*Array
+    _cveMatCrossTyped($mat, "Mat", $m, $result)
 EndFunc   ;==>_cveMatCrossMat
 
 Func _cveMatCopyDataTo($mat, $dest)

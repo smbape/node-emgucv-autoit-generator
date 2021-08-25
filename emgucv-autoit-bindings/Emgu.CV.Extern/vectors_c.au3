@@ -5,7 +5,7 @@ Func _VectorOfDMatchPushMatrix($matches, $trainIdx, $distance = 0, $mask = 0)
     ; CVAPI(void) VectorOfDMatchPushMatrix(std::vector<cv::DMatch>* matches, const CvMat* trainIdx, const CvMat* distance = 0, const CvMat* mask = 0);
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfDMatchCreate()
@@ -57,7 +57,7 @@ Func _VectorOfDMatchToMat($matches, $trainIdx, $distance)
     ; CVAPI(void) VectorOfDMatchToMat(std::vector<std::vector<cv::DMatch>>* matches, CvMat* trainIdx, CvMat* distance);
 
     Local $vecMatches, $iArrMatchesSize
-    Local $bMatchesIsArray = VarGetType($matches) == "Array"
+    Local $bMatchesIsArray = IsArray($matches)
 
     If $bMatchesIsArray Then
         $vecMatches = _VectorOfVectorOfDMatchCreate()
@@ -102,7 +102,7 @@ Func _VectorOfKeyPointFilterByImageBorder($keypoints, $imageSize, $borderSize)
     ; CVAPI(void) VectorOfKeyPointFilterByImageBorder(std::vector<cv::KeyPoint>* keypoints, CvSize imageSize, int borderSize);
 
     Local $vecKeypoints, $iArrKeypointsSize
-    Local $bKeypointsIsArray = VarGetType($keypoints) == "Array"
+    Local $bKeypointsIsArray = IsArray($keypoints)
 
     If $bKeypointsIsArray Then
         $vecKeypoints = _VectorOfKeyPointCreate()
@@ -133,7 +133,7 @@ Func _VectorOfKeyPointFilterByKeypointSize($keypoints, $minSize, $maxSize)
     ; CVAPI(void) VectorOfKeyPointFilterByKeypointSize(std::vector<cv::KeyPoint>* keypoints, float minSize, float maxSize);
 
     Local $vecKeypoints, $iArrKeypointsSize
-    Local $bKeypointsIsArray = VarGetType($keypoints) == "Array"
+    Local $bKeypointsIsArray = IsArray($keypoints)
 
     If $bKeypointsIsArray Then
         $vecKeypoints = _VectorOfKeyPointCreate()
@@ -164,7 +164,7 @@ Func _VectorOfKeyPointFilterByPixelsMask($keypoints, $mask)
     ; CVAPI(void) VectorOfKeyPointFilterByPixelsMask(std::vector<cv::KeyPoint>* keypoints, CvMat* mask);
 
     Local $vecKeypoints, $iArrKeypointsSize
-    Local $bKeypointsIsArray = VarGetType($keypoints) == "Array"
+    Local $bKeypointsIsArray = IsArray($keypoints)
 
     If $bKeypointsIsArray Then
         $vecKeypoints = _VectorOfKeyPointCreate()

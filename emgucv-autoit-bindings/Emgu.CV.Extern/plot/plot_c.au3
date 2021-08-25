@@ -22,32 +22,49 @@ Func _cvePlot2dCreateFrom($data, $sharedPtr)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePlot2dCreateFrom", $sDataDllType, $data, $sSharedPtrDllType, $sharedPtr), "cvePlot2dCreateFrom", @error)
 EndFunc   ;==>_cvePlot2dCreateFrom
 
-Func _cvePlot2dCreateFromMat($matData, $sharedPtr)
-    ; cvePlot2dCreateFrom using cv::Mat instead of _*Array
+Func _cvePlot2dCreateFromTyped($typeOfData, $data, $sharedPtr)
 
-    Local $iArrData, $vectorOfMatData, $iArrDataSize
-    Local $bDataIsArray = VarGetType($matData) == "Array"
+    Local $iArrData, $vectorData, $iArrDataSize
+    Local $bDataIsArray = IsArray($data)
+    Local $bDataCreate = IsDllStruct($data) And $typeOfData == "Scalar"
 
-    If $bDataIsArray Then
-        $vectorOfMatData = _VectorOfMatCreate()
+    If $typeOfData == Default Then
+        $iArrData = $data
+    ElseIf $bDataIsArray Then
+        $vectorData = Call("_VectorOf" & $typeOfData & "Create")
 
-        $iArrDataSize = UBound($matData)
+        $iArrDataSize = UBound($data)
         For $i = 0 To $iArrDataSize - 1
-            _VectorOfMatPush($vectorOfMatData, $matData[$i])
+            Call("_VectorOf" & $typeOfData & "Push", $vectorData, $data[$i])
         Next
 
-        $iArrData = _cveInputArrayFromVectorOfMat($vectorOfMatData)
+        $iArrData = Call("_cveInputArrayFromVectorOf" & $typeOfData, $vectorData)
     Else
-        $iArrData = _cveInputArrayFromMat($matData)
+        If $bDataCreate Then
+            $data = Call("_cve" & $typeOfData & "Create", $data)
+        EndIf
+        $iArrData = Call("_cveInputArrayFrom" & $typeOfData, $data)
     EndIf
 
     Local $retval = _cvePlot2dCreateFrom($iArrData, $sharedPtr)
 
     If $bDataIsArray Then
-        _VectorOfMatRelease($vectorOfMatData)
+        Call("_VectorOf" & $typeOfData & "Release", $vectorData)
     EndIf
 
-    _cveInputArrayRelease($iArrData)
+    If $typeOfData <> Default Then
+        _cveInputArrayRelease($iArrData)
+        If $bDataCreate Then
+            Call("_cve" & $typeOfData & "Release", $data)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cvePlot2dCreateFromTyped
+
+Func _cvePlot2dCreateFromMat($data, $sharedPtr)
+    ; cvePlot2dCreateFrom using cv::Mat instead of _*Array
+    Local $retval = _cvePlot2dCreateFromTyped("Mat", $data, $sharedPtr)
 
     Return $retval
 EndFunc   ;==>_cvePlot2dCreateFromMat
@@ -80,54 +97,82 @@ Func _cvePlot2dCreateFromXY($dataX, $dataY, $sharedPtr)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cvePlot2dCreateFromXY", $sDataXDllType, $dataX, $sDataYDllType, $dataY, $sSharedPtrDllType, $sharedPtr), "cvePlot2dCreateFromXY", @error)
 EndFunc   ;==>_cvePlot2dCreateFromXY
 
-Func _cvePlot2dCreateFromXYMat($matDataX, $matDataY, $sharedPtr)
-    ; cvePlot2dCreateFromXY using cv::Mat instead of _*Array
+Func _cvePlot2dCreateFromXYTyped($typeOfDataX, $dataX, $typeOfDataY, $dataY, $sharedPtr)
 
-    Local $iArrDataX, $vectorOfMatDataX, $iArrDataXSize
-    Local $bDataXIsArray = VarGetType($matDataX) == "Array"
+    Local $iArrDataX, $vectorDataX, $iArrDataXSize
+    Local $bDataXIsArray = IsArray($dataX)
+    Local $bDataXCreate = IsDllStruct($dataX) And $typeOfDataX == "Scalar"
 
-    If $bDataXIsArray Then
-        $vectorOfMatDataX = _VectorOfMatCreate()
+    If $typeOfDataX == Default Then
+        $iArrDataX = $dataX
+    ElseIf $bDataXIsArray Then
+        $vectorDataX = Call("_VectorOf" & $typeOfDataX & "Create")
 
-        $iArrDataXSize = UBound($matDataX)
+        $iArrDataXSize = UBound($dataX)
         For $i = 0 To $iArrDataXSize - 1
-            _VectorOfMatPush($vectorOfMatDataX, $matDataX[$i])
+            Call("_VectorOf" & $typeOfDataX & "Push", $vectorDataX, $dataX[$i])
         Next
 
-        $iArrDataX = _cveInputArrayFromVectorOfMat($vectorOfMatDataX)
+        $iArrDataX = Call("_cveInputArrayFromVectorOf" & $typeOfDataX, $vectorDataX)
     Else
-        $iArrDataX = _cveInputArrayFromMat($matDataX)
+        If $bDataXCreate Then
+            $dataX = Call("_cve" & $typeOfDataX & "Create", $dataX)
+        EndIf
+        $iArrDataX = Call("_cveInputArrayFrom" & $typeOfDataX, $dataX)
     EndIf
 
-    Local $iArrDataY, $vectorOfMatDataY, $iArrDataYSize
-    Local $bDataYIsArray = VarGetType($matDataY) == "Array"
+    Local $iArrDataY, $vectorDataY, $iArrDataYSize
+    Local $bDataYIsArray = IsArray($dataY)
+    Local $bDataYCreate = IsDllStruct($dataY) And $typeOfDataY == "Scalar"
 
-    If $bDataYIsArray Then
-        $vectorOfMatDataY = _VectorOfMatCreate()
+    If $typeOfDataY == Default Then
+        $iArrDataY = $dataY
+    ElseIf $bDataYIsArray Then
+        $vectorDataY = Call("_VectorOf" & $typeOfDataY & "Create")
 
-        $iArrDataYSize = UBound($matDataY)
+        $iArrDataYSize = UBound($dataY)
         For $i = 0 To $iArrDataYSize - 1
-            _VectorOfMatPush($vectorOfMatDataY, $matDataY[$i])
+            Call("_VectorOf" & $typeOfDataY & "Push", $vectorDataY, $dataY[$i])
         Next
 
-        $iArrDataY = _cveInputArrayFromVectorOfMat($vectorOfMatDataY)
+        $iArrDataY = Call("_cveInputArrayFromVectorOf" & $typeOfDataY, $vectorDataY)
     Else
-        $iArrDataY = _cveInputArrayFromMat($matDataY)
+        If $bDataYCreate Then
+            $dataY = Call("_cve" & $typeOfDataY & "Create", $dataY)
+        EndIf
+        $iArrDataY = Call("_cveInputArrayFrom" & $typeOfDataY, $dataY)
     EndIf
 
     Local $retval = _cvePlot2dCreateFromXY($iArrDataX, $iArrDataY, $sharedPtr)
 
     If $bDataYIsArray Then
-        _VectorOfMatRelease($vectorOfMatDataY)
+        Call("_VectorOf" & $typeOfDataY & "Release", $vectorDataY)
     EndIf
 
-    _cveInputArrayRelease($iArrDataY)
+    If $typeOfDataY <> Default Then
+        _cveInputArrayRelease($iArrDataY)
+        If $bDataYCreate Then
+            Call("_cve" & $typeOfDataY & "Release", $dataY)
+        EndIf
+    EndIf
 
     If $bDataXIsArray Then
-        _VectorOfMatRelease($vectorOfMatDataX)
+        Call("_VectorOf" & $typeOfDataX & "Release", $vectorDataX)
     EndIf
 
-    _cveInputArrayRelease($iArrDataX)
+    If $typeOfDataX <> Default Then
+        _cveInputArrayRelease($iArrDataX)
+        If $bDataXCreate Then
+            Call("_cve" & $typeOfDataX & "Release", $dataX)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cvePlot2dCreateFromXYTyped
+
+Func _cvePlot2dCreateFromXYMat($dataX, $dataY, $sharedPtr)
+    ; cvePlot2dCreateFromXY using cv::Mat instead of _*Array
+    Local $retval = _cvePlot2dCreateFromXYTyped("Mat", $dataX, "Mat", $dataY, $sharedPtr)
 
     Return $retval
 EndFunc   ;==>_cvePlot2dCreateFromXYMat
@@ -152,32 +197,47 @@ Func _cvePlot2dRender($plot, $result)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cvePlot2dRender", $sPlotDllType, $plot, $sResultDllType, $result), "cvePlot2dRender", @error)
 EndFunc   ;==>_cvePlot2dRender
 
-Func _cvePlot2dRenderMat($plot, $matResult)
-    ; cvePlot2dRender using cv::Mat instead of _*Array
+Func _cvePlot2dRenderTyped($plot, $typeOfResult, $result)
 
-    Local $oArrResult, $vectorOfMatResult, $iArrResultSize
-    Local $bResultIsArray = VarGetType($matResult) == "Array"
+    Local $oArrResult, $vectorResult, $iArrResultSize
+    Local $bResultIsArray = IsArray($result)
+    Local $bResultCreate = IsDllStruct($result) And $typeOfResult == "Scalar"
 
-    If $bResultIsArray Then
-        $vectorOfMatResult = _VectorOfMatCreate()
+    If $typeOfResult == Default Then
+        $oArrResult = $result
+    ElseIf $bResultIsArray Then
+        $vectorResult = Call("_VectorOf" & $typeOfResult & "Create")
 
-        $iArrResultSize = UBound($matResult)
+        $iArrResultSize = UBound($result)
         For $i = 0 To $iArrResultSize - 1
-            _VectorOfMatPush($vectorOfMatResult, $matResult[$i])
+            Call("_VectorOf" & $typeOfResult & "Push", $vectorResult, $result[$i])
         Next
 
-        $oArrResult = _cveOutputArrayFromVectorOfMat($vectorOfMatResult)
+        $oArrResult = Call("_cveOutputArrayFromVectorOf" & $typeOfResult, $vectorResult)
     Else
-        $oArrResult = _cveOutputArrayFromMat($matResult)
+        If $bResultCreate Then
+            $result = Call("_cve" & $typeOfResult & "Create", $result)
+        EndIf
+        $oArrResult = Call("_cveOutputArrayFrom" & $typeOfResult, $result)
     EndIf
 
     _cvePlot2dRender($plot, $oArrResult)
 
     If $bResultIsArray Then
-        _VectorOfMatRelease($vectorOfMatResult)
+        Call("_VectorOf" & $typeOfResult & "Release", $vectorResult)
     EndIf
 
-    _cveOutputArrayRelease($oArrResult)
+    If $typeOfResult <> Default Then
+        _cveOutputArrayRelease($oArrResult)
+        If $bResultCreate Then
+            Call("_cve" & $typeOfResult & "Release", $result)
+        EndIf
+    EndIf
+EndFunc   ;==>_cvePlot2dRenderTyped
+
+Func _cvePlot2dRenderMat($plot, $result)
+    ; cvePlot2dRender using cv::Mat instead of _*Array
+    _cvePlot2dRenderTyped($plot, "Mat", $result)
 EndFunc   ;==>_cvePlot2dRenderMat
 
 Func _cvePlot2dRelease($plot, $sharedPtr)

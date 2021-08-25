@@ -21,54 +21,80 @@ Func _cveUpdateMotionHistory($silhouette, $mhi, $timestamp, $duration)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveUpdateMotionHistory", $sSilhouetteDllType, $silhouette, $sMhiDllType, $mhi, "double", $timestamp, "double", $duration), "cveUpdateMotionHistory", @error)
 EndFunc   ;==>_cveUpdateMotionHistory
 
-Func _cveUpdateMotionHistoryMat($matSilhouette, $matMhi, $timestamp, $duration)
-    ; cveUpdateMotionHistory using cv::Mat instead of _*Array
+Func _cveUpdateMotionHistoryTyped($typeOfSilhouette, $silhouette, $typeOfMhi, $mhi, $timestamp, $duration)
 
-    Local $iArrSilhouette, $vectorOfMatSilhouette, $iArrSilhouetteSize
-    Local $bSilhouetteIsArray = VarGetType($matSilhouette) == "Array"
+    Local $iArrSilhouette, $vectorSilhouette, $iArrSilhouetteSize
+    Local $bSilhouetteIsArray = IsArray($silhouette)
+    Local $bSilhouetteCreate = IsDllStruct($silhouette) And $typeOfSilhouette == "Scalar"
 
-    If $bSilhouetteIsArray Then
-        $vectorOfMatSilhouette = _VectorOfMatCreate()
+    If $typeOfSilhouette == Default Then
+        $iArrSilhouette = $silhouette
+    ElseIf $bSilhouetteIsArray Then
+        $vectorSilhouette = Call("_VectorOf" & $typeOfSilhouette & "Create")
 
-        $iArrSilhouetteSize = UBound($matSilhouette)
+        $iArrSilhouetteSize = UBound($silhouette)
         For $i = 0 To $iArrSilhouetteSize - 1
-            _VectorOfMatPush($vectorOfMatSilhouette, $matSilhouette[$i])
+            Call("_VectorOf" & $typeOfSilhouette & "Push", $vectorSilhouette, $silhouette[$i])
         Next
 
-        $iArrSilhouette = _cveInputArrayFromVectorOfMat($vectorOfMatSilhouette)
+        $iArrSilhouette = Call("_cveInputArrayFromVectorOf" & $typeOfSilhouette, $vectorSilhouette)
     Else
-        $iArrSilhouette = _cveInputArrayFromMat($matSilhouette)
+        If $bSilhouetteCreate Then
+            $silhouette = Call("_cve" & $typeOfSilhouette & "Create", $silhouette)
+        EndIf
+        $iArrSilhouette = Call("_cveInputArrayFrom" & $typeOfSilhouette, $silhouette)
     EndIf
 
-    Local $ioArrMhi, $vectorOfMatMhi, $iArrMhiSize
-    Local $bMhiIsArray = VarGetType($matMhi) == "Array"
+    Local $ioArrMhi, $vectorMhi, $iArrMhiSize
+    Local $bMhiIsArray = IsArray($mhi)
+    Local $bMhiCreate = IsDllStruct($mhi) And $typeOfMhi == "Scalar"
 
-    If $bMhiIsArray Then
-        $vectorOfMatMhi = _VectorOfMatCreate()
+    If $typeOfMhi == Default Then
+        $ioArrMhi = $mhi
+    ElseIf $bMhiIsArray Then
+        $vectorMhi = Call("_VectorOf" & $typeOfMhi & "Create")
 
-        $iArrMhiSize = UBound($matMhi)
+        $iArrMhiSize = UBound($mhi)
         For $i = 0 To $iArrMhiSize - 1
-            _VectorOfMatPush($vectorOfMatMhi, $matMhi[$i])
+            Call("_VectorOf" & $typeOfMhi & "Push", $vectorMhi, $mhi[$i])
         Next
 
-        $ioArrMhi = _cveInputOutputArrayFromVectorOfMat($vectorOfMatMhi)
+        $ioArrMhi = Call("_cveInputOutputArrayFromVectorOf" & $typeOfMhi, $vectorMhi)
     Else
-        $ioArrMhi = _cveInputOutputArrayFromMat($matMhi)
+        If $bMhiCreate Then
+            $mhi = Call("_cve" & $typeOfMhi & "Create", $mhi)
+        EndIf
+        $ioArrMhi = Call("_cveInputOutputArrayFrom" & $typeOfMhi, $mhi)
     EndIf
 
     _cveUpdateMotionHistory($iArrSilhouette, $ioArrMhi, $timestamp, $duration)
 
     If $bMhiIsArray Then
-        _VectorOfMatRelease($vectorOfMatMhi)
+        Call("_VectorOf" & $typeOfMhi & "Release", $vectorMhi)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrMhi)
+    If $typeOfMhi <> Default Then
+        _cveInputOutputArrayRelease($ioArrMhi)
+        If $bMhiCreate Then
+            Call("_cve" & $typeOfMhi & "Release", $mhi)
+        EndIf
+    EndIf
 
     If $bSilhouetteIsArray Then
-        _VectorOfMatRelease($vectorOfMatSilhouette)
+        Call("_VectorOf" & $typeOfSilhouette & "Release", $vectorSilhouette)
     EndIf
 
-    _cveInputArrayRelease($iArrSilhouette)
+    If $typeOfSilhouette <> Default Then
+        _cveInputArrayRelease($iArrSilhouette)
+        If $bSilhouetteCreate Then
+            Call("_cve" & $typeOfSilhouette & "Release", $silhouette)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveUpdateMotionHistoryTyped
+
+Func _cveUpdateMotionHistoryMat($silhouette, $mhi, $timestamp, $duration)
+    ; cveUpdateMotionHistory using cv::Mat instead of _*Array
+    _cveUpdateMotionHistoryTyped("Mat", $silhouette, "Mat", $mhi, $timestamp, $duration)
 EndFunc   ;==>_cveUpdateMotionHistoryMat
 
 Func _cveCalcMotionGradient($mhi, $mask, $orientation, $delta1, $delta2, $apertureSize = 3)
@@ -98,76 +124,113 @@ Func _cveCalcMotionGradient($mhi, $mask, $orientation, $delta1, $delta2, $apertu
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCalcMotionGradient", $sMhiDllType, $mhi, $sMaskDllType, $mask, $sOrientationDllType, $orientation, "double", $delta1, "double", $delta2, "int", $apertureSize), "cveCalcMotionGradient", @error)
 EndFunc   ;==>_cveCalcMotionGradient
 
-Func _cveCalcMotionGradientMat($matMhi, $matMask, $matOrientation, $delta1, $delta2, $apertureSize = 3)
-    ; cveCalcMotionGradient using cv::Mat instead of _*Array
+Func _cveCalcMotionGradientTyped($typeOfMhi, $mhi, $typeOfMask, $mask, $typeOfOrientation, $orientation, $delta1, $delta2, $apertureSize = 3)
 
-    Local $iArrMhi, $vectorOfMatMhi, $iArrMhiSize
-    Local $bMhiIsArray = VarGetType($matMhi) == "Array"
+    Local $iArrMhi, $vectorMhi, $iArrMhiSize
+    Local $bMhiIsArray = IsArray($mhi)
+    Local $bMhiCreate = IsDllStruct($mhi) And $typeOfMhi == "Scalar"
 
-    If $bMhiIsArray Then
-        $vectorOfMatMhi = _VectorOfMatCreate()
+    If $typeOfMhi == Default Then
+        $iArrMhi = $mhi
+    ElseIf $bMhiIsArray Then
+        $vectorMhi = Call("_VectorOf" & $typeOfMhi & "Create")
 
-        $iArrMhiSize = UBound($matMhi)
+        $iArrMhiSize = UBound($mhi)
         For $i = 0 To $iArrMhiSize - 1
-            _VectorOfMatPush($vectorOfMatMhi, $matMhi[$i])
+            Call("_VectorOf" & $typeOfMhi & "Push", $vectorMhi, $mhi[$i])
         Next
 
-        $iArrMhi = _cveInputArrayFromVectorOfMat($vectorOfMatMhi)
+        $iArrMhi = Call("_cveInputArrayFromVectorOf" & $typeOfMhi, $vectorMhi)
     Else
-        $iArrMhi = _cveInputArrayFromMat($matMhi)
+        If $bMhiCreate Then
+            $mhi = Call("_cve" & $typeOfMhi & "Create", $mhi)
+        EndIf
+        $iArrMhi = Call("_cveInputArrayFrom" & $typeOfMhi, $mhi)
     EndIf
 
-    Local $oArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $oArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $oArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $oArrMask = _cveOutputArrayFromVectorOfMat($vectorOfMatMask)
+        $oArrMask = Call("_cveOutputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $oArrMask = _cveOutputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $oArrMask = Call("_cveOutputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
-    Local $oArrOrientation, $vectorOfMatOrientation, $iArrOrientationSize
-    Local $bOrientationIsArray = VarGetType($matOrientation) == "Array"
+    Local $oArrOrientation, $vectorOrientation, $iArrOrientationSize
+    Local $bOrientationIsArray = IsArray($orientation)
+    Local $bOrientationCreate = IsDllStruct($orientation) And $typeOfOrientation == "Scalar"
 
-    If $bOrientationIsArray Then
-        $vectorOfMatOrientation = _VectorOfMatCreate()
+    If $typeOfOrientation == Default Then
+        $oArrOrientation = $orientation
+    ElseIf $bOrientationIsArray Then
+        $vectorOrientation = Call("_VectorOf" & $typeOfOrientation & "Create")
 
-        $iArrOrientationSize = UBound($matOrientation)
+        $iArrOrientationSize = UBound($orientation)
         For $i = 0 To $iArrOrientationSize - 1
-            _VectorOfMatPush($vectorOfMatOrientation, $matOrientation[$i])
+            Call("_VectorOf" & $typeOfOrientation & "Push", $vectorOrientation, $orientation[$i])
         Next
 
-        $oArrOrientation = _cveOutputArrayFromVectorOfMat($vectorOfMatOrientation)
+        $oArrOrientation = Call("_cveOutputArrayFromVectorOf" & $typeOfOrientation, $vectorOrientation)
     Else
-        $oArrOrientation = _cveOutputArrayFromMat($matOrientation)
+        If $bOrientationCreate Then
+            $orientation = Call("_cve" & $typeOfOrientation & "Create", $orientation)
+        EndIf
+        $oArrOrientation = Call("_cveOutputArrayFrom" & $typeOfOrientation, $orientation)
     EndIf
 
     _cveCalcMotionGradient($iArrMhi, $oArrMask, $oArrOrientation, $delta1, $delta2, $apertureSize)
 
     If $bOrientationIsArray Then
-        _VectorOfMatRelease($vectorOfMatOrientation)
+        Call("_VectorOf" & $typeOfOrientation & "Release", $vectorOrientation)
     EndIf
 
-    _cveOutputArrayRelease($oArrOrientation)
+    If $typeOfOrientation <> Default Then
+        _cveOutputArrayRelease($oArrOrientation)
+        If $bOrientationCreate Then
+            Call("_cve" & $typeOfOrientation & "Release", $orientation)
+        EndIf
+    EndIf
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveOutputArrayRelease($oArrMask)
+    If $typeOfMask <> Default Then
+        _cveOutputArrayRelease($oArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bMhiIsArray Then
-        _VectorOfMatRelease($vectorOfMatMhi)
+        Call("_VectorOf" & $typeOfMhi & "Release", $vectorMhi)
     EndIf
 
-    _cveInputArrayRelease($iArrMhi)
+    If $typeOfMhi <> Default Then
+        _cveInputArrayRelease($iArrMhi)
+        If $bMhiCreate Then
+            Call("_cve" & $typeOfMhi & "Release", $mhi)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCalcMotionGradientTyped
+
+Func _cveCalcMotionGradientMat($mhi, $mask, $orientation, $delta1, $delta2, $apertureSize = 3)
+    ; cveCalcMotionGradient using cv::Mat instead of _*Array
+    _cveCalcMotionGradientTyped("Mat", $mhi, "Mat", $mask, "Mat", $orientation, $delta1, $delta2, $apertureSize)
 EndFunc   ;==>_cveCalcMotionGradientMat
 
 Func _cveCalcGlobalOrientation($orientation, $mask, $mhi, $timestamp, $duration)
@@ -197,76 +260,113 @@ Func _cveCalcGlobalOrientation($orientation, $mask, $mhi, $timestamp, $duration)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCalcGlobalOrientation", $sOrientationDllType, $orientation, $sMaskDllType, $mask, $sMhiDllType, $mhi, "double", $timestamp, "double", $duration), "cveCalcGlobalOrientation", @error)
 EndFunc   ;==>_cveCalcGlobalOrientation
 
-Func _cveCalcGlobalOrientationMat($matOrientation, $matMask, $matMhi, $timestamp, $duration)
-    ; cveCalcGlobalOrientation using cv::Mat instead of _*Array
+Func _cveCalcGlobalOrientationTyped($typeOfOrientation, $orientation, $typeOfMask, $mask, $typeOfMhi, $mhi, $timestamp, $duration)
 
-    Local $iArrOrientation, $vectorOfMatOrientation, $iArrOrientationSize
-    Local $bOrientationIsArray = VarGetType($matOrientation) == "Array"
+    Local $iArrOrientation, $vectorOrientation, $iArrOrientationSize
+    Local $bOrientationIsArray = IsArray($orientation)
+    Local $bOrientationCreate = IsDllStruct($orientation) And $typeOfOrientation == "Scalar"
 
-    If $bOrientationIsArray Then
-        $vectorOfMatOrientation = _VectorOfMatCreate()
+    If $typeOfOrientation == Default Then
+        $iArrOrientation = $orientation
+    ElseIf $bOrientationIsArray Then
+        $vectorOrientation = Call("_VectorOf" & $typeOfOrientation & "Create")
 
-        $iArrOrientationSize = UBound($matOrientation)
+        $iArrOrientationSize = UBound($orientation)
         For $i = 0 To $iArrOrientationSize - 1
-            _VectorOfMatPush($vectorOfMatOrientation, $matOrientation[$i])
+            Call("_VectorOf" & $typeOfOrientation & "Push", $vectorOrientation, $orientation[$i])
         Next
 
-        $iArrOrientation = _cveInputArrayFromVectorOfMat($vectorOfMatOrientation)
+        $iArrOrientation = Call("_cveInputArrayFromVectorOf" & $typeOfOrientation, $vectorOrientation)
     Else
-        $iArrOrientation = _cveInputArrayFromMat($matOrientation)
+        If $bOrientationCreate Then
+            $orientation = Call("_cve" & $typeOfOrientation & "Create", $orientation)
+        EndIf
+        $iArrOrientation = Call("_cveInputArrayFrom" & $typeOfOrientation, $orientation)
     EndIf
 
-    Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $iArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $iArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $iArrMask = _cveInputArrayFromVectorOfMat($vectorOfMatMask)
+        $iArrMask = Call("_cveInputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $iArrMask = _cveInputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $iArrMask = Call("_cveInputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
-    Local $iArrMhi, $vectorOfMatMhi, $iArrMhiSize
-    Local $bMhiIsArray = VarGetType($matMhi) == "Array"
+    Local $iArrMhi, $vectorMhi, $iArrMhiSize
+    Local $bMhiIsArray = IsArray($mhi)
+    Local $bMhiCreate = IsDllStruct($mhi) And $typeOfMhi == "Scalar"
 
-    If $bMhiIsArray Then
-        $vectorOfMatMhi = _VectorOfMatCreate()
+    If $typeOfMhi == Default Then
+        $iArrMhi = $mhi
+    ElseIf $bMhiIsArray Then
+        $vectorMhi = Call("_VectorOf" & $typeOfMhi & "Create")
 
-        $iArrMhiSize = UBound($matMhi)
+        $iArrMhiSize = UBound($mhi)
         For $i = 0 To $iArrMhiSize - 1
-            _VectorOfMatPush($vectorOfMatMhi, $matMhi[$i])
+            Call("_VectorOf" & $typeOfMhi & "Push", $vectorMhi, $mhi[$i])
         Next
 
-        $iArrMhi = _cveInputArrayFromVectorOfMat($vectorOfMatMhi)
+        $iArrMhi = Call("_cveInputArrayFromVectorOf" & $typeOfMhi, $vectorMhi)
     Else
-        $iArrMhi = _cveInputArrayFromMat($matMhi)
+        If $bMhiCreate Then
+            $mhi = Call("_cve" & $typeOfMhi & "Create", $mhi)
+        EndIf
+        $iArrMhi = Call("_cveInputArrayFrom" & $typeOfMhi, $mhi)
     EndIf
 
     _cveCalcGlobalOrientation($iArrOrientation, $iArrMask, $iArrMhi, $timestamp, $duration)
 
     If $bMhiIsArray Then
-        _VectorOfMatRelease($vectorOfMatMhi)
+        Call("_VectorOf" & $typeOfMhi & "Release", $vectorMhi)
     EndIf
 
-    _cveInputArrayRelease($iArrMhi)
+    If $typeOfMhi <> Default Then
+        _cveInputArrayRelease($iArrMhi)
+        If $bMhiCreate Then
+            Call("_cve" & $typeOfMhi & "Release", $mhi)
+        EndIf
+    EndIf
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMask)
+    If $typeOfMask <> Default Then
+        _cveInputArrayRelease($iArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bOrientationIsArray Then
-        _VectorOfMatRelease($vectorOfMatOrientation)
+        Call("_VectorOf" & $typeOfOrientation & "Release", $vectorOrientation)
     EndIf
 
-    _cveInputArrayRelease($iArrOrientation)
+    If $typeOfOrientation <> Default Then
+        _cveInputArrayRelease($iArrOrientation)
+        If $bOrientationCreate Then
+            Call("_cve" & $typeOfOrientation & "Release", $orientation)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCalcGlobalOrientationTyped
+
+Func _cveCalcGlobalOrientationMat($orientation, $mask, $mhi, $timestamp, $duration)
+    ; cveCalcGlobalOrientation using cv::Mat instead of _*Array
+    _cveCalcGlobalOrientationTyped("Mat", $orientation, "Mat", $mask, "Mat", $mhi, $timestamp, $duration)
 EndFunc   ;==>_cveCalcGlobalOrientationMat
 
 Func _cveSegmentMotion($mhi, $segmask, $boundingRects, $timestamp, $segThresh)
@@ -287,7 +387,7 @@ Func _cveSegmentMotion($mhi, $segmask, $boundingRects, $timestamp, $segThresh)
     EndIf
 
     Local $vecBoundingRects, $iArrBoundingRectsSize
-    Local $bBoundingRectsIsArray = VarGetType($boundingRects) == "Array"
+    Local $bBoundingRectsIsArray = IsArray($boundingRects)
 
     If $bBoundingRectsIsArray Then
         $vecBoundingRects = _VectorOfRectCreate()
@@ -314,54 +414,80 @@ Func _cveSegmentMotion($mhi, $segmask, $boundingRects, $timestamp, $segThresh)
     EndIf
 EndFunc   ;==>_cveSegmentMotion
 
-Func _cveSegmentMotionMat($matMhi, $matSegmask, $boundingRects, $timestamp, $segThresh)
-    ; cveSegmentMotion using cv::Mat instead of _*Array
+Func _cveSegmentMotionTyped($typeOfMhi, $mhi, $typeOfSegmask, $segmask, $boundingRects, $timestamp, $segThresh)
 
-    Local $iArrMhi, $vectorOfMatMhi, $iArrMhiSize
-    Local $bMhiIsArray = VarGetType($matMhi) == "Array"
+    Local $iArrMhi, $vectorMhi, $iArrMhiSize
+    Local $bMhiIsArray = IsArray($mhi)
+    Local $bMhiCreate = IsDllStruct($mhi) And $typeOfMhi == "Scalar"
 
-    If $bMhiIsArray Then
-        $vectorOfMatMhi = _VectorOfMatCreate()
+    If $typeOfMhi == Default Then
+        $iArrMhi = $mhi
+    ElseIf $bMhiIsArray Then
+        $vectorMhi = Call("_VectorOf" & $typeOfMhi & "Create")
 
-        $iArrMhiSize = UBound($matMhi)
+        $iArrMhiSize = UBound($mhi)
         For $i = 0 To $iArrMhiSize - 1
-            _VectorOfMatPush($vectorOfMatMhi, $matMhi[$i])
+            Call("_VectorOf" & $typeOfMhi & "Push", $vectorMhi, $mhi[$i])
         Next
 
-        $iArrMhi = _cveInputArrayFromVectorOfMat($vectorOfMatMhi)
+        $iArrMhi = Call("_cveInputArrayFromVectorOf" & $typeOfMhi, $vectorMhi)
     Else
-        $iArrMhi = _cveInputArrayFromMat($matMhi)
+        If $bMhiCreate Then
+            $mhi = Call("_cve" & $typeOfMhi & "Create", $mhi)
+        EndIf
+        $iArrMhi = Call("_cveInputArrayFrom" & $typeOfMhi, $mhi)
     EndIf
 
-    Local $oArrSegmask, $vectorOfMatSegmask, $iArrSegmaskSize
-    Local $bSegmaskIsArray = VarGetType($matSegmask) == "Array"
+    Local $oArrSegmask, $vectorSegmask, $iArrSegmaskSize
+    Local $bSegmaskIsArray = IsArray($segmask)
+    Local $bSegmaskCreate = IsDllStruct($segmask) And $typeOfSegmask == "Scalar"
 
-    If $bSegmaskIsArray Then
-        $vectorOfMatSegmask = _VectorOfMatCreate()
+    If $typeOfSegmask == Default Then
+        $oArrSegmask = $segmask
+    ElseIf $bSegmaskIsArray Then
+        $vectorSegmask = Call("_VectorOf" & $typeOfSegmask & "Create")
 
-        $iArrSegmaskSize = UBound($matSegmask)
+        $iArrSegmaskSize = UBound($segmask)
         For $i = 0 To $iArrSegmaskSize - 1
-            _VectorOfMatPush($vectorOfMatSegmask, $matSegmask[$i])
+            Call("_VectorOf" & $typeOfSegmask & "Push", $vectorSegmask, $segmask[$i])
         Next
 
-        $oArrSegmask = _cveOutputArrayFromVectorOfMat($vectorOfMatSegmask)
+        $oArrSegmask = Call("_cveOutputArrayFromVectorOf" & $typeOfSegmask, $vectorSegmask)
     Else
-        $oArrSegmask = _cveOutputArrayFromMat($matSegmask)
+        If $bSegmaskCreate Then
+            $segmask = Call("_cve" & $typeOfSegmask & "Create", $segmask)
+        EndIf
+        $oArrSegmask = Call("_cveOutputArrayFrom" & $typeOfSegmask, $segmask)
     EndIf
 
     _cveSegmentMotion($iArrMhi, $oArrSegmask, $boundingRects, $timestamp, $segThresh)
 
     If $bSegmaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatSegmask)
+        Call("_VectorOf" & $typeOfSegmask & "Release", $vectorSegmask)
     EndIf
 
-    _cveOutputArrayRelease($oArrSegmask)
+    If $typeOfSegmask <> Default Then
+        _cveOutputArrayRelease($oArrSegmask)
+        If $bSegmaskCreate Then
+            Call("_cve" & $typeOfSegmask & "Release", $segmask)
+        EndIf
+    EndIf
 
     If $bMhiIsArray Then
-        _VectorOfMatRelease($vectorOfMatMhi)
+        Call("_VectorOf" & $typeOfMhi & "Release", $vectorMhi)
     EndIf
 
-    _cveInputArrayRelease($iArrMhi)
+    If $typeOfMhi <> Default Then
+        _cveInputArrayRelease($iArrMhi)
+        If $bMhiCreate Then
+            Call("_cve" & $typeOfMhi & "Release", $mhi)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveSegmentMotionTyped
+
+Func _cveSegmentMotionMat($mhi, $segmask, $boundingRects, $timestamp, $segThresh)
+    ; cveSegmentMotion using cv::Mat instead of _*Array
+    _cveSegmentMotionTyped("Mat", $mhi, "Mat", $segmask, $boundingRects, $timestamp, $segThresh)
 EndFunc   ;==>_cveSegmentMotionMat
 
 Func _cveOptFlowDeepFlowCreate($algorithm, $sharedPtr)

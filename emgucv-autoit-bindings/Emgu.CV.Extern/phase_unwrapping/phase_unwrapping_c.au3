@@ -59,32 +59,47 @@ Func _cveHistogramPhaseUnwrappingGetInverseReliabilityMap($phase_unwrapping, $re
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHistogramPhaseUnwrappingGetInverseReliabilityMap", $sPhase_unwrappingDllType, $phase_unwrapping, $sReliabilityMapDllType, $reliabilityMap), "cveHistogramPhaseUnwrappingGetInverseReliabilityMap", @error)
 EndFunc   ;==>_cveHistogramPhaseUnwrappingGetInverseReliabilityMap
 
-Func _cveHistogramPhaseUnwrappingGetInverseReliabilityMapMat($phase_unwrapping, $matReliabilityMap)
-    ; cveHistogramPhaseUnwrappingGetInverseReliabilityMap using cv::Mat instead of _*Array
+Func _cveHistogramPhaseUnwrappingGetInverseReliabilityMapTyped($phase_unwrapping, $typeOfReliabilityMap, $reliabilityMap)
 
-    Local $oArrReliabilityMap, $vectorOfMatReliabilityMap, $iArrReliabilityMapSize
-    Local $bReliabilityMapIsArray = VarGetType($matReliabilityMap) == "Array"
+    Local $oArrReliabilityMap, $vectorReliabilityMap, $iArrReliabilityMapSize
+    Local $bReliabilityMapIsArray = IsArray($reliabilityMap)
+    Local $bReliabilityMapCreate = IsDllStruct($reliabilityMap) And $typeOfReliabilityMap == "Scalar"
 
-    If $bReliabilityMapIsArray Then
-        $vectorOfMatReliabilityMap = _VectorOfMatCreate()
+    If $typeOfReliabilityMap == Default Then
+        $oArrReliabilityMap = $reliabilityMap
+    ElseIf $bReliabilityMapIsArray Then
+        $vectorReliabilityMap = Call("_VectorOf" & $typeOfReliabilityMap & "Create")
 
-        $iArrReliabilityMapSize = UBound($matReliabilityMap)
+        $iArrReliabilityMapSize = UBound($reliabilityMap)
         For $i = 0 To $iArrReliabilityMapSize - 1
-            _VectorOfMatPush($vectorOfMatReliabilityMap, $matReliabilityMap[$i])
+            Call("_VectorOf" & $typeOfReliabilityMap & "Push", $vectorReliabilityMap, $reliabilityMap[$i])
         Next
 
-        $oArrReliabilityMap = _cveOutputArrayFromVectorOfMat($vectorOfMatReliabilityMap)
+        $oArrReliabilityMap = Call("_cveOutputArrayFromVectorOf" & $typeOfReliabilityMap, $vectorReliabilityMap)
     Else
-        $oArrReliabilityMap = _cveOutputArrayFromMat($matReliabilityMap)
+        If $bReliabilityMapCreate Then
+            $reliabilityMap = Call("_cve" & $typeOfReliabilityMap & "Create", $reliabilityMap)
+        EndIf
+        $oArrReliabilityMap = Call("_cveOutputArrayFrom" & $typeOfReliabilityMap, $reliabilityMap)
     EndIf
 
     _cveHistogramPhaseUnwrappingGetInverseReliabilityMap($phase_unwrapping, $oArrReliabilityMap)
 
     If $bReliabilityMapIsArray Then
-        _VectorOfMatRelease($vectorOfMatReliabilityMap)
+        Call("_VectorOf" & $typeOfReliabilityMap & "Release", $vectorReliabilityMap)
     EndIf
 
-    _cveOutputArrayRelease($oArrReliabilityMap)
+    If $typeOfReliabilityMap <> Default Then
+        _cveOutputArrayRelease($oArrReliabilityMap)
+        If $bReliabilityMapCreate Then
+            Call("_cve" & $typeOfReliabilityMap & "Release", $reliabilityMap)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveHistogramPhaseUnwrappingGetInverseReliabilityMapTyped
+
+Func _cveHistogramPhaseUnwrappingGetInverseReliabilityMapMat($phase_unwrapping, $reliabilityMap)
+    ; cveHistogramPhaseUnwrappingGetInverseReliabilityMap using cv::Mat instead of _*Array
+    _cveHistogramPhaseUnwrappingGetInverseReliabilityMapTyped($phase_unwrapping, "Mat", $reliabilityMap)
 EndFunc   ;==>_cveHistogramPhaseUnwrappingGetInverseReliabilityMapMat
 
 Func _cveHistogramPhaseMapUnwrappingUnwrapPhaseMap($phase_unwrapping, $wrappedPhaseMap, $unwrappedPhaseMap, $shadowMask)
@@ -121,74 +136,111 @@ Func _cveHistogramPhaseMapUnwrappingUnwrapPhaseMap($phase_unwrapping, $wrappedPh
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHistogramPhaseMapUnwrappingUnwrapPhaseMap", $sPhase_unwrappingDllType, $phase_unwrapping, $sWrappedPhaseMapDllType, $wrappedPhaseMap, $sUnwrappedPhaseMapDllType, $unwrappedPhaseMap, $sShadowMaskDllType, $shadowMask), "cveHistogramPhaseMapUnwrappingUnwrapPhaseMap", @error)
 EndFunc   ;==>_cveHistogramPhaseMapUnwrappingUnwrapPhaseMap
 
-Func _cveHistogramPhaseMapUnwrappingUnwrapPhaseMapMat($phase_unwrapping, $matWrappedPhaseMap, $matUnwrappedPhaseMap, $matShadowMask)
-    ; cveHistogramPhaseMapUnwrappingUnwrapPhaseMap using cv::Mat instead of _*Array
+Func _cveHistogramPhaseMapUnwrappingUnwrapPhaseMapTyped($phase_unwrapping, $typeOfWrappedPhaseMap, $wrappedPhaseMap, $typeOfUnwrappedPhaseMap, $unwrappedPhaseMap, $typeOfShadowMask, $shadowMask)
 
-    Local $iArrWrappedPhaseMap, $vectorOfMatWrappedPhaseMap, $iArrWrappedPhaseMapSize
-    Local $bWrappedPhaseMapIsArray = VarGetType($matWrappedPhaseMap) == "Array"
+    Local $iArrWrappedPhaseMap, $vectorWrappedPhaseMap, $iArrWrappedPhaseMapSize
+    Local $bWrappedPhaseMapIsArray = IsArray($wrappedPhaseMap)
+    Local $bWrappedPhaseMapCreate = IsDllStruct($wrappedPhaseMap) And $typeOfWrappedPhaseMap == "Scalar"
 
-    If $bWrappedPhaseMapIsArray Then
-        $vectorOfMatWrappedPhaseMap = _VectorOfMatCreate()
+    If $typeOfWrappedPhaseMap == Default Then
+        $iArrWrappedPhaseMap = $wrappedPhaseMap
+    ElseIf $bWrappedPhaseMapIsArray Then
+        $vectorWrappedPhaseMap = Call("_VectorOf" & $typeOfWrappedPhaseMap & "Create")
 
-        $iArrWrappedPhaseMapSize = UBound($matWrappedPhaseMap)
+        $iArrWrappedPhaseMapSize = UBound($wrappedPhaseMap)
         For $i = 0 To $iArrWrappedPhaseMapSize - 1
-            _VectorOfMatPush($vectorOfMatWrappedPhaseMap, $matWrappedPhaseMap[$i])
+            Call("_VectorOf" & $typeOfWrappedPhaseMap & "Push", $vectorWrappedPhaseMap, $wrappedPhaseMap[$i])
         Next
 
-        $iArrWrappedPhaseMap = _cveInputArrayFromVectorOfMat($vectorOfMatWrappedPhaseMap)
+        $iArrWrappedPhaseMap = Call("_cveInputArrayFromVectorOf" & $typeOfWrappedPhaseMap, $vectorWrappedPhaseMap)
     Else
-        $iArrWrappedPhaseMap = _cveInputArrayFromMat($matWrappedPhaseMap)
+        If $bWrappedPhaseMapCreate Then
+            $wrappedPhaseMap = Call("_cve" & $typeOfWrappedPhaseMap & "Create", $wrappedPhaseMap)
+        EndIf
+        $iArrWrappedPhaseMap = Call("_cveInputArrayFrom" & $typeOfWrappedPhaseMap, $wrappedPhaseMap)
     EndIf
 
-    Local $oArrUnwrappedPhaseMap, $vectorOfMatUnwrappedPhaseMap, $iArrUnwrappedPhaseMapSize
-    Local $bUnwrappedPhaseMapIsArray = VarGetType($matUnwrappedPhaseMap) == "Array"
+    Local $oArrUnwrappedPhaseMap, $vectorUnwrappedPhaseMap, $iArrUnwrappedPhaseMapSize
+    Local $bUnwrappedPhaseMapIsArray = IsArray($unwrappedPhaseMap)
+    Local $bUnwrappedPhaseMapCreate = IsDllStruct($unwrappedPhaseMap) And $typeOfUnwrappedPhaseMap == "Scalar"
 
-    If $bUnwrappedPhaseMapIsArray Then
-        $vectorOfMatUnwrappedPhaseMap = _VectorOfMatCreate()
+    If $typeOfUnwrappedPhaseMap == Default Then
+        $oArrUnwrappedPhaseMap = $unwrappedPhaseMap
+    ElseIf $bUnwrappedPhaseMapIsArray Then
+        $vectorUnwrappedPhaseMap = Call("_VectorOf" & $typeOfUnwrappedPhaseMap & "Create")
 
-        $iArrUnwrappedPhaseMapSize = UBound($matUnwrappedPhaseMap)
+        $iArrUnwrappedPhaseMapSize = UBound($unwrappedPhaseMap)
         For $i = 0 To $iArrUnwrappedPhaseMapSize - 1
-            _VectorOfMatPush($vectorOfMatUnwrappedPhaseMap, $matUnwrappedPhaseMap[$i])
+            Call("_VectorOf" & $typeOfUnwrappedPhaseMap & "Push", $vectorUnwrappedPhaseMap, $unwrappedPhaseMap[$i])
         Next
 
-        $oArrUnwrappedPhaseMap = _cveOutputArrayFromVectorOfMat($vectorOfMatUnwrappedPhaseMap)
+        $oArrUnwrappedPhaseMap = Call("_cveOutputArrayFromVectorOf" & $typeOfUnwrappedPhaseMap, $vectorUnwrappedPhaseMap)
     Else
-        $oArrUnwrappedPhaseMap = _cveOutputArrayFromMat($matUnwrappedPhaseMap)
+        If $bUnwrappedPhaseMapCreate Then
+            $unwrappedPhaseMap = Call("_cve" & $typeOfUnwrappedPhaseMap & "Create", $unwrappedPhaseMap)
+        EndIf
+        $oArrUnwrappedPhaseMap = Call("_cveOutputArrayFrom" & $typeOfUnwrappedPhaseMap, $unwrappedPhaseMap)
     EndIf
 
-    Local $iArrShadowMask, $vectorOfMatShadowMask, $iArrShadowMaskSize
-    Local $bShadowMaskIsArray = VarGetType($matShadowMask) == "Array"
+    Local $iArrShadowMask, $vectorShadowMask, $iArrShadowMaskSize
+    Local $bShadowMaskIsArray = IsArray($shadowMask)
+    Local $bShadowMaskCreate = IsDllStruct($shadowMask) And $typeOfShadowMask == "Scalar"
 
-    If $bShadowMaskIsArray Then
-        $vectorOfMatShadowMask = _VectorOfMatCreate()
+    If $typeOfShadowMask == Default Then
+        $iArrShadowMask = $shadowMask
+    ElseIf $bShadowMaskIsArray Then
+        $vectorShadowMask = Call("_VectorOf" & $typeOfShadowMask & "Create")
 
-        $iArrShadowMaskSize = UBound($matShadowMask)
+        $iArrShadowMaskSize = UBound($shadowMask)
         For $i = 0 To $iArrShadowMaskSize - 1
-            _VectorOfMatPush($vectorOfMatShadowMask, $matShadowMask[$i])
+            Call("_VectorOf" & $typeOfShadowMask & "Push", $vectorShadowMask, $shadowMask[$i])
         Next
 
-        $iArrShadowMask = _cveInputArrayFromVectorOfMat($vectorOfMatShadowMask)
+        $iArrShadowMask = Call("_cveInputArrayFromVectorOf" & $typeOfShadowMask, $vectorShadowMask)
     Else
-        $iArrShadowMask = _cveInputArrayFromMat($matShadowMask)
+        If $bShadowMaskCreate Then
+            $shadowMask = Call("_cve" & $typeOfShadowMask & "Create", $shadowMask)
+        EndIf
+        $iArrShadowMask = Call("_cveInputArrayFrom" & $typeOfShadowMask, $shadowMask)
     EndIf
 
     _cveHistogramPhaseMapUnwrappingUnwrapPhaseMap($phase_unwrapping, $iArrWrappedPhaseMap, $oArrUnwrappedPhaseMap, $iArrShadowMask)
 
     If $bShadowMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatShadowMask)
+        Call("_VectorOf" & $typeOfShadowMask & "Release", $vectorShadowMask)
     EndIf
 
-    _cveInputArrayRelease($iArrShadowMask)
+    If $typeOfShadowMask <> Default Then
+        _cveInputArrayRelease($iArrShadowMask)
+        If $bShadowMaskCreate Then
+            Call("_cve" & $typeOfShadowMask & "Release", $shadowMask)
+        EndIf
+    EndIf
 
     If $bUnwrappedPhaseMapIsArray Then
-        _VectorOfMatRelease($vectorOfMatUnwrappedPhaseMap)
+        Call("_VectorOf" & $typeOfUnwrappedPhaseMap & "Release", $vectorUnwrappedPhaseMap)
     EndIf
 
-    _cveOutputArrayRelease($oArrUnwrappedPhaseMap)
+    If $typeOfUnwrappedPhaseMap <> Default Then
+        _cveOutputArrayRelease($oArrUnwrappedPhaseMap)
+        If $bUnwrappedPhaseMapCreate Then
+            Call("_cve" & $typeOfUnwrappedPhaseMap & "Release", $unwrappedPhaseMap)
+        EndIf
+    EndIf
 
     If $bWrappedPhaseMapIsArray Then
-        _VectorOfMatRelease($vectorOfMatWrappedPhaseMap)
+        Call("_VectorOf" & $typeOfWrappedPhaseMap & "Release", $vectorWrappedPhaseMap)
     EndIf
 
-    _cveInputArrayRelease($iArrWrappedPhaseMap)
+    If $typeOfWrappedPhaseMap <> Default Then
+        _cveInputArrayRelease($iArrWrappedPhaseMap)
+        If $bWrappedPhaseMapCreate Then
+            Call("_cve" & $typeOfWrappedPhaseMap & "Release", $wrappedPhaseMap)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveHistogramPhaseMapUnwrappingUnwrapPhaseMapTyped
+
+Func _cveHistogramPhaseMapUnwrappingUnwrapPhaseMapMat($phase_unwrapping, $wrappedPhaseMap, $unwrappedPhaseMap, $shadowMask)
+    ; cveHistogramPhaseMapUnwrappingUnwrapPhaseMap using cv::Mat instead of _*Array
+    _cveHistogramPhaseMapUnwrappingUnwrapPhaseMapTyped($phase_unwrapping, "Mat", $wrappedPhaseMap, "Mat", $unwrappedPhaseMap, "Mat", $shadowMask)
 EndFunc   ;==>_cveHistogramPhaseMapUnwrappingUnwrapPhaseMapMat

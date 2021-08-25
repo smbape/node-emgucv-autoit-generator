@@ -101,54 +101,80 @@ Func _cveBIMEF($input, $output, $mu = 0.5, $a = -0.3293, $b = 1.1258)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBIMEF", $sInputDllType, $input, $sOutputDllType, $output, "float", $mu, "float", $a, "float", $b), "cveBIMEF", @error)
 EndFunc   ;==>_cveBIMEF
 
-Func _cveBIMEFMat($matInput, $matOutput, $mu = 0.5, $a = -0.3293, $b = 1.1258)
-    ; cveBIMEF using cv::Mat instead of _*Array
+Func _cveBIMEFTyped($typeOfInput, $input, $typeOfOutput, $output, $mu = 0.5, $a = -0.3293, $b = 1.1258)
 
-    Local $iArrInput, $vectorOfMatInput, $iArrInputSize
-    Local $bInputIsArray = VarGetType($matInput) == "Array"
+    Local $iArrInput, $vectorInput, $iArrInputSize
+    Local $bInputIsArray = IsArray($input)
+    Local $bInputCreate = IsDllStruct($input) And $typeOfInput == "Scalar"
 
-    If $bInputIsArray Then
-        $vectorOfMatInput = _VectorOfMatCreate()
+    If $typeOfInput == Default Then
+        $iArrInput = $input
+    ElseIf $bInputIsArray Then
+        $vectorInput = Call("_VectorOf" & $typeOfInput & "Create")
 
-        $iArrInputSize = UBound($matInput)
+        $iArrInputSize = UBound($input)
         For $i = 0 To $iArrInputSize - 1
-            _VectorOfMatPush($vectorOfMatInput, $matInput[$i])
+            Call("_VectorOf" & $typeOfInput & "Push", $vectorInput, $input[$i])
         Next
 
-        $iArrInput = _cveInputArrayFromVectorOfMat($vectorOfMatInput)
+        $iArrInput = Call("_cveInputArrayFromVectorOf" & $typeOfInput, $vectorInput)
     Else
-        $iArrInput = _cveInputArrayFromMat($matInput)
+        If $bInputCreate Then
+            $input = Call("_cve" & $typeOfInput & "Create", $input)
+        EndIf
+        $iArrInput = Call("_cveInputArrayFrom" & $typeOfInput, $input)
     EndIf
 
-    Local $oArrOutput, $vectorOfMatOutput, $iArrOutputSize
-    Local $bOutputIsArray = VarGetType($matOutput) == "Array"
+    Local $oArrOutput, $vectorOutput, $iArrOutputSize
+    Local $bOutputIsArray = IsArray($output)
+    Local $bOutputCreate = IsDllStruct($output) And $typeOfOutput == "Scalar"
 
-    If $bOutputIsArray Then
-        $vectorOfMatOutput = _VectorOfMatCreate()
+    If $typeOfOutput == Default Then
+        $oArrOutput = $output
+    ElseIf $bOutputIsArray Then
+        $vectorOutput = Call("_VectorOf" & $typeOfOutput & "Create")
 
-        $iArrOutputSize = UBound($matOutput)
+        $iArrOutputSize = UBound($output)
         For $i = 0 To $iArrOutputSize - 1
-            _VectorOfMatPush($vectorOfMatOutput, $matOutput[$i])
+            Call("_VectorOf" & $typeOfOutput & "Push", $vectorOutput, $output[$i])
         Next
 
-        $oArrOutput = _cveOutputArrayFromVectorOfMat($vectorOfMatOutput)
+        $oArrOutput = Call("_cveOutputArrayFromVectorOf" & $typeOfOutput, $vectorOutput)
     Else
-        $oArrOutput = _cveOutputArrayFromMat($matOutput)
+        If $bOutputCreate Then
+            $output = Call("_cve" & $typeOfOutput & "Create", $output)
+        EndIf
+        $oArrOutput = Call("_cveOutputArrayFrom" & $typeOfOutput, $output)
     EndIf
 
     _cveBIMEF($iArrInput, $oArrOutput, $mu, $a, $b)
 
     If $bOutputIsArray Then
-        _VectorOfMatRelease($vectorOfMatOutput)
+        Call("_VectorOf" & $typeOfOutput & "Release", $vectorOutput)
     EndIf
 
-    _cveOutputArrayRelease($oArrOutput)
+    If $typeOfOutput <> Default Then
+        _cveOutputArrayRelease($oArrOutput)
+        If $bOutputCreate Then
+            Call("_cve" & $typeOfOutput & "Release", $output)
+        EndIf
+    EndIf
 
     If $bInputIsArray Then
-        _VectorOfMatRelease($vectorOfMatInput)
+        Call("_VectorOf" & $typeOfInput & "Release", $vectorInput)
     EndIf
 
-    _cveInputArrayRelease($iArrInput)
+    If $typeOfInput <> Default Then
+        _cveInputArrayRelease($iArrInput)
+        If $bInputCreate Then
+            Call("_cve" & $typeOfInput & "Release", $input)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveBIMEFTyped
+
+Func _cveBIMEFMat($input, $output, $mu = 0.5, $a = -0.3293, $b = 1.1258)
+    ; cveBIMEF using cv::Mat instead of _*Array
+    _cveBIMEFTyped("Mat", $input, "Mat", $output, $mu, $a, $b)
 EndFunc   ;==>_cveBIMEFMat
 
 Func _cveBIMEF2($input, $output, $k, $mu, $a, $b)
@@ -171,52 +197,78 @@ Func _cveBIMEF2($input, $output, $k, $mu, $a, $b)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveBIMEF2", $sInputDllType, $input, $sOutputDllType, $output, "float", $k, "float", $mu, "float", $a, "float", $b), "cveBIMEF2", @error)
 EndFunc   ;==>_cveBIMEF2
 
-Func _cveBIMEF2Mat($matInput, $matOutput, $k, $mu, $a, $b)
-    ; cveBIMEF2 using cv::Mat instead of _*Array
+Func _cveBIMEF2Typed($typeOfInput, $input, $typeOfOutput, $output, $k, $mu, $a, $b)
 
-    Local $iArrInput, $vectorOfMatInput, $iArrInputSize
-    Local $bInputIsArray = VarGetType($matInput) == "Array"
+    Local $iArrInput, $vectorInput, $iArrInputSize
+    Local $bInputIsArray = IsArray($input)
+    Local $bInputCreate = IsDllStruct($input) And $typeOfInput == "Scalar"
 
-    If $bInputIsArray Then
-        $vectorOfMatInput = _VectorOfMatCreate()
+    If $typeOfInput == Default Then
+        $iArrInput = $input
+    ElseIf $bInputIsArray Then
+        $vectorInput = Call("_VectorOf" & $typeOfInput & "Create")
 
-        $iArrInputSize = UBound($matInput)
+        $iArrInputSize = UBound($input)
         For $i = 0 To $iArrInputSize - 1
-            _VectorOfMatPush($vectorOfMatInput, $matInput[$i])
+            Call("_VectorOf" & $typeOfInput & "Push", $vectorInput, $input[$i])
         Next
 
-        $iArrInput = _cveInputArrayFromVectorOfMat($vectorOfMatInput)
+        $iArrInput = Call("_cveInputArrayFromVectorOf" & $typeOfInput, $vectorInput)
     Else
-        $iArrInput = _cveInputArrayFromMat($matInput)
+        If $bInputCreate Then
+            $input = Call("_cve" & $typeOfInput & "Create", $input)
+        EndIf
+        $iArrInput = Call("_cveInputArrayFrom" & $typeOfInput, $input)
     EndIf
 
-    Local $oArrOutput, $vectorOfMatOutput, $iArrOutputSize
-    Local $bOutputIsArray = VarGetType($matOutput) == "Array"
+    Local $oArrOutput, $vectorOutput, $iArrOutputSize
+    Local $bOutputIsArray = IsArray($output)
+    Local $bOutputCreate = IsDllStruct($output) And $typeOfOutput == "Scalar"
 
-    If $bOutputIsArray Then
-        $vectorOfMatOutput = _VectorOfMatCreate()
+    If $typeOfOutput == Default Then
+        $oArrOutput = $output
+    ElseIf $bOutputIsArray Then
+        $vectorOutput = Call("_VectorOf" & $typeOfOutput & "Create")
 
-        $iArrOutputSize = UBound($matOutput)
+        $iArrOutputSize = UBound($output)
         For $i = 0 To $iArrOutputSize - 1
-            _VectorOfMatPush($vectorOfMatOutput, $matOutput[$i])
+            Call("_VectorOf" & $typeOfOutput & "Push", $vectorOutput, $output[$i])
         Next
 
-        $oArrOutput = _cveOutputArrayFromVectorOfMat($vectorOfMatOutput)
+        $oArrOutput = Call("_cveOutputArrayFromVectorOf" & $typeOfOutput, $vectorOutput)
     Else
-        $oArrOutput = _cveOutputArrayFromMat($matOutput)
+        If $bOutputCreate Then
+            $output = Call("_cve" & $typeOfOutput & "Create", $output)
+        EndIf
+        $oArrOutput = Call("_cveOutputArrayFrom" & $typeOfOutput, $output)
     EndIf
 
     _cveBIMEF2($iArrInput, $oArrOutput, $k, $mu, $a, $b)
 
     If $bOutputIsArray Then
-        _VectorOfMatRelease($vectorOfMatOutput)
+        Call("_VectorOf" & $typeOfOutput & "Release", $vectorOutput)
     EndIf
 
-    _cveOutputArrayRelease($oArrOutput)
+    If $typeOfOutput <> Default Then
+        _cveOutputArrayRelease($oArrOutput)
+        If $bOutputCreate Then
+            Call("_cve" & $typeOfOutput & "Release", $output)
+        EndIf
+    EndIf
 
     If $bInputIsArray Then
-        _VectorOfMatRelease($vectorOfMatInput)
+        Call("_VectorOf" & $typeOfInput & "Release", $vectorInput)
     EndIf
 
-    _cveInputArrayRelease($iArrInput)
+    If $typeOfInput <> Default Then
+        _cveInputArrayRelease($iArrInput)
+        If $bInputCreate Then
+            Call("_cve" & $typeOfInput & "Release", $input)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveBIMEF2Typed
+
+Func _cveBIMEF2Mat($input, $output, $k, $mu, $a, $b)
+    ; cveBIMEF2 using cv::Mat instead of _*Array
+    _cveBIMEF2Typed("Mat", $input, "Mat", $output, $k, $mu, $a, $b)
 EndFunc   ;==>_cveBIMEF2Mat

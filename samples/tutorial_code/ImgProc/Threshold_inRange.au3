@@ -116,8 +116,6 @@ Local $frame
 Local $frame_flipped
 Local $frame_HSV
 Local $frame_threshold
-Local $i_arr_frame_HSV
-Local $o_arr_frame_threshold
 
 Local $iNewLowH, $iOldLowH, $iNewHighH, $iOldHighH
 Local $iNewLowS, $iOldLowS, $iNewSighS, $iOldHighS
@@ -269,9 +267,6 @@ Func Main()
 	$frame_flipped = _cveMatCreate()
 	$frame_HSV = _cveMatCreate()
 	$frame_threshold = _cveMatCreate()
-
-	$i_arr_frame_HSV = _cveInputArrayFromMat($frame_HSV)
-	$o_arr_frame_threshold = _cveOutputArrayFromMat($frame_threshold)
 EndFunc   ;==>Main
 
 Func Clean()
@@ -280,9 +275,6 @@ Func Clean()
 	_cveMatRelease($frame_HSV)
 	_cveMatRelease($frame_flipped)
 	_cveMatRelease($frame)
-
-	_cveOutputArrayRelease($o_arr_frame_threshold)
-	_cveInputArrayRelease($i_arr_frame_HSV)
 
 	_cveVideoCaptureRelease($cap)
 	$cap = Null
@@ -304,17 +296,10 @@ Func UpdateFrame()
 	_cveCvtColorMat($frame_flipped, $frame_HSV, $CV_COLOR_BGR2HSV) ;
 
 	;; Detect the object based on HSV Range Values
-	Local $lowHSVScalar = _cveScalarCreate(_cvScalar($low_H, $low_S, $low_V))
-	Local $i_arr_lowHSVScalar = _cveInputArrayFromScalar($lowHSVScalar)
-	Local $highHSVScalar = _cveScalarCreate(_cvScalar($high_H, $high_S, $high_V))
-	Local $i_arr_highHSVScalar = _cveInputArrayFromScalar($highHSVScalar)
+	Local $lowHSVScalar = _cvScalar($low_H, $low_S, $low_V)
+	Local $highHSVScalar = _cvScalar($high_H, $high_S, $high_V)
+	_cveInRangeTyped("Mat", $frame_HSV, "Scalar", $lowHSVScalar, "Scalar", $highHSVScalar, "Mat", $frame_threshold) ;
 
-	_cveInRange($i_arr_frame_HSV, $i_arr_lowHSVScalar, $i_arr_highHSVScalar, $o_arr_frame_threshold) ;
-
-	_cveInputArrayRelease($i_arr_highHSVScalar)
-	_cveScalarRelease($highHSVScalar)
-	_cveInputArrayRelease($i_arr_lowHSVScalar)
-	_cveScalarRelease($lowHSVScalar)
 	;;! [while]
 
 	;;! [show]

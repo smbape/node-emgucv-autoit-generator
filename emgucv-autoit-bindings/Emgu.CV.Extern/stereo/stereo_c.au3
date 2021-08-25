@@ -11,7 +11,7 @@ Func _cveQuasiDenseStereoCreate($monoImgSize, $paramFilepath, $sharedPtr)
         $sMonoImgSizeDllType = "ptr"
     EndIf
 
-    Local $bParamFilepathIsString = VarGetType($paramFilepath) == "String"
+    Local $bParamFilepathIsString = IsString($paramFilepath)
     If $bParamFilepathIsString Then
         $paramFilepath = _cveStringCreateFromStr($paramFilepath)
     EndIf

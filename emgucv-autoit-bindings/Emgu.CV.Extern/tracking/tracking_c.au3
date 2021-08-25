@@ -51,7 +51,7 @@ EndFunc   ;==>_cveTrackerKCFRelease
 Func _cveTrackerCSRTCreate($use_hog, $use_color_names, $use_gray, $use_rgb, $use_channel_weights, $use_segmentation, $window_function, $kaiser_alpha, $cheb_attenuation, $template_size, $gsl_sigma, $hog_orientations, $hog_clip, $padding, $filter_lr, $weights_lr, $num_hog_channels_used, $admm_iterations, $histogram_bins, $histogram_lr, $background_ratio, $number_of_scales, $scale_sigma_factor, $scale_model_max_area, $scale_lr, $scale_step, $tracker, $sharedPtr)
     ; CVAPI(cv::TrackerCSRT*) cveTrackerCSRTCreate(bool use_hog, bool use_color_names, bool use_gray, bool use_rgb, bool use_channel_weights, bool use_segmentation, cv::String* window_function, float kaiser_alpha, float cheb_attenuation, float template_size, float gsl_sigma, float hog_orientations, float hog_clip, float padding, float filter_lr, float weights_lr, int num_hog_channels_used, int admm_iterations, int histogram_bins, float histogram_lr, int background_ratio, int number_of_scales, float scale_sigma_factor, float scale_model_max_area, float scale_lr, float scale_step, cv::Tracker** tracker, cv::Ptr<cv::TrackerCSRT>** sharedPtr);
 
-    Local $bWindow_functionIsString = VarGetType($window_function) == "String"
+    Local $bWindow_functionIsString = IsString($window_function)
     If $bWindow_functionIsString Then
         $window_function = _cveStringCreateFromStr($window_function)
     EndIf
@@ -413,32 +413,49 @@ Func _cveMultiTrackerAdd($multiTracker, $tracker, $image, $boundingBox)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveMultiTrackerAdd", $sMultiTrackerDllType, $multiTracker, $sTrackerDllType, $tracker, $sImageDllType, $image, $sBoundingBoxDllType, $boundingBox), "cveMultiTrackerAdd", @error)
 EndFunc   ;==>_cveMultiTrackerAdd
 
-Func _cveMultiTrackerAddMat($multiTracker, $tracker, $matImage, $boundingBox)
-    ; cveMultiTrackerAdd using cv::Mat instead of _*Array
+Func _cveMultiTrackerAddTyped($multiTracker, $tracker, $typeOfImage, $image, $boundingBox)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
     Local $retval = _cveMultiTrackerAdd($multiTracker, $tracker, $iArrImage, $boundingBox)
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveMultiTrackerAddTyped
+
+Func _cveMultiTrackerAddMat($multiTracker, $tracker, $image, $boundingBox)
+    ; cveMultiTrackerAdd using cv::Mat instead of _*Array
+    Local $retval = _cveMultiTrackerAddTyped($multiTracker, $tracker, "Mat", $image, $boundingBox)
 
     Return $retval
 EndFunc   ;==>_cveMultiTrackerAddMat

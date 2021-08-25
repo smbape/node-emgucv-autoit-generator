@@ -15,7 +15,7 @@ Func _VectorOfByteGetSize($v)
     ; CVAPI(int) VectorOfByteGetSize(std::vector<unsigned char>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfByteCreate()
@@ -48,7 +48,7 @@ Func _VectorOfBytePush($v, $value)
     ; CVAPI(void) VectorOfBytePush(std::vector<unsigned char>* v, unsigned char* value);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfByteCreate()
@@ -86,7 +86,7 @@ Func _VectorOfBytePushMulti($v, $values, $count)
     ; CVAPI(void) VectorOfBytePushMulti(std::vector<unsigned char>* v, unsigned char* values, int count);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfByteCreate()
@@ -124,7 +124,7 @@ Func _VectorOfBytePushVector($v, $other)
     ; CVAPI(void) VectorOfBytePushVector(std::vector<unsigned char>* v, std::vector<unsigned char>* other);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfByteCreate()
@@ -145,7 +145,7 @@ Func _VectorOfBytePushVector($v, $other)
     EndIf
 
     Local $vecOther, $iArrOtherSize
-    Local $bOtherIsArray = VarGetType($other) == "Array"
+    Local $bOtherIsArray = IsArray($other)
 
     If $bOtherIsArray Then
         $vecOther = _VectorOfByteCreate()
@@ -180,7 +180,7 @@ Func _VectorOfByteClear($v)
     ; CVAPI(void) VectorOfByteClear(std::vector<unsigned char>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfByteCreate()
@@ -211,7 +211,7 @@ Func _VectorOfByteRelease($v)
     ; CVAPI(void) VectorOfByteRelease(std::vector<unsigned char>** v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfByteCreate()
@@ -244,7 +244,7 @@ Func _VectorOfByteCopyData($v, $data)
     ; CVAPI(void) VectorOfByteCopyData(std::vector<unsigned char>* v, unsigned char* data);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfByteCreate()
@@ -282,7 +282,7 @@ Func _VectorOfByteGetStartAddress($v)
     ; CVAPI(unsigned char*) VectorOfByteGetStartAddress(std::vector<unsigned char>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfByteCreate()
@@ -315,7 +315,7 @@ Func _VectorOfByteGetEndAddress($v)
     ; CVAPI(void*) VectorOfByteGetEndAddress(std::vector<unsigned char>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfByteCreate()
@@ -348,7 +348,7 @@ Func _VectorOfByteGetItem($vec, $index, $element)
     ; CVAPI(void) VectorOfByteGetItem(std::vector<unsigned char>* vec, int index, unsigned char* element);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfByteCreate()
@@ -386,7 +386,7 @@ Func _VectorOfByteGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfByteGetItemPtr(std::vector<unsigned char>* vec, int index, unsigned char** element);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfByteCreate()
@@ -426,7 +426,7 @@ Func _cveInputArrayFromVectorOfByte($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfByte(std::vector<unsigned char>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfByteCreate()
@@ -459,7 +459,7 @@ Func _cveOutputArrayFromVectorOfByte($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfByte(std::vector<unsigned char>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfByteCreate()
@@ -492,7 +492,7 @@ Func _cveInputOutputArrayFromVectorOfByte($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfByte(std::vector<unsigned char>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfByteCreate()

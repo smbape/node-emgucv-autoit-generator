@@ -11,7 +11,7 @@ Func _cveFrameMetadataGetCameraName($obj, $val)
         $sObjDllType = "ptr"
     EndIf
 
-    Local $bValIsString = VarGetType($val) == "String"
+    Local $bValIsString = IsString($val)
     If $bValIsString Then
         $val = _cveStringCreateFromStr($val)
     EndIf

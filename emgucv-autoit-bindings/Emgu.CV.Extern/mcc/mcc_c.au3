@@ -26,7 +26,7 @@ Func _cveCCheckerGetBox($checker, $box)
     EndIf
 
     Local $vecBox, $iArrBoxSize
-    Local $bBoxIsArray = VarGetType($box) == "Array"
+    Local $bBoxIsArray = IsArray($box)
 
     If $bBoxIsArray Then
         $vecBox = _VectorOfPointFCreate()
@@ -64,7 +64,7 @@ Func _cveCCheckerSetBox($checker, $box)
     EndIf
 
     Local $vecBox, $iArrBoxSize
-    Local $bBoxIsArray = VarGetType($box) == "Array"
+    Local $bBoxIsArray = IsArray($box)
 
     If $bBoxIsArray Then
         $vecBox = _VectorOfPointFCreate()
@@ -194,32 +194,47 @@ Func _cveCCheckerDrawDraw($ccheckerDraw, $img)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveCCheckerDrawDraw", $sCcheckerDrawDllType, $ccheckerDraw, $sImgDllType, $img), "cveCCheckerDrawDraw", @error)
 EndFunc   ;==>_cveCCheckerDrawDraw
 
-Func _cveCCheckerDrawDrawMat($ccheckerDraw, $matImg)
-    ; cveCCheckerDrawDraw using cv::Mat instead of _*Array
+Func _cveCCheckerDrawDrawTyped($ccheckerDraw, $typeOfImg, $img)
 
-    Local $ioArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $ioArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $ioArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $ioArrImg = _cveInputOutputArrayFromVectorOfMat($vectorOfMatImg)
+        $ioArrImg = Call("_cveInputOutputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $ioArrImg = _cveInputOutputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $ioArrImg = Call("_cveInputOutputArrayFrom" & $typeOfImg, $img)
     EndIf
 
     _cveCCheckerDrawDraw($ccheckerDraw, $ioArrImg)
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrImg)
+    If $typeOfImg <> Default Then
+        _cveInputOutputArrayRelease($ioArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCCheckerDrawDrawTyped
+
+Func _cveCCheckerDrawDrawMat($ccheckerDraw, $img)
+    ; cveCCheckerDrawDraw using cv::Mat instead of _*Array
+    _cveCCheckerDrawDrawTyped($ccheckerDraw, "Mat", $img)
 EndFunc   ;==>_cveCCheckerDrawDrawMat
 
 Func _cveCCheckerDrawRelease($sharedPtr)
@@ -286,32 +301,49 @@ Func _cveCCheckerDetectorProcess($detector, $image, $chartType, $nc, $useNet, $p
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveCCheckerDetectorProcess", $sDetectorDllType, $detector, $sImageDllType, $image, "int", $chartType, "int", $nc, "boolean", $useNet, $sParamDllType, $param), "cveCCheckerDetectorProcess", @error)
 EndFunc   ;==>_cveCCheckerDetectorProcess
 
-Func _cveCCheckerDetectorProcessMat($detector, $matImage, $chartType, $nc, $useNet, $param)
-    ; cveCCheckerDetectorProcess using cv::Mat instead of _*Array
+Func _cveCCheckerDetectorProcessTyped($detector, $typeOfImage, $image, $chartType, $nc, $useNet, $param)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
     Local $retval = _cveCCheckerDetectorProcess($detector, $iArrImage, $chartType, $nc, $useNet, $param)
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveCCheckerDetectorProcessTyped
+
+Func _cveCCheckerDetectorProcessMat($detector, $image, $chartType, $nc, $useNet, $param)
+    ; cveCCheckerDetectorProcess using cv::Mat instead of _*Array
+    Local $retval = _cveCCheckerDetectorProcessTyped($detector, "Mat", $image, $chartType, $nc, $useNet, $param)
 
     Return $retval
 EndFunc   ;==>_cveCCheckerDetectorProcessMat

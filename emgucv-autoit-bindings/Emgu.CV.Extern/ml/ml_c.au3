@@ -27,54 +27,82 @@ Func _StatModelTrain($model, $samples, $layout, $responses)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "StatModelTrain", $sModelDllType, $model, $sSamplesDllType, $samples, "int", $layout, $sResponsesDllType, $responses), "StatModelTrain", @error)
 EndFunc   ;==>_StatModelTrain
 
-Func _StatModelTrainMat($model, $matSamples, $layout, $matResponses)
-    ; StatModelTrain using cv::Mat instead of _*Array
+Func _StatModelTrainTyped($model, $typeOfSamples, $samples, $layout, $typeOfResponses, $responses)
 
-    Local $iArrSamples, $vectorOfMatSamples, $iArrSamplesSize
-    Local $bSamplesIsArray = VarGetType($matSamples) == "Array"
+    Local $iArrSamples, $vectorSamples, $iArrSamplesSize
+    Local $bSamplesIsArray = IsArray($samples)
+    Local $bSamplesCreate = IsDllStruct($samples) And $typeOfSamples == "Scalar"
 
-    If $bSamplesIsArray Then
-        $vectorOfMatSamples = _VectorOfMatCreate()
+    If $typeOfSamples == Default Then
+        $iArrSamples = $samples
+    ElseIf $bSamplesIsArray Then
+        $vectorSamples = Call("_VectorOf" & $typeOfSamples & "Create")
 
-        $iArrSamplesSize = UBound($matSamples)
+        $iArrSamplesSize = UBound($samples)
         For $i = 0 To $iArrSamplesSize - 1
-            _VectorOfMatPush($vectorOfMatSamples, $matSamples[$i])
+            Call("_VectorOf" & $typeOfSamples & "Push", $vectorSamples, $samples[$i])
         Next
 
-        $iArrSamples = _cveInputArrayFromVectorOfMat($vectorOfMatSamples)
+        $iArrSamples = Call("_cveInputArrayFromVectorOf" & $typeOfSamples, $vectorSamples)
     Else
-        $iArrSamples = _cveInputArrayFromMat($matSamples)
+        If $bSamplesCreate Then
+            $samples = Call("_cve" & $typeOfSamples & "Create", $samples)
+        EndIf
+        $iArrSamples = Call("_cveInputArrayFrom" & $typeOfSamples, $samples)
     EndIf
 
-    Local $iArrResponses, $vectorOfMatResponses, $iArrResponsesSize
-    Local $bResponsesIsArray = VarGetType($matResponses) == "Array"
+    Local $iArrResponses, $vectorResponses, $iArrResponsesSize
+    Local $bResponsesIsArray = IsArray($responses)
+    Local $bResponsesCreate = IsDllStruct($responses) And $typeOfResponses == "Scalar"
 
-    If $bResponsesIsArray Then
-        $vectorOfMatResponses = _VectorOfMatCreate()
+    If $typeOfResponses == Default Then
+        $iArrResponses = $responses
+    ElseIf $bResponsesIsArray Then
+        $vectorResponses = Call("_VectorOf" & $typeOfResponses & "Create")
 
-        $iArrResponsesSize = UBound($matResponses)
+        $iArrResponsesSize = UBound($responses)
         For $i = 0 To $iArrResponsesSize - 1
-            _VectorOfMatPush($vectorOfMatResponses, $matResponses[$i])
+            Call("_VectorOf" & $typeOfResponses & "Push", $vectorResponses, $responses[$i])
         Next
 
-        $iArrResponses = _cveInputArrayFromVectorOfMat($vectorOfMatResponses)
+        $iArrResponses = Call("_cveInputArrayFromVectorOf" & $typeOfResponses, $vectorResponses)
     Else
-        $iArrResponses = _cveInputArrayFromMat($matResponses)
+        If $bResponsesCreate Then
+            $responses = Call("_cve" & $typeOfResponses & "Create", $responses)
+        EndIf
+        $iArrResponses = Call("_cveInputArrayFrom" & $typeOfResponses, $responses)
     EndIf
 
     Local $retval = _StatModelTrain($model, $iArrSamples, $layout, $iArrResponses)
 
     If $bResponsesIsArray Then
-        _VectorOfMatRelease($vectorOfMatResponses)
+        Call("_VectorOf" & $typeOfResponses & "Release", $vectorResponses)
     EndIf
 
-    _cveInputArrayRelease($iArrResponses)
+    If $typeOfResponses <> Default Then
+        _cveInputArrayRelease($iArrResponses)
+        If $bResponsesCreate Then
+            Call("_cve" & $typeOfResponses & "Release", $responses)
+        EndIf
+    EndIf
 
     If $bSamplesIsArray Then
-        _VectorOfMatRelease($vectorOfMatSamples)
+        Call("_VectorOf" & $typeOfSamples & "Release", $vectorSamples)
     EndIf
 
-    _cveInputArrayRelease($iArrSamples)
+    If $typeOfSamples <> Default Then
+        _cveInputArrayRelease($iArrSamples)
+        If $bSamplesCreate Then
+            Call("_cve" & $typeOfSamples & "Release", $samples)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_StatModelTrainTyped
+
+Func _StatModelTrainMat($model, $samples, $layout, $responses)
+    ; StatModelTrain using cv::Mat instead of _*Array
+    Local $retval = _StatModelTrainTyped($model, "Mat", $samples, $layout, "Mat", $responses)
 
     Return $retval
 EndFunc   ;==>_StatModelTrainMat
@@ -124,54 +152,82 @@ Func _StatModelPredict($model, $samples, $results, $flags)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "StatModelPredict", $sModelDllType, $model, $sSamplesDllType, $samples, $sResultsDllType, $results, "int", $flags), "StatModelPredict", @error)
 EndFunc   ;==>_StatModelPredict
 
-Func _StatModelPredictMat($model, $matSamples, $matResults, $flags)
-    ; StatModelPredict using cv::Mat instead of _*Array
+Func _StatModelPredictTyped($model, $typeOfSamples, $samples, $typeOfResults, $results, $flags)
 
-    Local $iArrSamples, $vectorOfMatSamples, $iArrSamplesSize
-    Local $bSamplesIsArray = VarGetType($matSamples) == "Array"
+    Local $iArrSamples, $vectorSamples, $iArrSamplesSize
+    Local $bSamplesIsArray = IsArray($samples)
+    Local $bSamplesCreate = IsDllStruct($samples) And $typeOfSamples == "Scalar"
 
-    If $bSamplesIsArray Then
-        $vectorOfMatSamples = _VectorOfMatCreate()
+    If $typeOfSamples == Default Then
+        $iArrSamples = $samples
+    ElseIf $bSamplesIsArray Then
+        $vectorSamples = Call("_VectorOf" & $typeOfSamples & "Create")
 
-        $iArrSamplesSize = UBound($matSamples)
+        $iArrSamplesSize = UBound($samples)
         For $i = 0 To $iArrSamplesSize - 1
-            _VectorOfMatPush($vectorOfMatSamples, $matSamples[$i])
+            Call("_VectorOf" & $typeOfSamples & "Push", $vectorSamples, $samples[$i])
         Next
 
-        $iArrSamples = _cveInputArrayFromVectorOfMat($vectorOfMatSamples)
+        $iArrSamples = Call("_cveInputArrayFromVectorOf" & $typeOfSamples, $vectorSamples)
     Else
-        $iArrSamples = _cveInputArrayFromMat($matSamples)
+        If $bSamplesCreate Then
+            $samples = Call("_cve" & $typeOfSamples & "Create", $samples)
+        EndIf
+        $iArrSamples = Call("_cveInputArrayFrom" & $typeOfSamples, $samples)
     EndIf
 
-    Local $oArrResults, $vectorOfMatResults, $iArrResultsSize
-    Local $bResultsIsArray = VarGetType($matResults) == "Array"
+    Local $oArrResults, $vectorResults, $iArrResultsSize
+    Local $bResultsIsArray = IsArray($results)
+    Local $bResultsCreate = IsDllStruct($results) And $typeOfResults == "Scalar"
 
-    If $bResultsIsArray Then
-        $vectorOfMatResults = _VectorOfMatCreate()
+    If $typeOfResults == Default Then
+        $oArrResults = $results
+    ElseIf $bResultsIsArray Then
+        $vectorResults = Call("_VectorOf" & $typeOfResults & "Create")
 
-        $iArrResultsSize = UBound($matResults)
+        $iArrResultsSize = UBound($results)
         For $i = 0 To $iArrResultsSize - 1
-            _VectorOfMatPush($vectorOfMatResults, $matResults[$i])
+            Call("_VectorOf" & $typeOfResults & "Push", $vectorResults, $results[$i])
         Next
 
-        $oArrResults = _cveOutputArrayFromVectorOfMat($vectorOfMatResults)
+        $oArrResults = Call("_cveOutputArrayFromVectorOf" & $typeOfResults, $vectorResults)
     Else
-        $oArrResults = _cveOutputArrayFromMat($matResults)
+        If $bResultsCreate Then
+            $results = Call("_cve" & $typeOfResults & "Create", $results)
+        EndIf
+        $oArrResults = Call("_cveOutputArrayFrom" & $typeOfResults, $results)
     EndIf
 
     Local $retval = _StatModelPredict($model, $iArrSamples, $oArrResults, $flags)
 
     If $bResultsIsArray Then
-        _VectorOfMatRelease($vectorOfMatResults)
+        Call("_VectorOf" & $typeOfResults & "Release", $vectorResults)
     EndIf
 
-    _cveOutputArrayRelease($oArrResults)
+    If $typeOfResults <> Default Then
+        _cveOutputArrayRelease($oArrResults)
+        If $bResultsCreate Then
+            Call("_cve" & $typeOfResults & "Release", $results)
+        EndIf
+    EndIf
 
     If $bSamplesIsArray Then
-        _VectorOfMatRelease($vectorOfMatSamples)
+        Call("_VectorOf" & $typeOfSamples & "Release", $vectorSamples)
     EndIf
 
-    _cveInputArrayRelease($iArrSamples)
+    If $typeOfSamples <> Default Then
+        _cveInputArrayRelease($iArrSamples)
+        If $bSamplesCreate Then
+            Call("_cve" & $typeOfSamples & "Release", $samples)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_StatModelPredictTyped
+
+Func _StatModelPredictMat($model, $samples, $results, $flags)
+    ; StatModelPredict using cv::Mat instead of _*Array
+    Local $retval = _StatModelPredictTyped($model, "Mat", $samples, "Mat", $results, $flags)
 
     Return $retval
 EndFunc   ;==>_StatModelPredictMat
@@ -232,142 +288,214 @@ Func _cveTrainDataCreate($samples, $layout, $responses, $varIdx, $sampleIdx, $sa
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveTrainDataCreate", $sSamplesDllType, $samples, "int", $layout, $sResponsesDllType, $responses, $sVarIdxDllType, $varIdx, $sSampleIdxDllType, $sampleIdx, $sSampleWeightsDllType, $sampleWeights, $sVarTypeDllType, $varType, $sSharedPtrDllType, $sharedPtr), "cveTrainDataCreate", @error)
 EndFunc   ;==>_cveTrainDataCreate
 
-Func _cveTrainDataCreateMat($matSamples, $layout, $matResponses, $matVarIdx, $matSampleIdx, $matSampleWeights, $matVarType, $sharedPtr)
-    ; cveTrainDataCreate using cv::Mat instead of _*Array
+Func _cveTrainDataCreateTyped($typeOfSamples, $samples, $layout, $typeOfResponses, $responses, $typeOfVarIdx, $varIdx, $typeOfSampleIdx, $sampleIdx, $typeOfSampleWeights, $sampleWeights, $typeOfVarType, $varType, $sharedPtr)
 
-    Local $iArrSamples, $vectorOfMatSamples, $iArrSamplesSize
-    Local $bSamplesIsArray = VarGetType($matSamples) == "Array"
+    Local $iArrSamples, $vectorSamples, $iArrSamplesSize
+    Local $bSamplesIsArray = IsArray($samples)
+    Local $bSamplesCreate = IsDllStruct($samples) And $typeOfSamples == "Scalar"
 
-    If $bSamplesIsArray Then
-        $vectorOfMatSamples = _VectorOfMatCreate()
+    If $typeOfSamples == Default Then
+        $iArrSamples = $samples
+    ElseIf $bSamplesIsArray Then
+        $vectorSamples = Call("_VectorOf" & $typeOfSamples & "Create")
 
-        $iArrSamplesSize = UBound($matSamples)
+        $iArrSamplesSize = UBound($samples)
         For $i = 0 To $iArrSamplesSize - 1
-            _VectorOfMatPush($vectorOfMatSamples, $matSamples[$i])
+            Call("_VectorOf" & $typeOfSamples & "Push", $vectorSamples, $samples[$i])
         Next
 
-        $iArrSamples = _cveInputArrayFromVectorOfMat($vectorOfMatSamples)
+        $iArrSamples = Call("_cveInputArrayFromVectorOf" & $typeOfSamples, $vectorSamples)
     Else
-        $iArrSamples = _cveInputArrayFromMat($matSamples)
+        If $bSamplesCreate Then
+            $samples = Call("_cve" & $typeOfSamples & "Create", $samples)
+        EndIf
+        $iArrSamples = Call("_cveInputArrayFrom" & $typeOfSamples, $samples)
     EndIf
 
-    Local $iArrResponses, $vectorOfMatResponses, $iArrResponsesSize
-    Local $bResponsesIsArray = VarGetType($matResponses) == "Array"
+    Local $iArrResponses, $vectorResponses, $iArrResponsesSize
+    Local $bResponsesIsArray = IsArray($responses)
+    Local $bResponsesCreate = IsDllStruct($responses) And $typeOfResponses == "Scalar"
 
-    If $bResponsesIsArray Then
-        $vectorOfMatResponses = _VectorOfMatCreate()
+    If $typeOfResponses == Default Then
+        $iArrResponses = $responses
+    ElseIf $bResponsesIsArray Then
+        $vectorResponses = Call("_VectorOf" & $typeOfResponses & "Create")
 
-        $iArrResponsesSize = UBound($matResponses)
+        $iArrResponsesSize = UBound($responses)
         For $i = 0 To $iArrResponsesSize - 1
-            _VectorOfMatPush($vectorOfMatResponses, $matResponses[$i])
+            Call("_VectorOf" & $typeOfResponses & "Push", $vectorResponses, $responses[$i])
         Next
 
-        $iArrResponses = _cveInputArrayFromVectorOfMat($vectorOfMatResponses)
+        $iArrResponses = Call("_cveInputArrayFromVectorOf" & $typeOfResponses, $vectorResponses)
     Else
-        $iArrResponses = _cveInputArrayFromMat($matResponses)
+        If $bResponsesCreate Then
+            $responses = Call("_cve" & $typeOfResponses & "Create", $responses)
+        EndIf
+        $iArrResponses = Call("_cveInputArrayFrom" & $typeOfResponses, $responses)
     EndIf
 
-    Local $iArrVarIdx, $vectorOfMatVarIdx, $iArrVarIdxSize
-    Local $bVarIdxIsArray = VarGetType($matVarIdx) == "Array"
+    Local $iArrVarIdx, $vectorVarIdx, $iArrVarIdxSize
+    Local $bVarIdxIsArray = IsArray($varIdx)
+    Local $bVarIdxCreate = IsDllStruct($varIdx) And $typeOfVarIdx == "Scalar"
 
-    If $bVarIdxIsArray Then
-        $vectorOfMatVarIdx = _VectorOfMatCreate()
+    If $typeOfVarIdx == Default Then
+        $iArrVarIdx = $varIdx
+    ElseIf $bVarIdxIsArray Then
+        $vectorVarIdx = Call("_VectorOf" & $typeOfVarIdx & "Create")
 
-        $iArrVarIdxSize = UBound($matVarIdx)
+        $iArrVarIdxSize = UBound($varIdx)
         For $i = 0 To $iArrVarIdxSize - 1
-            _VectorOfMatPush($vectorOfMatVarIdx, $matVarIdx[$i])
+            Call("_VectorOf" & $typeOfVarIdx & "Push", $vectorVarIdx, $varIdx[$i])
         Next
 
-        $iArrVarIdx = _cveInputArrayFromVectorOfMat($vectorOfMatVarIdx)
+        $iArrVarIdx = Call("_cveInputArrayFromVectorOf" & $typeOfVarIdx, $vectorVarIdx)
     Else
-        $iArrVarIdx = _cveInputArrayFromMat($matVarIdx)
+        If $bVarIdxCreate Then
+            $varIdx = Call("_cve" & $typeOfVarIdx & "Create", $varIdx)
+        EndIf
+        $iArrVarIdx = Call("_cveInputArrayFrom" & $typeOfVarIdx, $varIdx)
     EndIf
 
-    Local $iArrSampleIdx, $vectorOfMatSampleIdx, $iArrSampleIdxSize
-    Local $bSampleIdxIsArray = VarGetType($matSampleIdx) == "Array"
+    Local $iArrSampleIdx, $vectorSampleIdx, $iArrSampleIdxSize
+    Local $bSampleIdxIsArray = IsArray($sampleIdx)
+    Local $bSampleIdxCreate = IsDllStruct($sampleIdx) And $typeOfSampleIdx == "Scalar"
 
-    If $bSampleIdxIsArray Then
-        $vectorOfMatSampleIdx = _VectorOfMatCreate()
+    If $typeOfSampleIdx == Default Then
+        $iArrSampleIdx = $sampleIdx
+    ElseIf $bSampleIdxIsArray Then
+        $vectorSampleIdx = Call("_VectorOf" & $typeOfSampleIdx & "Create")
 
-        $iArrSampleIdxSize = UBound($matSampleIdx)
+        $iArrSampleIdxSize = UBound($sampleIdx)
         For $i = 0 To $iArrSampleIdxSize - 1
-            _VectorOfMatPush($vectorOfMatSampleIdx, $matSampleIdx[$i])
+            Call("_VectorOf" & $typeOfSampleIdx & "Push", $vectorSampleIdx, $sampleIdx[$i])
         Next
 
-        $iArrSampleIdx = _cveInputArrayFromVectorOfMat($vectorOfMatSampleIdx)
+        $iArrSampleIdx = Call("_cveInputArrayFromVectorOf" & $typeOfSampleIdx, $vectorSampleIdx)
     Else
-        $iArrSampleIdx = _cveInputArrayFromMat($matSampleIdx)
+        If $bSampleIdxCreate Then
+            $sampleIdx = Call("_cve" & $typeOfSampleIdx & "Create", $sampleIdx)
+        EndIf
+        $iArrSampleIdx = Call("_cveInputArrayFrom" & $typeOfSampleIdx, $sampleIdx)
     EndIf
 
-    Local $iArrSampleWeights, $vectorOfMatSampleWeights, $iArrSampleWeightsSize
-    Local $bSampleWeightsIsArray = VarGetType($matSampleWeights) == "Array"
+    Local $iArrSampleWeights, $vectorSampleWeights, $iArrSampleWeightsSize
+    Local $bSampleWeightsIsArray = IsArray($sampleWeights)
+    Local $bSampleWeightsCreate = IsDllStruct($sampleWeights) And $typeOfSampleWeights == "Scalar"
 
-    If $bSampleWeightsIsArray Then
-        $vectorOfMatSampleWeights = _VectorOfMatCreate()
+    If $typeOfSampleWeights == Default Then
+        $iArrSampleWeights = $sampleWeights
+    ElseIf $bSampleWeightsIsArray Then
+        $vectorSampleWeights = Call("_VectorOf" & $typeOfSampleWeights & "Create")
 
-        $iArrSampleWeightsSize = UBound($matSampleWeights)
+        $iArrSampleWeightsSize = UBound($sampleWeights)
         For $i = 0 To $iArrSampleWeightsSize - 1
-            _VectorOfMatPush($vectorOfMatSampleWeights, $matSampleWeights[$i])
+            Call("_VectorOf" & $typeOfSampleWeights & "Push", $vectorSampleWeights, $sampleWeights[$i])
         Next
 
-        $iArrSampleWeights = _cveInputArrayFromVectorOfMat($vectorOfMatSampleWeights)
+        $iArrSampleWeights = Call("_cveInputArrayFromVectorOf" & $typeOfSampleWeights, $vectorSampleWeights)
     Else
-        $iArrSampleWeights = _cveInputArrayFromMat($matSampleWeights)
+        If $bSampleWeightsCreate Then
+            $sampleWeights = Call("_cve" & $typeOfSampleWeights & "Create", $sampleWeights)
+        EndIf
+        $iArrSampleWeights = Call("_cveInputArrayFrom" & $typeOfSampleWeights, $sampleWeights)
     EndIf
 
-    Local $iArrVarType, $vectorOfMatVarType, $iArrVarTypeSize
-    Local $bVarTypeIsArray = VarGetType($matVarType) == "Array"
+    Local $iArrVarType, $vectorVarType, $iArrVarTypeSize
+    Local $bVarTypeIsArray = IsArray($varType)
+    Local $bVarTypeCreate = IsDllStruct($varType) And $typeOfVarType == "Scalar"
 
-    If $bVarTypeIsArray Then
-        $vectorOfMatVarType = _VectorOfMatCreate()
+    If $typeOfVarType == Default Then
+        $iArrVarType = $varType
+    ElseIf $bVarTypeIsArray Then
+        $vectorVarType = Call("_VectorOf" & $typeOfVarType & "Create")
 
-        $iArrVarTypeSize = UBound($matVarType)
+        $iArrVarTypeSize = UBound($varType)
         For $i = 0 To $iArrVarTypeSize - 1
-            _VectorOfMatPush($vectorOfMatVarType, $matVarType[$i])
+            Call("_VectorOf" & $typeOfVarType & "Push", $vectorVarType, $varType[$i])
         Next
 
-        $iArrVarType = _cveInputArrayFromVectorOfMat($vectorOfMatVarType)
+        $iArrVarType = Call("_cveInputArrayFromVectorOf" & $typeOfVarType, $vectorVarType)
     Else
-        $iArrVarType = _cveInputArrayFromMat($matVarType)
+        If $bVarTypeCreate Then
+            $varType = Call("_cve" & $typeOfVarType & "Create", $varType)
+        EndIf
+        $iArrVarType = Call("_cveInputArrayFrom" & $typeOfVarType, $varType)
     EndIf
 
     Local $retval = _cveTrainDataCreate($iArrSamples, $layout, $iArrResponses, $iArrVarIdx, $iArrSampleIdx, $iArrSampleWeights, $iArrVarType, $sharedPtr)
 
     If $bVarTypeIsArray Then
-        _VectorOfMatRelease($vectorOfMatVarType)
+        Call("_VectorOf" & $typeOfVarType & "Release", $vectorVarType)
     EndIf
 
-    _cveInputArrayRelease($iArrVarType)
+    If $typeOfVarType <> Default Then
+        _cveInputArrayRelease($iArrVarType)
+        If $bVarTypeCreate Then
+            Call("_cve" & $typeOfVarType & "Release", $varType)
+        EndIf
+    EndIf
 
     If $bSampleWeightsIsArray Then
-        _VectorOfMatRelease($vectorOfMatSampleWeights)
+        Call("_VectorOf" & $typeOfSampleWeights & "Release", $vectorSampleWeights)
     EndIf
 
-    _cveInputArrayRelease($iArrSampleWeights)
+    If $typeOfSampleWeights <> Default Then
+        _cveInputArrayRelease($iArrSampleWeights)
+        If $bSampleWeightsCreate Then
+            Call("_cve" & $typeOfSampleWeights & "Release", $sampleWeights)
+        EndIf
+    EndIf
 
     If $bSampleIdxIsArray Then
-        _VectorOfMatRelease($vectorOfMatSampleIdx)
+        Call("_VectorOf" & $typeOfSampleIdx & "Release", $vectorSampleIdx)
     EndIf
 
-    _cveInputArrayRelease($iArrSampleIdx)
+    If $typeOfSampleIdx <> Default Then
+        _cveInputArrayRelease($iArrSampleIdx)
+        If $bSampleIdxCreate Then
+            Call("_cve" & $typeOfSampleIdx & "Release", $sampleIdx)
+        EndIf
+    EndIf
 
     If $bVarIdxIsArray Then
-        _VectorOfMatRelease($vectorOfMatVarIdx)
+        Call("_VectorOf" & $typeOfVarIdx & "Release", $vectorVarIdx)
     EndIf
 
-    _cveInputArrayRelease($iArrVarIdx)
+    If $typeOfVarIdx <> Default Then
+        _cveInputArrayRelease($iArrVarIdx)
+        If $bVarIdxCreate Then
+            Call("_cve" & $typeOfVarIdx & "Release", $varIdx)
+        EndIf
+    EndIf
 
     If $bResponsesIsArray Then
-        _VectorOfMatRelease($vectorOfMatResponses)
+        Call("_VectorOf" & $typeOfResponses & "Release", $vectorResponses)
     EndIf
 
-    _cveInputArrayRelease($iArrResponses)
+    If $typeOfResponses <> Default Then
+        _cveInputArrayRelease($iArrResponses)
+        If $bResponsesCreate Then
+            Call("_cve" & $typeOfResponses & "Release", $responses)
+        EndIf
+    EndIf
 
     If $bSamplesIsArray Then
-        _VectorOfMatRelease($vectorOfMatSamples)
+        Call("_VectorOf" & $typeOfSamples & "Release", $vectorSamples)
     EndIf
 
-    _cveInputArrayRelease($iArrSamples)
+    If $typeOfSamples <> Default Then
+        _cveInputArrayRelease($iArrSamples)
+        If $bSamplesCreate Then
+            Call("_cve" & $typeOfSamples & "Release", $samples)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveTrainDataCreateTyped
+
+Func _cveTrainDataCreateMat($samples, $layout, $responses, $varIdx, $sampleIdx, $sampleWeights, $varType, $sharedPtr)
+    ; cveTrainDataCreate using cv::Mat instead of _*Array
+    Local $retval = _cveTrainDataCreateTyped("Mat", $samples, $layout, "Mat", $responses, "Mat", $varIdx, "Mat", $sampleIdx, "Mat", $sampleWeights, "Mat", $varType, $sharedPtr)
 
     Return $retval
 EndFunc   ;==>_cveTrainDataCreateMat
@@ -530,98 +658,148 @@ Func _cveKNearestFindNearest($classifier, $samples, $k, $results, $neighborRespo
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "float:cdecl", "cveKNearestFindNearest", $sClassifierDllType, $classifier, $sSamplesDllType, $samples, "int", $k, $sResultsDllType, $results, $sNeighborResponsesDllType, $neighborResponses, $sDistDllType, $dist), "cveKNearestFindNearest", @error)
 EndFunc   ;==>_cveKNearestFindNearest
 
-Func _cveKNearestFindNearestMat($classifier, $matSamples, $k, $matResults, $matNeighborResponses, $matDist)
-    ; cveKNearestFindNearest using cv::Mat instead of _*Array
+Func _cveKNearestFindNearestTyped($classifier, $typeOfSamples, $samples, $k, $typeOfResults, $results, $typeOfNeighborResponses, $neighborResponses, $typeOfDist, $dist)
 
-    Local $iArrSamples, $vectorOfMatSamples, $iArrSamplesSize
-    Local $bSamplesIsArray = VarGetType($matSamples) == "Array"
+    Local $iArrSamples, $vectorSamples, $iArrSamplesSize
+    Local $bSamplesIsArray = IsArray($samples)
+    Local $bSamplesCreate = IsDllStruct($samples) And $typeOfSamples == "Scalar"
 
-    If $bSamplesIsArray Then
-        $vectorOfMatSamples = _VectorOfMatCreate()
+    If $typeOfSamples == Default Then
+        $iArrSamples = $samples
+    ElseIf $bSamplesIsArray Then
+        $vectorSamples = Call("_VectorOf" & $typeOfSamples & "Create")
 
-        $iArrSamplesSize = UBound($matSamples)
+        $iArrSamplesSize = UBound($samples)
         For $i = 0 To $iArrSamplesSize - 1
-            _VectorOfMatPush($vectorOfMatSamples, $matSamples[$i])
+            Call("_VectorOf" & $typeOfSamples & "Push", $vectorSamples, $samples[$i])
         Next
 
-        $iArrSamples = _cveInputArrayFromVectorOfMat($vectorOfMatSamples)
+        $iArrSamples = Call("_cveInputArrayFromVectorOf" & $typeOfSamples, $vectorSamples)
     Else
-        $iArrSamples = _cveInputArrayFromMat($matSamples)
+        If $bSamplesCreate Then
+            $samples = Call("_cve" & $typeOfSamples & "Create", $samples)
+        EndIf
+        $iArrSamples = Call("_cveInputArrayFrom" & $typeOfSamples, $samples)
     EndIf
 
-    Local $oArrResults, $vectorOfMatResults, $iArrResultsSize
-    Local $bResultsIsArray = VarGetType($matResults) == "Array"
+    Local $oArrResults, $vectorResults, $iArrResultsSize
+    Local $bResultsIsArray = IsArray($results)
+    Local $bResultsCreate = IsDllStruct($results) And $typeOfResults == "Scalar"
 
-    If $bResultsIsArray Then
-        $vectorOfMatResults = _VectorOfMatCreate()
+    If $typeOfResults == Default Then
+        $oArrResults = $results
+    ElseIf $bResultsIsArray Then
+        $vectorResults = Call("_VectorOf" & $typeOfResults & "Create")
 
-        $iArrResultsSize = UBound($matResults)
+        $iArrResultsSize = UBound($results)
         For $i = 0 To $iArrResultsSize - 1
-            _VectorOfMatPush($vectorOfMatResults, $matResults[$i])
+            Call("_VectorOf" & $typeOfResults & "Push", $vectorResults, $results[$i])
         Next
 
-        $oArrResults = _cveOutputArrayFromVectorOfMat($vectorOfMatResults)
+        $oArrResults = Call("_cveOutputArrayFromVectorOf" & $typeOfResults, $vectorResults)
     Else
-        $oArrResults = _cveOutputArrayFromMat($matResults)
+        If $bResultsCreate Then
+            $results = Call("_cve" & $typeOfResults & "Create", $results)
+        EndIf
+        $oArrResults = Call("_cveOutputArrayFrom" & $typeOfResults, $results)
     EndIf
 
-    Local $oArrNeighborResponses, $vectorOfMatNeighborResponses, $iArrNeighborResponsesSize
-    Local $bNeighborResponsesIsArray = VarGetType($matNeighborResponses) == "Array"
+    Local $oArrNeighborResponses, $vectorNeighborResponses, $iArrNeighborResponsesSize
+    Local $bNeighborResponsesIsArray = IsArray($neighborResponses)
+    Local $bNeighborResponsesCreate = IsDllStruct($neighborResponses) And $typeOfNeighborResponses == "Scalar"
 
-    If $bNeighborResponsesIsArray Then
-        $vectorOfMatNeighborResponses = _VectorOfMatCreate()
+    If $typeOfNeighborResponses == Default Then
+        $oArrNeighborResponses = $neighborResponses
+    ElseIf $bNeighborResponsesIsArray Then
+        $vectorNeighborResponses = Call("_VectorOf" & $typeOfNeighborResponses & "Create")
 
-        $iArrNeighborResponsesSize = UBound($matNeighborResponses)
+        $iArrNeighborResponsesSize = UBound($neighborResponses)
         For $i = 0 To $iArrNeighborResponsesSize - 1
-            _VectorOfMatPush($vectorOfMatNeighborResponses, $matNeighborResponses[$i])
+            Call("_VectorOf" & $typeOfNeighborResponses & "Push", $vectorNeighborResponses, $neighborResponses[$i])
         Next
 
-        $oArrNeighborResponses = _cveOutputArrayFromVectorOfMat($vectorOfMatNeighborResponses)
+        $oArrNeighborResponses = Call("_cveOutputArrayFromVectorOf" & $typeOfNeighborResponses, $vectorNeighborResponses)
     Else
-        $oArrNeighborResponses = _cveOutputArrayFromMat($matNeighborResponses)
+        If $bNeighborResponsesCreate Then
+            $neighborResponses = Call("_cve" & $typeOfNeighborResponses & "Create", $neighborResponses)
+        EndIf
+        $oArrNeighborResponses = Call("_cveOutputArrayFrom" & $typeOfNeighborResponses, $neighborResponses)
     EndIf
 
-    Local $oArrDist, $vectorOfMatDist, $iArrDistSize
-    Local $bDistIsArray = VarGetType($matDist) == "Array"
+    Local $oArrDist, $vectorDist, $iArrDistSize
+    Local $bDistIsArray = IsArray($dist)
+    Local $bDistCreate = IsDllStruct($dist) And $typeOfDist == "Scalar"
 
-    If $bDistIsArray Then
-        $vectorOfMatDist = _VectorOfMatCreate()
+    If $typeOfDist == Default Then
+        $oArrDist = $dist
+    ElseIf $bDistIsArray Then
+        $vectorDist = Call("_VectorOf" & $typeOfDist & "Create")
 
-        $iArrDistSize = UBound($matDist)
+        $iArrDistSize = UBound($dist)
         For $i = 0 To $iArrDistSize - 1
-            _VectorOfMatPush($vectorOfMatDist, $matDist[$i])
+            Call("_VectorOf" & $typeOfDist & "Push", $vectorDist, $dist[$i])
         Next
 
-        $oArrDist = _cveOutputArrayFromVectorOfMat($vectorOfMatDist)
+        $oArrDist = Call("_cveOutputArrayFromVectorOf" & $typeOfDist, $vectorDist)
     Else
-        $oArrDist = _cveOutputArrayFromMat($matDist)
+        If $bDistCreate Then
+            $dist = Call("_cve" & $typeOfDist & "Create", $dist)
+        EndIf
+        $oArrDist = Call("_cveOutputArrayFrom" & $typeOfDist, $dist)
     EndIf
 
     Local $retval = _cveKNearestFindNearest($classifier, $iArrSamples, $k, $oArrResults, $oArrNeighborResponses, $oArrDist)
 
     If $bDistIsArray Then
-        _VectorOfMatRelease($vectorOfMatDist)
+        Call("_VectorOf" & $typeOfDist & "Release", $vectorDist)
     EndIf
 
-    _cveOutputArrayRelease($oArrDist)
+    If $typeOfDist <> Default Then
+        _cveOutputArrayRelease($oArrDist)
+        If $bDistCreate Then
+            Call("_cve" & $typeOfDist & "Release", $dist)
+        EndIf
+    EndIf
 
     If $bNeighborResponsesIsArray Then
-        _VectorOfMatRelease($vectorOfMatNeighborResponses)
+        Call("_VectorOf" & $typeOfNeighborResponses & "Release", $vectorNeighborResponses)
     EndIf
 
-    _cveOutputArrayRelease($oArrNeighborResponses)
+    If $typeOfNeighborResponses <> Default Then
+        _cveOutputArrayRelease($oArrNeighborResponses)
+        If $bNeighborResponsesCreate Then
+            Call("_cve" & $typeOfNeighborResponses & "Release", $neighborResponses)
+        EndIf
+    EndIf
 
     If $bResultsIsArray Then
-        _VectorOfMatRelease($vectorOfMatResults)
+        Call("_VectorOf" & $typeOfResults & "Release", $vectorResults)
     EndIf
 
-    _cveOutputArrayRelease($oArrResults)
+    If $typeOfResults <> Default Then
+        _cveOutputArrayRelease($oArrResults)
+        If $bResultsCreate Then
+            Call("_cve" & $typeOfResults & "Release", $results)
+        EndIf
+    EndIf
 
     If $bSamplesIsArray Then
-        _VectorOfMatRelease($vectorOfMatSamples)
+        Call("_VectorOf" & $typeOfSamples & "Release", $vectorSamples)
     EndIf
 
-    _cveInputArrayRelease($iArrSamples)
+    If $typeOfSamples <> Default Then
+        _cveInputArrayRelease($iArrSamples)
+        If $bSamplesCreate Then
+            Call("_cve" & $typeOfSamples & "Release", $samples)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveKNearestFindNearestTyped
+
+Func _cveKNearestFindNearestMat($classifier, $samples, $k, $results, $neighborResponses, $dist)
+    ; cveKNearestFindNearest using cv::Mat instead of _*Array
+    Local $retval = _cveKNearestFindNearestTyped($classifier, "Mat", $samples, $k, "Mat", $results, "Mat", $neighborResponses, "Mat", $dist)
 
     Return $retval
 EndFunc   ;==>_cveKNearestFindNearestMat
@@ -738,164 +916,245 @@ Func _cveEMTrainE($model, $samples, $means0, $covs0, $weights0, $logLikelihoods,
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMTrainE", $sModelDllType, $model, $sSamplesDllType, $samples, $sMeans0DllType, $means0, $sCovs0DllType, $covs0, $sWeights0DllType, $weights0, $sLogLikelihoodsDllType, $logLikelihoods, $sLabelsDllType, $labels, $sProbsDllType, $probs, $sStatModelDllType, $statModel, $sAlgorithmDllType, $algorithm), "cveEMTrainE", @error)
 EndFunc   ;==>_cveEMTrainE
 
-Func _cveEMTrainEMat($model, $matSamples, $matMeans0, $matCovs0, $matWeights0, $matLogLikelihoods, $matLabels, $matProbs, $statModel, $algorithm)
-    ; cveEMTrainE using cv::Mat instead of _*Array
+Func _cveEMTrainETyped($model, $typeOfSamples, $samples, $typeOfMeans0, $means0, $typeOfCovs0, $covs0, $typeOfWeights0, $weights0, $typeOfLogLikelihoods, $logLikelihoods, $typeOfLabels, $labels, $typeOfProbs, $probs, $statModel, $algorithm)
 
-    Local $iArrSamples, $vectorOfMatSamples, $iArrSamplesSize
-    Local $bSamplesIsArray = VarGetType($matSamples) == "Array"
+    Local $iArrSamples, $vectorSamples, $iArrSamplesSize
+    Local $bSamplesIsArray = IsArray($samples)
+    Local $bSamplesCreate = IsDllStruct($samples) And $typeOfSamples == "Scalar"
 
-    If $bSamplesIsArray Then
-        $vectorOfMatSamples = _VectorOfMatCreate()
+    If $typeOfSamples == Default Then
+        $iArrSamples = $samples
+    ElseIf $bSamplesIsArray Then
+        $vectorSamples = Call("_VectorOf" & $typeOfSamples & "Create")
 
-        $iArrSamplesSize = UBound($matSamples)
+        $iArrSamplesSize = UBound($samples)
         For $i = 0 To $iArrSamplesSize - 1
-            _VectorOfMatPush($vectorOfMatSamples, $matSamples[$i])
+            Call("_VectorOf" & $typeOfSamples & "Push", $vectorSamples, $samples[$i])
         Next
 
-        $iArrSamples = _cveInputArrayFromVectorOfMat($vectorOfMatSamples)
+        $iArrSamples = Call("_cveInputArrayFromVectorOf" & $typeOfSamples, $vectorSamples)
     Else
-        $iArrSamples = _cveInputArrayFromMat($matSamples)
+        If $bSamplesCreate Then
+            $samples = Call("_cve" & $typeOfSamples & "Create", $samples)
+        EndIf
+        $iArrSamples = Call("_cveInputArrayFrom" & $typeOfSamples, $samples)
     EndIf
 
-    Local $iArrMeans0, $vectorOfMatMeans0, $iArrMeans0Size
-    Local $bMeans0IsArray = VarGetType($matMeans0) == "Array"
+    Local $iArrMeans0, $vectorMeans0, $iArrMeans0Size
+    Local $bMeans0IsArray = IsArray($means0)
+    Local $bMeans0Create = IsDllStruct($means0) And $typeOfMeans0 == "Scalar"
 
-    If $bMeans0IsArray Then
-        $vectorOfMatMeans0 = _VectorOfMatCreate()
+    If $typeOfMeans0 == Default Then
+        $iArrMeans0 = $means0
+    ElseIf $bMeans0IsArray Then
+        $vectorMeans0 = Call("_VectorOf" & $typeOfMeans0 & "Create")
 
-        $iArrMeans0Size = UBound($matMeans0)
+        $iArrMeans0Size = UBound($means0)
         For $i = 0 To $iArrMeans0Size - 1
-            _VectorOfMatPush($vectorOfMatMeans0, $matMeans0[$i])
+            Call("_VectorOf" & $typeOfMeans0 & "Push", $vectorMeans0, $means0[$i])
         Next
 
-        $iArrMeans0 = _cveInputArrayFromVectorOfMat($vectorOfMatMeans0)
+        $iArrMeans0 = Call("_cveInputArrayFromVectorOf" & $typeOfMeans0, $vectorMeans0)
     Else
-        $iArrMeans0 = _cveInputArrayFromMat($matMeans0)
+        If $bMeans0Create Then
+            $means0 = Call("_cve" & $typeOfMeans0 & "Create", $means0)
+        EndIf
+        $iArrMeans0 = Call("_cveInputArrayFrom" & $typeOfMeans0, $means0)
     EndIf
 
-    Local $iArrCovs0, $vectorOfMatCovs0, $iArrCovs0Size
-    Local $bCovs0IsArray = VarGetType($matCovs0) == "Array"
+    Local $iArrCovs0, $vectorCovs0, $iArrCovs0Size
+    Local $bCovs0IsArray = IsArray($covs0)
+    Local $bCovs0Create = IsDllStruct($covs0) And $typeOfCovs0 == "Scalar"
 
-    If $bCovs0IsArray Then
-        $vectorOfMatCovs0 = _VectorOfMatCreate()
+    If $typeOfCovs0 == Default Then
+        $iArrCovs0 = $covs0
+    ElseIf $bCovs0IsArray Then
+        $vectorCovs0 = Call("_VectorOf" & $typeOfCovs0 & "Create")
 
-        $iArrCovs0Size = UBound($matCovs0)
+        $iArrCovs0Size = UBound($covs0)
         For $i = 0 To $iArrCovs0Size - 1
-            _VectorOfMatPush($vectorOfMatCovs0, $matCovs0[$i])
+            Call("_VectorOf" & $typeOfCovs0 & "Push", $vectorCovs0, $covs0[$i])
         Next
 
-        $iArrCovs0 = _cveInputArrayFromVectorOfMat($vectorOfMatCovs0)
+        $iArrCovs0 = Call("_cveInputArrayFromVectorOf" & $typeOfCovs0, $vectorCovs0)
     Else
-        $iArrCovs0 = _cveInputArrayFromMat($matCovs0)
+        If $bCovs0Create Then
+            $covs0 = Call("_cve" & $typeOfCovs0 & "Create", $covs0)
+        EndIf
+        $iArrCovs0 = Call("_cveInputArrayFrom" & $typeOfCovs0, $covs0)
     EndIf
 
-    Local $iArrWeights0, $vectorOfMatWeights0, $iArrWeights0Size
-    Local $bWeights0IsArray = VarGetType($matWeights0) == "Array"
+    Local $iArrWeights0, $vectorWeights0, $iArrWeights0Size
+    Local $bWeights0IsArray = IsArray($weights0)
+    Local $bWeights0Create = IsDllStruct($weights0) And $typeOfWeights0 == "Scalar"
 
-    If $bWeights0IsArray Then
-        $vectorOfMatWeights0 = _VectorOfMatCreate()
+    If $typeOfWeights0 == Default Then
+        $iArrWeights0 = $weights0
+    ElseIf $bWeights0IsArray Then
+        $vectorWeights0 = Call("_VectorOf" & $typeOfWeights0 & "Create")
 
-        $iArrWeights0Size = UBound($matWeights0)
+        $iArrWeights0Size = UBound($weights0)
         For $i = 0 To $iArrWeights0Size - 1
-            _VectorOfMatPush($vectorOfMatWeights0, $matWeights0[$i])
+            Call("_VectorOf" & $typeOfWeights0 & "Push", $vectorWeights0, $weights0[$i])
         Next
 
-        $iArrWeights0 = _cveInputArrayFromVectorOfMat($vectorOfMatWeights0)
+        $iArrWeights0 = Call("_cveInputArrayFromVectorOf" & $typeOfWeights0, $vectorWeights0)
     Else
-        $iArrWeights0 = _cveInputArrayFromMat($matWeights0)
+        If $bWeights0Create Then
+            $weights0 = Call("_cve" & $typeOfWeights0 & "Create", $weights0)
+        EndIf
+        $iArrWeights0 = Call("_cveInputArrayFrom" & $typeOfWeights0, $weights0)
     EndIf
 
-    Local $oArrLogLikelihoods, $vectorOfMatLogLikelihoods, $iArrLogLikelihoodsSize
-    Local $bLogLikelihoodsIsArray = VarGetType($matLogLikelihoods) == "Array"
+    Local $oArrLogLikelihoods, $vectorLogLikelihoods, $iArrLogLikelihoodsSize
+    Local $bLogLikelihoodsIsArray = IsArray($logLikelihoods)
+    Local $bLogLikelihoodsCreate = IsDllStruct($logLikelihoods) And $typeOfLogLikelihoods == "Scalar"
 
-    If $bLogLikelihoodsIsArray Then
-        $vectorOfMatLogLikelihoods = _VectorOfMatCreate()
+    If $typeOfLogLikelihoods == Default Then
+        $oArrLogLikelihoods = $logLikelihoods
+    ElseIf $bLogLikelihoodsIsArray Then
+        $vectorLogLikelihoods = Call("_VectorOf" & $typeOfLogLikelihoods & "Create")
 
-        $iArrLogLikelihoodsSize = UBound($matLogLikelihoods)
+        $iArrLogLikelihoodsSize = UBound($logLikelihoods)
         For $i = 0 To $iArrLogLikelihoodsSize - 1
-            _VectorOfMatPush($vectorOfMatLogLikelihoods, $matLogLikelihoods[$i])
+            Call("_VectorOf" & $typeOfLogLikelihoods & "Push", $vectorLogLikelihoods, $logLikelihoods[$i])
         Next
 
-        $oArrLogLikelihoods = _cveOutputArrayFromVectorOfMat($vectorOfMatLogLikelihoods)
+        $oArrLogLikelihoods = Call("_cveOutputArrayFromVectorOf" & $typeOfLogLikelihoods, $vectorLogLikelihoods)
     Else
-        $oArrLogLikelihoods = _cveOutputArrayFromMat($matLogLikelihoods)
+        If $bLogLikelihoodsCreate Then
+            $logLikelihoods = Call("_cve" & $typeOfLogLikelihoods & "Create", $logLikelihoods)
+        EndIf
+        $oArrLogLikelihoods = Call("_cveOutputArrayFrom" & $typeOfLogLikelihoods, $logLikelihoods)
     EndIf
 
-    Local $oArrLabels, $vectorOfMatLabels, $iArrLabelsSize
-    Local $bLabelsIsArray = VarGetType($matLabels) == "Array"
+    Local $oArrLabels, $vectorLabels, $iArrLabelsSize
+    Local $bLabelsIsArray = IsArray($labels)
+    Local $bLabelsCreate = IsDllStruct($labels) And $typeOfLabels == "Scalar"
 
-    If $bLabelsIsArray Then
-        $vectorOfMatLabels = _VectorOfMatCreate()
+    If $typeOfLabels == Default Then
+        $oArrLabels = $labels
+    ElseIf $bLabelsIsArray Then
+        $vectorLabels = Call("_VectorOf" & $typeOfLabels & "Create")
 
-        $iArrLabelsSize = UBound($matLabels)
+        $iArrLabelsSize = UBound($labels)
         For $i = 0 To $iArrLabelsSize - 1
-            _VectorOfMatPush($vectorOfMatLabels, $matLabels[$i])
+            Call("_VectorOf" & $typeOfLabels & "Push", $vectorLabels, $labels[$i])
         Next
 
-        $oArrLabels = _cveOutputArrayFromVectorOfMat($vectorOfMatLabels)
+        $oArrLabels = Call("_cveOutputArrayFromVectorOf" & $typeOfLabels, $vectorLabels)
     Else
-        $oArrLabels = _cveOutputArrayFromMat($matLabels)
+        If $bLabelsCreate Then
+            $labels = Call("_cve" & $typeOfLabels & "Create", $labels)
+        EndIf
+        $oArrLabels = Call("_cveOutputArrayFrom" & $typeOfLabels, $labels)
     EndIf
 
-    Local $oArrProbs, $vectorOfMatProbs, $iArrProbsSize
-    Local $bProbsIsArray = VarGetType($matProbs) == "Array"
+    Local $oArrProbs, $vectorProbs, $iArrProbsSize
+    Local $bProbsIsArray = IsArray($probs)
+    Local $bProbsCreate = IsDllStruct($probs) And $typeOfProbs == "Scalar"
 
-    If $bProbsIsArray Then
-        $vectorOfMatProbs = _VectorOfMatCreate()
+    If $typeOfProbs == Default Then
+        $oArrProbs = $probs
+    ElseIf $bProbsIsArray Then
+        $vectorProbs = Call("_VectorOf" & $typeOfProbs & "Create")
 
-        $iArrProbsSize = UBound($matProbs)
+        $iArrProbsSize = UBound($probs)
         For $i = 0 To $iArrProbsSize - 1
-            _VectorOfMatPush($vectorOfMatProbs, $matProbs[$i])
+            Call("_VectorOf" & $typeOfProbs & "Push", $vectorProbs, $probs[$i])
         Next
 
-        $oArrProbs = _cveOutputArrayFromVectorOfMat($vectorOfMatProbs)
+        $oArrProbs = Call("_cveOutputArrayFromVectorOf" & $typeOfProbs, $vectorProbs)
     Else
-        $oArrProbs = _cveOutputArrayFromMat($matProbs)
+        If $bProbsCreate Then
+            $probs = Call("_cve" & $typeOfProbs & "Create", $probs)
+        EndIf
+        $oArrProbs = Call("_cveOutputArrayFrom" & $typeOfProbs, $probs)
     EndIf
 
     _cveEMTrainE($model, $iArrSamples, $iArrMeans0, $iArrCovs0, $iArrWeights0, $oArrLogLikelihoods, $oArrLabels, $oArrProbs, $statModel, $algorithm)
 
     If $bProbsIsArray Then
-        _VectorOfMatRelease($vectorOfMatProbs)
+        Call("_VectorOf" & $typeOfProbs & "Release", $vectorProbs)
     EndIf
 
-    _cveOutputArrayRelease($oArrProbs)
+    If $typeOfProbs <> Default Then
+        _cveOutputArrayRelease($oArrProbs)
+        If $bProbsCreate Then
+            Call("_cve" & $typeOfProbs & "Release", $probs)
+        EndIf
+    EndIf
 
     If $bLabelsIsArray Then
-        _VectorOfMatRelease($vectorOfMatLabels)
+        Call("_VectorOf" & $typeOfLabels & "Release", $vectorLabels)
     EndIf
 
-    _cveOutputArrayRelease($oArrLabels)
+    If $typeOfLabels <> Default Then
+        _cveOutputArrayRelease($oArrLabels)
+        If $bLabelsCreate Then
+            Call("_cve" & $typeOfLabels & "Release", $labels)
+        EndIf
+    EndIf
 
     If $bLogLikelihoodsIsArray Then
-        _VectorOfMatRelease($vectorOfMatLogLikelihoods)
+        Call("_VectorOf" & $typeOfLogLikelihoods & "Release", $vectorLogLikelihoods)
     EndIf
 
-    _cveOutputArrayRelease($oArrLogLikelihoods)
+    If $typeOfLogLikelihoods <> Default Then
+        _cveOutputArrayRelease($oArrLogLikelihoods)
+        If $bLogLikelihoodsCreate Then
+            Call("_cve" & $typeOfLogLikelihoods & "Release", $logLikelihoods)
+        EndIf
+    EndIf
 
     If $bWeights0IsArray Then
-        _VectorOfMatRelease($vectorOfMatWeights0)
+        Call("_VectorOf" & $typeOfWeights0 & "Release", $vectorWeights0)
     EndIf
 
-    _cveInputArrayRelease($iArrWeights0)
+    If $typeOfWeights0 <> Default Then
+        _cveInputArrayRelease($iArrWeights0)
+        If $bWeights0Create Then
+            Call("_cve" & $typeOfWeights0 & "Release", $weights0)
+        EndIf
+    EndIf
 
     If $bCovs0IsArray Then
-        _VectorOfMatRelease($vectorOfMatCovs0)
+        Call("_VectorOf" & $typeOfCovs0 & "Release", $vectorCovs0)
     EndIf
 
-    _cveInputArrayRelease($iArrCovs0)
+    If $typeOfCovs0 <> Default Then
+        _cveInputArrayRelease($iArrCovs0)
+        If $bCovs0Create Then
+            Call("_cve" & $typeOfCovs0 & "Release", $covs0)
+        EndIf
+    EndIf
 
     If $bMeans0IsArray Then
-        _VectorOfMatRelease($vectorOfMatMeans0)
+        Call("_VectorOf" & $typeOfMeans0 & "Release", $vectorMeans0)
     EndIf
 
-    _cveInputArrayRelease($iArrMeans0)
+    If $typeOfMeans0 <> Default Then
+        _cveInputArrayRelease($iArrMeans0)
+        If $bMeans0Create Then
+            Call("_cve" & $typeOfMeans0 & "Release", $means0)
+        EndIf
+    EndIf
 
     If $bSamplesIsArray Then
-        _VectorOfMatRelease($vectorOfMatSamples)
+        Call("_VectorOf" & $typeOfSamples & "Release", $vectorSamples)
     EndIf
 
-    _cveInputArrayRelease($iArrSamples)
+    If $typeOfSamples <> Default Then
+        _cveInputArrayRelease($iArrSamples)
+        If $bSamplesCreate Then
+            Call("_cve" & $typeOfSamples & "Release", $samples)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveEMTrainETyped
+
+Func _cveEMTrainEMat($model, $samples, $means0, $covs0, $weights0, $logLikelihoods, $labels, $probs, $statModel, $algorithm)
+    ; cveEMTrainE using cv::Mat instead of _*Array
+    _cveEMTrainETyped($model, "Mat", $samples, "Mat", $means0, "Mat", $covs0, "Mat", $weights0, "Mat", $logLikelihoods, "Mat", $labels, "Mat", $probs, $statModel, $algorithm)
 EndFunc   ;==>_cveEMTrainEMat
 
 Func _cveEMTrainM($model, $samples, $probs0, $logLikelihoods, $labels, $probs, $statModel, $algorithm)
@@ -964,120 +1223,179 @@ Func _cveEMTrainM($model, $samples, $probs0, $logLikelihoods, $labels, $probs, $
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMTrainM", $sModelDllType, $model, $sSamplesDllType, $samples, $sProbs0DllType, $probs0, $sLogLikelihoodsDllType, $logLikelihoods, $sLabelsDllType, $labels, $sProbsDllType, $probs, $sStatModelDllType, $statModel, $sAlgorithmDllType, $algorithm), "cveEMTrainM", @error)
 EndFunc   ;==>_cveEMTrainM
 
-Func _cveEMTrainMMat($model, $matSamples, $matProbs0, $matLogLikelihoods, $matLabels, $matProbs, $statModel, $algorithm)
-    ; cveEMTrainM using cv::Mat instead of _*Array
+Func _cveEMTrainMTyped($model, $typeOfSamples, $samples, $typeOfProbs0, $probs0, $typeOfLogLikelihoods, $logLikelihoods, $typeOfLabels, $labels, $typeOfProbs, $probs, $statModel, $algorithm)
 
-    Local $iArrSamples, $vectorOfMatSamples, $iArrSamplesSize
-    Local $bSamplesIsArray = VarGetType($matSamples) == "Array"
+    Local $iArrSamples, $vectorSamples, $iArrSamplesSize
+    Local $bSamplesIsArray = IsArray($samples)
+    Local $bSamplesCreate = IsDllStruct($samples) And $typeOfSamples == "Scalar"
 
-    If $bSamplesIsArray Then
-        $vectorOfMatSamples = _VectorOfMatCreate()
+    If $typeOfSamples == Default Then
+        $iArrSamples = $samples
+    ElseIf $bSamplesIsArray Then
+        $vectorSamples = Call("_VectorOf" & $typeOfSamples & "Create")
 
-        $iArrSamplesSize = UBound($matSamples)
+        $iArrSamplesSize = UBound($samples)
         For $i = 0 To $iArrSamplesSize - 1
-            _VectorOfMatPush($vectorOfMatSamples, $matSamples[$i])
+            Call("_VectorOf" & $typeOfSamples & "Push", $vectorSamples, $samples[$i])
         Next
 
-        $iArrSamples = _cveInputArrayFromVectorOfMat($vectorOfMatSamples)
+        $iArrSamples = Call("_cveInputArrayFromVectorOf" & $typeOfSamples, $vectorSamples)
     Else
-        $iArrSamples = _cveInputArrayFromMat($matSamples)
+        If $bSamplesCreate Then
+            $samples = Call("_cve" & $typeOfSamples & "Create", $samples)
+        EndIf
+        $iArrSamples = Call("_cveInputArrayFrom" & $typeOfSamples, $samples)
     EndIf
 
-    Local $iArrProbs0, $vectorOfMatProbs0, $iArrProbs0Size
-    Local $bProbs0IsArray = VarGetType($matProbs0) == "Array"
+    Local $iArrProbs0, $vectorProbs0, $iArrProbs0Size
+    Local $bProbs0IsArray = IsArray($probs0)
+    Local $bProbs0Create = IsDllStruct($probs0) And $typeOfProbs0 == "Scalar"
 
-    If $bProbs0IsArray Then
-        $vectorOfMatProbs0 = _VectorOfMatCreate()
+    If $typeOfProbs0 == Default Then
+        $iArrProbs0 = $probs0
+    ElseIf $bProbs0IsArray Then
+        $vectorProbs0 = Call("_VectorOf" & $typeOfProbs0 & "Create")
 
-        $iArrProbs0Size = UBound($matProbs0)
+        $iArrProbs0Size = UBound($probs0)
         For $i = 0 To $iArrProbs0Size - 1
-            _VectorOfMatPush($vectorOfMatProbs0, $matProbs0[$i])
+            Call("_VectorOf" & $typeOfProbs0 & "Push", $vectorProbs0, $probs0[$i])
         Next
 
-        $iArrProbs0 = _cveInputArrayFromVectorOfMat($vectorOfMatProbs0)
+        $iArrProbs0 = Call("_cveInputArrayFromVectorOf" & $typeOfProbs0, $vectorProbs0)
     Else
-        $iArrProbs0 = _cveInputArrayFromMat($matProbs0)
+        If $bProbs0Create Then
+            $probs0 = Call("_cve" & $typeOfProbs0 & "Create", $probs0)
+        EndIf
+        $iArrProbs0 = Call("_cveInputArrayFrom" & $typeOfProbs0, $probs0)
     EndIf
 
-    Local $oArrLogLikelihoods, $vectorOfMatLogLikelihoods, $iArrLogLikelihoodsSize
-    Local $bLogLikelihoodsIsArray = VarGetType($matLogLikelihoods) == "Array"
+    Local $oArrLogLikelihoods, $vectorLogLikelihoods, $iArrLogLikelihoodsSize
+    Local $bLogLikelihoodsIsArray = IsArray($logLikelihoods)
+    Local $bLogLikelihoodsCreate = IsDllStruct($logLikelihoods) And $typeOfLogLikelihoods == "Scalar"
 
-    If $bLogLikelihoodsIsArray Then
-        $vectorOfMatLogLikelihoods = _VectorOfMatCreate()
+    If $typeOfLogLikelihoods == Default Then
+        $oArrLogLikelihoods = $logLikelihoods
+    ElseIf $bLogLikelihoodsIsArray Then
+        $vectorLogLikelihoods = Call("_VectorOf" & $typeOfLogLikelihoods & "Create")
 
-        $iArrLogLikelihoodsSize = UBound($matLogLikelihoods)
+        $iArrLogLikelihoodsSize = UBound($logLikelihoods)
         For $i = 0 To $iArrLogLikelihoodsSize - 1
-            _VectorOfMatPush($vectorOfMatLogLikelihoods, $matLogLikelihoods[$i])
+            Call("_VectorOf" & $typeOfLogLikelihoods & "Push", $vectorLogLikelihoods, $logLikelihoods[$i])
         Next
 
-        $oArrLogLikelihoods = _cveOutputArrayFromVectorOfMat($vectorOfMatLogLikelihoods)
+        $oArrLogLikelihoods = Call("_cveOutputArrayFromVectorOf" & $typeOfLogLikelihoods, $vectorLogLikelihoods)
     Else
-        $oArrLogLikelihoods = _cveOutputArrayFromMat($matLogLikelihoods)
+        If $bLogLikelihoodsCreate Then
+            $logLikelihoods = Call("_cve" & $typeOfLogLikelihoods & "Create", $logLikelihoods)
+        EndIf
+        $oArrLogLikelihoods = Call("_cveOutputArrayFrom" & $typeOfLogLikelihoods, $logLikelihoods)
     EndIf
 
-    Local $oArrLabels, $vectorOfMatLabels, $iArrLabelsSize
-    Local $bLabelsIsArray = VarGetType($matLabels) == "Array"
+    Local $oArrLabels, $vectorLabels, $iArrLabelsSize
+    Local $bLabelsIsArray = IsArray($labels)
+    Local $bLabelsCreate = IsDllStruct($labels) And $typeOfLabels == "Scalar"
 
-    If $bLabelsIsArray Then
-        $vectorOfMatLabels = _VectorOfMatCreate()
+    If $typeOfLabels == Default Then
+        $oArrLabels = $labels
+    ElseIf $bLabelsIsArray Then
+        $vectorLabels = Call("_VectorOf" & $typeOfLabels & "Create")
 
-        $iArrLabelsSize = UBound($matLabels)
+        $iArrLabelsSize = UBound($labels)
         For $i = 0 To $iArrLabelsSize - 1
-            _VectorOfMatPush($vectorOfMatLabels, $matLabels[$i])
+            Call("_VectorOf" & $typeOfLabels & "Push", $vectorLabels, $labels[$i])
         Next
 
-        $oArrLabels = _cveOutputArrayFromVectorOfMat($vectorOfMatLabels)
+        $oArrLabels = Call("_cveOutputArrayFromVectorOf" & $typeOfLabels, $vectorLabels)
     Else
-        $oArrLabels = _cveOutputArrayFromMat($matLabels)
+        If $bLabelsCreate Then
+            $labels = Call("_cve" & $typeOfLabels & "Create", $labels)
+        EndIf
+        $oArrLabels = Call("_cveOutputArrayFrom" & $typeOfLabels, $labels)
     EndIf
 
-    Local $oArrProbs, $vectorOfMatProbs, $iArrProbsSize
-    Local $bProbsIsArray = VarGetType($matProbs) == "Array"
+    Local $oArrProbs, $vectorProbs, $iArrProbsSize
+    Local $bProbsIsArray = IsArray($probs)
+    Local $bProbsCreate = IsDllStruct($probs) And $typeOfProbs == "Scalar"
 
-    If $bProbsIsArray Then
-        $vectorOfMatProbs = _VectorOfMatCreate()
+    If $typeOfProbs == Default Then
+        $oArrProbs = $probs
+    ElseIf $bProbsIsArray Then
+        $vectorProbs = Call("_VectorOf" & $typeOfProbs & "Create")
 
-        $iArrProbsSize = UBound($matProbs)
+        $iArrProbsSize = UBound($probs)
         For $i = 0 To $iArrProbsSize - 1
-            _VectorOfMatPush($vectorOfMatProbs, $matProbs[$i])
+            Call("_VectorOf" & $typeOfProbs & "Push", $vectorProbs, $probs[$i])
         Next
 
-        $oArrProbs = _cveOutputArrayFromVectorOfMat($vectorOfMatProbs)
+        $oArrProbs = Call("_cveOutputArrayFromVectorOf" & $typeOfProbs, $vectorProbs)
     Else
-        $oArrProbs = _cveOutputArrayFromMat($matProbs)
+        If $bProbsCreate Then
+            $probs = Call("_cve" & $typeOfProbs & "Create", $probs)
+        EndIf
+        $oArrProbs = Call("_cveOutputArrayFrom" & $typeOfProbs, $probs)
     EndIf
 
     _cveEMTrainM($model, $iArrSamples, $iArrProbs0, $oArrLogLikelihoods, $oArrLabels, $oArrProbs, $statModel, $algorithm)
 
     If $bProbsIsArray Then
-        _VectorOfMatRelease($vectorOfMatProbs)
+        Call("_VectorOf" & $typeOfProbs & "Release", $vectorProbs)
     EndIf
 
-    _cveOutputArrayRelease($oArrProbs)
+    If $typeOfProbs <> Default Then
+        _cveOutputArrayRelease($oArrProbs)
+        If $bProbsCreate Then
+            Call("_cve" & $typeOfProbs & "Release", $probs)
+        EndIf
+    EndIf
 
     If $bLabelsIsArray Then
-        _VectorOfMatRelease($vectorOfMatLabels)
+        Call("_VectorOf" & $typeOfLabels & "Release", $vectorLabels)
     EndIf
 
-    _cveOutputArrayRelease($oArrLabels)
+    If $typeOfLabels <> Default Then
+        _cveOutputArrayRelease($oArrLabels)
+        If $bLabelsCreate Then
+            Call("_cve" & $typeOfLabels & "Release", $labels)
+        EndIf
+    EndIf
 
     If $bLogLikelihoodsIsArray Then
-        _VectorOfMatRelease($vectorOfMatLogLikelihoods)
+        Call("_VectorOf" & $typeOfLogLikelihoods & "Release", $vectorLogLikelihoods)
     EndIf
 
-    _cveOutputArrayRelease($oArrLogLikelihoods)
+    If $typeOfLogLikelihoods <> Default Then
+        _cveOutputArrayRelease($oArrLogLikelihoods)
+        If $bLogLikelihoodsCreate Then
+            Call("_cve" & $typeOfLogLikelihoods & "Release", $logLikelihoods)
+        EndIf
+    EndIf
 
     If $bProbs0IsArray Then
-        _VectorOfMatRelease($vectorOfMatProbs0)
+        Call("_VectorOf" & $typeOfProbs0 & "Release", $vectorProbs0)
     EndIf
 
-    _cveInputArrayRelease($iArrProbs0)
+    If $typeOfProbs0 <> Default Then
+        _cveInputArrayRelease($iArrProbs0)
+        If $bProbs0Create Then
+            Call("_cve" & $typeOfProbs0 & "Release", $probs0)
+        EndIf
+    EndIf
 
     If $bSamplesIsArray Then
-        _VectorOfMatRelease($vectorOfMatSamples)
+        Call("_VectorOf" & $typeOfSamples & "Release", $vectorSamples)
     EndIf
 
-    _cveInputArrayRelease($iArrSamples)
+    If $typeOfSamples <> Default Then
+        _cveInputArrayRelease($iArrSamples)
+        If $bSamplesCreate Then
+            Call("_cve" & $typeOfSamples & "Release", $samples)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveEMTrainMTyped
+
+Func _cveEMTrainMMat($model, $samples, $probs0, $logLikelihoods, $labels, $probs, $statModel, $algorithm)
+    ; cveEMTrainM using cv::Mat instead of _*Array
+    _cveEMTrainMTyped($model, "Mat", $samples, "Mat", $probs0, "Mat", $logLikelihoods, "Mat", $labels, "Mat", $probs, $statModel, $algorithm)
 EndFunc   ;==>_cveEMTrainMMat
 
 Func _cveEMPredict($model, $sample, $result, $probs)
@@ -1114,54 +1432,80 @@ Func _cveEMPredict($model, $sample, $result, $probs)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveEMPredict", $sModelDllType, $model, $sSampleDllType, $sample, $sResultDllType, $result, $sProbsDllType, $probs), "cveEMPredict", @error)
 EndFunc   ;==>_cveEMPredict
 
-Func _cveEMPredictMat($model, $matSample, $result, $matProbs)
-    ; cveEMPredict using cv::Mat instead of _*Array
+Func _cveEMPredictTyped($model, $typeOfSample, $sample, $result, $typeOfProbs, $probs)
 
-    Local $iArrSample, $vectorOfMatSample, $iArrSampleSize
-    Local $bSampleIsArray = VarGetType($matSample) == "Array"
+    Local $iArrSample, $vectorSample, $iArrSampleSize
+    Local $bSampleIsArray = IsArray($sample)
+    Local $bSampleCreate = IsDllStruct($sample) And $typeOfSample == "Scalar"
 
-    If $bSampleIsArray Then
-        $vectorOfMatSample = _VectorOfMatCreate()
+    If $typeOfSample == Default Then
+        $iArrSample = $sample
+    ElseIf $bSampleIsArray Then
+        $vectorSample = Call("_VectorOf" & $typeOfSample & "Create")
 
-        $iArrSampleSize = UBound($matSample)
+        $iArrSampleSize = UBound($sample)
         For $i = 0 To $iArrSampleSize - 1
-            _VectorOfMatPush($vectorOfMatSample, $matSample[$i])
+            Call("_VectorOf" & $typeOfSample & "Push", $vectorSample, $sample[$i])
         Next
 
-        $iArrSample = _cveInputArrayFromVectorOfMat($vectorOfMatSample)
+        $iArrSample = Call("_cveInputArrayFromVectorOf" & $typeOfSample, $vectorSample)
     Else
-        $iArrSample = _cveInputArrayFromMat($matSample)
+        If $bSampleCreate Then
+            $sample = Call("_cve" & $typeOfSample & "Create", $sample)
+        EndIf
+        $iArrSample = Call("_cveInputArrayFrom" & $typeOfSample, $sample)
     EndIf
 
-    Local $oArrProbs, $vectorOfMatProbs, $iArrProbsSize
-    Local $bProbsIsArray = VarGetType($matProbs) == "Array"
+    Local $oArrProbs, $vectorProbs, $iArrProbsSize
+    Local $bProbsIsArray = IsArray($probs)
+    Local $bProbsCreate = IsDllStruct($probs) And $typeOfProbs == "Scalar"
 
-    If $bProbsIsArray Then
-        $vectorOfMatProbs = _VectorOfMatCreate()
+    If $typeOfProbs == Default Then
+        $oArrProbs = $probs
+    ElseIf $bProbsIsArray Then
+        $vectorProbs = Call("_VectorOf" & $typeOfProbs & "Create")
 
-        $iArrProbsSize = UBound($matProbs)
+        $iArrProbsSize = UBound($probs)
         For $i = 0 To $iArrProbsSize - 1
-            _VectorOfMatPush($vectorOfMatProbs, $matProbs[$i])
+            Call("_VectorOf" & $typeOfProbs & "Push", $vectorProbs, $probs[$i])
         Next
 
-        $oArrProbs = _cveOutputArrayFromVectorOfMat($vectorOfMatProbs)
+        $oArrProbs = Call("_cveOutputArrayFromVectorOf" & $typeOfProbs, $vectorProbs)
     Else
-        $oArrProbs = _cveOutputArrayFromMat($matProbs)
+        If $bProbsCreate Then
+            $probs = Call("_cve" & $typeOfProbs & "Create", $probs)
+        EndIf
+        $oArrProbs = Call("_cveOutputArrayFrom" & $typeOfProbs, $probs)
     EndIf
 
     _cveEMPredict($model, $iArrSample, $result, $oArrProbs)
 
     If $bProbsIsArray Then
-        _VectorOfMatRelease($vectorOfMatProbs)
+        Call("_VectorOf" & $typeOfProbs & "Release", $vectorProbs)
     EndIf
 
-    _cveOutputArrayRelease($oArrProbs)
+    If $typeOfProbs <> Default Then
+        _cveOutputArrayRelease($oArrProbs)
+        If $bProbsCreate Then
+            Call("_cve" & $typeOfProbs & "Release", $probs)
+        EndIf
+    EndIf
 
     If $bSampleIsArray Then
-        _VectorOfMatRelease($vectorOfMatSample)
+        Call("_VectorOf" & $typeOfSample & "Release", $vectorSample)
     EndIf
 
-    _cveInputArrayRelease($iArrSample)
+    If $typeOfSample <> Default Then
+        _cveInputArrayRelease($iArrSample)
+        If $bSampleCreate Then
+            Call("_cve" & $typeOfSample & "Release", $sample)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveEMPredictTyped
+
+Func _cveEMPredictMat($model, $sample, $result, $probs)
+    ; cveEMPredict using cv::Mat instead of _*Array
+    _cveEMPredictTyped($model, "Mat", $sample, $result, "Mat", $probs)
 EndFunc   ;==>_cveEMPredictMat
 
 Func _cveEMRelease($model, $sharedPtr)
@@ -1390,32 +1734,47 @@ Func _cveANN_MLPSetLayerSizes($model, $layerSizes)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveANN_MLPSetLayerSizes", $sModelDllType, $model, $sLayerSizesDllType, $layerSizes), "cveANN_MLPSetLayerSizes", @error)
 EndFunc   ;==>_cveANN_MLPSetLayerSizes
 
-Func _cveANN_MLPSetLayerSizesMat($model, $matLayerSizes)
-    ; cveANN_MLPSetLayerSizes using cv::Mat instead of _*Array
+Func _cveANN_MLPSetLayerSizesTyped($model, $typeOfLayerSizes, $layerSizes)
 
-    Local $iArrLayerSizes, $vectorOfMatLayerSizes, $iArrLayerSizesSize
-    Local $bLayerSizesIsArray = VarGetType($matLayerSizes) == "Array"
+    Local $iArrLayerSizes, $vectorLayerSizes, $iArrLayerSizesSize
+    Local $bLayerSizesIsArray = IsArray($layerSizes)
+    Local $bLayerSizesCreate = IsDllStruct($layerSizes) And $typeOfLayerSizes == "Scalar"
 
-    If $bLayerSizesIsArray Then
-        $vectorOfMatLayerSizes = _VectorOfMatCreate()
+    If $typeOfLayerSizes == Default Then
+        $iArrLayerSizes = $layerSizes
+    ElseIf $bLayerSizesIsArray Then
+        $vectorLayerSizes = Call("_VectorOf" & $typeOfLayerSizes & "Create")
 
-        $iArrLayerSizesSize = UBound($matLayerSizes)
+        $iArrLayerSizesSize = UBound($layerSizes)
         For $i = 0 To $iArrLayerSizesSize - 1
-            _VectorOfMatPush($vectorOfMatLayerSizes, $matLayerSizes[$i])
+            Call("_VectorOf" & $typeOfLayerSizes & "Push", $vectorLayerSizes, $layerSizes[$i])
         Next
 
-        $iArrLayerSizes = _cveInputArrayFromVectorOfMat($vectorOfMatLayerSizes)
+        $iArrLayerSizes = Call("_cveInputArrayFromVectorOf" & $typeOfLayerSizes, $vectorLayerSizes)
     Else
-        $iArrLayerSizes = _cveInputArrayFromMat($matLayerSizes)
+        If $bLayerSizesCreate Then
+            $layerSizes = Call("_cve" & $typeOfLayerSizes & "Create", $layerSizes)
+        EndIf
+        $iArrLayerSizes = Call("_cveInputArrayFrom" & $typeOfLayerSizes, $layerSizes)
     EndIf
 
     _cveANN_MLPSetLayerSizes($model, $iArrLayerSizes)
 
     If $bLayerSizesIsArray Then
-        _VectorOfMatRelease($vectorOfMatLayerSizes)
+        Call("_VectorOf" & $typeOfLayerSizes & "Release", $vectorLayerSizes)
     EndIf
 
-    _cveInputArrayRelease($iArrLayerSizes)
+    If $typeOfLayerSizes <> Default Then
+        _cveInputArrayRelease($iArrLayerSizes)
+        If $bLayerSizesCreate Then
+            Call("_cve" & $typeOfLayerSizes & "Release", $layerSizes)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveANN_MLPSetLayerSizesTyped
+
+Func _cveANN_MLPSetLayerSizesMat($model, $layerSizes)
+    ; cveANN_MLPSetLayerSizes using cv::Mat instead of _*Array
+    _cveANN_MLPSetLayerSizesTyped($model, "Mat", $layerSizes)
 EndFunc   ;==>_cveANN_MLPSetLayerSizesMat
 
 Func _cveANN_MLPSetActivationFunction($model, $type, $param1, $param2)
@@ -1583,54 +1942,80 @@ Func _cveRTreesGetVotes($model, $samples, $results, $flags)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRTreesGetVotes", $sModelDllType, $model, $sSamplesDllType, $samples, $sResultsDllType, $results, "int", $flags), "cveRTreesGetVotes", @error)
 EndFunc   ;==>_cveRTreesGetVotes
 
-Func _cveRTreesGetVotesMat($model, $matSamples, $matResults, $flags)
-    ; cveRTreesGetVotes using cv::Mat instead of _*Array
+Func _cveRTreesGetVotesTyped($model, $typeOfSamples, $samples, $typeOfResults, $results, $flags)
 
-    Local $iArrSamples, $vectorOfMatSamples, $iArrSamplesSize
-    Local $bSamplesIsArray = VarGetType($matSamples) == "Array"
+    Local $iArrSamples, $vectorSamples, $iArrSamplesSize
+    Local $bSamplesIsArray = IsArray($samples)
+    Local $bSamplesCreate = IsDllStruct($samples) And $typeOfSamples == "Scalar"
 
-    If $bSamplesIsArray Then
-        $vectorOfMatSamples = _VectorOfMatCreate()
+    If $typeOfSamples == Default Then
+        $iArrSamples = $samples
+    ElseIf $bSamplesIsArray Then
+        $vectorSamples = Call("_VectorOf" & $typeOfSamples & "Create")
 
-        $iArrSamplesSize = UBound($matSamples)
+        $iArrSamplesSize = UBound($samples)
         For $i = 0 To $iArrSamplesSize - 1
-            _VectorOfMatPush($vectorOfMatSamples, $matSamples[$i])
+            Call("_VectorOf" & $typeOfSamples & "Push", $vectorSamples, $samples[$i])
         Next
 
-        $iArrSamples = _cveInputArrayFromVectorOfMat($vectorOfMatSamples)
+        $iArrSamples = Call("_cveInputArrayFromVectorOf" & $typeOfSamples, $vectorSamples)
     Else
-        $iArrSamples = _cveInputArrayFromMat($matSamples)
+        If $bSamplesCreate Then
+            $samples = Call("_cve" & $typeOfSamples & "Create", $samples)
+        EndIf
+        $iArrSamples = Call("_cveInputArrayFrom" & $typeOfSamples, $samples)
     EndIf
 
-    Local $oArrResults, $vectorOfMatResults, $iArrResultsSize
-    Local $bResultsIsArray = VarGetType($matResults) == "Array"
+    Local $oArrResults, $vectorResults, $iArrResultsSize
+    Local $bResultsIsArray = IsArray($results)
+    Local $bResultsCreate = IsDllStruct($results) And $typeOfResults == "Scalar"
 
-    If $bResultsIsArray Then
-        $vectorOfMatResults = _VectorOfMatCreate()
+    If $typeOfResults == Default Then
+        $oArrResults = $results
+    ElseIf $bResultsIsArray Then
+        $vectorResults = Call("_VectorOf" & $typeOfResults & "Create")
 
-        $iArrResultsSize = UBound($matResults)
+        $iArrResultsSize = UBound($results)
         For $i = 0 To $iArrResultsSize - 1
-            _VectorOfMatPush($vectorOfMatResults, $matResults[$i])
+            Call("_VectorOf" & $typeOfResults & "Push", $vectorResults, $results[$i])
         Next
 
-        $oArrResults = _cveOutputArrayFromVectorOfMat($vectorOfMatResults)
+        $oArrResults = Call("_cveOutputArrayFromVectorOf" & $typeOfResults, $vectorResults)
     Else
-        $oArrResults = _cveOutputArrayFromMat($matResults)
+        If $bResultsCreate Then
+            $results = Call("_cve" & $typeOfResults & "Create", $results)
+        EndIf
+        $oArrResults = Call("_cveOutputArrayFrom" & $typeOfResults, $results)
     EndIf
 
     _cveRTreesGetVotes($model, $iArrSamples, $oArrResults, $flags)
 
     If $bResultsIsArray Then
-        _VectorOfMatRelease($vectorOfMatResults)
+        Call("_VectorOf" & $typeOfResults & "Release", $vectorResults)
     EndIf
 
-    _cveOutputArrayRelease($oArrResults)
+    If $typeOfResults <> Default Then
+        _cveOutputArrayRelease($oArrResults)
+        If $bResultsCreate Then
+            Call("_cve" & $typeOfResults & "Release", $results)
+        EndIf
+    EndIf
 
     If $bSamplesIsArray Then
-        _VectorOfMatRelease($vectorOfMatSamples)
+        Call("_VectorOf" & $typeOfSamples & "Release", $vectorSamples)
     EndIf
 
-    _cveInputArrayRelease($iArrSamples)
+    If $typeOfSamples <> Default Then
+        _cveInputArrayRelease($iArrSamples)
+        If $bSamplesCreate Then
+            Call("_cve" & $typeOfSamples & "Release", $samples)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveRTreesGetVotesTyped
+
+Func _cveRTreesGetVotesMat($model, $samples, $results, $flags)
+    ; cveRTreesGetVotes using cv::Mat instead of _*Array
+    _cveRTreesGetVotesTyped($model, "Mat", $samples, "Mat", $results, $flags)
 EndFunc   ;==>_cveRTreesGetVotesMat
 
 Func _cveRTreesRelease($model, $sharedPtr)

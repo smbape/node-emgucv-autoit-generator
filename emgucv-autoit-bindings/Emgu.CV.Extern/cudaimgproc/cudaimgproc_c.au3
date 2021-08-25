@@ -49,120 +49,179 @@ Func _cudaBlendLinear($img1, $img2, $weights1, $weights2, $result, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaBlendLinear", $sImg1DllType, $img1, $sImg2DllType, $img2, $sWeights1DllType, $weights1, $sWeights2DllType, $weights2, $sResultDllType, $result, $sStreamDllType, $stream), "cudaBlendLinear", @error)
 EndFunc   ;==>_cudaBlendLinear
 
-Func _cudaBlendLinearMat($matImg1, $matImg2, $matWeights1, $matWeights2, $matResult, $stream)
-    ; cudaBlendLinear using cv::Mat instead of _*Array
+Func _cudaBlendLinearTyped($typeOfImg1, $img1, $typeOfImg2, $img2, $typeOfWeights1, $weights1, $typeOfWeights2, $weights2, $typeOfResult, $result, $stream)
 
-    Local $iArrImg1, $vectorOfMatImg1, $iArrImg1Size
-    Local $bImg1IsArray = VarGetType($matImg1) == "Array"
+    Local $iArrImg1, $vectorImg1, $iArrImg1Size
+    Local $bImg1IsArray = IsArray($img1)
+    Local $bImg1Create = IsDllStruct($img1) And $typeOfImg1 == "Scalar"
 
-    If $bImg1IsArray Then
-        $vectorOfMatImg1 = _VectorOfMatCreate()
+    If $typeOfImg1 == Default Then
+        $iArrImg1 = $img1
+    ElseIf $bImg1IsArray Then
+        $vectorImg1 = Call("_VectorOf" & $typeOfImg1 & "Create")
 
-        $iArrImg1Size = UBound($matImg1)
+        $iArrImg1Size = UBound($img1)
         For $i = 0 To $iArrImg1Size - 1
-            _VectorOfMatPush($vectorOfMatImg1, $matImg1[$i])
+            Call("_VectorOf" & $typeOfImg1 & "Push", $vectorImg1, $img1[$i])
         Next
 
-        $iArrImg1 = _cveInputArrayFromVectorOfMat($vectorOfMatImg1)
+        $iArrImg1 = Call("_cveInputArrayFromVectorOf" & $typeOfImg1, $vectorImg1)
     Else
-        $iArrImg1 = _cveInputArrayFromMat($matImg1)
+        If $bImg1Create Then
+            $img1 = Call("_cve" & $typeOfImg1 & "Create", $img1)
+        EndIf
+        $iArrImg1 = Call("_cveInputArrayFrom" & $typeOfImg1, $img1)
     EndIf
 
-    Local $iArrImg2, $vectorOfMatImg2, $iArrImg2Size
-    Local $bImg2IsArray = VarGetType($matImg2) == "Array"
+    Local $iArrImg2, $vectorImg2, $iArrImg2Size
+    Local $bImg2IsArray = IsArray($img2)
+    Local $bImg2Create = IsDllStruct($img2) And $typeOfImg2 == "Scalar"
 
-    If $bImg2IsArray Then
-        $vectorOfMatImg2 = _VectorOfMatCreate()
+    If $typeOfImg2 == Default Then
+        $iArrImg2 = $img2
+    ElseIf $bImg2IsArray Then
+        $vectorImg2 = Call("_VectorOf" & $typeOfImg2 & "Create")
 
-        $iArrImg2Size = UBound($matImg2)
+        $iArrImg2Size = UBound($img2)
         For $i = 0 To $iArrImg2Size - 1
-            _VectorOfMatPush($vectorOfMatImg2, $matImg2[$i])
+            Call("_VectorOf" & $typeOfImg2 & "Push", $vectorImg2, $img2[$i])
         Next
 
-        $iArrImg2 = _cveInputArrayFromVectorOfMat($vectorOfMatImg2)
+        $iArrImg2 = Call("_cveInputArrayFromVectorOf" & $typeOfImg2, $vectorImg2)
     Else
-        $iArrImg2 = _cveInputArrayFromMat($matImg2)
+        If $bImg2Create Then
+            $img2 = Call("_cve" & $typeOfImg2 & "Create", $img2)
+        EndIf
+        $iArrImg2 = Call("_cveInputArrayFrom" & $typeOfImg2, $img2)
     EndIf
 
-    Local $iArrWeights1, $vectorOfMatWeights1, $iArrWeights1Size
-    Local $bWeights1IsArray = VarGetType($matWeights1) == "Array"
+    Local $iArrWeights1, $vectorWeights1, $iArrWeights1Size
+    Local $bWeights1IsArray = IsArray($weights1)
+    Local $bWeights1Create = IsDllStruct($weights1) And $typeOfWeights1 == "Scalar"
 
-    If $bWeights1IsArray Then
-        $vectorOfMatWeights1 = _VectorOfMatCreate()
+    If $typeOfWeights1 == Default Then
+        $iArrWeights1 = $weights1
+    ElseIf $bWeights1IsArray Then
+        $vectorWeights1 = Call("_VectorOf" & $typeOfWeights1 & "Create")
 
-        $iArrWeights1Size = UBound($matWeights1)
+        $iArrWeights1Size = UBound($weights1)
         For $i = 0 To $iArrWeights1Size - 1
-            _VectorOfMatPush($vectorOfMatWeights1, $matWeights1[$i])
+            Call("_VectorOf" & $typeOfWeights1 & "Push", $vectorWeights1, $weights1[$i])
         Next
 
-        $iArrWeights1 = _cveInputArrayFromVectorOfMat($vectorOfMatWeights1)
+        $iArrWeights1 = Call("_cveInputArrayFromVectorOf" & $typeOfWeights1, $vectorWeights1)
     Else
-        $iArrWeights1 = _cveInputArrayFromMat($matWeights1)
+        If $bWeights1Create Then
+            $weights1 = Call("_cve" & $typeOfWeights1 & "Create", $weights1)
+        EndIf
+        $iArrWeights1 = Call("_cveInputArrayFrom" & $typeOfWeights1, $weights1)
     EndIf
 
-    Local $iArrWeights2, $vectorOfMatWeights2, $iArrWeights2Size
-    Local $bWeights2IsArray = VarGetType($matWeights2) == "Array"
+    Local $iArrWeights2, $vectorWeights2, $iArrWeights2Size
+    Local $bWeights2IsArray = IsArray($weights2)
+    Local $bWeights2Create = IsDllStruct($weights2) And $typeOfWeights2 == "Scalar"
 
-    If $bWeights2IsArray Then
-        $vectorOfMatWeights2 = _VectorOfMatCreate()
+    If $typeOfWeights2 == Default Then
+        $iArrWeights2 = $weights2
+    ElseIf $bWeights2IsArray Then
+        $vectorWeights2 = Call("_VectorOf" & $typeOfWeights2 & "Create")
 
-        $iArrWeights2Size = UBound($matWeights2)
+        $iArrWeights2Size = UBound($weights2)
         For $i = 0 To $iArrWeights2Size - 1
-            _VectorOfMatPush($vectorOfMatWeights2, $matWeights2[$i])
+            Call("_VectorOf" & $typeOfWeights2 & "Push", $vectorWeights2, $weights2[$i])
         Next
 
-        $iArrWeights2 = _cveInputArrayFromVectorOfMat($vectorOfMatWeights2)
+        $iArrWeights2 = Call("_cveInputArrayFromVectorOf" & $typeOfWeights2, $vectorWeights2)
     Else
-        $iArrWeights2 = _cveInputArrayFromMat($matWeights2)
+        If $bWeights2Create Then
+            $weights2 = Call("_cve" & $typeOfWeights2 & "Create", $weights2)
+        EndIf
+        $iArrWeights2 = Call("_cveInputArrayFrom" & $typeOfWeights2, $weights2)
     EndIf
 
-    Local $oArrResult, $vectorOfMatResult, $iArrResultSize
-    Local $bResultIsArray = VarGetType($matResult) == "Array"
+    Local $oArrResult, $vectorResult, $iArrResultSize
+    Local $bResultIsArray = IsArray($result)
+    Local $bResultCreate = IsDllStruct($result) And $typeOfResult == "Scalar"
 
-    If $bResultIsArray Then
-        $vectorOfMatResult = _VectorOfMatCreate()
+    If $typeOfResult == Default Then
+        $oArrResult = $result
+    ElseIf $bResultIsArray Then
+        $vectorResult = Call("_VectorOf" & $typeOfResult & "Create")
 
-        $iArrResultSize = UBound($matResult)
+        $iArrResultSize = UBound($result)
         For $i = 0 To $iArrResultSize - 1
-            _VectorOfMatPush($vectorOfMatResult, $matResult[$i])
+            Call("_VectorOf" & $typeOfResult & "Push", $vectorResult, $result[$i])
         Next
 
-        $oArrResult = _cveOutputArrayFromVectorOfMat($vectorOfMatResult)
+        $oArrResult = Call("_cveOutputArrayFromVectorOf" & $typeOfResult, $vectorResult)
     Else
-        $oArrResult = _cveOutputArrayFromMat($matResult)
+        If $bResultCreate Then
+            $result = Call("_cve" & $typeOfResult & "Create", $result)
+        EndIf
+        $oArrResult = Call("_cveOutputArrayFrom" & $typeOfResult, $result)
     EndIf
 
     _cudaBlendLinear($iArrImg1, $iArrImg2, $iArrWeights1, $iArrWeights2, $oArrResult, $stream)
 
     If $bResultIsArray Then
-        _VectorOfMatRelease($vectorOfMatResult)
+        Call("_VectorOf" & $typeOfResult & "Release", $vectorResult)
     EndIf
 
-    _cveOutputArrayRelease($oArrResult)
+    If $typeOfResult <> Default Then
+        _cveOutputArrayRelease($oArrResult)
+        If $bResultCreate Then
+            Call("_cve" & $typeOfResult & "Release", $result)
+        EndIf
+    EndIf
 
     If $bWeights2IsArray Then
-        _VectorOfMatRelease($vectorOfMatWeights2)
+        Call("_VectorOf" & $typeOfWeights2 & "Release", $vectorWeights2)
     EndIf
 
-    _cveInputArrayRelease($iArrWeights2)
+    If $typeOfWeights2 <> Default Then
+        _cveInputArrayRelease($iArrWeights2)
+        If $bWeights2Create Then
+            Call("_cve" & $typeOfWeights2 & "Release", $weights2)
+        EndIf
+    EndIf
 
     If $bWeights1IsArray Then
-        _VectorOfMatRelease($vectorOfMatWeights1)
+        Call("_VectorOf" & $typeOfWeights1 & "Release", $vectorWeights1)
     EndIf
 
-    _cveInputArrayRelease($iArrWeights1)
+    If $typeOfWeights1 <> Default Then
+        _cveInputArrayRelease($iArrWeights1)
+        If $bWeights1Create Then
+            Call("_cve" & $typeOfWeights1 & "Release", $weights1)
+        EndIf
+    EndIf
 
     If $bImg2IsArray Then
-        _VectorOfMatRelease($vectorOfMatImg2)
+        Call("_VectorOf" & $typeOfImg2 & "Release", $vectorImg2)
     EndIf
 
-    _cveInputArrayRelease($iArrImg2)
+    If $typeOfImg2 <> Default Then
+        _cveInputArrayRelease($iArrImg2)
+        If $bImg2Create Then
+            Call("_cve" & $typeOfImg2 & "Release", $img2)
+        EndIf
+    EndIf
 
     If $bImg1IsArray Then
-        _VectorOfMatRelease($vectorOfMatImg1)
+        Call("_VectorOf" & $typeOfImg1 & "Release", $vectorImg1)
     EndIf
 
-    _cveInputArrayRelease($iArrImg1)
+    If $typeOfImg1 <> Default Then
+        _cveInputArrayRelease($iArrImg1)
+        If $bImg1Create Then
+            Call("_cve" & $typeOfImg1 & "Release", $img1)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaBlendLinearTyped
+
+Func _cudaBlendLinearMat($img1, $img2, $weights1, $weights2, $result, $stream)
+    ; cudaBlendLinear using cv::Mat instead of _*Array
+    _cudaBlendLinearTyped("Mat", $img1, "Mat", $img2, "Mat", $weights1, "Mat", $weights2, "Mat", $result, $stream)
 EndFunc   ;==>_cudaBlendLinearMat
 
 Func _cudaCvtColor($src, $dst, $code, $dcn, $stream)
@@ -192,54 +251,80 @@ Func _cudaCvtColor($src, $dst, $code, $dcn, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCvtColor", $sSrcDllType, $src, $sDstDllType, $dst, "int", $code, "int", $dcn, $sStreamDllType, $stream), "cudaCvtColor", @error)
 EndFunc   ;==>_cudaCvtColor
 
-Func _cudaCvtColorMat($matSrc, $matDst, $code, $dcn, $stream)
-    ; cudaCvtColor using cv::Mat instead of _*Array
+Func _cudaCvtColorTyped($typeOfSrc, $src, $typeOfDst, $dst, $code, $dcn, $stream)
 
-    Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
-    Local $bSrcIsArray = VarGetType($matSrc) == "Array"
+    Local $iArrSrc, $vectorSrc, $iArrSrcSize
+    Local $bSrcIsArray = IsArray($src)
+    Local $bSrcCreate = IsDllStruct($src) And $typeOfSrc == "Scalar"
 
-    If $bSrcIsArray Then
-        $vectorOfMatSrc = _VectorOfMatCreate()
+    If $typeOfSrc == Default Then
+        $iArrSrc = $src
+    ElseIf $bSrcIsArray Then
+        $vectorSrc = Call("_VectorOf" & $typeOfSrc & "Create")
 
-        $iArrSrcSize = UBound($matSrc)
+        $iArrSrcSize = UBound($src)
         For $i = 0 To $iArrSrcSize - 1
-            _VectorOfMatPush($vectorOfMatSrc, $matSrc[$i])
+            Call("_VectorOf" & $typeOfSrc & "Push", $vectorSrc, $src[$i])
         Next
 
-        $iArrSrc = _cveInputArrayFromVectorOfMat($vectorOfMatSrc)
+        $iArrSrc = Call("_cveInputArrayFromVectorOf" & $typeOfSrc, $vectorSrc)
     Else
-        $iArrSrc = _cveInputArrayFromMat($matSrc)
+        If $bSrcCreate Then
+            $src = Call("_cve" & $typeOfSrc & "Create", $src)
+        EndIf
+        $iArrSrc = Call("_cveInputArrayFrom" & $typeOfSrc, $src)
     EndIf
 
-    Local $oArrDst, $vectorOfMatDst, $iArrDstSize
-    Local $bDstIsArray = VarGetType($matDst) == "Array"
+    Local $oArrDst, $vectorDst, $iArrDstSize
+    Local $bDstIsArray = IsArray($dst)
+    Local $bDstCreate = IsDllStruct($dst) And $typeOfDst == "Scalar"
 
-    If $bDstIsArray Then
-        $vectorOfMatDst = _VectorOfMatCreate()
+    If $typeOfDst == Default Then
+        $oArrDst = $dst
+    ElseIf $bDstIsArray Then
+        $vectorDst = Call("_VectorOf" & $typeOfDst & "Create")
 
-        $iArrDstSize = UBound($matDst)
+        $iArrDstSize = UBound($dst)
         For $i = 0 To $iArrDstSize - 1
-            _VectorOfMatPush($vectorOfMatDst, $matDst[$i])
+            Call("_VectorOf" & $typeOfDst & "Push", $vectorDst, $dst[$i])
         Next
 
-        $oArrDst = _cveOutputArrayFromVectorOfMat($vectorOfMatDst)
+        $oArrDst = Call("_cveOutputArrayFromVectorOf" & $typeOfDst, $vectorDst)
     Else
-        $oArrDst = _cveOutputArrayFromMat($matDst)
+        If $bDstCreate Then
+            $dst = Call("_cve" & $typeOfDst & "Create", $dst)
+        EndIf
+        $oArrDst = Call("_cveOutputArrayFrom" & $typeOfDst, $dst)
     EndIf
 
     _cudaCvtColor($iArrSrc, $oArrDst, $code, $dcn, $stream)
 
     If $bDstIsArray Then
-        _VectorOfMatRelease($vectorOfMatDst)
+        Call("_VectorOf" & $typeOfDst & "Release", $vectorDst)
     EndIf
 
-    _cveOutputArrayRelease($oArrDst)
+    If $typeOfDst <> Default Then
+        _cveOutputArrayRelease($oArrDst)
+        If $bDstCreate Then
+            Call("_cve" & $typeOfDst & "Release", $dst)
+        EndIf
+    EndIf
 
     If $bSrcIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrc)
+        Call("_VectorOf" & $typeOfSrc & "Release", $vectorSrc)
     EndIf
 
-    _cveInputArrayRelease($iArrSrc)
+    If $typeOfSrc <> Default Then
+        _cveInputArrayRelease($iArrSrc)
+        If $bSrcCreate Then
+            Call("_cve" & $typeOfSrc & "Release", $src)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaCvtColorTyped
+
+Func _cudaCvtColorMat($src, $dst, $code, $dcn, $stream)
+    ; cudaCvtColor using cv::Mat instead of _*Array
+    _cudaCvtColorTyped("Mat", $src, "Mat", $dst, $code, $dcn, $stream)
 EndFunc   ;==>_cudaCvtColorMat
 
 Func _cudaDemosaicing($src, $dst, $code, $dcn, $stream)
@@ -269,54 +354,80 @@ Func _cudaDemosaicing($src, $dst, $code, $dcn, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDemosaicing", $sSrcDllType, $src, $sDstDllType, $dst, "int", $code, "int", $dcn, $sStreamDllType, $stream), "cudaDemosaicing", @error)
 EndFunc   ;==>_cudaDemosaicing
 
-Func _cudaDemosaicingMat($matSrc, $matDst, $code, $dcn, $stream)
-    ; cudaDemosaicing using cv::Mat instead of _*Array
+Func _cudaDemosaicingTyped($typeOfSrc, $src, $typeOfDst, $dst, $code, $dcn, $stream)
 
-    Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
-    Local $bSrcIsArray = VarGetType($matSrc) == "Array"
+    Local $iArrSrc, $vectorSrc, $iArrSrcSize
+    Local $bSrcIsArray = IsArray($src)
+    Local $bSrcCreate = IsDllStruct($src) And $typeOfSrc == "Scalar"
 
-    If $bSrcIsArray Then
-        $vectorOfMatSrc = _VectorOfMatCreate()
+    If $typeOfSrc == Default Then
+        $iArrSrc = $src
+    ElseIf $bSrcIsArray Then
+        $vectorSrc = Call("_VectorOf" & $typeOfSrc & "Create")
 
-        $iArrSrcSize = UBound($matSrc)
+        $iArrSrcSize = UBound($src)
         For $i = 0 To $iArrSrcSize - 1
-            _VectorOfMatPush($vectorOfMatSrc, $matSrc[$i])
+            Call("_VectorOf" & $typeOfSrc & "Push", $vectorSrc, $src[$i])
         Next
 
-        $iArrSrc = _cveInputArrayFromVectorOfMat($vectorOfMatSrc)
+        $iArrSrc = Call("_cveInputArrayFromVectorOf" & $typeOfSrc, $vectorSrc)
     Else
-        $iArrSrc = _cveInputArrayFromMat($matSrc)
+        If $bSrcCreate Then
+            $src = Call("_cve" & $typeOfSrc & "Create", $src)
+        EndIf
+        $iArrSrc = Call("_cveInputArrayFrom" & $typeOfSrc, $src)
     EndIf
 
-    Local $oArrDst, $vectorOfMatDst, $iArrDstSize
-    Local $bDstIsArray = VarGetType($matDst) == "Array"
+    Local $oArrDst, $vectorDst, $iArrDstSize
+    Local $bDstIsArray = IsArray($dst)
+    Local $bDstCreate = IsDllStruct($dst) And $typeOfDst == "Scalar"
 
-    If $bDstIsArray Then
-        $vectorOfMatDst = _VectorOfMatCreate()
+    If $typeOfDst == Default Then
+        $oArrDst = $dst
+    ElseIf $bDstIsArray Then
+        $vectorDst = Call("_VectorOf" & $typeOfDst & "Create")
 
-        $iArrDstSize = UBound($matDst)
+        $iArrDstSize = UBound($dst)
         For $i = 0 To $iArrDstSize - 1
-            _VectorOfMatPush($vectorOfMatDst, $matDst[$i])
+            Call("_VectorOf" & $typeOfDst & "Push", $vectorDst, $dst[$i])
         Next
 
-        $oArrDst = _cveOutputArrayFromVectorOfMat($vectorOfMatDst)
+        $oArrDst = Call("_cveOutputArrayFromVectorOf" & $typeOfDst, $vectorDst)
     Else
-        $oArrDst = _cveOutputArrayFromMat($matDst)
+        If $bDstCreate Then
+            $dst = Call("_cve" & $typeOfDst & "Create", $dst)
+        EndIf
+        $oArrDst = Call("_cveOutputArrayFrom" & $typeOfDst, $dst)
     EndIf
 
     _cudaDemosaicing($iArrSrc, $oArrDst, $code, $dcn, $stream)
 
     If $bDstIsArray Then
-        _VectorOfMatRelease($vectorOfMatDst)
+        Call("_VectorOf" & $typeOfDst & "Release", $vectorDst)
     EndIf
 
-    _cveOutputArrayRelease($oArrDst)
+    If $typeOfDst <> Default Then
+        _cveOutputArrayRelease($oArrDst)
+        If $bDstCreate Then
+            Call("_cve" & $typeOfDst & "Release", $dst)
+        EndIf
+    EndIf
 
     If $bSrcIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrc)
+        Call("_VectorOf" & $typeOfSrc & "Release", $vectorSrc)
     EndIf
 
-    _cveInputArrayRelease($iArrSrc)
+    If $typeOfSrc <> Default Then
+        _cveInputArrayRelease($iArrSrc)
+        If $bSrcCreate Then
+            Call("_cve" & $typeOfSrc & "Release", $src)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaDemosaicingTyped
+
+Func _cudaDemosaicingMat($src, $dst, $code, $dcn, $stream)
+    ; cudaDemosaicing using cv::Mat instead of _*Array
+    _cudaDemosaicingTyped("Mat", $src, "Mat", $dst, $code, $dcn, $stream)
 EndFunc   ;==>_cudaDemosaicingMat
 
 Func _cudaSwapChannels($image, $dstOrder, $stream)
@@ -346,32 +457,47 @@ Func _cudaSwapChannels($image, $dstOrder, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaSwapChannels", $sImageDllType, $image, $sDstOrderDllType, $dstOrder, $sStreamDllType, $stream), "cudaSwapChannels", @error)
 EndFunc   ;==>_cudaSwapChannels
 
-Func _cudaSwapChannelsMat($matImage, $dstOrder, $stream)
-    ; cudaSwapChannels using cv::Mat instead of _*Array
+Func _cudaSwapChannelsTyped($typeOfImage, $image, $dstOrder, $stream)
 
-    Local $ioArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $ioArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $ioArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $ioArrImage = _cveInputOutputArrayFromVectorOfMat($vectorOfMatImage)
+        $ioArrImage = Call("_cveInputOutputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $ioArrImage = _cveInputOutputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $ioArrImage = Call("_cveInputOutputArrayFrom" & $typeOfImage, $image)
     EndIf
 
     _cudaSwapChannels($ioArrImage, $dstOrder, $stream)
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputOutputArrayRelease($ioArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaSwapChannelsTyped
+
+Func _cudaSwapChannelsMat($image, $dstOrder, $stream)
+    ; cudaSwapChannels using cv::Mat instead of _*Array
+    _cudaSwapChannelsTyped("Mat", $image, $dstOrder, $stream)
 EndFunc   ;==>_cudaSwapChannelsMat
 
 Func _cudaAlphaComp($img1, $img2, $dst, $alphaOp, $stream)
@@ -408,76 +534,113 @@ Func _cudaAlphaComp($img1, $img2, $dst, $alphaOp, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaAlphaComp", $sImg1DllType, $img1, $sImg2DllType, $img2, $sDstDllType, $dst, "int", $alphaOp, $sStreamDllType, $stream), "cudaAlphaComp", @error)
 EndFunc   ;==>_cudaAlphaComp
 
-Func _cudaAlphaCompMat($matImg1, $matImg2, $matDst, $alphaOp, $stream)
-    ; cudaAlphaComp using cv::Mat instead of _*Array
+Func _cudaAlphaCompTyped($typeOfImg1, $img1, $typeOfImg2, $img2, $typeOfDst, $dst, $alphaOp, $stream)
 
-    Local $iArrImg1, $vectorOfMatImg1, $iArrImg1Size
-    Local $bImg1IsArray = VarGetType($matImg1) == "Array"
+    Local $iArrImg1, $vectorImg1, $iArrImg1Size
+    Local $bImg1IsArray = IsArray($img1)
+    Local $bImg1Create = IsDllStruct($img1) And $typeOfImg1 == "Scalar"
 
-    If $bImg1IsArray Then
-        $vectorOfMatImg1 = _VectorOfMatCreate()
+    If $typeOfImg1 == Default Then
+        $iArrImg1 = $img1
+    ElseIf $bImg1IsArray Then
+        $vectorImg1 = Call("_VectorOf" & $typeOfImg1 & "Create")
 
-        $iArrImg1Size = UBound($matImg1)
+        $iArrImg1Size = UBound($img1)
         For $i = 0 To $iArrImg1Size - 1
-            _VectorOfMatPush($vectorOfMatImg1, $matImg1[$i])
+            Call("_VectorOf" & $typeOfImg1 & "Push", $vectorImg1, $img1[$i])
         Next
 
-        $iArrImg1 = _cveInputArrayFromVectorOfMat($vectorOfMatImg1)
+        $iArrImg1 = Call("_cveInputArrayFromVectorOf" & $typeOfImg1, $vectorImg1)
     Else
-        $iArrImg1 = _cveInputArrayFromMat($matImg1)
+        If $bImg1Create Then
+            $img1 = Call("_cve" & $typeOfImg1 & "Create", $img1)
+        EndIf
+        $iArrImg1 = Call("_cveInputArrayFrom" & $typeOfImg1, $img1)
     EndIf
 
-    Local $iArrImg2, $vectorOfMatImg2, $iArrImg2Size
-    Local $bImg2IsArray = VarGetType($matImg2) == "Array"
+    Local $iArrImg2, $vectorImg2, $iArrImg2Size
+    Local $bImg2IsArray = IsArray($img2)
+    Local $bImg2Create = IsDllStruct($img2) And $typeOfImg2 == "Scalar"
 
-    If $bImg2IsArray Then
-        $vectorOfMatImg2 = _VectorOfMatCreate()
+    If $typeOfImg2 == Default Then
+        $iArrImg2 = $img2
+    ElseIf $bImg2IsArray Then
+        $vectorImg2 = Call("_VectorOf" & $typeOfImg2 & "Create")
 
-        $iArrImg2Size = UBound($matImg2)
+        $iArrImg2Size = UBound($img2)
         For $i = 0 To $iArrImg2Size - 1
-            _VectorOfMatPush($vectorOfMatImg2, $matImg2[$i])
+            Call("_VectorOf" & $typeOfImg2 & "Push", $vectorImg2, $img2[$i])
         Next
 
-        $iArrImg2 = _cveInputArrayFromVectorOfMat($vectorOfMatImg2)
+        $iArrImg2 = Call("_cveInputArrayFromVectorOf" & $typeOfImg2, $vectorImg2)
     Else
-        $iArrImg2 = _cveInputArrayFromMat($matImg2)
+        If $bImg2Create Then
+            $img2 = Call("_cve" & $typeOfImg2 & "Create", $img2)
+        EndIf
+        $iArrImg2 = Call("_cveInputArrayFrom" & $typeOfImg2, $img2)
     EndIf
 
-    Local $oArrDst, $vectorOfMatDst, $iArrDstSize
-    Local $bDstIsArray = VarGetType($matDst) == "Array"
+    Local $oArrDst, $vectorDst, $iArrDstSize
+    Local $bDstIsArray = IsArray($dst)
+    Local $bDstCreate = IsDllStruct($dst) And $typeOfDst == "Scalar"
 
-    If $bDstIsArray Then
-        $vectorOfMatDst = _VectorOfMatCreate()
+    If $typeOfDst == Default Then
+        $oArrDst = $dst
+    ElseIf $bDstIsArray Then
+        $vectorDst = Call("_VectorOf" & $typeOfDst & "Create")
 
-        $iArrDstSize = UBound($matDst)
+        $iArrDstSize = UBound($dst)
         For $i = 0 To $iArrDstSize - 1
-            _VectorOfMatPush($vectorOfMatDst, $matDst[$i])
+            Call("_VectorOf" & $typeOfDst & "Push", $vectorDst, $dst[$i])
         Next
 
-        $oArrDst = _cveOutputArrayFromVectorOfMat($vectorOfMatDst)
+        $oArrDst = Call("_cveOutputArrayFromVectorOf" & $typeOfDst, $vectorDst)
     Else
-        $oArrDst = _cveOutputArrayFromMat($matDst)
+        If $bDstCreate Then
+            $dst = Call("_cve" & $typeOfDst & "Create", $dst)
+        EndIf
+        $oArrDst = Call("_cveOutputArrayFrom" & $typeOfDst, $dst)
     EndIf
 
     _cudaAlphaComp($iArrImg1, $iArrImg2, $oArrDst, $alphaOp, $stream)
 
     If $bDstIsArray Then
-        _VectorOfMatRelease($vectorOfMatDst)
+        Call("_VectorOf" & $typeOfDst & "Release", $vectorDst)
     EndIf
 
-    _cveOutputArrayRelease($oArrDst)
+    If $typeOfDst <> Default Then
+        _cveOutputArrayRelease($oArrDst)
+        If $bDstCreate Then
+            Call("_cve" & $typeOfDst & "Release", $dst)
+        EndIf
+    EndIf
 
     If $bImg2IsArray Then
-        _VectorOfMatRelease($vectorOfMatImg2)
+        Call("_VectorOf" & $typeOfImg2 & "Release", $vectorImg2)
     EndIf
 
-    _cveInputArrayRelease($iArrImg2)
+    If $typeOfImg2 <> Default Then
+        _cveInputArrayRelease($iArrImg2)
+        If $bImg2Create Then
+            Call("_cve" & $typeOfImg2 & "Release", $img2)
+        EndIf
+    EndIf
 
     If $bImg1IsArray Then
-        _VectorOfMatRelease($vectorOfMatImg1)
+        Call("_VectorOf" & $typeOfImg1 & "Release", $vectorImg1)
     EndIf
 
-    _cveInputArrayRelease($iArrImg1)
+    If $typeOfImg1 <> Default Then
+        _cveInputArrayRelease($iArrImg1)
+        If $bImg1Create Then
+            Call("_cve" & $typeOfImg1 & "Release", $img1)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaAlphaCompTyped
+
+Func _cudaAlphaCompMat($img1, $img2, $dst, $alphaOp, $stream)
+    ; cudaAlphaComp using cv::Mat instead of _*Array
+    _cudaAlphaCompTyped("Mat", $img1, "Mat", $img2, "Mat", $dst, $alphaOp, $stream)
 EndFunc   ;==>_cudaAlphaCompMat
 
 Func _cudaMeanShiftFiltering($src, $dst, $sp, $sr, $criteria, $stream)
@@ -514,54 +677,80 @@ Func _cudaMeanShiftFiltering($src, $dst, $sp, $sr, $criteria, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaMeanShiftFiltering", $sSrcDllType, $src, $sDstDllType, $dst, "int", $sp, "int", $sr, $sCriteriaDllType, $criteria, $sStreamDllType, $stream), "cudaMeanShiftFiltering", @error)
 EndFunc   ;==>_cudaMeanShiftFiltering
 
-Func _cudaMeanShiftFilteringMat($matSrc, $matDst, $sp, $sr, $criteria, $stream)
-    ; cudaMeanShiftFiltering using cv::Mat instead of _*Array
+Func _cudaMeanShiftFilteringTyped($typeOfSrc, $src, $typeOfDst, $dst, $sp, $sr, $criteria, $stream)
 
-    Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
-    Local $bSrcIsArray = VarGetType($matSrc) == "Array"
+    Local $iArrSrc, $vectorSrc, $iArrSrcSize
+    Local $bSrcIsArray = IsArray($src)
+    Local $bSrcCreate = IsDllStruct($src) And $typeOfSrc == "Scalar"
 
-    If $bSrcIsArray Then
-        $vectorOfMatSrc = _VectorOfMatCreate()
+    If $typeOfSrc == Default Then
+        $iArrSrc = $src
+    ElseIf $bSrcIsArray Then
+        $vectorSrc = Call("_VectorOf" & $typeOfSrc & "Create")
 
-        $iArrSrcSize = UBound($matSrc)
+        $iArrSrcSize = UBound($src)
         For $i = 0 To $iArrSrcSize - 1
-            _VectorOfMatPush($vectorOfMatSrc, $matSrc[$i])
+            Call("_VectorOf" & $typeOfSrc & "Push", $vectorSrc, $src[$i])
         Next
 
-        $iArrSrc = _cveInputArrayFromVectorOfMat($vectorOfMatSrc)
+        $iArrSrc = Call("_cveInputArrayFromVectorOf" & $typeOfSrc, $vectorSrc)
     Else
-        $iArrSrc = _cveInputArrayFromMat($matSrc)
+        If $bSrcCreate Then
+            $src = Call("_cve" & $typeOfSrc & "Create", $src)
+        EndIf
+        $iArrSrc = Call("_cveInputArrayFrom" & $typeOfSrc, $src)
     EndIf
 
-    Local $oArrDst, $vectorOfMatDst, $iArrDstSize
-    Local $bDstIsArray = VarGetType($matDst) == "Array"
+    Local $oArrDst, $vectorDst, $iArrDstSize
+    Local $bDstIsArray = IsArray($dst)
+    Local $bDstCreate = IsDllStruct($dst) And $typeOfDst == "Scalar"
 
-    If $bDstIsArray Then
-        $vectorOfMatDst = _VectorOfMatCreate()
+    If $typeOfDst == Default Then
+        $oArrDst = $dst
+    ElseIf $bDstIsArray Then
+        $vectorDst = Call("_VectorOf" & $typeOfDst & "Create")
 
-        $iArrDstSize = UBound($matDst)
+        $iArrDstSize = UBound($dst)
         For $i = 0 To $iArrDstSize - 1
-            _VectorOfMatPush($vectorOfMatDst, $matDst[$i])
+            Call("_VectorOf" & $typeOfDst & "Push", $vectorDst, $dst[$i])
         Next
 
-        $oArrDst = _cveOutputArrayFromVectorOfMat($vectorOfMatDst)
+        $oArrDst = Call("_cveOutputArrayFromVectorOf" & $typeOfDst, $vectorDst)
     Else
-        $oArrDst = _cveOutputArrayFromMat($matDst)
+        If $bDstCreate Then
+            $dst = Call("_cve" & $typeOfDst & "Create", $dst)
+        EndIf
+        $oArrDst = Call("_cveOutputArrayFrom" & $typeOfDst, $dst)
     EndIf
 
     _cudaMeanShiftFiltering($iArrSrc, $oArrDst, $sp, $sr, $criteria, $stream)
 
     If $bDstIsArray Then
-        _VectorOfMatRelease($vectorOfMatDst)
+        Call("_VectorOf" & $typeOfDst & "Release", $vectorDst)
     EndIf
 
-    _cveOutputArrayRelease($oArrDst)
+    If $typeOfDst <> Default Then
+        _cveOutputArrayRelease($oArrDst)
+        If $bDstCreate Then
+            Call("_cve" & $typeOfDst & "Release", $dst)
+        EndIf
+    EndIf
 
     If $bSrcIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrc)
+        Call("_VectorOf" & $typeOfSrc & "Release", $vectorSrc)
     EndIf
 
-    _cveInputArrayRelease($iArrSrc)
+    If $typeOfSrc <> Default Then
+        _cveInputArrayRelease($iArrSrc)
+        If $bSrcCreate Then
+            Call("_cve" & $typeOfSrc & "Release", $src)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaMeanShiftFilteringTyped
+
+Func _cudaMeanShiftFilteringMat($src, $dst, $sp, $sr, $criteria, $stream)
+    ; cudaMeanShiftFiltering using cv::Mat instead of _*Array
+    _cudaMeanShiftFilteringTyped("Mat", $src, "Mat", $dst, $sp, $sr, $criteria, $stream)
 EndFunc   ;==>_cudaMeanShiftFilteringMat
 
 Func _cudaMeanShiftProc($src, $dstr, $dstsp, $sp, $sr, $criteria, $stream)
@@ -605,76 +794,113 @@ Func _cudaMeanShiftProc($src, $dstr, $dstsp, $sp, $sr, $criteria, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaMeanShiftProc", $sSrcDllType, $src, $sDstrDllType, $dstr, $sDstspDllType, $dstsp, "int", $sp, "int", $sr, $sCriteriaDllType, $criteria, $sStreamDllType, $stream), "cudaMeanShiftProc", @error)
 EndFunc   ;==>_cudaMeanShiftProc
 
-Func _cudaMeanShiftProcMat($matSrc, $matDstr, $matDstsp, $sp, $sr, $criteria, $stream)
-    ; cudaMeanShiftProc using cv::Mat instead of _*Array
+Func _cudaMeanShiftProcTyped($typeOfSrc, $src, $typeOfDstr, $dstr, $typeOfDstsp, $dstsp, $sp, $sr, $criteria, $stream)
 
-    Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
-    Local $bSrcIsArray = VarGetType($matSrc) == "Array"
+    Local $iArrSrc, $vectorSrc, $iArrSrcSize
+    Local $bSrcIsArray = IsArray($src)
+    Local $bSrcCreate = IsDllStruct($src) And $typeOfSrc == "Scalar"
 
-    If $bSrcIsArray Then
-        $vectorOfMatSrc = _VectorOfMatCreate()
+    If $typeOfSrc == Default Then
+        $iArrSrc = $src
+    ElseIf $bSrcIsArray Then
+        $vectorSrc = Call("_VectorOf" & $typeOfSrc & "Create")
 
-        $iArrSrcSize = UBound($matSrc)
+        $iArrSrcSize = UBound($src)
         For $i = 0 To $iArrSrcSize - 1
-            _VectorOfMatPush($vectorOfMatSrc, $matSrc[$i])
+            Call("_VectorOf" & $typeOfSrc & "Push", $vectorSrc, $src[$i])
         Next
 
-        $iArrSrc = _cveInputArrayFromVectorOfMat($vectorOfMatSrc)
+        $iArrSrc = Call("_cveInputArrayFromVectorOf" & $typeOfSrc, $vectorSrc)
     Else
-        $iArrSrc = _cveInputArrayFromMat($matSrc)
+        If $bSrcCreate Then
+            $src = Call("_cve" & $typeOfSrc & "Create", $src)
+        EndIf
+        $iArrSrc = Call("_cveInputArrayFrom" & $typeOfSrc, $src)
     EndIf
 
-    Local $oArrDstr, $vectorOfMatDstr, $iArrDstrSize
-    Local $bDstrIsArray = VarGetType($matDstr) == "Array"
+    Local $oArrDstr, $vectorDstr, $iArrDstrSize
+    Local $bDstrIsArray = IsArray($dstr)
+    Local $bDstrCreate = IsDllStruct($dstr) And $typeOfDstr == "Scalar"
 
-    If $bDstrIsArray Then
-        $vectorOfMatDstr = _VectorOfMatCreate()
+    If $typeOfDstr == Default Then
+        $oArrDstr = $dstr
+    ElseIf $bDstrIsArray Then
+        $vectorDstr = Call("_VectorOf" & $typeOfDstr & "Create")
 
-        $iArrDstrSize = UBound($matDstr)
+        $iArrDstrSize = UBound($dstr)
         For $i = 0 To $iArrDstrSize - 1
-            _VectorOfMatPush($vectorOfMatDstr, $matDstr[$i])
+            Call("_VectorOf" & $typeOfDstr & "Push", $vectorDstr, $dstr[$i])
         Next
 
-        $oArrDstr = _cveOutputArrayFromVectorOfMat($vectorOfMatDstr)
+        $oArrDstr = Call("_cveOutputArrayFromVectorOf" & $typeOfDstr, $vectorDstr)
     Else
-        $oArrDstr = _cveOutputArrayFromMat($matDstr)
+        If $bDstrCreate Then
+            $dstr = Call("_cve" & $typeOfDstr & "Create", $dstr)
+        EndIf
+        $oArrDstr = Call("_cveOutputArrayFrom" & $typeOfDstr, $dstr)
     EndIf
 
-    Local $oArrDstsp, $vectorOfMatDstsp, $iArrDstspSize
-    Local $bDstspIsArray = VarGetType($matDstsp) == "Array"
+    Local $oArrDstsp, $vectorDstsp, $iArrDstspSize
+    Local $bDstspIsArray = IsArray($dstsp)
+    Local $bDstspCreate = IsDllStruct($dstsp) And $typeOfDstsp == "Scalar"
 
-    If $bDstspIsArray Then
-        $vectorOfMatDstsp = _VectorOfMatCreate()
+    If $typeOfDstsp == Default Then
+        $oArrDstsp = $dstsp
+    ElseIf $bDstspIsArray Then
+        $vectorDstsp = Call("_VectorOf" & $typeOfDstsp & "Create")
 
-        $iArrDstspSize = UBound($matDstsp)
+        $iArrDstspSize = UBound($dstsp)
         For $i = 0 To $iArrDstspSize - 1
-            _VectorOfMatPush($vectorOfMatDstsp, $matDstsp[$i])
+            Call("_VectorOf" & $typeOfDstsp & "Push", $vectorDstsp, $dstsp[$i])
         Next
 
-        $oArrDstsp = _cveOutputArrayFromVectorOfMat($vectorOfMatDstsp)
+        $oArrDstsp = Call("_cveOutputArrayFromVectorOf" & $typeOfDstsp, $vectorDstsp)
     Else
-        $oArrDstsp = _cveOutputArrayFromMat($matDstsp)
+        If $bDstspCreate Then
+            $dstsp = Call("_cve" & $typeOfDstsp & "Create", $dstsp)
+        EndIf
+        $oArrDstsp = Call("_cveOutputArrayFrom" & $typeOfDstsp, $dstsp)
     EndIf
 
     _cudaMeanShiftProc($iArrSrc, $oArrDstr, $oArrDstsp, $sp, $sr, $criteria, $stream)
 
     If $bDstspIsArray Then
-        _VectorOfMatRelease($vectorOfMatDstsp)
+        Call("_VectorOf" & $typeOfDstsp & "Release", $vectorDstsp)
     EndIf
 
-    _cveOutputArrayRelease($oArrDstsp)
+    If $typeOfDstsp <> Default Then
+        _cveOutputArrayRelease($oArrDstsp)
+        If $bDstspCreate Then
+            Call("_cve" & $typeOfDstsp & "Release", $dstsp)
+        EndIf
+    EndIf
 
     If $bDstrIsArray Then
-        _VectorOfMatRelease($vectorOfMatDstr)
+        Call("_VectorOf" & $typeOfDstr & "Release", $vectorDstr)
     EndIf
 
-    _cveOutputArrayRelease($oArrDstr)
+    If $typeOfDstr <> Default Then
+        _cveOutputArrayRelease($oArrDstr)
+        If $bDstrCreate Then
+            Call("_cve" & $typeOfDstr & "Release", $dstr)
+        EndIf
+    EndIf
 
     If $bSrcIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrc)
+        Call("_VectorOf" & $typeOfSrc & "Release", $vectorSrc)
     EndIf
 
-    _cveInputArrayRelease($iArrSrc)
+    If $typeOfSrc <> Default Then
+        _cveInputArrayRelease($iArrSrc)
+        If $bSrcCreate Then
+            Call("_cve" & $typeOfSrc & "Release", $src)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaMeanShiftProcTyped
+
+Func _cudaMeanShiftProcMat($src, $dstr, $dstsp, $sp, $sr, $criteria, $stream)
+    ; cudaMeanShiftProc using cv::Mat instead of _*Array
+    _cudaMeanShiftProcTyped("Mat", $src, "Mat", $dstr, "Mat", $dstsp, $sp, $sr, $criteria, $stream)
 EndFunc   ;==>_cudaMeanShiftProcMat
 
 Func _cudaMeanShiftSegmentation($src, $dst, $sp, $sr, $minsize, $criteria, $stream)
@@ -711,54 +937,80 @@ Func _cudaMeanShiftSegmentation($src, $dst, $sp, $sr, $minsize, $criteria, $stre
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaMeanShiftSegmentation", $sSrcDllType, $src, $sDstDllType, $dst, "int", $sp, "int", $sr, "int", $minsize, $sCriteriaDllType, $criteria, $sStreamDllType, $stream), "cudaMeanShiftSegmentation", @error)
 EndFunc   ;==>_cudaMeanShiftSegmentation
 
-Func _cudaMeanShiftSegmentationMat($matSrc, $matDst, $sp, $sr, $minsize, $criteria, $stream)
-    ; cudaMeanShiftSegmentation using cv::Mat instead of _*Array
+Func _cudaMeanShiftSegmentationTyped($typeOfSrc, $src, $typeOfDst, $dst, $sp, $sr, $minsize, $criteria, $stream)
 
-    Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
-    Local $bSrcIsArray = VarGetType($matSrc) == "Array"
+    Local $iArrSrc, $vectorSrc, $iArrSrcSize
+    Local $bSrcIsArray = IsArray($src)
+    Local $bSrcCreate = IsDllStruct($src) And $typeOfSrc == "Scalar"
 
-    If $bSrcIsArray Then
-        $vectorOfMatSrc = _VectorOfMatCreate()
+    If $typeOfSrc == Default Then
+        $iArrSrc = $src
+    ElseIf $bSrcIsArray Then
+        $vectorSrc = Call("_VectorOf" & $typeOfSrc & "Create")
 
-        $iArrSrcSize = UBound($matSrc)
+        $iArrSrcSize = UBound($src)
         For $i = 0 To $iArrSrcSize - 1
-            _VectorOfMatPush($vectorOfMatSrc, $matSrc[$i])
+            Call("_VectorOf" & $typeOfSrc & "Push", $vectorSrc, $src[$i])
         Next
 
-        $iArrSrc = _cveInputArrayFromVectorOfMat($vectorOfMatSrc)
+        $iArrSrc = Call("_cveInputArrayFromVectorOf" & $typeOfSrc, $vectorSrc)
     Else
-        $iArrSrc = _cveInputArrayFromMat($matSrc)
+        If $bSrcCreate Then
+            $src = Call("_cve" & $typeOfSrc & "Create", $src)
+        EndIf
+        $iArrSrc = Call("_cveInputArrayFrom" & $typeOfSrc, $src)
     EndIf
 
-    Local $oArrDst, $vectorOfMatDst, $iArrDstSize
-    Local $bDstIsArray = VarGetType($matDst) == "Array"
+    Local $oArrDst, $vectorDst, $iArrDstSize
+    Local $bDstIsArray = IsArray($dst)
+    Local $bDstCreate = IsDllStruct($dst) And $typeOfDst == "Scalar"
 
-    If $bDstIsArray Then
-        $vectorOfMatDst = _VectorOfMatCreate()
+    If $typeOfDst == Default Then
+        $oArrDst = $dst
+    ElseIf $bDstIsArray Then
+        $vectorDst = Call("_VectorOf" & $typeOfDst & "Create")
 
-        $iArrDstSize = UBound($matDst)
+        $iArrDstSize = UBound($dst)
         For $i = 0 To $iArrDstSize - 1
-            _VectorOfMatPush($vectorOfMatDst, $matDst[$i])
+            Call("_VectorOf" & $typeOfDst & "Push", $vectorDst, $dst[$i])
         Next
 
-        $oArrDst = _cveOutputArrayFromVectorOfMat($vectorOfMatDst)
+        $oArrDst = Call("_cveOutputArrayFromVectorOf" & $typeOfDst, $vectorDst)
     Else
-        $oArrDst = _cveOutputArrayFromMat($matDst)
+        If $bDstCreate Then
+            $dst = Call("_cve" & $typeOfDst & "Create", $dst)
+        EndIf
+        $oArrDst = Call("_cveOutputArrayFrom" & $typeOfDst, $dst)
     EndIf
 
     _cudaMeanShiftSegmentation($iArrSrc, $oArrDst, $sp, $sr, $minsize, $criteria, $stream)
 
     If $bDstIsArray Then
-        _VectorOfMatRelease($vectorOfMatDst)
+        Call("_VectorOf" & $typeOfDst & "Release", $vectorDst)
     EndIf
 
-    _cveOutputArrayRelease($oArrDst)
+    If $typeOfDst <> Default Then
+        _cveOutputArrayRelease($oArrDst)
+        If $bDstCreate Then
+            Call("_cve" & $typeOfDst & "Release", $dst)
+        EndIf
+    EndIf
 
     If $bSrcIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrc)
+        Call("_VectorOf" & $typeOfSrc & "Release", $vectorSrc)
     EndIf
 
-    _cveInputArrayRelease($iArrSrc)
+    If $typeOfSrc <> Default Then
+        _cveInputArrayRelease($iArrSrc)
+        If $bSrcCreate Then
+            Call("_cve" & $typeOfSrc & "Release", $src)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaMeanShiftSegmentationTyped
+
+Func _cudaMeanShiftSegmentationMat($src, $dst, $sp, $sr, $minsize, $criteria, $stream)
+    ; cudaMeanShiftSegmentation using cv::Mat instead of _*Array
+    _cudaMeanShiftSegmentationTyped("Mat", $src, "Mat", $dst, $sp, $sr, $minsize, $criteria, $stream)
 EndFunc   ;==>_cudaMeanShiftSegmentationMat
 
 Func _cudaCalcHist($src, $hist, $stream)
@@ -788,54 +1040,80 @@ Func _cudaCalcHist($src, $hist, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCalcHist", $sSrcDllType, $src, $sHistDllType, $hist, $sStreamDllType, $stream), "cudaCalcHist", @error)
 EndFunc   ;==>_cudaCalcHist
 
-Func _cudaCalcHistMat($matSrc, $matHist, $stream)
-    ; cudaCalcHist using cv::Mat instead of _*Array
+Func _cudaCalcHistTyped($typeOfSrc, $src, $typeOfHist, $hist, $stream)
 
-    Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
-    Local $bSrcIsArray = VarGetType($matSrc) == "Array"
+    Local $iArrSrc, $vectorSrc, $iArrSrcSize
+    Local $bSrcIsArray = IsArray($src)
+    Local $bSrcCreate = IsDllStruct($src) And $typeOfSrc == "Scalar"
 
-    If $bSrcIsArray Then
-        $vectorOfMatSrc = _VectorOfMatCreate()
+    If $typeOfSrc == Default Then
+        $iArrSrc = $src
+    ElseIf $bSrcIsArray Then
+        $vectorSrc = Call("_VectorOf" & $typeOfSrc & "Create")
 
-        $iArrSrcSize = UBound($matSrc)
+        $iArrSrcSize = UBound($src)
         For $i = 0 To $iArrSrcSize - 1
-            _VectorOfMatPush($vectorOfMatSrc, $matSrc[$i])
+            Call("_VectorOf" & $typeOfSrc & "Push", $vectorSrc, $src[$i])
         Next
 
-        $iArrSrc = _cveInputArrayFromVectorOfMat($vectorOfMatSrc)
+        $iArrSrc = Call("_cveInputArrayFromVectorOf" & $typeOfSrc, $vectorSrc)
     Else
-        $iArrSrc = _cveInputArrayFromMat($matSrc)
+        If $bSrcCreate Then
+            $src = Call("_cve" & $typeOfSrc & "Create", $src)
+        EndIf
+        $iArrSrc = Call("_cveInputArrayFrom" & $typeOfSrc, $src)
     EndIf
 
-    Local $oArrHist, $vectorOfMatHist, $iArrHistSize
-    Local $bHistIsArray = VarGetType($matHist) == "Array"
+    Local $oArrHist, $vectorHist, $iArrHistSize
+    Local $bHistIsArray = IsArray($hist)
+    Local $bHistCreate = IsDllStruct($hist) And $typeOfHist == "Scalar"
 
-    If $bHistIsArray Then
-        $vectorOfMatHist = _VectorOfMatCreate()
+    If $typeOfHist == Default Then
+        $oArrHist = $hist
+    ElseIf $bHistIsArray Then
+        $vectorHist = Call("_VectorOf" & $typeOfHist & "Create")
 
-        $iArrHistSize = UBound($matHist)
+        $iArrHistSize = UBound($hist)
         For $i = 0 To $iArrHistSize - 1
-            _VectorOfMatPush($vectorOfMatHist, $matHist[$i])
+            Call("_VectorOf" & $typeOfHist & "Push", $vectorHist, $hist[$i])
         Next
 
-        $oArrHist = _cveOutputArrayFromVectorOfMat($vectorOfMatHist)
+        $oArrHist = Call("_cveOutputArrayFromVectorOf" & $typeOfHist, $vectorHist)
     Else
-        $oArrHist = _cveOutputArrayFromMat($matHist)
+        If $bHistCreate Then
+            $hist = Call("_cve" & $typeOfHist & "Create", $hist)
+        EndIf
+        $oArrHist = Call("_cveOutputArrayFrom" & $typeOfHist, $hist)
     EndIf
 
     _cudaCalcHist($iArrSrc, $oArrHist, $stream)
 
     If $bHistIsArray Then
-        _VectorOfMatRelease($vectorOfMatHist)
+        Call("_VectorOf" & $typeOfHist & "Release", $vectorHist)
     EndIf
 
-    _cveOutputArrayRelease($oArrHist)
+    If $typeOfHist <> Default Then
+        _cveOutputArrayRelease($oArrHist)
+        If $bHistCreate Then
+            Call("_cve" & $typeOfHist & "Release", $hist)
+        EndIf
+    EndIf
 
     If $bSrcIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrc)
+        Call("_VectorOf" & $typeOfSrc & "Release", $vectorSrc)
     EndIf
 
-    _cveInputArrayRelease($iArrSrc)
+    If $typeOfSrc <> Default Then
+        _cveInputArrayRelease($iArrSrc)
+        If $bSrcCreate Then
+            Call("_cve" & $typeOfSrc & "Release", $src)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaCalcHistTyped
+
+Func _cudaCalcHistMat($src, $hist, $stream)
+    ; cudaCalcHist using cv::Mat instead of _*Array
+    _cudaCalcHistTyped("Mat", $src, "Mat", $hist, $stream)
 EndFunc   ;==>_cudaCalcHistMat
 
 Func _cudaEqualizeHist($src, $dst, $stream)
@@ -865,54 +1143,80 @@ Func _cudaEqualizeHist($src, $dst, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaEqualizeHist", $sSrcDllType, $src, $sDstDllType, $dst, $sStreamDllType, $stream), "cudaEqualizeHist", @error)
 EndFunc   ;==>_cudaEqualizeHist
 
-Func _cudaEqualizeHistMat($matSrc, $matDst, $stream)
-    ; cudaEqualizeHist using cv::Mat instead of _*Array
+Func _cudaEqualizeHistTyped($typeOfSrc, $src, $typeOfDst, $dst, $stream)
 
-    Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
-    Local $bSrcIsArray = VarGetType($matSrc) == "Array"
+    Local $iArrSrc, $vectorSrc, $iArrSrcSize
+    Local $bSrcIsArray = IsArray($src)
+    Local $bSrcCreate = IsDllStruct($src) And $typeOfSrc == "Scalar"
 
-    If $bSrcIsArray Then
-        $vectorOfMatSrc = _VectorOfMatCreate()
+    If $typeOfSrc == Default Then
+        $iArrSrc = $src
+    ElseIf $bSrcIsArray Then
+        $vectorSrc = Call("_VectorOf" & $typeOfSrc & "Create")
 
-        $iArrSrcSize = UBound($matSrc)
+        $iArrSrcSize = UBound($src)
         For $i = 0 To $iArrSrcSize - 1
-            _VectorOfMatPush($vectorOfMatSrc, $matSrc[$i])
+            Call("_VectorOf" & $typeOfSrc & "Push", $vectorSrc, $src[$i])
         Next
 
-        $iArrSrc = _cveInputArrayFromVectorOfMat($vectorOfMatSrc)
+        $iArrSrc = Call("_cveInputArrayFromVectorOf" & $typeOfSrc, $vectorSrc)
     Else
-        $iArrSrc = _cveInputArrayFromMat($matSrc)
+        If $bSrcCreate Then
+            $src = Call("_cve" & $typeOfSrc & "Create", $src)
+        EndIf
+        $iArrSrc = Call("_cveInputArrayFrom" & $typeOfSrc, $src)
     EndIf
 
-    Local $oArrDst, $vectorOfMatDst, $iArrDstSize
-    Local $bDstIsArray = VarGetType($matDst) == "Array"
+    Local $oArrDst, $vectorDst, $iArrDstSize
+    Local $bDstIsArray = IsArray($dst)
+    Local $bDstCreate = IsDllStruct($dst) And $typeOfDst == "Scalar"
 
-    If $bDstIsArray Then
-        $vectorOfMatDst = _VectorOfMatCreate()
+    If $typeOfDst == Default Then
+        $oArrDst = $dst
+    ElseIf $bDstIsArray Then
+        $vectorDst = Call("_VectorOf" & $typeOfDst & "Create")
 
-        $iArrDstSize = UBound($matDst)
+        $iArrDstSize = UBound($dst)
         For $i = 0 To $iArrDstSize - 1
-            _VectorOfMatPush($vectorOfMatDst, $matDst[$i])
+            Call("_VectorOf" & $typeOfDst & "Push", $vectorDst, $dst[$i])
         Next
 
-        $oArrDst = _cveOutputArrayFromVectorOfMat($vectorOfMatDst)
+        $oArrDst = Call("_cveOutputArrayFromVectorOf" & $typeOfDst, $vectorDst)
     Else
-        $oArrDst = _cveOutputArrayFromMat($matDst)
+        If $bDstCreate Then
+            $dst = Call("_cve" & $typeOfDst & "Create", $dst)
+        EndIf
+        $oArrDst = Call("_cveOutputArrayFrom" & $typeOfDst, $dst)
     EndIf
 
     _cudaEqualizeHist($iArrSrc, $oArrDst, $stream)
 
     If $bDstIsArray Then
-        _VectorOfMatRelease($vectorOfMatDst)
+        Call("_VectorOf" & $typeOfDst & "Release", $vectorDst)
     EndIf
 
-    _cveOutputArrayRelease($oArrDst)
+    If $typeOfDst <> Default Then
+        _cveOutputArrayRelease($oArrDst)
+        If $bDstCreate Then
+            Call("_cve" & $typeOfDst & "Release", $dst)
+        EndIf
+    EndIf
 
     If $bSrcIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrc)
+        Call("_VectorOf" & $typeOfSrc & "Release", $vectorSrc)
     EndIf
 
-    _cveInputArrayRelease($iArrSrc)
+    If $typeOfSrc <> Default Then
+        _cveInputArrayRelease($iArrSrc)
+        If $bSrcCreate Then
+            Call("_cve" & $typeOfSrc & "Release", $src)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaEqualizeHistTyped
+
+Func _cudaEqualizeHistMat($src, $dst, $stream)
+    ; cudaEqualizeHist using cv::Mat instead of _*Array
+    _cudaEqualizeHistTyped("Mat", $src, "Mat", $dst, $stream)
 EndFunc   ;==>_cudaEqualizeHistMat
 
 Func _cudaHistEven($src, $hist, $histSize, $lowerLevel, $upperLevel, $stream)
@@ -942,54 +1246,80 @@ Func _cudaHistEven($src, $hist, $histSize, $lowerLevel, $upperLevel, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHistEven", $sSrcDllType, $src, $sHistDllType, $hist, "int", $histSize, "int", $lowerLevel, "int", $upperLevel, $sStreamDllType, $stream), "cudaHistEven", @error)
 EndFunc   ;==>_cudaHistEven
 
-Func _cudaHistEvenMat($matSrc, $matHist, $histSize, $lowerLevel, $upperLevel, $stream)
-    ; cudaHistEven using cv::Mat instead of _*Array
+Func _cudaHistEvenTyped($typeOfSrc, $src, $typeOfHist, $hist, $histSize, $lowerLevel, $upperLevel, $stream)
 
-    Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
-    Local $bSrcIsArray = VarGetType($matSrc) == "Array"
+    Local $iArrSrc, $vectorSrc, $iArrSrcSize
+    Local $bSrcIsArray = IsArray($src)
+    Local $bSrcCreate = IsDllStruct($src) And $typeOfSrc == "Scalar"
 
-    If $bSrcIsArray Then
-        $vectorOfMatSrc = _VectorOfMatCreate()
+    If $typeOfSrc == Default Then
+        $iArrSrc = $src
+    ElseIf $bSrcIsArray Then
+        $vectorSrc = Call("_VectorOf" & $typeOfSrc & "Create")
 
-        $iArrSrcSize = UBound($matSrc)
+        $iArrSrcSize = UBound($src)
         For $i = 0 To $iArrSrcSize - 1
-            _VectorOfMatPush($vectorOfMatSrc, $matSrc[$i])
+            Call("_VectorOf" & $typeOfSrc & "Push", $vectorSrc, $src[$i])
         Next
 
-        $iArrSrc = _cveInputArrayFromVectorOfMat($vectorOfMatSrc)
+        $iArrSrc = Call("_cveInputArrayFromVectorOf" & $typeOfSrc, $vectorSrc)
     Else
-        $iArrSrc = _cveInputArrayFromMat($matSrc)
+        If $bSrcCreate Then
+            $src = Call("_cve" & $typeOfSrc & "Create", $src)
+        EndIf
+        $iArrSrc = Call("_cveInputArrayFrom" & $typeOfSrc, $src)
     EndIf
 
-    Local $oArrHist, $vectorOfMatHist, $iArrHistSize
-    Local $bHistIsArray = VarGetType($matHist) == "Array"
+    Local $oArrHist, $vectorHist, $iArrHistSize
+    Local $bHistIsArray = IsArray($hist)
+    Local $bHistCreate = IsDllStruct($hist) And $typeOfHist == "Scalar"
 
-    If $bHistIsArray Then
-        $vectorOfMatHist = _VectorOfMatCreate()
+    If $typeOfHist == Default Then
+        $oArrHist = $hist
+    ElseIf $bHistIsArray Then
+        $vectorHist = Call("_VectorOf" & $typeOfHist & "Create")
 
-        $iArrHistSize = UBound($matHist)
+        $iArrHistSize = UBound($hist)
         For $i = 0 To $iArrHistSize - 1
-            _VectorOfMatPush($vectorOfMatHist, $matHist[$i])
+            Call("_VectorOf" & $typeOfHist & "Push", $vectorHist, $hist[$i])
         Next
 
-        $oArrHist = _cveOutputArrayFromVectorOfMat($vectorOfMatHist)
+        $oArrHist = Call("_cveOutputArrayFromVectorOf" & $typeOfHist, $vectorHist)
     Else
-        $oArrHist = _cveOutputArrayFromMat($matHist)
+        If $bHistCreate Then
+            $hist = Call("_cve" & $typeOfHist & "Create", $hist)
+        EndIf
+        $oArrHist = Call("_cveOutputArrayFrom" & $typeOfHist, $hist)
     EndIf
 
     _cudaHistEven($iArrSrc, $oArrHist, $histSize, $lowerLevel, $upperLevel, $stream)
 
     If $bHistIsArray Then
-        _VectorOfMatRelease($vectorOfMatHist)
+        Call("_VectorOf" & $typeOfHist & "Release", $vectorHist)
     EndIf
 
-    _cveOutputArrayRelease($oArrHist)
+    If $typeOfHist <> Default Then
+        _cveOutputArrayRelease($oArrHist)
+        If $bHistCreate Then
+            Call("_cve" & $typeOfHist & "Release", $hist)
+        EndIf
+    EndIf
 
     If $bSrcIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrc)
+        Call("_VectorOf" & $typeOfSrc & "Release", $vectorSrc)
     EndIf
 
-    _cveInputArrayRelease($iArrSrc)
+    If $typeOfSrc <> Default Then
+        _cveInputArrayRelease($iArrSrc)
+        If $bSrcCreate Then
+            Call("_cve" & $typeOfSrc & "Release", $src)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaHistEvenTyped
+
+Func _cudaHistEvenMat($src, $hist, $histSize, $lowerLevel, $upperLevel, $stream)
+    ; cudaHistEven using cv::Mat instead of _*Array
+    _cudaHistEvenTyped("Mat", $src, "Mat", $hist, $histSize, $lowerLevel, $upperLevel, $stream)
 EndFunc   ;==>_cudaHistEvenMat
 
 Func _cudaHistRange($src, $hist, $levels, $stream)
@@ -1026,76 +1356,113 @@ Func _cudaHistRange($src, $hist, $levels, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHistRange", $sSrcDllType, $src, $sHistDllType, $hist, $sLevelsDllType, $levels, $sStreamDllType, $stream), "cudaHistRange", @error)
 EndFunc   ;==>_cudaHistRange
 
-Func _cudaHistRangeMat($matSrc, $matHist, $matLevels, $stream)
-    ; cudaHistRange using cv::Mat instead of _*Array
+Func _cudaHistRangeTyped($typeOfSrc, $src, $typeOfHist, $hist, $typeOfLevels, $levels, $stream)
 
-    Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
-    Local $bSrcIsArray = VarGetType($matSrc) == "Array"
+    Local $iArrSrc, $vectorSrc, $iArrSrcSize
+    Local $bSrcIsArray = IsArray($src)
+    Local $bSrcCreate = IsDllStruct($src) And $typeOfSrc == "Scalar"
 
-    If $bSrcIsArray Then
-        $vectorOfMatSrc = _VectorOfMatCreate()
+    If $typeOfSrc == Default Then
+        $iArrSrc = $src
+    ElseIf $bSrcIsArray Then
+        $vectorSrc = Call("_VectorOf" & $typeOfSrc & "Create")
 
-        $iArrSrcSize = UBound($matSrc)
+        $iArrSrcSize = UBound($src)
         For $i = 0 To $iArrSrcSize - 1
-            _VectorOfMatPush($vectorOfMatSrc, $matSrc[$i])
+            Call("_VectorOf" & $typeOfSrc & "Push", $vectorSrc, $src[$i])
         Next
 
-        $iArrSrc = _cveInputArrayFromVectorOfMat($vectorOfMatSrc)
+        $iArrSrc = Call("_cveInputArrayFromVectorOf" & $typeOfSrc, $vectorSrc)
     Else
-        $iArrSrc = _cveInputArrayFromMat($matSrc)
+        If $bSrcCreate Then
+            $src = Call("_cve" & $typeOfSrc & "Create", $src)
+        EndIf
+        $iArrSrc = Call("_cveInputArrayFrom" & $typeOfSrc, $src)
     EndIf
 
-    Local $oArrHist, $vectorOfMatHist, $iArrHistSize
-    Local $bHistIsArray = VarGetType($matHist) == "Array"
+    Local $oArrHist, $vectorHist, $iArrHistSize
+    Local $bHistIsArray = IsArray($hist)
+    Local $bHistCreate = IsDllStruct($hist) And $typeOfHist == "Scalar"
 
-    If $bHistIsArray Then
-        $vectorOfMatHist = _VectorOfMatCreate()
+    If $typeOfHist == Default Then
+        $oArrHist = $hist
+    ElseIf $bHistIsArray Then
+        $vectorHist = Call("_VectorOf" & $typeOfHist & "Create")
 
-        $iArrHistSize = UBound($matHist)
+        $iArrHistSize = UBound($hist)
         For $i = 0 To $iArrHistSize - 1
-            _VectorOfMatPush($vectorOfMatHist, $matHist[$i])
+            Call("_VectorOf" & $typeOfHist & "Push", $vectorHist, $hist[$i])
         Next
 
-        $oArrHist = _cveOutputArrayFromVectorOfMat($vectorOfMatHist)
+        $oArrHist = Call("_cveOutputArrayFromVectorOf" & $typeOfHist, $vectorHist)
     Else
-        $oArrHist = _cveOutputArrayFromMat($matHist)
+        If $bHistCreate Then
+            $hist = Call("_cve" & $typeOfHist & "Create", $hist)
+        EndIf
+        $oArrHist = Call("_cveOutputArrayFrom" & $typeOfHist, $hist)
     EndIf
 
-    Local $iArrLevels, $vectorOfMatLevels, $iArrLevelsSize
-    Local $bLevelsIsArray = VarGetType($matLevels) == "Array"
+    Local $iArrLevels, $vectorLevels, $iArrLevelsSize
+    Local $bLevelsIsArray = IsArray($levels)
+    Local $bLevelsCreate = IsDllStruct($levels) And $typeOfLevels == "Scalar"
 
-    If $bLevelsIsArray Then
-        $vectorOfMatLevels = _VectorOfMatCreate()
+    If $typeOfLevels == Default Then
+        $iArrLevels = $levels
+    ElseIf $bLevelsIsArray Then
+        $vectorLevels = Call("_VectorOf" & $typeOfLevels & "Create")
 
-        $iArrLevelsSize = UBound($matLevels)
+        $iArrLevelsSize = UBound($levels)
         For $i = 0 To $iArrLevelsSize - 1
-            _VectorOfMatPush($vectorOfMatLevels, $matLevels[$i])
+            Call("_VectorOf" & $typeOfLevels & "Push", $vectorLevels, $levels[$i])
         Next
 
-        $iArrLevels = _cveInputArrayFromVectorOfMat($vectorOfMatLevels)
+        $iArrLevels = Call("_cveInputArrayFromVectorOf" & $typeOfLevels, $vectorLevels)
     Else
-        $iArrLevels = _cveInputArrayFromMat($matLevels)
+        If $bLevelsCreate Then
+            $levels = Call("_cve" & $typeOfLevels & "Create", $levels)
+        EndIf
+        $iArrLevels = Call("_cveInputArrayFrom" & $typeOfLevels, $levels)
     EndIf
 
     _cudaHistRange($iArrSrc, $oArrHist, $iArrLevels, $stream)
 
     If $bLevelsIsArray Then
-        _VectorOfMatRelease($vectorOfMatLevels)
+        Call("_VectorOf" & $typeOfLevels & "Release", $vectorLevels)
     EndIf
 
-    _cveInputArrayRelease($iArrLevels)
+    If $typeOfLevels <> Default Then
+        _cveInputArrayRelease($iArrLevels)
+        If $bLevelsCreate Then
+            Call("_cve" & $typeOfLevels & "Release", $levels)
+        EndIf
+    EndIf
 
     If $bHistIsArray Then
-        _VectorOfMatRelease($vectorOfMatHist)
+        Call("_VectorOf" & $typeOfHist & "Release", $vectorHist)
     EndIf
 
-    _cveOutputArrayRelease($oArrHist)
+    If $typeOfHist <> Default Then
+        _cveOutputArrayRelease($oArrHist)
+        If $bHistCreate Then
+            Call("_cve" & $typeOfHist & "Release", $hist)
+        EndIf
+    EndIf
 
     If $bSrcIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrc)
+        Call("_VectorOf" & $typeOfSrc & "Release", $vectorSrc)
     EndIf
 
-    _cveInputArrayRelease($iArrSrc)
+    If $typeOfSrc <> Default Then
+        _cveInputArrayRelease($iArrSrc)
+        If $bSrcCreate Then
+            Call("_cve" & $typeOfSrc & "Release", $src)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaHistRangeTyped
+
+Func _cudaHistRangeMat($src, $hist, $levels, $stream)
+    ; cudaHistRange using cv::Mat instead of _*Array
+    _cudaHistRangeTyped("Mat", $src, "Mat", $hist, "Mat", $levels, $stream)
 EndFunc   ;==>_cudaHistRangeMat
 
 Func _cudaBilateralFilter($src, $dst, $kernelSize, $sigmaColor, $sigmaSpatial, $borderMode, $stream)
@@ -1125,54 +1492,80 @@ Func _cudaBilateralFilter($src, $dst, $kernelSize, $sigmaColor, $sigmaSpatial, $
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaBilateralFilter", $sSrcDllType, $src, $sDstDllType, $dst, "int", $kernelSize, "float", $sigmaColor, "float", $sigmaSpatial, "int", $borderMode, $sStreamDllType, $stream), "cudaBilateralFilter", @error)
 EndFunc   ;==>_cudaBilateralFilter
 
-Func _cudaBilateralFilterMat($matSrc, $matDst, $kernelSize, $sigmaColor, $sigmaSpatial, $borderMode, $stream)
-    ; cudaBilateralFilter using cv::Mat instead of _*Array
+Func _cudaBilateralFilterTyped($typeOfSrc, $src, $typeOfDst, $dst, $kernelSize, $sigmaColor, $sigmaSpatial, $borderMode, $stream)
 
-    Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
-    Local $bSrcIsArray = VarGetType($matSrc) == "Array"
+    Local $iArrSrc, $vectorSrc, $iArrSrcSize
+    Local $bSrcIsArray = IsArray($src)
+    Local $bSrcCreate = IsDllStruct($src) And $typeOfSrc == "Scalar"
 
-    If $bSrcIsArray Then
-        $vectorOfMatSrc = _VectorOfMatCreate()
+    If $typeOfSrc == Default Then
+        $iArrSrc = $src
+    ElseIf $bSrcIsArray Then
+        $vectorSrc = Call("_VectorOf" & $typeOfSrc & "Create")
 
-        $iArrSrcSize = UBound($matSrc)
+        $iArrSrcSize = UBound($src)
         For $i = 0 To $iArrSrcSize - 1
-            _VectorOfMatPush($vectorOfMatSrc, $matSrc[$i])
+            Call("_VectorOf" & $typeOfSrc & "Push", $vectorSrc, $src[$i])
         Next
 
-        $iArrSrc = _cveInputArrayFromVectorOfMat($vectorOfMatSrc)
+        $iArrSrc = Call("_cveInputArrayFromVectorOf" & $typeOfSrc, $vectorSrc)
     Else
-        $iArrSrc = _cveInputArrayFromMat($matSrc)
+        If $bSrcCreate Then
+            $src = Call("_cve" & $typeOfSrc & "Create", $src)
+        EndIf
+        $iArrSrc = Call("_cveInputArrayFrom" & $typeOfSrc, $src)
     EndIf
 
-    Local $oArrDst, $vectorOfMatDst, $iArrDstSize
-    Local $bDstIsArray = VarGetType($matDst) == "Array"
+    Local $oArrDst, $vectorDst, $iArrDstSize
+    Local $bDstIsArray = IsArray($dst)
+    Local $bDstCreate = IsDllStruct($dst) And $typeOfDst == "Scalar"
 
-    If $bDstIsArray Then
-        $vectorOfMatDst = _VectorOfMatCreate()
+    If $typeOfDst == Default Then
+        $oArrDst = $dst
+    ElseIf $bDstIsArray Then
+        $vectorDst = Call("_VectorOf" & $typeOfDst & "Create")
 
-        $iArrDstSize = UBound($matDst)
+        $iArrDstSize = UBound($dst)
         For $i = 0 To $iArrDstSize - 1
-            _VectorOfMatPush($vectorOfMatDst, $matDst[$i])
+            Call("_VectorOf" & $typeOfDst & "Push", $vectorDst, $dst[$i])
         Next
 
-        $oArrDst = _cveOutputArrayFromVectorOfMat($vectorOfMatDst)
+        $oArrDst = Call("_cveOutputArrayFromVectorOf" & $typeOfDst, $vectorDst)
     Else
-        $oArrDst = _cveOutputArrayFromMat($matDst)
+        If $bDstCreate Then
+            $dst = Call("_cve" & $typeOfDst & "Create", $dst)
+        EndIf
+        $oArrDst = Call("_cveOutputArrayFrom" & $typeOfDst, $dst)
     EndIf
 
     _cudaBilateralFilter($iArrSrc, $oArrDst, $kernelSize, $sigmaColor, $sigmaSpatial, $borderMode, $stream)
 
     If $bDstIsArray Then
-        _VectorOfMatRelease($vectorOfMatDst)
+        Call("_VectorOf" & $typeOfDst & "Release", $vectorDst)
     EndIf
 
-    _cveOutputArrayRelease($oArrDst)
+    If $typeOfDst <> Default Then
+        _cveOutputArrayRelease($oArrDst)
+        If $bDstCreate Then
+            Call("_cve" & $typeOfDst & "Release", $dst)
+        EndIf
+    EndIf
 
     If $bSrcIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrc)
+        Call("_VectorOf" & $typeOfSrc & "Release", $vectorSrc)
     EndIf
 
-    _cveInputArrayRelease($iArrSrc)
+    If $typeOfSrc <> Default Then
+        _cveInputArrayRelease($iArrSrc)
+        If $bSrcCreate Then
+            Call("_cve" & $typeOfSrc & "Release", $src)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaBilateralFilterTyped
+
+Func _cudaBilateralFilterMat($src, $dst, $kernelSize, $sigmaColor, $sigmaSpatial, $borderMode, $stream)
+    ; cudaBilateralFilter using cv::Mat instead of _*Array
+    _cudaBilateralFilterTyped("Mat", $src, "Mat", $dst, $kernelSize, $sigmaColor, $sigmaSpatial, $borderMode, $stream)
 EndFunc   ;==>_cudaBilateralFilterMat
 
 Func _cudaCreateHarrisCorner($srcType, $blockSize, $ksize, $k, $borderType, $sharedPtr)
@@ -1237,54 +1630,80 @@ Func _cudaCornernessCriteriaCompute($detector, $src, $dst, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCornernessCriteriaCompute", $sDetectorDllType, $detector, $sSrcDllType, $src, $sDstDllType, $dst, $sStreamDllType, $stream), "cudaCornernessCriteriaCompute", @error)
 EndFunc   ;==>_cudaCornernessCriteriaCompute
 
-Func _cudaCornernessCriteriaComputeMat($detector, $matSrc, $matDst, $stream)
-    ; cudaCornernessCriteriaCompute using cv::Mat instead of _*Array
+Func _cudaCornernessCriteriaComputeTyped($detector, $typeOfSrc, $src, $typeOfDst, $dst, $stream)
 
-    Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
-    Local $bSrcIsArray = VarGetType($matSrc) == "Array"
+    Local $iArrSrc, $vectorSrc, $iArrSrcSize
+    Local $bSrcIsArray = IsArray($src)
+    Local $bSrcCreate = IsDllStruct($src) And $typeOfSrc == "Scalar"
 
-    If $bSrcIsArray Then
-        $vectorOfMatSrc = _VectorOfMatCreate()
+    If $typeOfSrc == Default Then
+        $iArrSrc = $src
+    ElseIf $bSrcIsArray Then
+        $vectorSrc = Call("_VectorOf" & $typeOfSrc & "Create")
 
-        $iArrSrcSize = UBound($matSrc)
+        $iArrSrcSize = UBound($src)
         For $i = 0 To $iArrSrcSize - 1
-            _VectorOfMatPush($vectorOfMatSrc, $matSrc[$i])
+            Call("_VectorOf" & $typeOfSrc & "Push", $vectorSrc, $src[$i])
         Next
 
-        $iArrSrc = _cveInputArrayFromVectorOfMat($vectorOfMatSrc)
+        $iArrSrc = Call("_cveInputArrayFromVectorOf" & $typeOfSrc, $vectorSrc)
     Else
-        $iArrSrc = _cveInputArrayFromMat($matSrc)
+        If $bSrcCreate Then
+            $src = Call("_cve" & $typeOfSrc & "Create", $src)
+        EndIf
+        $iArrSrc = Call("_cveInputArrayFrom" & $typeOfSrc, $src)
     EndIf
 
-    Local $oArrDst, $vectorOfMatDst, $iArrDstSize
-    Local $bDstIsArray = VarGetType($matDst) == "Array"
+    Local $oArrDst, $vectorDst, $iArrDstSize
+    Local $bDstIsArray = IsArray($dst)
+    Local $bDstCreate = IsDllStruct($dst) And $typeOfDst == "Scalar"
 
-    If $bDstIsArray Then
-        $vectorOfMatDst = _VectorOfMatCreate()
+    If $typeOfDst == Default Then
+        $oArrDst = $dst
+    ElseIf $bDstIsArray Then
+        $vectorDst = Call("_VectorOf" & $typeOfDst & "Create")
 
-        $iArrDstSize = UBound($matDst)
+        $iArrDstSize = UBound($dst)
         For $i = 0 To $iArrDstSize - 1
-            _VectorOfMatPush($vectorOfMatDst, $matDst[$i])
+            Call("_VectorOf" & $typeOfDst & "Push", $vectorDst, $dst[$i])
         Next
 
-        $oArrDst = _cveOutputArrayFromVectorOfMat($vectorOfMatDst)
+        $oArrDst = Call("_cveOutputArrayFromVectorOf" & $typeOfDst, $vectorDst)
     Else
-        $oArrDst = _cveOutputArrayFromMat($matDst)
+        If $bDstCreate Then
+            $dst = Call("_cve" & $typeOfDst & "Create", $dst)
+        EndIf
+        $oArrDst = Call("_cveOutputArrayFrom" & $typeOfDst, $dst)
     EndIf
 
     _cudaCornernessCriteriaCompute($detector, $iArrSrc, $oArrDst, $stream)
 
     If $bDstIsArray Then
-        _VectorOfMatRelease($vectorOfMatDst)
+        Call("_VectorOf" & $typeOfDst & "Release", $vectorDst)
     EndIf
 
-    _cveOutputArrayRelease($oArrDst)
+    If $typeOfDst <> Default Then
+        _cveOutputArrayRelease($oArrDst)
+        If $bDstCreate Then
+            Call("_cve" & $typeOfDst & "Release", $dst)
+        EndIf
+    EndIf
 
     If $bSrcIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrc)
+        Call("_VectorOf" & $typeOfSrc & "Release", $vectorSrc)
     EndIf
 
-    _cveInputArrayRelease($iArrSrc)
+    If $typeOfSrc <> Default Then
+        _cveInputArrayRelease($iArrSrc)
+        If $bSrcCreate Then
+            Call("_cve" & $typeOfSrc & "Release", $src)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaCornernessCriteriaComputeTyped
+
+Func _cudaCornernessCriteriaComputeMat($detector, $src, $dst, $stream)
+    ; cudaCornernessCriteriaCompute using cv::Mat instead of _*Array
+    _cudaCornernessCriteriaComputeTyped($detector, "Mat", $src, "Mat", $dst, $stream)
 EndFunc   ;==>_cudaCornernessCriteriaComputeMat
 
 Func _cudaCornernessCriteriaRelease($detector)
@@ -1357,54 +1776,80 @@ Func _cudaCLAHEApply($clahe, $src, $dst, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCLAHEApply", $sClaheDllType, $clahe, $sSrcDllType, $src, $sDstDllType, $dst, $sStreamDllType, $stream), "cudaCLAHEApply", @error)
 EndFunc   ;==>_cudaCLAHEApply
 
-Func _cudaCLAHEApplyMat($clahe, $matSrc, $matDst, $stream)
-    ; cudaCLAHEApply using cv::Mat instead of _*Array
+Func _cudaCLAHEApplyTyped($clahe, $typeOfSrc, $src, $typeOfDst, $dst, $stream)
 
-    Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
-    Local $bSrcIsArray = VarGetType($matSrc) == "Array"
+    Local $iArrSrc, $vectorSrc, $iArrSrcSize
+    Local $bSrcIsArray = IsArray($src)
+    Local $bSrcCreate = IsDllStruct($src) And $typeOfSrc == "Scalar"
 
-    If $bSrcIsArray Then
-        $vectorOfMatSrc = _VectorOfMatCreate()
+    If $typeOfSrc == Default Then
+        $iArrSrc = $src
+    ElseIf $bSrcIsArray Then
+        $vectorSrc = Call("_VectorOf" & $typeOfSrc & "Create")
 
-        $iArrSrcSize = UBound($matSrc)
+        $iArrSrcSize = UBound($src)
         For $i = 0 To $iArrSrcSize - 1
-            _VectorOfMatPush($vectorOfMatSrc, $matSrc[$i])
+            Call("_VectorOf" & $typeOfSrc & "Push", $vectorSrc, $src[$i])
         Next
 
-        $iArrSrc = _cveInputArrayFromVectorOfMat($vectorOfMatSrc)
+        $iArrSrc = Call("_cveInputArrayFromVectorOf" & $typeOfSrc, $vectorSrc)
     Else
-        $iArrSrc = _cveInputArrayFromMat($matSrc)
+        If $bSrcCreate Then
+            $src = Call("_cve" & $typeOfSrc & "Create", $src)
+        EndIf
+        $iArrSrc = Call("_cveInputArrayFrom" & $typeOfSrc, $src)
     EndIf
 
-    Local $oArrDst, $vectorOfMatDst, $iArrDstSize
-    Local $bDstIsArray = VarGetType($matDst) == "Array"
+    Local $oArrDst, $vectorDst, $iArrDstSize
+    Local $bDstIsArray = IsArray($dst)
+    Local $bDstCreate = IsDllStruct($dst) And $typeOfDst == "Scalar"
 
-    If $bDstIsArray Then
-        $vectorOfMatDst = _VectorOfMatCreate()
+    If $typeOfDst == Default Then
+        $oArrDst = $dst
+    ElseIf $bDstIsArray Then
+        $vectorDst = Call("_VectorOf" & $typeOfDst & "Create")
 
-        $iArrDstSize = UBound($matDst)
+        $iArrDstSize = UBound($dst)
         For $i = 0 To $iArrDstSize - 1
-            _VectorOfMatPush($vectorOfMatDst, $matDst[$i])
+            Call("_VectorOf" & $typeOfDst & "Push", $vectorDst, $dst[$i])
         Next
 
-        $oArrDst = _cveOutputArrayFromVectorOfMat($vectorOfMatDst)
+        $oArrDst = Call("_cveOutputArrayFromVectorOf" & $typeOfDst, $vectorDst)
     Else
-        $oArrDst = _cveOutputArrayFromMat($matDst)
+        If $bDstCreate Then
+            $dst = Call("_cve" & $typeOfDst & "Create", $dst)
+        EndIf
+        $oArrDst = Call("_cveOutputArrayFrom" & $typeOfDst, $dst)
     EndIf
 
     _cudaCLAHEApply($clahe, $iArrSrc, $oArrDst, $stream)
 
     If $bDstIsArray Then
-        _VectorOfMatRelease($vectorOfMatDst)
+        Call("_VectorOf" & $typeOfDst & "Release", $vectorDst)
     EndIf
 
-    _cveOutputArrayRelease($oArrDst)
+    If $typeOfDst <> Default Then
+        _cveOutputArrayRelease($oArrDst)
+        If $bDstCreate Then
+            Call("_cve" & $typeOfDst & "Release", $dst)
+        EndIf
+    EndIf
 
     If $bSrcIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrc)
+        Call("_VectorOf" & $typeOfSrc & "Release", $vectorSrc)
     EndIf
 
-    _cveInputArrayRelease($iArrSrc)
+    If $typeOfSrc <> Default Then
+        _cveInputArrayRelease($iArrSrc)
+        If $bSrcCreate Then
+            Call("_cve" & $typeOfSrc & "Release", $src)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaCLAHEApplyTyped
+
+Func _cudaCLAHEApplyMat($clahe, $src, $dst, $stream)
+    ; cudaCLAHEApply using cv::Mat instead of _*Array
+    _cudaCLAHEApplyTyped($clahe, "Mat", $src, "Mat", $dst, $stream)
 EndFunc   ;==>_cudaCLAHEApplyMat
 
 Func _cudaCLAHERelease($clahe)
@@ -1470,54 +1915,80 @@ Func _cudaCannyEdgeDetectorDetect($detector, $src, $edges, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCannyEdgeDetectorDetect", $sDetectorDllType, $detector, $sSrcDllType, $src, $sEdgesDllType, $edges, $sStreamDllType, $stream), "cudaCannyEdgeDetectorDetect", @error)
 EndFunc   ;==>_cudaCannyEdgeDetectorDetect
 
-Func _cudaCannyEdgeDetectorDetectMat($detector, $matSrc, $matEdges, $stream)
-    ; cudaCannyEdgeDetectorDetect using cv::Mat instead of _*Array
+Func _cudaCannyEdgeDetectorDetectTyped($detector, $typeOfSrc, $src, $typeOfEdges, $edges, $stream)
 
-    Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
-    Local $bSrcIsArray = VarGetType($matSrc) == "Array"
+    Local $iArrSrc, $vectorSrc, $iArrSrcSize
+    Local $bSrcIsArray = IsArray($src)
+    Local $bSrcCreate = IsDllStruct($src) And $typeOfSrc == "Scalar"
 
-    If $bSrcIsArray Then
-        $vectorOfMatSrc = _VectorOfMatCreate()
+    If $typeOfSrc == Default Then
+        $iArrSrc = $src
+    ElseIf $bSrcIsArray Then
+        $vectorSrc = Call("_VectorOf" & $typeOfSrc & "Create")
 
-        $iArrSrcSize = UBound($matSrc)
+        $iArrSrcSize = UBound($src)
         For $i = 0 To $iArrSrcSize - 1
-            _VectorOfMatPush($vectorOfMatSrc, $matSrc[$i])
+            Call("_VectorOf" & $typeOfSrc & "Push", $vectorSrc, $src[$i])
         Next
 
-        $iArrSrc = _cveInputArrayFromVectorOfMat($vectorOfMatSrc)
+        $iArrSrc = Call("_cveInputArrayFromVectorOf" & $typeOfSrc, $vectorSrc)
     Else
-        $iArrSrc = _cveInputArrayFromMat($matSrc)
+        If $bSrcCreate Then
+            $src = Call("_cve" & $typeOfSrc & "Create", $src)
+        EndIf
+        $iArrSrc = Call("_cveInputArrayFrom" & $typeOfSrc, $src)
     EndIf
 
-    Local $oArrEdges, $vectorOfMatEdges, $iArrEdgesSize
-    Local $bEdgesIsArray = VarGetType($matEdges) == "Array"
+    Local $oArrEdges, $vectorEdges, $iArrEdgesSize
+    Local $bEdgesIsArray = IsArray($edges)
+    Local $bEdgesCreate = IsDllStruct($edges) And $typeOfEdges == "Scalar"
 
-    If $bEdgesIsArray Then
-        $vectorOfMatEdges = _VectorOfMatCreate()
+    If $typeOfEdges == Default Then
+        $oArrEdges = $edges
+    ElseIf $bEdgesIsArray Then
+        $vectorEdges = Call("_VectorOf" & $typeOfEdges & "Create")
 
-        $iArrEdgesSize = UBound($matEdges)
+        $iArrEdgesSize = UBound($edges)
         For $i = 0 To $iArrEdgesSize - 1
-            _VectorOfMatPush($vectorOfMatEdges, $matEdges[$i])
+            Call("_VectorOf" & $typeOfEdges & "Push", $vectorEdges, $edges[$i])
         Next
 
-        $oArrEdges = _cveOutputArrayFromVectorOfMat($vectorOfMatEdges)
+        $oArrEdges = Call("_cveOutputArrayFromVectorOf" & $typeOfEdges, $vectorEdges)
     Else
-        $oArrEdges = _cveOutputArrayFromMat($matEdges)
+        If $bEdgesCreate Then
+            $edges = Call("_cve" & $typeOfEdges & "Create", $edges)
+        EndIf
+        $oArrEdges = Call("_cveOutputArrayFrom" & $typeOfEdges, $edges)
     EndIf
 
     _cudaCannyEdgeDetectorDetect($detector, $iArrSrc, $oArrEdges, $stream)
 
     If $bEdgesIsArray Then
-        _VectorOfMatRelease($vectorOfMatEdges)
+        Call("_VectorOf" & $typeOfEdges & "Release", $vectorEdges)
     EndIf
 
-    _cveOutputArrayRelease($oArrEdges)
+    If $typeOfEdges <> Default Then
+        _cveOutputArrayRelease($oArrEdges)
+        If $bEdgesCreate Then
+            Call("_cve" & $typeOfEdges & "Release", $edges)
+        EndIf
+    EndIf
 
     If $bSrcIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrc)
+        Call("_VectorOf" & $typeOfSrc & "Release", $vectorSrc)
     EndIf
 
-    _cveInputArrayRelease($iArrSrc)
+    If $typeOfSrc <> Default Then
+        _cveInputArrayRelease($iArrSrc)
+        If $bSrcCreate Then
+            Call("_cve" & $typeOfSrc & "Release", $src)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaCannyEdgeDetectorDetectTyped
+
+Func _cudaCannyEdgeDetectorDetectMat($detector, $src, $edges, $stream)
+    ; cudaCannyEdgeDetectorDetect using cv::Mat instead of _*Array
+    _cudaCannyEdgeDetectorDetectTyped($detector, "Mat", $src, "Mat", $edges, $stream)
 EndFunc   ;==>_cudaCannyEdgeDetectorDetectMat
 
 Func _cudaCannyEdgeDetectorRelease($detector)
@@ -1590,76 +2061,113 @@ Func _cudaCornersDetectorDetect($detector, $image, $corners, $mask, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaCornersDetectorDetect", $sDetectorDllType, $detector, $sImageDllType, $image, $sCornersDllType, $corners, $sMaskDllType, $mask, $sStreamDllType, $stream), "cudaCornersDetectorDetect", @error)
 EndFunc   ;==>_cudaCornersDetectorDetect
 
-Func _cudaCornersDetectorDetectMat($detector, $matImage, $matCorners, $matMask, $stream)
-    ; cudaCornersDetectorDetect using cv::Mat instead of _*Array
+Func _cudaCornersDetectorDetectTyped($detector, $typeOfImage, $image, $typeOfCorners, $corners, $typeOfMask, $mask, $stream)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $oArrCorners, $vectorOfMatCorners, $iArrCornersSize
-    Local $bCornersIsArray = VarGetType($matCorners) == "Array"
+    Local $oArrCorners, $vectorCorners, $iArrCornersSize
+    Local $bCornersIsArray = IsArray($corners)
+    Local $bCornersCreate = IsDllStruct($corners) And $typeOfCorners == "Scalar"
 
-    If $bCornersIsArray Then
-        $vectorOfMatCorners = _VectorOfMatCreate()
+    If $typeOfCorners == Default Then
+        $oArrCorners = $corners
+    ElseIf $bCornersIsArray Then
+        $vectorCorners = Call("_VectorOf" & $typeOfCorners & "Create")
 
-        $iArrCornersSize = UBound($matCorners)
+        $iArrCornersSize = UBound($corners)
         For $i = 0 To $iArrCornersSize - 1
-            _VectorOfMatPush($vectorOfMatCorners, $matCorners[$i])
+            Call("_VectorOf" & $typeOfCorners & "Push", $vectorCorners, $corners[$i])
         Next
 
-        $oArrCorners = _cveOutputArrayFromVectorOfMat($vectorOfMatCorners)
+        $oArrCorners = Call("_cveOutputArrayFromVectorOf" & $typeOfCorners, $vectorCorners)
     Else
-        $oArrCorners = _cveOutputArrayFromMat($matCorners)
+        If $bCornersCreate Then
+            $corners = Call("_cve" & $typeOfCorners & "Create", $corners)
+        EndIf
+        $oArrCorners = Call("_cveOutputArrayFrom" & $typeOfCorners, $corners)
     EndIf
 
-    Local $iArrMask, $vectorOfMatMask, $iArrMaskSize
-    Local $bMaskIsArray = VarGetType($matMask) == "Array"
+    Local $iArrMask, $vectorMask, $iArrMaskSize
+    Local $bMaskIsArray = IsArray($mask)
+    Local $bMaskCreate = IsDllStruct($mask) And $typeOfMask == "Scalar"
 
-    If $bMaskIsArray Then
-        $vectorOfMatMask = _VectorOfMatCreate()
+    If $typeOfMask == Default Then
+        $iArrMask = $mask
+    ElseIf $bMaskIsArray Then
+        $vectorMask = Call("_VectorOf" & $typeOfMask & "Create")
 
-        $iArrMaskSize = UBound($matMask)
+        $iArrMaskSize = UBound($mask)
         For $i = 0 To $iArrMaskSize - 1
-            _VectorOfMatPush($vectorOfMatMask, $matMask[$i])
+            Call("_VectorOf" & $typeOfMask & "Push", $vectorMask, $mask[$i])
         Next
 
-        $iArrMask = _cveInputArrayFromVectorOfMat($vectorOfMatMask)
+        $iArrMask = Call("_cveInputArrayFromVectorOf" & $typeOfMask, $vectorMask)
     Else
-        $iArrMask = _cveInputArrayFromMat($matMask)
+        If $bMaskCreate Then
+            $mask = Call("_cve" & $typeOfMask & "Create", $mask)
+        EndIf
+        $iArrMask = Call("_cveInputArrayFrom" & $typeOfMask, $mask)
     EndIf
 
     _cudaCornersDetectorDetect($detector, $iArrImage, $oArrCorners, $iArrMask, $stream)
 
     If $bMaskIsArray Then
-        _VectorOfMatRelease($vectorOfMatMask)
+        Call("_VectorOf" & $typeOfMask & "Release", $vectorMask)
     EndIf
 
-    _cveInputArrayRelease($iArrMask)
+    If $typeOfMask <> Default Then
+        _cveInputArrayRelease($iArrMask)
+        If $bMaskCreate Then
+            Call("_cve" & $typeOfMask & "Release", $mask)
+        EndIf
+    EndIf
 
     If $bCornersIsArray Then
-        _VectorOfMatRelease($vectorOfMatCorners)
+        Call("_VectorOf" & $typeOfCorners & "Release", $vectorCorners)
     EndIf
 
-    _cveOutputArrayRelease($oArrCorners)
+    If $typeOfCorners <> Default Then
+        _cveOutputArrayRelease($oArrCorners)
+        If $bCornersCreate Then
+            Call("_cve" & $typeOfCorners & "Release", $corners)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaCornersDetectorDetectTyped
+
+Func _cudaCornersDetectorDetectMat($detector, $image, $corners, $mask, $stream)
+    ; cudaCornersDetectorDetect using cv::Mat instead of _*Array
+    _cudaCornersDetectorDetectTyped($detector, "Mat", $image, "Mat", $corners, "Mat", $mask, $stream)
 EndFunc   ;==>_cudaCornersDetectorDetectMat
 
 Func _cudaCornersDetectorRelease($detector)
@@ -1754,76 +2262,113 @@ Func _cudaTemplateMatchingMatch($tm, $image, $templ, $result, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaTemplateMatchingMatch", $sTmDllType, $tm, $sImageDllType, $image, $sTemplDllType, $templ, $sResultDllType, $result, $sStreamDllType, $stream), "cudaTemplateMatchingMatch", @error)
 EndFunc   ;==>_cudaTemplateMatchingMatch
 
-Func _cudaTemplateMatchingMatchMat($tm, $matImage, $matTempl, $matResult, $stream)
-    ; cudaTemplateMatchingMatch using cv::Mat instead of _*Array
+Func _cudaTemplateMatchingMatchTyped($tm, $typeOfImage, $image, $typeOfTempl, $templ, $typeOfResult, $result, $stream)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $iArrTempl, $vectorOfMatTempl, $iArrTemplSize
-    Local $bTemplIsArray = VarGetType($matTempl) == "Array"
+    Local $iArrTempl, $vectorTempl, $iArrTemplSize
+    Local $bTemplIsArray = IsArray($templ)
+    Local $bTemplCreate = IsDllStruct($templ) And $typeOfTempl == "Scalar"
 
-    If $bTemplIsArray Then
-        $vectorOfMatTempl = _VectorOfMatCreate()
+    If $typeOfTempl == Default Then
+        $iArrTempl = $templ
+    ElseIf $bTemplIsArray Then
+        $vectorTempl = Call("_VectorOf" & $typeOfTempl & "Create")
 
-        $iArrTemplSize = UBound($matTempl)
+        $iArrTemplSize = UBound($templ)
         For $i = 0 To $iArrTemplSize - 1
-            _VectorOfMatPush($vectorOfMatTempl, $matTempl[$i])
+            Call("_VectorOf" & $typeOfTempl & "Push", $vectorTempl, $templ[$i])
         Next
 
-        $iArrTempl = _cveInputArrayFromVectorOfMat($vectorOfMatTempl)
+        $iArrTempl = Call("_cveInputArrayFromVectorOf" & $typeOfTempl, $vectorTempl)
     Else
-        $iArrTempl = _cveInputArrayFromMat($matTempl)
+        If $bTemplCreate Then
+            $templ = Call("_cve" & $typeOfTempl & "Create", $templ)
+        EndIf
+        $iArrTempl = Call("_cveInputArrayFrom" & $typeOfTempl, $templ)
     EndIf
 
-    Local $oArrResult, $vectorOfMatResult, $iArrResultSize
-    Local $bResultIsArray = VarGetType($matResult) == "Array"
+    Local $oArrResult, $vectorResult, $iArrResultSize
+    Local $bResultIsArray = IsArray($result)
+    Local $bResultCreate = IsDllStruct($result) And $typeOfResult == "Scalar"
 
-    If $bResultIsArray Then
-        $vectorOfMatResult = _VectorOfMatCreate()
+    If $typeOfResult == Default Then
+        $oArrResult = $result
+    ElseIf $bResultIsArray Then
+        $vectorResult = Call("_VectorOf" & $typeOfResult & "Create")
 
-        $iArrResultSize = UBound($matResult)
+        $iArrResultSize = UBound($result)
         For $i = 0 To $iArrResultSize - 1
-            _VectorOfMatPush($vectorOfMatResult, $matResult[$i])
+            Call("_VectorOf" & $typeOfResult & "Push", $vectorResult, $result[$i])
         Next
 
-        $oArrResult = _cveOutputArrayFromVectorOfMat($vectorOfMatResult)
+        $oArrResult = Call("_cveOutputArrayFromVectorOf" & $typeOfResult, $vectorResult)
     Else
-        $oArrResult = _cveOutputArrayFromMat($matResult)
+        If $bResultCreate Then
+            $result = Call("_cve" & $typeOfResult & "Create", $result)
+        EndIf
+        $oArrResult = Call("_cveOutputArrayFrom" & $typeOfResult, $result)
     EndIf
 
     _cudaTemplateMatchingMatch($tm, $iArrImage, $iArrTempl, $oArrResult, $stream)
 
     If $bResultIsArray Then
-        _VectorOfMatRelease($vectorOfMatResult)
+        Call("_VectorOf" & $typeOfResult & "Release", $vectorResult)
     EndIf
 
-    _cveOutputArrayRelease($oArrResult)
+    If $typeOfResult <> Default Then
+        _cveOutputArrayRelease($oArrResult)
+        If $bResultCreate Then
+            Call("_cve" & $typeOfResult & "Release", $result)
+        EndIf
+    EndIf
 
     If $bTemplIsArray Then
-        _VectorOfMatRelease($vectorOfMatTempl)
+        Call("_VectorOf" & $typeOfTempl & "Release", $vectorTempl)
     EndIf
 
-    _cveInputArrayRelease($iArrTempl)
+    If $typeOfTempl <> Default Then
+        _cveInputArrayRelease($iArrTempl)
+        If $bTemplCreate Then
+            Call("_cve" & $typeOfTempl & "Release", $templ)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaTemplateMatchingMatchTyped
+
+Func _cudaTemplateMatchingMatchMat($tm, $image, $templ, $result, $stream)
+    ; cudaTemplateMatchingMatch using cv::Mat instead of _*Array
+    _cudaTemplateMatchingMatchTyped($tm, "Mat", $image, "Mat", $templ, "Mat", $result, $stream)
 EndFunc   ;==>_cudaTemplateMatchingMatchMat
 
 Func _cudaHoughLinesDetectorCreate($rho, $theta, $threshold, $doSort, $maxLines, $sharedPtr)
@@ -1874,54 +2419,80 @@ Func _cudaHoughLinesDetectorDetect($detector, $src, $lines, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughLinesDetectorDetect", $sDetectorDllType, $detector, $sSrcDllType, $src, $sLinesDllType, $lines, $sStreamDllType, $stream), "cudaHoughLinesDetectorDetect", @error)
 EndFunc   ;==>_cudaHoughLinesDetectorDetect
 
-Func _cudaHoughLinesDetectorDetectMat($detector, $matSrc, $matLines, $stream)
-    ; cudaHoughLinesDetectorDetect using cv::Mat instead of _*Array
+Func _cudaHoughLinesDetectorDetectTyped($detector, $typeOfSrc, $src, $typeOfLines, $lines, $stream)
 
-    Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
-    Local $bSrcIsArray = VarGetType($matSrc) == "Array"
+    Local $iArrSrc, $vectorSrc, $iArrSrcSize
+    Local $bSrcIsArray = IsArray($src)
+    Local $bSrcCreate = IsDllStruct($src) And $typeOfSrc == "Scalar"
 
-    If $bSrcIsArray Then
-        $vectorOfMatSrc = _VectorOfMatCreate()
+    If $typeOfSrc == Default Then
+        $iArrSrc = $src
+    ElseIf $bSrcIsArray Then
+        $vectorSrc = Call("_VectorOf" & $typeOfSrc & "Create")
 
-        $iArrSrcSize = UBound($matSrc)
+        $iArrSrcSize = UBound($src)
         For $i = 0 To $iArrSrcSize - 1
-            _VectorOfMatPush($vectorOfMatSrc, $matSrc[$i])
+            Call("_VectorOf" & $typeOfSrc & "Push", $vectorSrc, $src[$i])
         Next
 
-        $iArrSrc = _cveInputArrayFromVectorOfMat($vectorOfMatSrc)
+        $iArrSrc = Call("_cveInputArrayFromVectorOf" & $typeOfSrc, $vectorSrc)
     Else
-        $iArrSrc = _cveInputArrayFromMat($matSrc)
+        If $bSrcCreate Then
+            $src = Call("_cve" & $typeOfSrc & "Create", $src)
+        EndIf
+        $iArrSrc = Call("_cveInputArrayFrom" & $typeOfSrc, $src)
     EndIf
 
-    Local $oArrLines, $vectorOfMatLines, $iArrLinesSize
-    Local $bLinesIsArray = VarGetType($matLines) == "Array"
+    Local $oArrLines, $vectorLines, $iArrLinesSize
+    Local $bLinesIsArray = IsArray($lines)
+    Local $bLinesCreate = IsDllStruct($lines) And $typeOfLines == "Scalar"
 
-    If $bLinesIsArray Then
-        $vectorOfMatLines = _VectorOfMatCreate()
+    If $typeOfLines == Default Then
+        $oArrLines = $lines
+    ElseIf $bLinesIsArray Then
+        $vectorLines = Call("_VectorOf" & $typeOfLines & "Create")
 
-        $iArrLinesSize = UBound($matLines)
+        $iArrLinesSize = UBound($lines)
         For $i = 0 To $iArrLinesSize - 1
-            _VectorOfMatPush($vectorOfMatLines, $matLines[$i])
+            Call("_VectorOf" & $typeOfLines & "Push", $vectorLines, $lines[$i])
         Next
 
-        $oArrLines = _cveOutputArrayFromVectorOfMat($vectorOfMatLines)
+        $oArrLines = Call("_cveOutputArrayFromVectorOf" & $typeOfLines, $vectorLines)
     Else
-        $oArrLines = _cveOutputArrayFromMat($matLines)
+        If $bLinesCreate Then
+            $lines = Call("_cve" & $typeOfLines & "Create", $lines)
+        EndIf
+        $oArrLines = Call("_cveOutputArrayFrom" & $typeOfLines, $lines)
     EndIf
 
     _cudaHoughLinesDetectorDetect($detector, $iArrSrc, $oArrLines, $stream)
 
     If $bLinesIsArray Then
-        _VectorOfMatRelease($vectorOfMatLines)
+        Call("_VectorOf" & $typeOfLines & "Release", $vectorLines)
     EndIf
 
-    _cveOutputArrayRelease($oArrLines)
+    If $typeOfLines <> Default Then
+        _cveOutputArrayRelease($oArrLines)
+        If $bLinesCreate Then
+            Call("_cve" & $typeOfLines & "Release", $lines)
+        EndIf
+    EndIf
 
     If $bSrcIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrc)
+        Call("_VectorOf" & $typeOfSrc & "Release", $vectorSrc)
     EndIf
 
-    _cveInputArrayRelease($iArrSrc)
+    If $typeOfSrc <> Default Then
+        _cveInputArrayRelease($iArrSrc)
+        If $bSrcCreate Then
+            Call("_cve" & $typeOfSrc & "Release", $src)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaHoughLinesDetectorDetectTyped
+
+Func _cudaHoughLinesDetectorDetectMat($detector, $src, $lines, $stream)
+    ; cudaHoughLinesDetectorDetect using cv::Mat instead of _*Array
+    _cudaHoughLinesDetectorDetectTyped($detector, "Mat", $src, "Mat", $lines, $stream)
 EndFunc   ;==>_cudaHoughLinesDetectorDetectMat
 
 Func _cudaHoughLinesDetectorRelease($detector)
@@ -1987,54 +2558,80 @@ Func _cudaHoughSegmentDetectorDetect($detector, $src, $lines, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughSegmentDetectorDetect", $sDetectorDllType, $detector, $sSrcDllType, $src, $sLinesDllType, $lines, $sStreamDllType, $stream), "cudaHoughSegmentDetectorDetect", @error)
 EndFunc   ;==>_cudaHoughSegmentDetectorDetect
 
-Func _cudaHoughSegmentDetectorDetectMat($detector, $matSrc, $matLines, $stream)
-    ; cudaHoughSegmentDetectorDetect using cv::Mat instead of _*Array
+Func _cudaHoughSegmentDetectorDetectTyped($detector, $typeOfSrc, $src, $typeOfLines, $lines, $stream)
 
-    Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
-    Local $bSrcIsArray = VarGetType($matSrc) == "Array"
+    Local $iArrSrc, $vectorSrc, $iArrSrcSize
+    Local $bSrcIsArray = IsArray($src)
+    Local $bSrcCreate = IsDllStruct($src) And $typeOfSrc == "Scalar"
 
-    If $bSrcIsArray Then
-        $vectorOfMatSrc = _VectorOfMatCreate()
+    If $typeOfSrc == Default Then
+        $iArrSrc = $src
+    ElseIf $bSrcIsArray Then
+        $vectorSrc = Call("_VectorOf" & $typeOfSrc & "Create")
 
-        $iArrSrcSize = UBound($matSrc)
+        $iArrSrcSize = UBound($src)
         For $i = 0 To $iArrSrcSize - 1
-            _VectorOfMatPush($vectorOfMatSrc, $matSrc[$i])
+            Call("_VectorOf" & $typeOfSrc & "Push", $vectorSrc, $src[$i])
         Next
 
-        $iArrSrc = _cveInputArrayFromVectorOfMat($vectorOfMatSrc)
+        $iArrSrc = Call("_cveInputArrayFromVectorOf" & $typeOfSrc, $vectorSrc)
     Else
-        $iArrSrc = _cveInputArrayFromMat($matSrc)
+        If $bSrcCreate Then
+            $src = Call("_cve" & $typeOfSrc & "Create", $src)
+        EndIf
+        $iArrSrc = Call("_cveInputArrayFrom" & $typeOfSrc, $src)
     EndIf
 
-    Local $oArrLines, $vectorOfMatLines, $iArrLinesSize
-    Local $bLinesIsArray = VarGetType($matLines) == "Array"
+    Local $oArrLines, $vectorLines, $iArrLinesSize
+    Local $bLinesIsArray = IsArray($lines)
+    Local $bLinesCreate = IsDllStruct($lines) And $typeOfLines == "Scalar"
 
-    If $bLinesIsArray Then
-        $vectorOfMatLines = _VectorOfMatCreate()
+    If $typeOfLines == Default Then
+        $oArrLines = $lines
+    ElseIf $bLinesIsArray Then
+        $vectorLines = Call("_VectorOf" & $typeOfLines & "Create")
 
-        $iArrLinesSize = UBound($matLines)
+        $iArrLinesSize = UBound($lines)
         For $i = 0 To $iArrLinesSize - 1
-            _VectorOfMatPush($vectorOfMatLines, $matLines[$i])
+            Call("_VectorOf" & $typeOfLines & "Push", $vectorLines, $lines[$i])
         Next
 
-        $oArrLines = _cveOutputArrayFromVectorOfMat($vectorOfMatLines)
+        $oArrLines = Call("_cveOutputArrayFromVectorOf" & $typeOfLines, $vectorLines)
     Else
-        $oArrLines = _cveOutputArrayFromMat($matLines)
+        If $bLinesCreate Then
+            $lines = Call("_cve" & $typeOfLines & "Create", $lines)
+        EndIf
+        $oArrLines = Call("_cveOutputArrayFrom" & $typeOfLines, $lines)
     EndIf
 
     _cudaHoughSegmentDetectorDetect($detector, $iArrSrc, $oArrLines, $stream)
 
     If $bLinesIsArray Then
-        _VectorOfMatRelease($vectorOfMatLines)
+        Call("_VectorOf" & $typeOfLines & "Release", $vectorLines)
     EndIf
 
-    _cveOutputArrayRelease($oArrLines)
+    If $typeOfLines <> Default Then
+        _cveOutputArrayRelease($oArrLines)
+        If $bLinesCreate Then
+            Call("_cve" & $typeOfLines & "Release", $lines)
+        EndIf
+    EndIf
 
     If $bSrcIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrc)
+        Call("_VectorOf" & $typeOfSrc & "Release", $vectorSrc)
     EndIf
 
-    _cveInputArrayRelease($iArrSrc)
+    If $typeOfSrc <> Default Then
+        _cveInputArrayRelease($iArrSrc)
+        If $bSrcCreate Then
+            Call("_cve" & $typeOfSrc & "Release", $src)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaHoughSegmentDetectorDetectTyped
+
+Func _cudaHoughSegmentDetectorDetectMat($detector, $src, $lines, $stream)
+    ; cudaHoughSegmentDetectorDetect using cv::Mat instead of _*Array
+    _cudaHoughSegmentDetectorDetectTyped($detector, "Mat", $src, "Mat", $lines, $stream)
 EndFunc   ;==>_cudaHoughSegmentDetectorDetectMat
 
 Func _cudaHoughSegmentDetectorRelease($detector)
@@ -2100,54 +2697,80 @@ Func _cudaHoughCirclesDetectorDetect($detector, $src, $circles, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaHoughCirclesDetectorDetect", $sDetectorDllType, $detector, $sSrcDllType, $src, $sCirclesDllType, $circles, $sStreamDllType, $stream), "cudaHoughCirclesDetectorDetect", @error)
 EndFunc   ;==>_cudaHoughCirclesDetectorDetect
 
-Func _cudaHoughCirclesDetectorDetectMat($detector, $matSrc, $matCircles, $stream)
-    ; cudaHoughCirclesDetectorDetect using cv::Mat instead of _*Array
+Func _cudaHoughCirclesDetectorDetectTyped($detector, $typeOfSrc, $src, $typeOfCircles, $circles, $stream)
 
-    Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
-    Local $bSrcIsArray = VarGetType($matSrc) == "Array"
+    Local $iArrSrc, $vectorSrc, $iArrSrcSize
+    Local $bSrcIsArray = IsArray($src)
+    Local $bSrcCreate = IsDllStruct($src) And $typeOfSrc == "Scalar"
 
-    If $bSrcIsArray Then
-        $vectorOfMatSrc = _VectorOfMatCreate()
+    If $typeOfSrc == Default Then
+        $iArrSrc = $src
+    ElseIf $bSrcIsArray Then
+        $vectorSrc = Call("_VectorOf" & $typeOfSrc & "Create")
 
-        $iArrSrcSize = UBound($matSrc)
+        $iArrSrcSize = UBound($src)
         For $i = 0 To $iArrSrcSize - 1
-            _VectorOfMatPush($vectorOfMatSrc, $matSrc[$i])
+            Call("_VectorOf" & $typeOfSrc & "Push", $vectorSrc, $src[$i])
         Next
 
-        $iArrSrc = _cveInputArrayFromVectorOfMat($vectorOfMatSrc)
+        $iArrSrc = Call("_cveInputArrayFromVectorOf" & $typeOfSrc, $vectorSrc)
     Else
-        $iArrSrc = _cveInputArrayFromMat($matSrc)
+        If $bSrcCreate Then
+            $src = Call("_cve" & $typeOfSrc & "Create", $src)
+        EndIf
+        $iArrSrc = Call("_cveInputArrayFrom" & $typeOfSrc, $src)
     EndIf
 
-    Local $oArrCircles, $vectorOfMatCircles, $iArrCirclesSize
-    Local $bCirclesIsArray = VarGetType($matCircles) == "Array"
+    Local $oArrCircles, $vectorCircles, $iArrCirclesSize
+    Local $bCirclesIsArray = IsArray($circles)
+    Local $bCirclesCreate = IsDllStruct($circles) And $typeOfCircles == "Scalar"
 
-    If $bCirclesIsArray Then
-        $vectorOfMatCircles = _VectorOfMatCreate()
+    If $typeOfCircles == Default Then
+        $oArrCircles = $circles
+    ElseIf $bCirclesIsArray Then
+        $vectorCircles = Call("_VectorOf" & $typeOfCircles & "Create")
 
-        $iArrCirclesSize = UBound($matCircles)
+        $iArrCirclesSize = UBound($circles)
         For $i = 0 To $iArrCirclesSize - 1
-            _VectorOfMatPush($vectorOfMatCircles, $matCircles[$i])
+            Call("_VectorOf" & $typeOfCircles & "Push", $vectorCircles, $circles[$i])
         Next
 
-        $oArrCircles = _cveOutputArrayFromVectorOfMat($vectorOfMatCircles)
+        $oArrCircles = Call("_cveOutputArrayFromVectorOf" & $typeOfCircles, $vectorCircles)
     Else
-        $oArrCircles = _cveOutputArrayFromMat($matCircles)
+        If $bCirclesCreate Then
+            $circles = Call("_cve" & $typeOfCircles & "Create", $circles)
+        EndIf
+        $oArrCircles = Call("_cveOutputArrayFrom" & $typeOfCircles, $circles)
     EndIf
 
     _cudaHoughCirclesDetectorDetect($detector, $iArrSrc, $oArrCircles, $stream)
 
     If $bCirclesIsArray Then
-        _VectorOfMatRelease($vectorOfMatCircles)
+        Call("_VectorOf" & $typeOfCircles & "Release", $vectorCircles)
     EndIf
 
-    _cveOutputArrayRelease($oArrCircles)
+    If $typeOfCircles <> Default Then
+        _cveOutputArrayRelease($oArrCircles)
+        If $bCirclesCreate Then
+            Call("_cve" & $typeOfCircles & "Release", $circles)
+        EndIf
+    EndIf
 
     If $bSrcIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrc)
+        Call("_VectorOf" & $typeOfSrc & "Release", $vectorSrc)
     EndIf
 
-    _cveInputArrayRelease($iArrSrc)
+    If $typeOfSrc <> Default Then
+        _cveInputArrayRelease($iArrSrc)
+        If $bSrcCreate Then
+            Call("_cve" & $typeOfSrc & "Release", $src)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaHoughCirclesDetectorDetectTyped
+
+Func _cudaHoughCirclesDetectorDetectMat($detector, $src, $circles, $stream)
+    ; cudaHoughCirclesDetectorDetect using cv::Mat instead of _*Array
+    _cudaHoughCirclesDetectorDetectTyped($detector, "Mat", $src, "Mat", $circles, $stream)
 EndFunc   ;==>_cudaHoughCirclesDetectorDetectMat
 
 Func _cudaHoughCirclesDetectorRelease($detector)
@@ -2192,52 +2815,78 @@ Func _cudaGammaCorrection($src, $dst, $forward, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaGammaCorrection", $sSrcDllType, $src, $sDstDllType, $dst, "boolean", $forward, $sStreamDllType, $stream), "cudaGammaCorrection", @error)
 EndFunc   ;==>_cudaGammaCorrection
 
-Func _cudaGammaCorrectionMat($matSrc, $matDst, $forward, $stream)
-    ; cudaGammaCorrection using cv::Mat instead of _*Array
+Func _cudaGammaCorrectionTyped($typeOfSrc, $src, $typeOfDst, $dst, $forward, $stream)
 
-    Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
-    Local $bSrcIsArray = VarGetType($matSrc) == "Array"
+    Local $iArrSrc, $vectorSrc, $iArrSrcSize
+    Local $bSrcIsArray = IsArray($src)
+    Local $bSrcCreate = IsDllStruct($src) And $typeOfSrc == "Scalar"
 
-    If $bSrcIsArray Then
-        $vectorOfMatSrc = _VectorOfMatCreate()
+    If $typeOfSrc == Default Then
+        $iArrSrc = $src
+    ElseIf $bSrcIsArray Then
+        $vectorSrc = Call("_VectorOf" & $typeOfSrc & "Create")
 
-        $iArrSrcSize = UBound($matSrc)
+        $iArrSrcSize = UBound($src)
         For $i = 0 To $iArrSrcSize - 1
-            _VectorOfMatPush($vectorOfMatSrc, $matSrc[$i])
+            Call("_VectorOf" & $typeOfSrc & "Push", $vectorSrc, $src[$i])
         Next
 
-        $iArrSrc = _cveInputArrayFromVectorOfMat($vectorOfMatSrc)
+        $iArrSrc = Call("_cveInputArrayFromVectorOf" & $typeOfSrc, $vectorSrc)
     Else
-        $iArrSrc = _cveInputArrayFromMat($matSrc)
+        If $bSrcCreate Then
+            $src = Call("_cve" & $typeOfSrc & "Create", $src)
+        EndIf
+        $iArrSrc = Call("_cveInputArrayFrom" & $typeOfSrc, $src)
     EndIf
 
-    Local $oArrDst, $vectorOfMatDst, $iArrDstSize
-    Local $bDstIsArray = VarGetType($matDst) == "Array"
+    Local $oArrDst, $vectorDst, $iArrDstSize
+    Local $bDstIsArray = IsArray($dst)
+    Local $bDstCreate = IsDllStruct($dst) And $typeOfDst == "Scalar"
 
-    If $bDstIsArray Then
-        $vectorOfMatDst = _VectorOfMatCreate()
+    If $typeOfDst == Default Then
+        $oArrDst = $dst
+    ElseIf $bDstIsArray Then
+        $vectorDst = Call("_VectorOf" & $typeOfDst & "Create")
 
-        $iArrDstSize = UBound($matDst)
+        $iArrDstSize = UBound($dst)
         For $i = 0 To $iArrDstSize - 1
-            _VectorOfMatPush($vectorOfMatDst, $matDst[$i])
+            Call("_VectorOf" & $typeOfDst & "Push", $vectorDst, $dst[$i])
         Next
 
-        $oArrDst = _cveOutputArrayFromVectorOfMat($vectorOfMatDst)
+        $oArrDst = Call("_cveOutputArrayFromVectorOf" & $typeOfDst, $vectorDst)
     Else
-        $oArrDst = _cveOutputArrayFromMat($matDst)
+        If $bDstCreate Then
+            $dst = Call("_cve" & $typeOfDst & "Create", $dst)
+        EndIf
+        $oArrDst = Call("_cveOutputArrayFrom" & $typeOfDst, $dst)
     EndIf
 
     _cudaGammaCorrection($iArrSrc, $oArrDst, $forward, $stream)
 
     If $bDstIsArray Then
-        _VectorOfMatRelease($vectorOfMatDst)
+        Call("_VectorOf" & $typeOfDst & "Release", $vectorDst)
     EndIf
 
-    _cveOutputArrayRelease($oArrDst)
+    If $typeOfDst <> Default Then
+        _cveOutputArrayRelease($oArrDst)
+        If $bDstCreate Then
+            Call("_cve" & $typeOfDst & "Release", $dst)
+        EndIf
+    EndIf
 
     If $bSrcIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrc)
+        Call("_VectorOf" & $typeOfSrc & "Release", $vectorSrc)
     EndIf
 
-    _cveInputArrayRelease($iArrSrc)
+    If $typeOfSrc <> Default Then
+        _cveInputArrayRelease($iArrSrc)
+        If $bSrcCreate Then
+            Call("_cve" & $typeOfSrc & "Release", $src)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaGammaCorrectionTyped
+
+Func _cudaGammaCorrectionMat($src, $dst, $forward, $stream)
+    ; cudaGammaCorrection using cv::Mat instead of _*Array
+    _cudaGammaCorrectionTyped("Mat", $src, "Mat", $dst, $forward, $stream)
 EndFunc   ;==>_cudaGammaCorrectionMat

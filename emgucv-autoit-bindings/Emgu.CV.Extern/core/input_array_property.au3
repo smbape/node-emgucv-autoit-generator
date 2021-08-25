@@ -13,32 +13,49 @@ Func _cveInputArrayIsMat($obj)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsMat", $sObjDllType, $obj), "cveInputArrayIsMat", @error)
 EndFunc   ;==>_cveInputArrayIsMat
 
-Func _cveInputArrayIsMatMat($matObj)
-    ; cveInputArrayIsMat using cv::Mat instead of _*Array
+Func _cveInputArrayIsMatTyped($typeOfObj, $obj)
 
-    Local $iArrObj, $vectorOfMatObj, $iArrObjSize
-    Local $bObjIsArray = VarGetType($matObj) == "Array"
+    Local $iArrObj, $vectorObj, $iArrObjSize
+    Local $bObjIsArray = IsArray($obj)
+    Local $bObjCreate = IsDllStruct($obj) And $typeOfObj == "Scalar"
 
-    If $bObjIsArray Then
-        $vectorOfMatObj = _VectorOfMatCreate()
+    If $typeOfObj == Default Then
+        $iArrObj = $obj
+    ElseIf $bObjIsArray Then
+        $vectorObj = Call("_VectorOf" & $typeOfObj & "Create")
 
-        $iArrObjSize = UBound($matObj)
+        $iArrObjSize = UBound($obj)
         For $i = 0 To $iArrObjSize - 1
-            _VectorOfMatPush($vectorOfMatObj, $matObj[$i])
+            Call("_VectorOf" & $typeOfObj & "Push", $vectorObj, $obj[$i])
         Next
 
-        $iArrObj = _cveInputArrayFromVectorOfMat($vectorOfMatObj)
+        $iArrObj = Call("_cveInputArrayFromVectorOf" & $typeOfObj, $vectorObj)
     Else
-        $iArrObj = _cveInputArrayFromMat($matObj)
+        If $bObjCreate Then
+            $obj = Call("_cve" & $typeOfObj & "Create", $obj)
+        EndIf
+        $iArrObj = Call("_cveInputArrayFrom" & $typeOfObj, $obj)
     EndIf
 
     Local $retval = _cveInputArrayIsMat($iArrObj)
 
     If $bObjIsArray Then
-        _VectorOfMatRelease($vectorOfMatObj)
+        Call("_VectorOf" & $typeOfObj & "Release", $vectorObj)
     EndIf
 
-    _cveInputArrayRelease($iArrObj)
+    If $typeOfObj <> Default Then
+        _cveInputArrayRelease($iArrObj)
+        If $bObjCreate Then
+            Call("_cve" & $typeOfObj & "Release", $obj)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveInputArrayIsMatTyped
+
+Func _cveInputArrayIsMatMat($obj)
+    ; cveInputArrayIsMat using cv::Mat instead of _*Array
+    Local $retval = _cveInputArrayIsMatTyped("Mat", $obj)
 
     Return $retval
 EndFunc   ;==>_cveInputArrayIsMatMat
@@ -55,32 +72,49 @@ Func _cveInputArrayIsUMat($obj)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsUMat", $sObjDllType, $obj), "cveInputArrayIsUMat", @error)
 EndFunc   ;==>_cveInputArrayIsUMat
 
-Func _cveInputArrayIsUMatMat($matObj)
-    ; cveInputArrayIsUMat using cv::Mat instead of _*Array
+Func _cveInputArrayIsUMatTyped($typeOfObj, $obj)
 
-    Local $iArrObj, $vectorOfMatObj, $iArrObjSize
-    Local $bObjIsArray = VarGetType($matObj) == "Array"
+    Local $iArrObj, $vectorObj, $iArrObjSize
+    Local $bObjIsArray = IsArray($obj)
+    Local $bObjCreate = IsDllStruct($obj) And $typeOfObj == "Scalar"
 
-    If $bObjIsArray Then
-        $vectorOfMatObj = _VectorOfMatCreate()
+    If $typeOfObj == Default Then
+        $iArrObj = $obj
+    ElseIf $bObjIsArray Then
+        $vectorObj = Call("_VectorOf" & $typeOfObj & "Create")
 
-        $iArrObjSize = UBound($matObj)
+        $iArrObjSize = UBound($obj)
         For $i = 0 To $iArrObjSize - 1
-            _VectorOfMatPush($vectorOfMatObj, $matObj[$i])
+            Call("_VectorOf" & $typeOfObj & "Push", $vectorObj, $obj[$i])
         Next
 
-        $iArrObj = _cveInputArrayFromVectorOfMat($vectorOfMatObj)
+        $iArrObj = Call("_cveInputArrayFromVectorOf" & $typeOfObj, $vectorObj)
     Else
-        $iArrObj = _cveInputArrayFromMat($matObj)
+        If $bObjCreate Then
+            $obj = Call("_cve" & $typeOfObj & "Create", $obj)
+        EndIf
+        $iArrObj = Call("_cveInputArrayFrom" & $typeOfObj, $obj)
     EndIf
 
     Local $retval = _cveInputArrayIsUMat($iArrObj)
 
     If $bObjIsArray Then
-        _VectorOfMatRelease($vectorOfMatObj)
+        Call("_VectorOf" & $typeOfObj & "Release", $vectorObj)
     EndIf
 
-    _cveInputArrayRelease($iArrObj)
+    If $typeOfObj <> Default Then
+        _cveInputArrayRelease($iArrObj)
+        If $bObjCreate Then
+            Call("_cve" & $typeOfObj & "Release", $obj)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveInputArrayIsUMatTyped
+
+Func _cveInputArrayIsUMatMat($obj)
+    ; cveInputArrayIsUMat using cv::Mat instead of _*Array
+    Local $retval = _cveInputArrayIsUMatTyped("Mat", $obj)
 
     Return $retval
 EndFunc   ;==>_cveInputArrayIsUMatMat
@@ -97,32 +131,49 @@ Func _cveInputArrayIsMatVector($obj)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsMatVector", $sObjDllType, $obj), "cveInputArrayIsMatVector", @error)
 EndFunc   ;==>_cveInputArrayIsMatVector
 
-Func _cveInputArrayIsMatVectorMat($matObj)
-    ; cveInputArrayIsMatVector using cv::Mat instead of _*Array
+Func _cveInputArrayIsMatVectorTyped($typeOfObj, $obj)
 
-    Local $iArrObj, $vectorOfMatObj, $iArrObjSize
-    Local $bObjIsArray = VarGetType($matObj) == "Array"
+    Local $iArrObj, $vectorObj, $iArrObjSize
+    Local $bObjIsArray = IsArray($obj)
+    Local $bObjCreate = IsDllStruct($obj) And $typeOfObj == "Scalar"
 
-    If $bObjIsArray Then
-        $vectorOfMatObj = _VectorOfMatCreate()
+    If $typeOfObj == Default Then
+        $iArrObj = $obj
+    ElseIf $bObjIsArray Then
+        $vectorObj = Call("_VectorOf" & $typeOfObj & "Create")
 
-        $iArrObjSize = UBound($matObj)
+        $iArrObjSize = UBound($obj)
         For $i = 0 To $iArrObjSize - 1
-            _VectorOfMatPush($vectorOfMatObj, $matObj[$i])
+            Call("_VectorOf" & $typeOfObj & "Push", $vectorObj, $obj[$i])
         Next
 
-        $iArrObj = _cveInputArrayFromVectorOfMat($vectorOfMatObj)
+        $iArrObj = Call("_cveInputArrayFromVectorOf" & $typeOfObj, $vectorObj)
     Else
-        $iArrObj = _cveInputArrayFromMat($matObj)
+        If $bObjCreate Then
+            $obj = Call("_cve" & $typeOfObj & "Create", $obj)
+        EndIf
+        $iArrObj = Call("_cveInputArrayFrom" & $typeOfObj, $obj)
     EndIf
 
     Local $retval = _cveInputArrayIsMatVector($iArrObj)
 
     If $bObjIsArray Then
-        _VectorOfMatRelease($vectorOfMatObj)
+        Call("_VectorOf" & $typeOfObj & "Release", $vectorObj)
     EndIf
 
-    _cveInputArrayRelease($iArrObj)
+    If $typeOfObj <> Default Then
+        _cveInputArrayRelease($iArrObj)
+        If $bObjCreate Then
+            Call("_cve" & $typeOfObj & "Release", $obj)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveInputArrayIsMatVectorTyped
+
+Func _cveInputArrayIsMatVectorMat($obj)
+    ; cveInputArrayIsMatVector using cv::Mat instead of _*Array
+    Local $retval = _cveInputArrayIsMatVectorTyped("Mat", $obj)
 
     Return $retval
 EndFunc   ;==>_cveInputArrayIsMatVectorMat
@@ -139,32 +190,49 @@ Func _cveInputArrayIsUMatVector($obj)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsUMatVector", $sObjDllType, $obj), "cveInputArrayIsUMatVector", @error)
 EndFunc   ;==>_cveInputArrayIsUMatVector
 
-Func _cveInputArrayIsUMatVectorMat($matObj)
-    ; cveInputArrayIsUMatVector using cv::Mat instead of _*Array
+Func _cveInputArrayIsUMatVectorTyped($typeOfObj, $obj)
 
-    Local $iArrObj, $vectorOfMatObj, $iArrObjSize
-    Local $bObjIsArray = VarGetType($matObj) == "Array"
+    Local $iArrObj, $vectorObj, $iArrObjSize
+    Local $bObjIsArray = IsArray($obj)
+    Local $bObjCreate = IsDllStruct($obj) And $typeOfObj == "Scalar"
 
-    If $bObjIsArray Then
-        $vectorOfMatObj = _VectorOfMatCreate()
+    If $typeOfObj == Default Then
+        $iArrObj = $obj
+    ElseIf $bObjIsArray Then
+        $vectorObj = Call("_VectorOf" & $typeOfObj & "Create")
 
-        $iArrObjSize = UBound($matObj)
+        $iArrObjSize = UBound($obj)
         For $i = 0 To $iArrObjSize - 1
-            _VectorOfMatPush($vectorOfMatObj, $matObj[$i])
+            Call("_VectorOf" & $typeOfObj & "Push", $vectorObj, $obj[$i])
         Next
 
-        $iArrObj = _cveInputArrayFromVectorOfMat($vectorOfMatObj)
+        $iArrObj = Call("_cveInputArrayFromVectorOf" & $typeOfObj, $vectorObj)
     Else
-        $iArrObj = _cveInputArrayFromMat($matObj)
+        If $bObjCreate Then
+            $obj = Call("_cve" & $typeOfObj & "Create", $obj)
+        EndIf
+        $iArrObj = Call("_cveInputArrayFrom" & $typeOfObj, $obj)
     EndIf
 
     Local $retval = _cveInputArrayIsUMatVector($iArrObj)
 
     If $bObjIsArray Then
-        _VectorOfMatRelease($vectorOfMatObj)
+        Call("_VectorOf" & $typeOfObj & "Release", $vectorObj)
     EndIf
 
-    _cveInputArrayRelease($iArrObj)
+    If $typeOfObj <> Default Then
+        _cveInputArrayRelease($iArrObj)
+        If $bObjCreate Then
+            Call("_cve" & $typeOfObj & "Release", $obj)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveInputArrayIsUMatVectorTyped
+
+Func _cveInputArrayIsUMatVectorMat($obj)
+    ; cveInputArrayIsUMatVector using cv::Mat instead of _*Array
+    Local $retval = _cveInputArrayIsUMatVectorTyped("Mat", $obj)
 
     Return $retval
 EndFunc   ;==>_cveInputArrayIsUMatVectorMat
@@ -181,32 +249,49 @@ Func _cveInputArrayIsMatx($obj)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveInputArrayIsMatx", $sObjDllType, $obj), "cveInputArrayIsMatx", @error)
 EndFunc   ;==>_cveInputArrayIsMatx
 
-Func _cveInputArrayIsMatxMat($matObj)
-    ; cveInputArrayIsMatx using cv::Mat instead of _*Array
+Func _cveInputArrayIsMatxTyped($typeOfObj, $obj)
 
-    Local $iArrObj, $vectorOfMatObj, $iArrObjSize
-    Local $bObjIsArray = VarGetType($matObj) == "Array"
+    Local $iArrObj, $vectorObj, $iArrObjSize
+    Local $bObjIsArray = IsArray($obj)
+    Local $bObjCreate = IsDllStruct($obj) And $typeOfObj == "Scalar"
 
-    If $bObjIsArray Then
-        $vectorOfMatObj = _VectorOfMatCreate()
+    If $typeOfObj == Default Then
+        $iArrObj = $obj
+    ElseIf $bObjIsArray Then
+        $vectorObj = Call("_VectorOf" & $typeOfObj & "Create")
 
-        $iArrObjSize = UBound($matObj)
+        $iArrObjSize = UBound($obj)
         For $i = 0 To $iArrObjSize - 1
-            _VectorOfMatPush($vectorOfMatObj, $matObj[$i])
+            Call("_VectorOf" & $typeOfObj & "Push", $vectorObj, $obj[$i])
         Next
 
-        $iArrObj = _cveInputArrayFromVectorOfMat($vectorOfMatObj)
+        $iArrObj = Call("_cveInputArrayFromVectorOf" & $typeOfObj, $vectorObj)
     Else
-        $iArrObj = _cveInputArrayFromMat($matObj)
+        If $bObjCreate Then
+            $obj = Call("_cve" & $typeOfObj & "Create", $obj)
+        EndIf
+        $iArrObj = Call("_cveInputArrayFrom" & $typeOfObj, $obj)
     EndIf
 
     Local $retval = _cveInputArrayIsMatx($iArrObj)
 
     If $bObjIsArray Then
-        _VectorOfMatRelease($vectorOfMatObj)
+        Call("_VectorOf" & $typeOfObj & "Release", $vectorObj)
     EndIf
 
-    _cveInputArrayRelease($iArrObj)
+    If $typeOfObj <> Default Then
+        _cveInputArrayRelease($iArrObj)
+        If $bObjCreate Then
+            Call("_cve" & $typeOfObj & "Release", $obj)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveInputArrayIsMatxTyped
+
+Func _cveInputArrayIsMatxMat($obj)
+    ; cveInputArrayIsMatx using cv::Mat instead of _*Array
+    Local $retval = _cveInputArrayIsMatxTyped("Mat", $obj)
 
     Return $retval
 EndFunc   ;==>_cveInputArrayIsMatxMat
@@ -223,32 +308,49 @@ Func _cveInputArrayKind($obj)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveInputArrayKind", $sObjDllType, $obj), "cveInputArrayKind", @error)
 EndFunc   ;==>_cveInputArrayKind
 
-Func _cveInputArrayKindMat($matObj)
-    ; cveInputArrayKind using cv::Mat instead of _*Array
+Func _cveInputArrayKindTyped($typeOfObj, $obj)
 
-    Local $iArrObj, $vectorOfMatObj, $iArrObjSize
-    Local $bObjIsArray = VarGetType($matObj) == "Array"
+    Local $iArrObj, $vectorObj, $iArrObjSize
+    Local $bObjIsArray = IsArray($obj)
+    Local $bObjCreate = IsDllStruct($obj) And $typeOfObj == "Scalar"
 
-    If $bObjIsArray Then
-        $vectorOfMatObj = _VectorOfMatCreate()
+    If $typeOfObj == Default Then
+        $iArrObj = $obj
+    ElseIf $bObjIsArray Then
+        $vectorObj = Call("_VectorOf" & $typeOfObj & "Create")
 
-        $iArrObjSize = UBound($matObj)
+        $iArrObjSize = UBound($obj)
         For $i = 0 To $iArrObjSize - 1
-            _VectorOfMatPush($vectorOfMatObj, $matObj[$i])
+            Call("_VectorOf" & $typeOfObj & "Push", $vectorObj, $obj[$i])
         Next
 
-        $iArrObj = _cveInputArrayFromVectorOfMat($vectorOfMatObj)
+        $iArrObj = Call("_cveInputArrayFromVectorOf" & $typeOfObj, $vectorObj)
     Else
-        $iArrObj = _cveInputArrayFromMat($matObj)
+        If $bObjCreate Then
+            $obj = Call("_cve" & $typeOfObj & "Create", $obj)
+        EndIf
+        $iArrObj = Call("_cveInputArrayFrom" & $typeOfObj, $obj)
     EndIf
 
     Local $retval = _cveInputArrayKind($iArrObj)
 
     If $bObjIsArray Then
-        _VectorOfMatRelease($vectorOfMatObj)
+        Call("_VectorOf" & $typeOfObj & "Release", $vectorObj)
     EndIf
 
-    _cveInputArrayRelease($iArrObj)
+    If $typeOfObj <> Default Then
+        _cveInputArrayRelease($iArrObj)
+        If $bObjCreate Then
+            Call("_cve" & $typeOfObj & "Release", $obj)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveInputArrayKindTyped
+
+Func _cveInputArrayKindMat($obj)
+    ; cveInputArrayKind using cv::Mat instead of _*Array
+    Local $retval = _cveInputArrayKindTyped("Mat", $obj)
 
     Return $retval
 EndFunc   ;==>_cveInputArrayKindMat

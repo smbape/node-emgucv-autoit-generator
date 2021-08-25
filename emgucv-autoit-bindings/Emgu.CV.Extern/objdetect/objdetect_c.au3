@@ -5,7 +5,7 @@ Func _cveHOGDescriptorPeopleDetectorCreate($seq)
     ; CVAPI(void) cveHOGDescriptorPeopleDetectorCreate(std::vector<float>* seq);
 
     Local $vecSeq, $iArrSeqSize
-    Local $bSeqIsArray = VarGetType($seq) == "Array"
+    Local $bSeqIsArray = IsArray($seq)
 
     If $bSeqIsArray Then
         $vecSeq = _VectorOfFloatCreate()
@@ -81,7 +81,7 @@ Func _cveHOGSetSVMDetector($descriptor, $vector)
     EndIf
 
     Local $vecVector, $iArrVectorSize
-    Local $bVectorIsArray = VarGetType($vector) == "Array"
+    Local $bVectorIsArray = IsArray($vector)
 
     If $bVectorIsArray Then
         $vecVector = _VectorOfFloatCreate()
@@ -141,7 +141,7 @@ Func _cveHOGDescriptorDetectMultiScale($descriptor, $img, $foundLocations, $weig
     EndIf
 
     Local $vecFoundLocations, $iArrFoundLocationsSize
-    Local $bFoundLocationsIsArray = VarGetType($foundLocations) == "Array"
+    Local $bFoundLocationsIsArray = IsArray($foundLocations)
 
     If $bFoundLocationsIsArray Then
         $vecFoundLocations = _VectorOfRectCreate()
@@ -162,7 +162,7 @@ Func _cveHOGDescriptorDetectMultiScale($descriptor, $img, $foundLocations, $weig
     EndIf
 
     Local $vecWeights, $iArrWeightsSize
-    Local $bWeightsIsArray = VarGetType($weights) == "Array"
+    Local $bWeightsIsArray = IsArray($weights)
 
     If $bWeightsIsArray Then
         $vecWeights = _VectorOfDoubleCreate()
@@ -207,32 +207,47 @@ Func _cveHOGDescriptorDetectMultiScale($descriptor, $img, $foundLocations, $weig
     EndIf
 EndFunc   ;==>_cveHOGDescriptorDetectMultiScale
 
-Func _cveHOGDescriptorDetectMultiScaleMat($descriptor, $matImg, $foundLocations, $weights, $hitThreshold, $winStride, $padding, $scale, $finalThreshold, $useMeanshiftGrouping)
-    ; cveHOGDescriptorDetectMultiScale using cv::Mat instead of _*Array
+Func _cveHOGDescriptorDetectMultiScaleTyped($descriptor, $typeOfImg, $img, $foundLocations, $weights, $hitThreshold, $winStride, $padding, $scale, $finalThreshold, $useMeanshiftGrouping)
 
-    Local $iArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $iArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $iArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $iArrImg = _cveInputArrayFromVectorOfMat($vectorOfMatImg)
+        $iArrImg = Call("_cveInputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $iArrImg = _cveInputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $iArrImg = Call("_cveInputArrayFrom" & $typeOfImg, $img)
     EndIf
 
     _cveHOGDescriptorDetectMultiScale($descriptor, $iArrImg, $foundLocations, $weights, $hitThreshold, $winStride, $padding, $scale, $finalThreshold, $useMeanshiftGrouping)
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveInputArrayRelease($iArrImg)
+    If $typeOfImg <> Default Then
+        _cveInputArrayRelease($iArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveHOGDescriptorDetectMultiScaleTyped
+
+Func _cveHOGDescriptorDetectMultiScaleMat($descriptor, $img, $foundLocations, $weights, $hitThreshold, $winStride, $padding, $scale, $finalThreshold, $useMeanshiftGrouping)
+    ; cveHOGDescriptorDetectMultiScale using cv::Mat instead of _*Array
+    _cveHOGDescriptorDetectMultiScaleTyped($descriptor, "Mat", $img, $foundLocations, $weights, $hitThreshold, $winStride, $padding, $scale, $finalThreshold, $useMeanshiftGrouping)
 EndFunc   ;==>_cveHOGDescriptorDetectMultiScaleMat
 
 Func _cveHOGDescriptorCompute($descriptor, $img, $descriptors, $winStride, $padding, $locations)
@@ -253,7 +268,7 @@ Func _cveHOGDescriptorCompute($descriptor, $img, $descriptors, $winStride, $padd
     EndIf
 
     Local $vecDescriptors, $iArrDescriptorsSize
-    Local $bDescriptorsIsArray = VarGetType($descriptors) == "Array"
+    Local $bDescriptorsIsArray = IsArray($descriptors)
 
     If $bDescriptorsIsArray Then
         $vecDescriptors = _VectorOfFloatCreate()
@@ -288,7 +303,7 @@ Func _cveHOGDescriptorCompute($descriptor, $img, $descriptors, $winStride, $padd
     EndIf
 
     Local $vecLocations, $iArrLocationsSize
-    Local $bLocationsIsArray = VarGetType($locations) == "Array"
+    Local $bLocationsIsArray = IsArray($locations)
 
     If $bLocationsIsArray Then
         $vecLocations = _VectorOfPointCreate()
@@ -319,32 +334,47 @@ Func _cveHOGDescriptorCompute($descriptor, $img, $descriptors, $winStride, $padd
     EndIf
 EndFunc   ;==>_cveHOGDescriptorCompute
 
-Func _cveHOGDescriptorComputeMat($descriptor, $matImg, $descriptors, $winStride, $padding, $locations)
-    ; cveHOGDescriptorCompute using cv::Mat instead of _*Array
+Func _cveHOGDescriptorComputeTyped($descriptor, $typeOfImg, $img, $descriptors, $winStride, $padding, $locations)
 
-    Local $iArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $iArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $iArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $iArrImg = _cveInputArrayFromVectorOfMat($vectorOfMatImg)
+        $iArrImg = Call("_cveInputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $iArrImg = _cveInputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $iArrImg = Call("_cveInputArrayFrom" & $typeOfImg, $img)
     EndIf
 
     _cveHOGDescriptorCompute($descriptor, $iArrImg, $descriptors, $winStride, $padding, $locations)
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveInputArrayRelease($iArrImg)
+    If $typeOfImg <> Default Then
+        _cveInputArrayRelease($iArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveHOGDescriptorComputeTyped
+
+Func _cveHOGDescriptorComputeMat($descriptor, $img, $descriptors, $winStride, $padding, $locations)
+    ; cveHOGDescriptorCompute using cv::Mat instead of _*Array
+    _cveHOGDescriptorComputeTyped($descriptor, "Mat", $img, $descriptors, $winStride, $padding, $locations)
 EndFunc   ;==>_cveHOGDescriptorComputeMat
 
 Func _cveHOGDescriptorGetDescriptorSize($descriptor)
@@ -367,7 +397,7 @@ EndFunc   ;==>_cveCascadeClassifierCreate
 Func _cveCascadeClassifierCreateFromFile($fileName)
     ; CVAPI(cv::CascadeClassifier*) cveCascadeClassifierCreateFromFile(cv::String* fileName);
 
-    Local $bFileNameIsString = VarGetType($fileName) == "String"
+    Local $bFileNameIsString = IsString($fileName)
     If $bFileNameIsString Then
         $fileName = _cveStringCreateFromStr($fileName)
     EndIf
@@ -440,7 +470,7 @@ Func _cveCascadeClassifierDetectMultiScale($classifier, $image, $objects, $scale
     EndIf
 
     Local $vecObjects, $iArrObjectsSize
-    Local $bObjectsIsArray = VarGetType($objects) == "Array"
+    Local $bObjectsIsArray = IsArray($objects)
 
     If $bObjectsIsArray Then
         $vecObjects = _VectorOfRectCreate()
@@ -481,32 +511,47 @@ Func _cveCascadeClassifierDetectMultiScale($classifier, $image, $objects, $scale
     EndIf
 EndFunc   ;==>_cveCascadeClassifierDetectMultiScale
 
-Func _cveCascadeClassifierDetectMultiScaleMat($classifier, $matImage, $objects, $scaleFactor, $minNeighbors, $flags, $minSize, $maxSize)
-    ; cveCascadeClassifierDetectMultiScale using cv::Mat instead of _*Array
+Func _cveCascadeClassifierDetectMultiScaleTyped($classifier, $typeOfImage, $image, $objects, $scaleFactor, $minNeighbors, $flags, $minSize, $maxSize)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
     _cveCascadeClassifierDetectMultiScale($classifier, $iArrImage, $objects, $scaleFactor, $minNeighbors, $flags, $minSize, $maxSize)
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveCascadeClassifierDetectMultiScaleTyped
+
+Func _cveCascadeClassifierDetectMultiScaleMat($classifier, $image, $objects, $scaleFactor, $minNeighbors, $flags, $minSize, $maxSize)
+    ; cveCascadeClassifierDetectMultiScale using cv::Mat instead of _*Array
+    _cveCascadeClassifierDetectMultiScaleTyped($classifier, "Mat", $image, $objects, $scaleFactor, $minNeighbors, $flags, $minSize, $maxSize)
 EndFunc   ;==>_cveCascadeClassifierDetectMultiScaleMat
 
 Func _cveCascadeClassifierIsOldFormatCascade($classifier)
@@ -545,7 +590,7 @@ Func _cveGroupRectangles1($rectList, $groupThreshold, $eps)
     ; CVAPI(void) cveGroupRectangles1(std::vector<cv::Rect>* rectList, int groupThreshold, double eps);
 
     Local $vecRectList, $iArrRectListSize
-    Local $bRectListIsArray = VarGetType($rectList) == "Array"
+    Local $bRectListIsArray = IsArray($rectList)
 
     If $bRectListIsArray Then
         $vecRectList = _VectorOfRectCreate()
@@ -576,7 +621,7 @@ Func _cveGroupRectangles2($rectList, $weights, $groupThreshold, $eps)
     ; CVAPI(void) cveGroupRectangles2(std::vector<cv::Rect>* rectList, std::vector<int>* weights, int groupThreshold, double eps);
 
     Local $vecRectList, $iArrRectListSize
-    Local $bRectListIsArray = VarGetType($rectList) == "Array"
+    Local $bRectListIsArray = IsArray($rectList)
 
     If $bRectListIsArray Then
         $vecRectList = _VectorOfRectCreate()
@@ -597,7 +642,7 @@ Func _cveGroupRectangles2($rectList, $weights, $groupThreshold, $eps)
     EndIf
 
     Local $vecWeights, $iArrWeightsSize
-    Local $bWeightsIsArray = VarGetType($weights) == "Array"
+    Local $bWeightsIsArray = IsArray($weights)
 
     If $bWeightsIsArray Then
         $vecWeights = _VectorOfIntCreate()
@@ -632,7 +677,7 @@ Func _cveGroupRectangles3($rectList, $groupThreshold, $eps, $weights, $levelWeig
     ; CVAPI(void) cveGroupRectangles3(std::vector<cv::Rect>* rectList, int groupThreshold, double eps, std::vector<int>* weights, std::vector<double>* levelWeights);
 
     Local $vecRectList, $iArrRectListSize
-    Local $bRectListIsArray = VarGetType($rectList) == "Array"
+    Local $bRectListIsArray = IsArray($rectList)
 
     If $bRectListIsArray Then
         $vecRectList = _VectorOfRectCreate()
@@ -653,7 +698,7 @@ Func _cveGroupRectangles3($rectList, $groupThreshold, $eps, $weights, $levelWeig
     EndIf
 
     Local $vecWeights, $iArrWeightsSize
-    Local $bWeightsIsArray = VarGetType($weights) == "Array"
+    Local $bWeightsIsArray = IsArray($weights)
 
     If $bWeightsIsArray Then
         $vecWeights = _VectorOfIntCreate()
@@ -674,7 +719,7 @@ Func _cveGroupRectangles3($rectList, $groupThreshold, $eps, $weights, $levelWeig
     EndIf
 
     Local $vecLevelWeights, $iArrLevelWeightsSize
-    Local $bLevelWeightsIsArray = VarGetType($levelWeights) == "Array"
+    Local $bLevelWeightsIsArray = IsArray($levelWeights)
 
     If $bLevelWeightsIsArray Then
         $vecLevelWeights = _VectorOfDoubleCreate()
@@ -713,7 +758,7 @@ Func _cveGroupRectangles4($rectList, $rejectLevels, $levelWeights, $groupThresho
     ; CVAPI(void) cveGroupRectangles4(std::vector<cv::Rect>* rectList, std::vector<int>* rejectLevels, std::vector<double>* levelWeights, int groupThreshold, double eps);
 
     Local $vecRectList, $iArrRectListSize
-    Local $bRectListIsArray = VarGetType($rectList) == "Array"
+    Local $bRectListIsArray = IsArray($rectList)
 
     If $bRectListIsArray Then
         $vecRectList = _VectorOfRectCreate()
@@ -734,7 +779,7 @@ Func _cveGroupRectangles4($rectList, $rejectLevels, $levelWeights, $groupThresho
     EndIf
 
     Local $vecRejectLevels, $iArrRejectLevelsSize
-    Local $bRejectLevelsIsArray = VarGetType($rejectLevels) == "Array"
+    Local $bRejectLevelsIsArray = IsArray($rejectLevels)
 
     If $bRejectLevelsIsArray Then
         $vecRejectLevels = _VectorOfIntCreate()
@@ -755,7 +800,7 @@ Func _cveGroupRectangles4($rectList, $rejectLevels, $levelWeights, $groupThresho
     EndIf
 
     Local $vecLevelWeights, $iArrLevelWeightsSize
-    Local $bLevelWeightsIsArray = VarGetType($levelWeights) == "Array"
+    Local $bLevelWeightsIsArray = IsArray($levelWeights)
 
     If $bLevelWeightsIsArray Then
         $vecLevelWeights = _VectorOfDoubleCreate()
@@ -794,7 +839,7 @@ Func _cveGroupRectanglesMeanshift($rectList, $foundWeights, $foundScales, $detec
     ; CVAPI(void) cveGroupRectanglesMeanshift(std::vector<cv::Rect>* rectList, std::vector<double>* foundWeights, std::vector<double>* foundScales, double detectThreshold, CvSize* winDetSize);
 
     Local $vecRectList, $iArrRectListSize
-    Local $bRectListIsArray = VarGetType($rectList) == "Array"
+    Local $bRectListIsArray = IsArray($rectList)
 
     If $bRectListIsArray Then
         $vecRectList = _VectorOfRectCreate()
@@ -815,7 +860,7 @@ Func _cveGroupRectanglesMeanshift($rectList, $foundWeights, $foundScales, $detec
     EndIf
 
     Local $vecFoundWeights, $iArrFoundWeightsSize
-    Local $bFoundWeightsIsArray = VarGetType($foundWeights) == "Array"
+    Local $bFoundWeightsIsArray = IsArray($foundWeights)
 
     If $bFoundWeightsIsArray Then
         $vecFoundWeights = _VectorOfDoubleCreate()
@@ -836,7 +881,7 @@ Func _cveGroupRectanglesMeanshift($rectList, $foundWeights, $foundScales, $detec
     EndIf
 
     Local $vecFoundScales, $iArrFoundScalesSize
-    Local $bFoundScalesIsArray = VarGetType($foundScales) == "Array"
+    Local $bFoundScalesIsArray = IsArray($foundScales)
 
     If $bFoundScalesIsArray Then
         $vecFoundScales = _VectorOfDoubleCreate()
@@ -924,54 +969,82 @@ Func _cveQRCodeDetectorDetect($detector, $img, $points)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveQRCodeDetectorDetect", $sDetectorDllType, $detector, $sImgDllType, $img, $sPointsDllType, $points), "cveQRCodeDetectorDetect", @error)
 EndFunc   ;==>_cveQRCodeDetectorDetect
 
-Func _cveQRCodeDetectorDetectMat($detector, $matImg, $matPoints)
-    ; cveQRCodeDetectorDetect using cv::Mat instead of _*Array
+Func _cveQRCodeDetectorDetectTyped($detector, $typeOfImg, $img, $typeOfPoints, $points)
 
-    Local $iArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $iArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $iArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $iArrImg = _cveInputArrayFromVectorOfMat($vectorOfMatImg)
+        $iArrImg = Call("_cveInputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $iArrImg = _cveInputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $iArrImg = Call("_cveInputArrayFrom" & $typeOfImg, $img)
     EndIf
 
-    Local $oArrPoints, $vectorOfMatPoints, $iArrPointsSize
-    Local $bPointsIsArray = VarGetType($matPoints) == "Array"
+    Local $oArrPoints, $vectorPoints, $iArrPointsSize
+    Local $bPointsIsArray = IsArray($points)
+    Local $bPointsCreate = IsDllStruct($points) And $typeOfPoints == "Scalar"
 
-    If $bPointsIsArray Then
-        $vectorOfMatPoints = _VectorOfMatCreate()
+    If $typeOfPoints == Default Then
+        $oArrPoints = $points
+    ElseIf $bPointsIsArray Then
+        $vectorPoints = Call("_VectorOf" & $typeOfPoints & "Create")
 
-        $iArrPointsSize = UBound($matPoints)
+        $iArrPointsSize = UBound($points)
         For $i = 0 To $iArrPointsSize - 1
-            _VectorOfMatPush($vectorOfMatPoints, $matPoints[$i])
+            Call("_VectorOf" & $typeOfPoints & "Push", $vectorPoints, $points[$i])
         Next
 
-        $oArrPoints = _cveOutputArrayFromVectorOfMat($vectorOfMatPoints)
+        $oArrPoints = Call("_cveOutputArrayFromVectorOf" & $typeOfPoints, $vectorPoints)
     Else
-        $oArrPoints = _cveOutputArrayFromMat($matPoints)
+        If $bPointsCreate Then
+            $points = Call("_cve" & $typeOfPoints & "Create", $points)
+        EndIf
+        $oArrPoints = Call("_cveOutputArrayFrom" & $typeOfPoints, $points)
     EndIf
 
     Local $retval = _cveQRCodeDetectorDetect($detector, $iArrImg, $oArrPoints)
 
     If $bPointsIsArray Then
-        _VectorOfMatRelease($vectorOfMatPoints)
+        Call("_VectorOf" & $typeOfPoints & "Release", $vectorPoints)
     EndIf
 
-    _cveOutputArrayRelease($oArrPoints)
+    If $typeOfPoints <> Default Then
+        _cveOutputArrayRelease($oArrPoints)
+        If $bPointsCreate Then
+            Call("_cve" & $typeOfPoints & "Release", $points)
+        EndIf
+    EndIf
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveInputArrayRelease($iArrImg)
+    If $typeOfImg <> Default Then
+        _cveInputArrayRelease($iArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveQRCodeDetectorDetectTyped
+
+Func _cveQRCodeDetectorDetectMat($detector, $img, $points)
+    ; cveQRCodeDetectorDetect using cv::Mat instead of _*Array
+    Local $retval = _cveQRCodeDetectorDetectTyped($detector, "Mat", $img, "Mat", $points)
 
     Return $retval
 EndFunc   ;==>_cveQRCodeDetectorDetectMat
@@ -1002,54 +1075,82 @@ Func _cveQRCodeDetectorDetectMulti($detector, $img, $points)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveQRCodeDetectorDetectMulti", $sDetectorDllType, $detector, $sImgDllType, $img, $sPointsDllType, $points), "cveQRCodeDetectorDetectMulti", @error)
 EndFunc   ;==>_cveQRCodeDetectorDetectMulti
 
-Func _cveQRCodeDetectorDetectMultiMat($detector, $matImg, $matPoints)
-    ; cveQRCodeDetectorDetectMulti using cv::Mat instead of _*Array
+Func _cveQRCodeDetectorDetectMultiTyped($detector, $typeOfImg, $img, $typeOfPoints, $points)
 
-    Local $iArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $iArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $iArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $iArrImg = _cveInputArrayFromVectorOfMat($vectorOfMatImg)
+        $iArrImg = Call("_cveInputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $iArrImg = _cveInputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $iArrImg = Call("_cveInputArrayFrom" & $typeOfImg, $img)
     EndIf
 
-    Local $oArrPoints, $vectorOfMatPoints, $iArrPointsSize
-    Local $bPointsIsArray = VarGetType($matPoints) == "Array"
+    Local $oArrPoints, $vectorPoints, $iArrPointsSize
+    Local $bPointsIsArray = IsArray($points)
+    Local $bPointsCreate = IsDllStruct($points) And $typeOfPoints == "Scalar"
 
-    If $bPointsIsArray Then
-        $vectorOfMatPoints = _VectorOfMatCreate()
+    If $typeOfPoints == Default Then
+        $oArrPoints = $points
+    ElseIf $bPointsIsArray Then
+        $vectorPoints = Call("_VectorOf" & $typeOfPoints & "Create")
 
-        $iArrPointsSize = UBound($matPoints)
+        $iArrPointsSize = UBound($points)
         For $i = 0 To $iArrPointsSize - 1
-            _VectorOfMatPush($vectorOfMatPoints, $matPoints[$i])
+            Call("_VectorOf" & $typeOfPoints & "Push", $vectorPoints, $points[$i])
         Next
 
-        $oArrPoints = _cveOutputArrayFromVectorOfMat($vectorOfMatPoints)
+        $oArrPoints = Call("_cveOutputArrayFromVectorOf" & $typeOfPoints, $vectorPoints)
     Else
-        $oArrPoints = _cveOutputArrayFromMat($matPoints)
+        If $bPointsCreate Then
+            $points = Call("_cve" & $typeOfPoints & "Create", $points)
+        EndIf
+        $oArrPoints = Call("_cveOutputArrayFrom" & $typeOfPoints, $points)
     EndIf
 
     Local $retval = _cveQRCodeDetectorDetectMulti($detector, $iArrImg, $oArrPoints)
 
     If $bPointsIsArray Then
-        _VectorOfMatRelease($vectorOfMatPoints)
+        Call("_VectorOf" & $typeOfPoints & "Release", $vectorPoints)
     EndIf
 
-    _cveOutputArrayRelease($oArrPoints)
+    If $typeOfPoints <> Default Then
+        _cveOutputArrayRelease($oArrPoints)
+        If $bPointsCreate Then
+            Call("_cve" & $typeOfPoints & "Release", $points)
+        EndIf
+    EndIf
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveInputArrayRelease($iArrImg)
+    If $typeOfImg <> Default Then
+        _cveInputArrayRelease($iArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveQRCodeDetectorDetectMultiTyped
+
+Func _cveQRCodeDetectorDetectMultiMat($detector, $img, $points)
+    ; cveQRCodeDetectorDetectMulti using cv::Mat instead of _*Array
+    Local $retval = _cveQRCodeDetectorDetectMultiTyped($detector, "Mat", $img, "Mat", $points)
 
     Return $retval
 EndFunc   ;==>_cveQRCodeDetectorDetectMultiMat
@@ -1078,7 +1179,7 @@ Func _cveQRCodeDetectorDecode($detector, $img, $points, $decodedInfo, $straightQ
         $sPointsDllType = "ptr"
     EndIf
 
-    Local $bDecodedInfoIsString = VarGetType($decodedInfo) == "String"
+    Local $bDecodedInfoIsString = IsString($decodedInfo)
     If $bDecodedInfoIsString Then
         $decodedInfo = _cveStringCreateFromStr($decodedInfo)
     EndIf
@@ -1104,76 +1205,113 @@ Func _cveQRCodeDetectorDecode($detector, $img, $points, $decodedInfo, $straightQ
     EndIf
 EndFunc   ;==>_cveQRCodeDetectorDecode
 
-Func _cveQRCodeDetectorDecodeMat($detector, $matImg, $matPoints, $decodedInfo, $matStraightQrcode)
-    ; cveQRCodeDetectorDecode using cv::Mat instead of _*Array
+Func _cveQRCodeDetectorDecodeTyped($detector, $typeOfImg, $img, $typeOfPoints, $points, $decodedInfo, $typeOfStraightQrcode, $straightQrcode)
 
-    Local $iArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $iArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $iArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $iArrImg = _cveInputArrayFromVectorOfMat($vectorOfMatImg)
+        $iArrImg = Call("_cveInputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $iArrImg = _cveInputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $iArrImg = Call("_cveInputArrayFrom" & $typeOfImg, $img)
     EndIf
 
-    Local $iArrPoints, $vectorOfMatPoints, $iArrPointsSize
-    Local $bPointsIsArray = VarGetType($matPoints) == "Array"
+    Local $iArrPoints, $vectorPoints, $iArrPointsSize
+    Local $bPointsIsArray = IsArray($points)
+    Local $bPointsCreate = IsDllStruct($points) And $typeOfPoints == "Scalar"
 
-    If $bPointsIsArray Then
-        $vectorOfMatPoints = _VectorOfMatCreate()
+    If $typeOfPoints == Default Then
+        $iArrPoints = $points
+    ElseIf $bPointsIsArray Then
+        $vectorPoints = Call("_VectorOf" & $typeOfPoints & "Create")
 
-        $iArrPointsSize = UBound($matPoints)
+        $iArrPointsSize = UBound($points)
         For $i = 0 To $iArrPointsSize - 1
-            _VectorOfMatPush($vectorOfMatPoints, $matPoints[$i])
+            Call("_VectorOf" & $typeOfPoints & "Push", $vectorPoints, $points[$i])
         Next
 
-        $iArrPoints = _cveInputArrayFromVectorOfMat($vectorOfMatPoints)
+        $iArrPoints = Call("_cveInputArrayFromVectorOf" & $typeOfPoints, $vectorPoints)
     Else
-        $iArrPoints = _cveInputArrayFromMat($matPoints)
+        If $bPointsCreate Then
+            $points = Call("_cve" & $typeOfPoints & "Create", $points)
+        EndIf
+        $iArrPoints = Call("_cveInputArrayFrom" & $typeOfPoints, $points)
     EndIf
 
-    Local $oArrStraightQrcode, $vectorOfMatStraightQrcode, $iArrStraightQrcodeSize
-    Local $bStraightQrcodeIsArray = VarGetType($matStraightQrcode) == "Array"
+    Local $oArrStraightQrcode, $vectorStraightQrcode, $iArrStraightQrcodeSize
+    Local $bStraightQrcodeIsArray = IsArray($straightQrcode)
+    Local $bStraightQrcodeCreate = IsDllStruct($straightQrcode) And $typeOfStraightQrcode == "Scalar"
 
-    If $bStraightQrcodeIsArray Then
-        $vectorOfMatStraightQrcode = _VectorOfMatCreate()
+    If $typeOfStraightQrcode == Default Then
+        $oArrStraightQrcode = $straightQrcode
+    ElseIf $bStraightQrcodeIsArray Then
+        $vectorStraightQrcode = Call("_VectorOf" & $typeOfStraightQrcode & "Create")
 
-        $iArrStraightQrcodeSize = UBound($matStraightQrcode)
+        $iArrStraightQrcodeSize = UBound($straightQrcode)
         For $i = 0 To $iArrStraightQrcodeSize - 1
-            _VectorOfMatPush($vectorOfMatStraightQrcode, $matStraightQrcode[$i])
+            Call("_VectorOf" & $typeOfStraightQrcode & "Push", $vectorStraightQrcode, $straightQrcode[$i])
         Next
 
-        $oArrStraightQrcode = _cveOutputArrayFromVectorOfMat($vectorOfMatStraightQrcode)
+        $oArrStraightQrcode = Call("_cveOutputArrayFromVectorOf" & $typeOfStraightQrcode, $vectorStraightQrcode)
     Else
-        $oArrStraightQrcode = _cveOutputArrayFromMat($matStraightQrcode)
+        If $bStraightQrcodeCreate Then
+            $straightQrcode = Call("_cve" & $typeOfStraightQrcode & "Create", $straightQrcode)
+        EndIf
+        $oArrStraightQrcode = Call("_cveOutputArrayFrom" & $typeOfStraightQrcode, $straightQrcode)
     EndIf
 
     _cveQRCodeDetectorDecode($detector, $iArrImg, $iArrPoints, $decodedInfo, $oArrStraightQrcode)
 
     If $bStraightQrcodeIsArray Then
-        _VectorOfMatRelease($vectorOfMatStraightQrcode)
+        Call("_VectorOf" & $typeOfStraightQrcode & "Release", $vectorStraightQrcode)
     EndIf
 
-    _cveOutputArrayRelease($oArrStraightQrcode)
+    If $typeOfStraightQrcode <> Default Then
+        _cveOutputArrayRelease($oArrStraightQrcode)
+        If $bStraightQrcodeCreate Then
+            Call("_cve" & $typeOfStraightQrcode & "Release", $straightQrcode)
+        EndIf
+    EndIf
 
     If $bPointsIsArray Then
-        _VectorOfMatRelease($vectorOfMatPoints)
+        Call("_VectorOf" & $typeOfPoints & "Release", $vectorPoints)
     EndIf
 
-    _cveInputArrayRelease($iArrPoints)
+    If $typeOfPoints <> Default Then
+        _cveInputArrayRelease($iArrPoints)
+        If $bPointsCreate Then
+            Call("_cve" & $typeOfPoints & "Release", $points)
+        EndIf
+    EndIf
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveInputArrayRelease($iArrImg)
+    If $typeOfImg <> Default Then
+        _cveInputArrayRelease($iArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveQRCodeDetectorDecodeTyped
+
+Func _cveQRCodeDetectorDecodeMat($detector, $img, $points, $decodedInfo, $straightQrcode)
+    ; cveQRCodeDetectorDecode using cv::Mat instead of _*Array
+    _cveQRCodeDetectorDecodeTyped($detector, "Mat", $img, "Mat", $points, $decodedInfo, "Mat", $straightQrcode)
 EndFunc   ;==>_cveQRCodeDetectorDecodeMat
 
 Func _cveQRCodeDetectorDecodeCurved($detector, $img, $points, $decodedInfo, $straightQrcode)
@@ -1200,7 +1338,7 @@ Func _cveQRCodeDetectorDecodeCurved($detector, $img, $points, $decodedInfo, $str
         $sPointsDllType = "ptr"
     EndIf
 
-    Local $bDecodedInfoIsString = VarGetType($decodedInfo) == "String"
+    Local $bDecodedInfoIsString = IsString($decodedInfo)
     If $bDecodedInfoIsString Then
         $decodedInfo = _cveStringCreateFromStr($decodedInfo)
     EndIf
@@ -1226,76 +1364,113 @@ Func _cveQRCodeDetectorDecodeCurved($detector, $img, $points, $decodedInfo, $str
     EndIf
 EndFunc   ;==>_cveQRCodeDetectorDecodeCurved
 
-Func _cveQRCodeDetectorDecodeCurvedMat($detector, $matImg, $matPoints, $decodedInfo, $matStraightQrcode)
-    ; cveQRCodeDetectorDecodeCurved using cv::Mat instead of _*Array
+Func _cveQRCodeDetectorDecodeCurvedTyped($detector, $typeOfImg, $img, $typeOfPoints, $points, $decodedInfo, $typeOfStraightQrcode, $straightQrcode)
 
-    Local $iArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $iArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $iArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $iArrImg = _cveInputArrayFromVectorOfMat($vectorOfMatImg)
+        $iArrImg = Call("_cveInputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $iArrImg = _cveInputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $iArrImg = Call("_cveInputArrayFrom" & $typeOfImg, $img)
     EndIf
 
-    Local $iArrPoints, $vectorOfMatPoints, $iArrPointsSize
-    Local $bPointsIsArray = VarGetType($matPoints) == "Array"
+    Local $iArrPoints, $vectorPoints, $iArrPointsSize
+    Local $bPointsIsArray = IsArray($points)
+    Local $bPointsCreate = IsDllStruct($points) And $typeOfPoints == "Scalar"
 
-    If $bPointsIsArray Then
-        $vectorOfMatPoints = _VectorOfMatCreate()
+    If $typeOfPoints == Default Then
+        $iArrPoints = $points
+    ElseIf $bPointsIsArray Then
+        $vectorPoints = Call("_VectorOf" & $typeOfPoints & "Create")
 
-        $iArrPointsSize = UBound($matPoints)
+        $iArrPointsSize = UBound($points)
         For $i = 0 To $iArrPointsSize - 1
-            _VectorOfMatPush($vectorOfMatPoints, $matPoints[$i])
+            Call("_VectorOf" & $typeOfPoints & "Push", $vectorPoints, $points[$i])
         Next
 
-        $iArrPoints = _cveInputArrayFromVectorOfMat($vectorOfMatPoints)
+        $iArrPoints = Call("_cveInputArrayFromVectorOf" & $typeOfPoints, $vectorPoints)
     Else
-        $iArrPoints = _cveInputArrayFromMat($matPoints)
+        If $bPointsCreate Then
+            $points = Call("_cve" & $typeOfPoints & "Create", $points)
+        EndIf
+        $iArrPoints = Call("_cveInputArrayFrom" & $typeOfPoints, $points)
     EndIf
 
-    Local $oArrStraightQrcode, $vectorOfMatStraightQrcode, $iArrStraightQrcodeSize
-    Local $bStraightQrcodeIsArray = VarGetType($matStraightQrcode) == "Array"
+    Local $oArrStraightQrcode, $vectorStraightQrcode, $iArrStraightQrcodeSize
+    Local $bStraightQrcodeIsArray = IsArray($straightQrcode)
+    Local $bStraightQrcodeCreate = IsDllStruct($straightQrcode) And $typeOfStraightQrcode == "Scalar"
 
-    If $bStraightQrcodeIsArray Then
-        $vectorOfMatStraightQrcode = _VectorOfMatCreate()
+    If $typeOfStraightQrcode == Default Then
+        $oArrStraightQrcode = $straightQrcode
+    ElseIf $bStraightQrcodeIsArray Then
+        $vectorStraightQrcode = Call("_VectorOf" & $typeOfStraightQrcode & "Create")
 
-        $iArrStraightQrcodeSize = UBound($matStraightQrcode)
+        $iArrStraightQrcodeSize = UBound($straightQrcode)
         For $i = 0 To $iArrStraightQrcodeSize - 1
-            _VectorOfMatPush($vectorOfMatStraightQrcode, $matStraightQrcode[$i])
+            Call("_VectorOf" & $typeOfStraightQrcode & "Push", $vectorStraightQrcode, $straightQrcode[$i])
         Next
 
-        $oArrStraightQrcode = _cveOutputArrayFromVectorOfMat($vectorOfMatStraightQrcode)
+        $oArrStraightQrcode = Call("_cveOutputArrayFromVectorOf" & $typeOfStraightQrcode, $vectorStraightQrcode)
     Else
-        $oArrStraightQrcode = _cveOutputArrayFromMat($matStraightQrcode)
+        If $bStraightQrcodeCreate Then
+            $straightQrcode = Call("_cve" & $typeOfStraightQrcode & "Create", $straightQrcode)
+        EndIf
+        $oArrStraightQrcode = Call("_cveOutputArrayFrom" & $typeOfStraightQrcode, $straightQrcode)
     EndIf
 
     _cveQRCodeDetectorDecodeCurved($detector, $iArrImg, $iArrPoints, $decodedInfo, $oArrStraightQrcode)
 
     If $bStraightQrcodeIsArray Then
-        _VectorOfMatRelease($vectorOfMatStraightQrcode)
+        Call("_VectorOf" & $typeOfStraightQrcode & "Release", $vectorStraightQrcode)
     EndIf
 
-    _cveOutputArrayRelease($oArrStraightQrcode)
+    If $typeOfStraightQrcode <> Default Then
+        _cveOutputArrayRelease($oArrStraightQrcode)
+        If $bStraightQrcodeCreate Then
+            Call("_cve" & $typeOfStraightQrcode & "Release", $straightQrcode)
+        EndIf
+    EndIf
 
     If $bPointsIsArray Then
-        _VectorOfMatRelease($vectorOfMatPoints)
+        Call("_VectorOf" & $typeOfPoints & "Release", $vectorPoints)
     EndIf
 
-    _cveInputArrayRelease($iArrPoints)
+    If $typeOfPoints <> Default Then
+        _cveInputArrayRelease($iArrPoints)
+        If $bPointsCreate Then
+            Call("_cve" & $typeOfPoints & "Release", $points)
+        EndIf
+    EndIf
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveInputArrayRelease($iArrImg)
+    If $typeOfImg <> Default Then
+        _cveInputArrayRelease($iArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveQRCodeDetectorDecodeCurvedTyped
+
+Func _cveQRCodeDetectorDecodeCurvedMat($detector, $img, $points, $decodedInfo, $straightQrcode)
+    ; cveQRCodeDetectorDecodeCurved using cv::Mat instead of _*Array
+    _cveQRCodeDetectorDecodeCurvedTyped($detector, "Mat", $img, "Mat", $points, $decodedInfo, "Mat", $straightQrcode)
 EndFunc   ;==>_cveQRCodeDetectorDecodeCurvedMat
 
 Func _cveQRCodeDetectorDecodeMulti($detector, $img, $points, $decodedInfo, $straightQrcode)
@@ -1338,76 +1513,115 @@ Func _cveQRCodeDetectorDecodeMulti($detector, $img, $points, $decodedInfo, $stra
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "boolean:cdecl", "cveQRCodeDetectorDecodeMulti", $sDetectorDllType, $detector, $sImgDllType, $img, $sPointsDllType, $points, $sDecodedInfoDllType, $decodedInfo, $sStraightQrcodeDllType, $straightQrcode), "cveQRCodeDetectorDecodeMulti", @error)
 EndFunc   ;==>_cveQRCodeDetectorDecodeMulti
 
-Func _cveQRCodeDetectorDecodeMultiMat($detector, $matImg, $matPoints, $decodedInfo, $matStraightQrcode)
-    ; cveQRCodeDetectorDecodeMulti using cv::Mat instead of _*Array
+Func _cveQRCodeDetectorDecodeMultiTyped($detector, $typeOfImg, $img, $typeOfPoints, $points, $decodedInfo, $typeOfStraightQrcode, $straightQrcode)
 
-    Local $iArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $iArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $iArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $iArrImg = _cveInputArrayFromVectorOfMat($vectorOfMatImg)
+        $iArrImg = Call("_cveInputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $iArrImg = _cveInputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $iArrImg = Call("_cveInputArrayFrom" & $typeOfImg, $img)
     EndIf
 
-    Local $iArrPoints, $vectorOfMatPoints, $iArrPointsSize
-    Local $bPointsIsArray = VarGetType($matPoints) == "Array"
+    Local $iArrPoints, $vectorPoints, $iArrPointsSize
+    Local $bPointsIsArray = IsArray($points)
+    Local $bPointsCreate = IsDllStruct($points) And $typeOfPoints == "Scalar"
 
-    If $bPointsIsArray Then
-        $vectorOfMatPoints = _VectorOfMatCreate()
+    If $typeOfPoints == Default Then
+        $iArrPoints = $points
+    ElseIf $bPointsIsArray Then
+        $vectorPoints = Call("_VectorOf" & $typeOfPoints & "Create")
 
-        $iArrPointsSize = UBound($matPoints)
+        $iArrPointsSize = UBound($points)
         For $i = 0 To $iArrPointsSize - 1
-            _VectorOfMatPush($vectorOfMatPoints, $matPoints[$i])
+            Call("_VectorOf" & $typeOfPoints & "Push", $vectorPoints, $points[$i])
         Next
 
-        $iArrPoints = _cveInputArrayFromVectorOfMat($vectorOfMatPoints)
+        $iArrPoints = Call("_cveInputArrayFromVectorOf" & $typeOfPoints, $vectorPoints)
     Else
-        $iArrPoints = _cveInputArrayFromMat($matPoints)
+        If $bPointsCreate Then
+            $points = Call("_cve" & $typeOfPoints & "Create", $points)
+        EndIf
+        $iArrPoints = Call("_cveInputArrayFrom" & $typeOfPoints, $points)
     EndIf
 
-    Local $oArrStraightQrcode, $vectorOfMatStraightQrcode, $iArrStraightQrcodeSize
-    Local $bStraightQrcodeIsArray = VarGetType($matStraightQrcode) == "Array"
+    Local $oArrStraightQrcode, $vectorStraightQrcode, $iArrStraightQrcodeSize
+    Local $bStraightQrcodeIsArray = IsArray($straightQrcode)
+    Local $bStraightQrcodeCreate = IsDllStruct($straightQrcode) And $typeOfStraightQrcode == "Scalar"
 
-    If $bStraightQrcodeIsArray Then
-        $vectorOfMatStraightQrcode = _VectorOfMatCreate()
+    If $typeOfStraightQrcode == Default Then
+        $oArrStraightQrcode = $straightQrcode
+    ElseIf $bStraightQrcodeIsArray Then
+        $vectorStraightQrcode = Call("_VectorOf" & $typeOfStraightQrcode & "Create")
 
-        $iArrStraightQrcodeSize = UBound($matStraightQrcode)
+        $iArrStraightQrcodeSize = UBound($straightQrcode)
         For $i = 0 To $iArrStraightQrcodeSize - 1
-            _VectorOfMatPush($vectorOfMatStraightQrcode, $matStraightQrcode[$i])
+            Call("_VectorOf" & $typeOfStraightQrcode & "Push", $vectorStraightQrcode, $straightQrcode[$i])
         Next
 
-        $oArrStraightQrcode = _cveOutputArrayFromVectorOfMat($vectorOfMatStraightQrcode)
+        $oArrStraightQrcode = Call("_cveOutputArrayFromVectorOf" & $typeOfStraightQrcode, $vectorStraightQrcode)
     Else
-        $oArrStraightQrcode = _cveOutputArrayFromMat($matStraightQrcode)
+        If $bStraightQrcodeCreate Then
+            $straightQrcode = Call("_cve" & $typeOfStraightQrcode & "Create", $straightQrcode)
+        EndIf
+        $oArrStraightQrcode = Call("_cveOutputArrayFrom" & $typeOfStraightQrcode, $straightQrcode)
     EndIf
 
     Local $retval = _cveQRCodeDetectorDecodeMulti($detector, $iArrImg, $iArrPoints, $decodedInfo, $oArrStraightQrcode)
 
     If $bStraightQrcodeIsArray Then
-        _VectorOfMatRelease($vectorOfMatStraightQrcode)
+        Call("_VectorOf" & $typeOfStraightQrcode & "Release", $vectorStraightQrcode)
     EndIf
 
-    _cveOutputArrayRelease($oArrStraightQrcode)
+    If $typeOfStraightQrcode <> Default Then
+        _cveOutputArrayRelease($oArrStraightQrcode)
+        If $bStraightQrcodeCreate Then
+            Call("_cve" & $typeOfStraightQrcode & "Release", $straightQrcode)
+        EndIf
+    EndIf
 
     If $bPointsIsArray Then
-        _VectorOfMatRelease($vectorOfMatPoints)
+        Call("_VectorOf" & $typeOfPoints & "Release", $vectorPoints)
     EndIf
 
-    _cveInputArrayRelease($iArrPoints)
+    If $typeOfPoints <> Default Then
+        _cveInputArrayRelease($iArrPoints)
+        If $bPointsCreate Then
+            Call("_cve" & $typeOfPoints & "Release", $points)
+        EndIf
+    EndIf
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveInputArrayRelease($iArrImg)
+    If $typeOfImg <> Default Then
+        _cveInputArrayRelease($iArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveQRCodeDetectorDecodeMultiTyped
+
+Func _cveQRCodeDetectorDecodeMultiMat($detector, $img, $points, $decodedInfo, $straightQrcode)
+    ; cveQRCodeDetectorDecodeMulti using cv::Mat instead of _*Array
+    Local $retval = _cveQRCodeDetectorDecodeMultiTyped($detector, "Mat", $img, "Mat", $points, $decodedInfo, "Mat", $straightQrcode)
 
     Return $retval
 EndFunc   ;==>_cveQRCodeDetectorDecodeMultiMat

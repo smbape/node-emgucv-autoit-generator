@@ -97,11 +97,7 @@ Func Main()
 
 	;;! [Separate the image in 3 places ( B, G and R )]
 	$brg_planes = _VectorOfMatCreate()
-	Local $iArrSrc = _cveInputArrayFromMat($src)
-	Local $oArrBgrPlanes = _cveOutputArrayFromVectorOfMat($brg_planes)
-	_cveSplit($iArrSrc, $oArrBgrPlanes)
-	_cveOutputArrayRelease($oArrBgrPlanes)
-	_cveInputArrayRelease($iArrSrc)
+	_cveSplitTyped("Mat", $src, "VectorOfMat", $brg_planes)
 	;;! [Separate the image in 3 places ( B, G and R )]
 
 	;;! [Establish the number of bins]

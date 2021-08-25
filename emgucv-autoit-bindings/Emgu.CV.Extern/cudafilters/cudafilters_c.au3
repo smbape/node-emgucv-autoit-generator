@@ -92,32 +92,49 @@ Func _cudaCreateLinearFilter($srcType, $dstType, $kernel, $anchor, $borderMode, 
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateLinearFilter", "int", $srcType, "int", $dstType, $sKernelDllType, $kernel, $sAnchorDllType, $anchor, "int", $borderMode, $sBorderValueDllType, $borderValue, $sSharedPtrDllType, $sharedPtr), "cudaCreateLinearFilter", @error)
 EndFunc   ;==>_cudaCreateLinearFilter
 
-Func _cudaCreateLinearFilterMat($srcType, $dstType, $matKernel, $anchor, $borderMode, $borderValue, $sharedPtr)
-    ; cudaCreateLinearFilter using cv::Mat instead of _*Array
+Func _cudaCreateLinearFilterTyped($srcType, $dstType, $typeOfKernel, $kernel, $anchor, $borderMode, $borderValue, $sharedPtr)
 
-    Local $iArrKernel, $vectorOfMatKernel, $iArrKernelSize
-    Local $bKernelIsArray = VarGetType($matKernel) == "Array"
+    Local $iArrKernel, $vectorKernel, $iArrKernelSize
+    Local $bKernelIsArray = IsArray($kernel)
+    Local $bKernelCreate = IsDllStruct($kernel) And $typeOfKernel == "Scalar"
 
-    If $bKernelIsArray Then
-        $vectorOfMatKernel = _VectorOfMatCreate()
+    If $typeOfKernel == Default Then
+        $iArrKernel = $kernel
+    ElseIf $bKernelIsArray Then
+        $vectorKernel = Call("_VectorOf" & $typeOfKernel & "Create")
 
-        $iArrKernelSize = UBound($matKernel)
+        $iArrKernelSize = UBound($kernel)
         For $i = 0 To $iArrKernelSize - 1
-            _VectorOfMatPush($vectorOfMatKernel, $matKernel[$i])
+            Call("_VectorOf" & $typeOfKernel & "Push", $vectorKernel, $kernel[$i])
         Next
 
-        $iArrKernel = _cveInputArrayFromVectorOfMat($vectorOfMatKernel)
+        $iArrKernel = Call("_cveInputArrayFromVectorOf" & $typeOfKernel, $vectorKernel)
     Else
-        $iArrKernel = _cveInputArrayFromMat($matKernel)
+        If $bKernelCreate Then
+            $kernel = Call("_cve" & $typeOfKernel & "Create", $kernel)
+        EndIf
+        $iArrKernel = Call("_cveInputArrayFrom" & $typeOfKernel, $kernel)
     EndIf
 
     Local $retval = _cudaCreateLinearFilter($srcType, $dstType, $iArrKernel, $anchor, $borderMode, $borderValue, $sharedPtr)
 
     If $bKernelIsArray Then
-        _VectorOfMatRelease($vectorOfMatKernel)
+        Call("_VectorOf" & $typeOfKernel & "Release", $vectorKernel)
     EndIf
 
-    _cveInputArrayRelease($iArrKernel)
+    If $typeOfKernel <> Default Then
+        _cveInputArrayRelease($iArrKernel)
+        If $bKernelCreate Then
+            Call("_cve" & $typeOfKernel & "Release", $kernel)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cudaCreateLinearFilterTyped
+
+Func _cudaCreateLinearFilterMat($srcType, $dstType, $kernel, $anchor, $borderMode, $borderValue, $sharedPtr)
+    ; cudaCreateLinearFilter using cv::Mat instead of _*Array
+    Local $retval = _cudaCreateLinearFilterTyped($srcType, $dstType, "Mat", $kernel, $anchor, $borderMode, $borderValue, $sharedPtr)
 
     Return $retval
 EndFunc   ;==>_cudaCreateLinearFilterMat
@@ -255,32 +272,49 @@ Func _cudaCreateMorphologyFilter($op, $srcType, $kernel, $anchor, $iterations, $
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateMorphologyFilter", "int", $op, "int", $srcType, $sKernelDllType, $kernel, $sAnchorDllType, $anchor, "int", $iterations, $sSharedPtrDllType, $sharedPtr), "cudaCreateMorphologyFilter", @error)
 EndFunc   ;==>_cudaCreateMorphologyFilter
 
-Func _cudaCreateMorphologyFilterMat($op, $srcType, $matKernel, $anchor, $iterations, $sharedPtr)
-    ; cudaCreateMorphologyFilter using cv::Mat instead of _*Array
+Func _cudaCreateMorphologyFilterTyped($op, $srcType, $typeOfKernel, $kernel, $anchor, $iterations, $sharedPtr)
 
-    Local $iArrKernel, $vectorOfMatKernel, $iArrKernelSize
-    Local $bKernelIsArray = VarGetType($matKernel) == "Array"
+    Local $iArrKernel, $vectorKernel, $iArrKernelSize
+    Local $bKernelIsArray = IsArray($kernel)
+    Local $bKernelCreate = IsDllStruct($kernel) And $typeOfKernel == "Scalar"
 
-    If $bKernelIsArray Then
-        $vectorOfMatKernel = _VectorOfMatCreate()
+    If $typeOfKernel == Default Then
+        $iArrKernel = $kernel
+    ElseIf $bKernelIsArray Then
+        $vectorKernel = Call("_VectorOf" & $typeOfKernel & "Create")
 
-        $iArrKernelSize = UBound($matKernel)
+        $iArrKernelSize = UBound($kernel)
         For $i = 0 To $iArrKernelSize - 1
-            _VectorOfMatPush($vectorOfMatKernel, $matKernel[$i])
+            Call("_VectorOf" & $typeOfKernel & "Push", $vectorKernel, $kernel[$i])
         Next
 
-        $iArrKernel = _cveInputArrayFromVectorOfMat($vectorOfMatKernel)
+        $iArrKernel = Call("_cveInputArrayFromVectorOf" & $typeOfKernel, $vectorKernel)
     Else
-        $iArrKernel = _cveInputArrayFromMat($matKernel)
+        If $bKernelCreate Then
+            $kernel = Call("_cve" & $typeOfKernel & "Create", $kernel)
+        EndIf
+        $iArrKernel = Call("_cveInputArrayFrom" & $typeOfKernel, $kernel)
     EndIf
 
     Local $retval = _cudaCreateMorphologyFilter($op, $srcType, $iArrKernel, $anchor, $iterations, $sharedPtr)
 
     If $bKernelIsArray Then
-        _VectorOfMatRelease($vectorOfMatKernel)
+        Call("_VectorOf" & $typeOfKernel & "Release", $vectorKernel)
     EndIf
 
-    _cveInputArrayRelease($iArrKernel)
+    If $typeOfKernel <> Default Then
+        _cveInputArrayRelease($iArrKernel)
+        If $bKernelCreate Then
+            Call("_cve" & $typeOfKernel & "Release", $kernel)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cudaCreateMorphologyFilterTyped
+
+Func _cudaCreateMorphologyFilterMat($op, $srcType, $kernel, $anchor, $iterations, $sharedPtr)
+    ; cudaCreateMorphologyFilter using cv::Mat instead of _*Array
+    Local $retval = _cudaCreateMorphologyFilterTyped($op, $srcType, "Mat", $kernel, $anchor, $iterations, $sharedPtr)
 
     Return $retval
 EndFunc   ;==>_cudaCreateMorphologyFilterMat
@@ -320,54 +354,82 @@ Func _cudaCreateSeparableLinearFilter($srcType, $dstType, $rowKernel, $columnKer
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cudaCreateSeparableLinearFilter", "int", $srcType, "int", $dstType, $sRowKernelDllType, $rowKernel, $sColumnKernelDllType, $columnKernel, $sAnchorDllType, $anchor, "int", $rowBorderMode, "int", $columnBorderMode, $sSharedPtrDllType, $sharedPtr), "cudaCreateSeparableLinearFilter", @error)
 EndFunc   ;==>_cudaCreateSeparableLinearFilter
 
-Func _cudaCreateSeparableLinearFilterMat($srcType, $dstType, $matRowKernel, $matColumnKernel, $anchor, $rowBorderMode, $columnBorderMode, $sharedPtr)
-    ; cudaCreateSeparableLinearFilter using cv::Mat instead of _*Array
+Func _cudaCreateSeparableLinearFilterTyped($srcType, $dstType, $typeOfRowKernel, $rowKernel, $typeOfColumnKernel, $columnKernel, $anchor, $rowBorderMode, $columnBorderMode, $sharedPtr)
 
-    Local $iArrRowKernel, $vectorOfMatRowKernel, $iArrRowKernelSize
-    Local $bRowKernelIsArray = VarGetType($matRowKernel) == "Array"
+    Local $iArrRowKernel, $vectorRowKernel, $iArrRowKernelSize
+    Local $bRowKernelIsArray = IsArray($rowKernel)
+    Local $bRowKernelCreate = IsDllStruct($rowKernel) And $typeOfRowKernel == "Scalar"
 
-    If $bRowKernelIsArray Then
-        $vectorOfMatRowKernel = _VectorOfMatCreate()
+    If $typeOfRowKernel == Default Then
+        $iArrRowKernel = $rowKernel
+    ElseIf $bRowKernelIsArray Then
+        $vectorRowKernel = Call("_VectorOf" & $typeOfRowKernel & "Create")
 
-        $iArrRowKernelSize = UBound($matRowKernel)
+        $iArrRowKernelSize = UBound($rowKernel)
         For $i = 0 To $iArrRowKernelSize - 1
-            _VectorOfMatPush($vectorOfMatRowKernel, $matRowKernel[$i])
+            Call("_VectorOf" & $typeOfRowKernel & "Push", $vectorRowKernel, $rowKernel[$i])
         Next
 
-        $iArrRowKernel = _cveInputArrayFromVectorOfMat($vectorOfMatRowKernel)
+        $iArrRowKernel = Call("_cveInputArrayFromVectorOf" & $typeOfRowKernel, $vectorRowKernel)
     Else
-        $iArrRowKernel = _cveInputArrayFromMat($matRowKernel)
+        If $bRowKernelCreate Then
+            $rowKernel = Call("_cve" & $typeOfRowKernel & "Create", $rowKernel)
+        EndIf
+        $iArrRowKernel = Call("_cveInputArrayFrom" & $typeOfRowKernel, $rowKernel)
     EndIf
 
-    Local $iArrColumnKernel, $vectorOfMatColumnKernel, $iArrColumnKernelSize
-    Local $bColumnKernelIsArray = VarGetType($matColumnKernel) == "Array"
+    Local $iArrColumnKernel, $vectorColumnKernel, $iArrColumnKernelSize
+    Local $bColumnKernelIsArray = IsArray($columnKernel)
+    Local $bColumnKernelCreate = IsDllStruct($columnKernel) And $typeOfColumnKernel == "Scalar"
 
-    If $bColumnKernelIsArray Then
-        $vectorOfMatColumnKernel = _VectorOfMatCreate()
+    If $typeOfColumnKernel == Default Then
+        $iArrColumnKernel = $columnKernel
+    ElseIf $bColumnKernelIsArray Then
+        $vectorColumnKernel = Call("_VectorOf" & $typeOfColumnKernel & "Create")
 
-        $iArrColumnKernelSize = UBound($matColumnKernel)
+        $iArrColumnKernelSize = UBound($columnKernel)
         For $i = 0 To $iArrColumnKernelSize - 1
-            _VectorOfMatPush($vectorOfMatColumnKernel, $matColumnKernel[$i])
+            Call("_VectorOf" & $typeOfColumnKernel & "Push", $vectorColumnKernel, $columnKernel[$i])
         Next
 
-        $iArrColumnKernel = _cveInputArrayFromVectorOfMat($vectorOfMatColumnKernel)
+        $iArrColumnKernel = Call("_cveInputArrayFromVectorOf" & $typeOfColumnKernel, $vectorColumnKernel)
     Else
-        $iArrColumnKernel = _cveInputArrayFromMat($matColumnKernel)
+        If $bColumnKernelCreate Then
+            $columnKernel = Call("_cve" & $typeOfColumnKernel & "Create", $columnKernel)
+        EndIf
+        $iArrColumnKernel = Call("_cveInputArrayFrom" & $typeOfColumnKernel, $columnKernel)
     EndIf
 
     Local $retval = _cudaCreateSeparableLinearFilter($srcType, $dstType, $iArrRowKernel, $iArrColumnKernel, $anchor, $rowBorderMode, $columnBorderMode, $sharedPtr)
 
     If $bColumnKernelIsArray Then
-        _VectorOfMatRelease($vectorOfMatColumnKernel)
+        Call("_VectorOf" & $typeOfColumnKernel & "Release", $vectorColumnKernel)
     EndIf
 
-    _cveInputArrayRelease($iArrColumnKernel)
+    If $typeOfColumnKernel <> Default Then
+        _cveInputArrayRelease($iArrColumnKernel)
+        If $bColumnKernelCreate Then
+            Call("_cve" & $typeOfColumnKernel & "Release", $columnKernel)
+        EndIf
+    EndIf
 
     If $bRowKernelIsArray Then
-        _VectorOfMatRelease($vectorOfMatRowKernel)
+        Call("_VectorOf" & $typeOfRowKernel & "Release", $vectorRowKernel)
     EndIf
 
-    _cveInputArrayRelease($iArrRowKernel)
+    If $typeOfRowKernel <> Default Then
+        _cveInputArrayRelease($iArrRowKernel)
+        If $bRowKernelCreate Then
+            Call("_cve" & $typeOfRowKernel & "Release", $rowKernel)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cudaCreateSeparableLinearFilterTyped
+
+Func _cudaCreateSeparableLinearFilterMat($srcType, $dstType, $rowKernel, $columnKernel, $anchor, $rowBorderMode, $columnBorderMode, $sharedPtr)
+    ; cudaCreateSeparableLinearFilter using cv::Mat instead of _*Array
+    Local $retval = _cudaCreateSeparableLinearFilterTyped($srcType, $dstType, "Mat", $rowKernel, "Mat", $columnKernel, $anchor, $rowBorderMode, $columnBorderMode, $sharedPtr)
 
     Return $retval
 EndFunc   ;==>_cudaCreateSeparableLinearFilterMat
@@ -490,54 +552,80 @@ Func _cudaFilterApply($filter, $image, $dst, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaFilterApply", $sFilterDllType, $filter, $sImageDllType, $image, $sDstDllType, $dst, $sStreamDllType, $stream), "cudaFilterApply", @error)
 EndFunc   ;==>_cudaFilterApply
 
-Func _cudaFilterApplyMat($filter, $matImage, $matDst, $stream)
-    ; cudaFilterApply using cv::Mat instead of _*Array
+Func _cudaFilterApplyTyped($filter, $typeOfImage, $image, $typeOfDst, $dst, $stream)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $oArrDst, $vectorOfMatDst, $iArrDstSize
-    Local $bDstIsArray = VarGetType($matDst) == "Array"
+    Local $oArrDst, $vectorDst, $iArrDstSize
+    Local $bDstIsArray = IsArray($dst)
+    Local $bDstCreate = IsDllStruct($dst) And $typeOfDst == "Scalar"
 
-    If $bDstIsArray Then
-        $vectorOfMatDst = _VectorOfMatCreate()
+    If $typeOfDst == Default Then
+        $oArrDst = $dst
+    ElseIf $bDstIsArray Then
+        $vectorDst = Call("_VectorOf" & $typeOfDst & "Create")
 
-        $iArrDstSize = UBound($matDst)
+        $iArrDstSize = UBound($dst)
         For $i = 0 To $iArrDstSize - 1
-            _VectorOfMatPush($vectorOfMatDst, $matDst[$i])
+            Call("_VectorOf" & $typeOfDst & "Push", $vectorDst, $dst[$i])
         Next
 
-        $oArrDst = _cveOutputArrayFromVectorOfMat($vectorOfMatDst)
+        $oArrDst = Call("_cveOutputArrayFromVectorOf" & $typeOfDst, $vectorDst)
     Else
-        $oArrDst = _cveOutputArrayFromMat($matDst)
+        If $bDstCreate Then
+            $dst = Call("_cve" & $typeOfDst & "Create", $dst)
+        EndIf
+        $oArrDst = Call("_cveOutputArrayFrom" & $typeOfDst, $dst)
     EndIf
 
     _cudaFilterApply($filter, $iArrImage, $oArrDst, $stream)
 
     If $bDstIsArray Then
-        _VectorOfMatRelease($vectorOfMatDst)
+        Call("_VectorOf" & $typeOfDst & "Release", $vectorDst)
     EndIf
 
-    _cveOutputArrayRelease($oArrDst)
+    If $typeOfDst <> Default Then
+        _cveOutputArrayRelease($oArrDst)
+        If $bDstCreate Then
+            Call("_cve" & $typeOfDst & "Release", $dst)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaFilterApplyTyped
+
+Func _cudaFilterApplyMat($filter, $image, $dst, $stream)
+    ; cudaFilterApply using cv::Mat instead of _*Array
+    _cudaFilterApplyTyped($filter, "Mat", $image, "Mat", $dst, $stream)
 EndFunc   ;==>_cudaFilterApplyMat
 
 Func _cudaFilterRelease($filter)

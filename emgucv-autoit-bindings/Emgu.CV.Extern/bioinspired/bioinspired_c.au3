@@ -57,32 +57,47 @@ Func _cveRetinaRun($retina, $image)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRetinaRun", $sRetinaDllType, $retina, $sImageDllType, $image), "cveRetinaRun", @error)
 EndFunc   ;==>_cveRetinaRun
 
-Func _cveRetinaRunMat($retina, $matImage)
-    ; cveRetinaRun using cv::Mat instead of _*Array
+Func _cveRetinaRunTyped($retina, $typeOfImage, $image)
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
     _cveRetinaRun($retina, $iArrImage)
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveRetinaRunTyped
+
+Func _cveRetinaRunMat($retina, $image)
+    ; cveRetinaRun using cv::Mat instead of _*Array
+    _cveRetinaRunTyped($retina, "Mat", $image)
 EndFunc   ;==>_cveRetinaRunMat
 
 Func _cveRetinaGetParvo($retina, $parvo)
@@ -105,32 +120,47 @@ Func _cveRetinaGetParvo($retina, $parvo)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRetinaGetParvo", $sRetinaDllType, $retina, $sParvoDllType, $parvo), "cveRetinaGetParvo", @error)
 EndFunc   ;==>_cveRetinaGetParvo
 
-Func _cveRetinaGetParvoMat($retina, $matParvo)
-    ; cveRetinaGetParvo using cv::Mat instead of _*Array
+Func _cveRetinaGetParvoTyped($retina, $typeOfParvo, $parvo)
 
-    Local $oArrParvo, $vectorOfMatParvo, $iArrParvoSize
-    Local $bParvoIsArray = VarGetType($matParvo) == "Array"
+    Local $oArrParvo, $vectorParvo, $iArrParvoSize
+    Local $bParvoIsArray = IsArray($parvo)
+    Local $bParvoCreate = IsDllStruct($parvo) And $typeOfParvo == "Scalar"
 
-    If $bParvoIsArray Then
-        $vectorOfMatParvo = _VectorOfMatCreate()
+    If $typeOfParvo == Default Then
+        $oArrParvo = $parvo
+    ElseIf $bParvoIsArray Then
+        $vectorParvo = Call("_VectorOf" & $typeOfParvo & "Create")
 
-        $iArrParvoSize = UBound($matParvo)
+        $iArrParvoSize = UBound($parvo)
         For $i = 0 To $iArrParvoSize - 1
-            _VectorOfMatPush($vectorOfMatParvo, $matParvo[$i])
+            Call("_VectorOf" & $typeOfParvo & "Push", $vectorParvo, $parvo[$i])
         Next
 
-        $oArrParvo = _cveOutputArrayFromVectorOfMat($vectorOfMatParvo)
+        $oArrParvo = Call("_cveOutputArrayFromVectorOf" & $typeOfParvo, $vectorParvo)
     Else
-        $oArrParvo = _cveOutputArrayFromMat($matParvo)
+        If $bParvoCreate Then
+            $parvo = Call("_cve" & $typeOfParvo & "Create", $parvo)
+        EndIf
+        $oArrParvo = Call("_cveOutputArrayFrom" & $typeOfParvo, $parvo)
     EndIf
 
     _cveRetinaGetParvo($retina, $oArrParvo)
 
     If $bParvoIsArray Then
-        _VectorOfMatRelease($vectorOfMatParvo)
+        Call("_VectorOf" & $typeOfParvo & "Release", $vectorParvo)
     EndIf
 
-    _cveOutputArrayRelease($oArrParvo)
+    If $typeOfParvo <> Default Then
+        _cveOutputArrayRelease($oArrParvo)
+        If $bParvoCreate Then
+            Call("_cve" & $typeOfParvo & "Release", $parvo)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveRetinaGetParvoTyped
+
+Func _cveRetinaGetParvoMat($retina, $parvo)
+    ; cveRetinaGetParvo using cv::Mat instead of _*Array
+    _cveRetinaGetParvoTyped($retina, "Mat", $parvo)
 EndFunc   ;==>_cveRetinaGetParvoMat
 
 Func _cveRetinaGetMagno($retina, $magno)
@@ -153,32 +183,47 @@ Func _cveRetinaGetMagno($retina, $magno)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRetinaGetMagno", $sRetinaDllType, $retina, $sMagnoDllType, $magno), "cveRetinaGetMagno", @error)
 EndFunc   ;==>_cveRetinaGetMagno
 
-Func _cveRetinaGetMagnoMat($retina, $matMagno)
-    ; cveRetinaGetMagno using cv::Mat instead of _*Array
+Func _cveRetinaGetMagnoTyped($retina, $typeOfMagno, $magno)
 
-    Local $oArrMagno, $vectorOfMatMagno, $iArrMagnoSize
-    Local $bMagnoIsArray = VarGetType($matMagno) == "Array"
+    Local $oArrMagno, $vectorMagno, $iArrMagnoSize
+    Local $bMagnoIsArray = IsArray($magno)
+    Local $bMagnoCreate = IsDllStruct($magno) And $typeOfMagno == "Scalar"
 
-    If $bMagnoIsArray Then
-        $vectorOfMatMagno = _VectorOfMatCreate()
+    If $typeOfMagno == Default Then
+        $oArrMagno = $magno
+    ElseIf $bMagnoIsArray Then
+        $vectorMagno = Call("_VectorOf" & $typeOfMagno & "Create")
 
-        $iArrMagnoSize = UBound($matMagno)
+        $iArrMagnoSize = UBound($magno)
         For $i = 0 To $iArrMagnoSize - 1
-            _VectorOfMatPush($vectorOfMatMagno, $matMagno[$i])
+            Call("_VectorOf" & $typeOfMagno & "Push", $vectorMagno, $magno[$i])
         Next
 
-        $oArrMagno = _cveOutputArrayFromVectorOfMat($vectorOfMatMagno)
+        $oArrMagno = Call("_cveOutputArrayFromVectorOf" & $typeOfMagno, $vectorMagno)
     Else
-        $oArrMagno = _cveOutputArrayFromMat($matMagno)
+        If $bMagnoCreate Then
+            $magno = Call("_cve" & $typeOfMagno & "Create", $magno)
+        EndIf
+        $oArrMagno = Call("_cveOutputArrayFrom" & $typeOfMagno, $magno)
     EndIf
 
     _cveRetinaGetMagno($retina, $oArrMagno)
 
     If $bMagnoIsArray Then
-        _VectorOfMatRelease($vectorOfMatMagno)
+        Call("_VectorOf" & $typeOfMagno & "Release", $vectorMagno)
     EndIf
 
-    _cveOutputArrayRelease($oArrMagno)
+    If $typeOfMagno <> Default Then
+        _cveOutputArrayRelease($oArrMagno)
+        If $bMagnoCreate Then
+            Call("_cve" & $typeOfMagno & "Release", $magno)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveRetinaGetMagnoTyped
+
+Func _cveRetinaGetMagnoMat($retina, $magno)
+    ; cveRetinaGetMagno using cv::Mat instead of _*Array
+    _cveRetinaGetMagnoTyped($retina, "Mat", $magno)
 EndFunc   ;==>_cveRetinaGetMagnoMat
 
 Func _cveRetinaClearBuffers($retina)
@@ -295,54 +340,80 @@ Func _cveRetinaFastToneMappingApplyFastToneMapping($toneMapping, $inputImage, $o
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveRetinaFastToneMappingApplyFastToneMapping", $sToneMappingDllType, $toneMapping, $sInputImageDllType, $inputImage, $sOutputToneMappedImageDllType, $outputToneMappedImage), "cveRetinaFastToneMappingApplyFastToneMapping", @error)
 EndFunc   ;==>_cveRetinaFastToneMappingApplyFastToneMapping
 
-Func _cveRetinaFastToneMappingApplyFastToneMappingMat($toneMapping, $matInputImage, $matOutputToneMappedImage)
-    ; cveRetinaFastToneMappingApplyFastToneMapping using cv::Mat instead of _*Array
+Func _cveRetinaFastToneMappingApplyFastToneMappingTyped($toneMapping, $typeOfInputImage, $inputImage, $typeOfOutputToneMappedImage, $outputToneMappedImage)
 
-    Local $iArrInputImage, $vectorOfMatInputImage, $iArrInputImageSize
-    Local $bInputImageIsArray = VarGetType($matInputImage) == "Array"
+    Local $iArrInputImage, $vectorInputImage, $iArrInputImageSize
+    Local $bInputImageIsArray = IsArray($inputImage)
+    Local $bInputImageCreate = IsDllStruct($inputImage) And $typeOfInputImage == "Scalar"
 
-    If $bInputImageIsArray Then
-        $vectorOfMatInputImage = _VectorOfMatCreate()
+    If $typeOfInputImage == Default Then
+        $iArrInputImage = $inputImage
+    ElseIf $bInputImageIsArray Then
+        $vectorInputImage = Call("_VectorOf" & $typeOfInputImage & "Create")
 
-        $iArrInputImageSize = UBound($matInputImage)
+        $iArrInputImageSize = UBound($inputImage)
         For $i = 0 To $iArrInputImageSize - 1
-            _VectorOfMatPush($vectorOfMatInputImage, $matInputImage[$i])
+            Call("_VectorOf" & $typeOfInputImage & "Push", $vectorInputImage, $inputImage[$i])
         Next
 
-        $iArrInputImage = _cveInputArrayFromVectorOfMat($vectorOfMatInputImage)
+        $iArrInputImage = Call("_cveInputArrayFromVectorOf" & $typeOfInputImage, $vectorInputImage)
     Else
-        $iArrInputImage = _cveInputArrayFromMat($matInputImage)
+        If $bInputImageCreate Then
+            $inputImage = Call("_cve" & $typeOfInputImage & "Create", $inputImage)
+        EndIf
+        $iArrInputImage = Call("_cveInputArrayFrom" & $typeOfInputImage, $inputImage)
     EndIf
 
-    Local $oArrOutputToneMappedImage, $vectorOfMatOutputToneMappedImage, $iArrOutputToneMappedImageSize
-    Local $bOutputToneMappedImageIsArray = VarGetType($matOutputToneMappedImage) == "Array"
+    Local $oArrOutputToneMappedImage, $vectorOutputToneMappedImage, $iArrOutputToneMappedImageSize
+    Local $bOutputToneMappedImageIsArray = IsArray($outputToneMappedImage)
+    Local $bOutputToneMappedImageCreate = IsDllStruct($outputToneMappedImage) And $typeOfOutputToneMappedImage == "Scalar"
 
-    If $bOutputToneMappedImageIsArray Then
-        $vectorOfMatOutputToneMappedImage = _VectorOfMatCreate()
+    If $typeOfOutputToneMappedImage == Default Then
+        $oArrOutputToneMappedImage = $outputToneMappedImage
+    ElseIf $bOutputToneMappedImageIsArray Then
+        $vectorOutputToneMappedImage = Call("_VectorOf" & $typeOfOutputToneMappedImage & "Create")
 
-        $iArrOutputToneMappedImageSize = UBound($matOutputToneMappedImage)
+        $iArrOutputToneMappedImageSize = UBound($outputToneMappedImage)
         For $i = 0 To $iArrOutputToneMappedImageSize - 1
-            _VectorOfMatPush($vectorOfMatOutputToneMappedImage, $matOutputToneMappedImage[$i])
+            Call("_VectorOf" & $typeOfOutputToneMappedImage & "Push", $vectorOutputToneMappedImage, $outputToneMappedImage[$i])
         Next
 
-        $oArrOutputToneMappedImage = _cveOutputArrayFromVectorOfMat($vectorOfMatOutputToneMappedImage)
+        $oArrOutputToneMappedImage = Call("_cveOutputArrayFromVectorOf" & $typeOfOutputToneMappedImage, $vectorOutputToneMappedImage)
     Else
-        $oArrOutputToneMappedImage = _cveOutputArrayFromMat($matOutputToneMappedImage)
+        If $bOutputToneMappedImageCreate Then
+            $outputToneMappedImage = Call("_cve" & $typeOfOutputToneMappedImage & "Create", $outputToneMappedImage)
+        EndIf
+        $oArrOutputToneMappedImage = Call("_cveOutputArrayFrom" & $typeOfOutputToneMappedImage, $outputToneMappedImage)
     EndIf
 
     _cveRetinaFastToneMappingApplyFastToneMapping($toneMapping, $iArrInputImage, $oArrOutputToneMappedImage)
 
     If $bOutputToneMappedImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatOutputToneMappedImage)
+        Call("_VectorOf" & $typeOfOutputToneMappedImage & "Release", $vectorOutputToneMappedImage)
     EndIf
 
-    _cveOutputArrayRelease($oArrOutputToneMappedImage)
+    If $typeOfOutputToneMappedImage <> Default Then
+        _cveOutputArrayRelease($oArrOutputToneMappedImage)
+        If $bOutputToneMappedImageCreate Then
+            Call("_cve" & $typeOfOutputToneMappedImage & "Release", $outputToneMappedImage)
+        EndIf
+    EndIf
 
     If $bInputImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatInputImage)
+        Call("_VectorOf" & $typeOfInputImage & "Release", $vectorInputImage)
     EndIf
 
-    _cveInputArrayRelease($iArrInputImage)
+    If $typeOfInputImage <> Default Then
+        _cveInputArrayRelease($iArrInputImage)
+        If $bInputImageCreate Then
+            Call("_cve" & $typeOfInputImage & "Release", $inputImage)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveRetinaFastToneMappingApplyFastToneMappingTyped
+
+Func _cveRetinaFastToneMappingApplyFastToneMappingMat($toneMapping, $inputImage, $outputToneMappedImage)
+    ; cveRetinaFastToneMappingApplyFastToneMapping using cv::Mat instead of _*Array
+    _cveRetinaFastToneMappingApplyFastToneMappingTyped($toneMapping, "Mat", $inputImage, "Mat", $outputToneMappedImage)
 EndFunc   ;==>_cveRetinaFastToneMappingApplyFastToneMappingMat
 
 Func _cveRetinaFastToneMappingRelease($sharedPtr)

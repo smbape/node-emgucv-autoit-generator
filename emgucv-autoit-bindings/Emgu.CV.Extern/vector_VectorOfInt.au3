@@ -15,7 +15,7 @@ Func _VectorOfVectorOfIntGetSize($v)
     ; CVAPI(int) VectorOfVectorOfIntGetSize(std::vector<std::vector<int>>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVectorOfIntCreate()
@@ -48,7 +48,7 @@ Func _VectorOfVectorOfIntPush($v, $value)
     ; CVAPI(void) VectorOfVectorOfIntPush(std::vector<std::vector<int>>* v, std::vector<int>* value);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVectorOfIntCreate()
@@ -69,7 +69,7 @@ Func _VectorOfVectorOfIntPush($v, $value)
     EndIf
 
     Local $vecValue, $iArrValueSize
-    Local $bValueIsArray = VarGetType($value) == "Array"
+    Local $bValueIsArray = IsArray($value)
 
     If $bValueIsArray Then
         $vecValue = _VectorOfIntCreate()
@@ -104,7 +104,7 @@ Func _VectorOfVectorOfIntPushVector($v, $other)
     ; CVAPI(void) VectorOfVectorOfIntPushVector(std::vector<std::vector<int>>* v, std::vector<std::vector<int>>* other);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVectorOfIntCreate()
@@ -125,7 +125,7 @@ Func _VectorOfVectorOfIntPushVector($v, $other)
     EndIf
 
     Local $vecOther, $iArrOtherSize
-    Local $bOtherIsArray = VarGetType($other) == "Array"
+    Local $bOtherIsArray = IsArray($other)
 
     If $bOtherIsArray Then
         $vecOther = _VectorOfVectorOfIntCreate()
@@ -160,7 +160,7 @@ Func _VectorOfVectorOfIntGetStartAddress($v)
     ; CVAPI(std::vector<int>*) VectorOfVectorOfIntGetStartAddress(std::vector<std::vector<int>>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVectorOfIntCreate()
@@ -193,7 +193,7 @@ Func _VectorOfVectorOfIntGetEndAddress($v)
     ; CVAPI(void*) VectorOfVectorOfIntGetEndAddress(std::vector<std::vector<int>>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVectorOfIntCreate()
@@ -226,7 +226,7 @@ Func _VectorOfVectorOfIntClear($v)
     ; CVAPI(void) VectorOfVectorOfIntClear(std::vector<std::vector<int>>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVectorOfIntCreate()
@@ -257,7 +257,7 @@ Func _VectorOfVectorOfIntRelease($v)
     ; CVAPI(void) VectorOfVectorOfIntRelease(std::vector<std::vector<int>>** v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVectorOfIntCreate()
@@ -290,7 +290,7 @@ Func _VectorOfVectorOfIntCopyData($v, $data)
     ; CVAPI(void) VectorOfVectorOfIntCopyData(std::vector<std::vector<int>>* v, std::vector<int>* data);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVectorOfIntCreate()
@@ -311,7 +311,7 @@ Func _VectorOfVectorOfIntCopyData($v, $data)
     EndIf
 
     Local $vecData, $iArrDataSize
-    Local $bDataIsArray = VarGetType($data) == "Array"
+    Local $bDataIsArray = IsArray($data)
 
     If $bDataIsArray Then
         $vecData = _VectorOfIntCreate()
@@ -346,7 +346,7 @@ Func _VectorOfVectorOfIntGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfVectorOfIntGetItemPtr(std::vector<std::vector<int>>* vec, int index, std::vector<int>** element);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfVectorOfIntCreate()
@@ -367,7 +367,7 @@ Func _VectorOfVectorOfIntGetItemPtr($vec, $index, $element)
     EndIf
 
     Local $vecElement, $iArrElementSize
-    Local $bElementIsArray = VarGetType($element) == "Array"
+    Local $bElementIsArray = IsArray($element)
 
     If $bElementIsArray Then
         $vecElement = _VectorOfIntCreate()
@@ -404,7 +404,7 @@ Func _cveInputArrayFromVectorOfVectorOfInt($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfVectorOfInt(std::vector<std::vector<int>>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfVectorOfIntCreate()
@@ -437,7 +437,7 @@ Func _cveOutputArrayFromVectorOfVectorOfInt($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfVectorOfInt(std::vector<std::vector<int>>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfVectorOfIntCreate()
@@ -470,7 +470,7 @@ Func _cveInputOutputArrayFromVectorOfVectorOfInt($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfVectorOfInt(std::vector<std::vector<int>>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfVectorOfIntCreate()

@@ -28,54 +28,80 @@ Func _cveImgHashBaseCompute($imgHash, $inputArr, $outputArr)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveImgHashBaseCompute", $sImgHashDllType, $imgHash, $sInputArrDllType, $inputArr, $sOutputArrDllType, $outputArr), "cveImgHashBaseCompute", @error)
 EndFunc   ;==>_cveImgHashBaseCompute
 
-Func _cveImgHashBaseComputeMat($imgHash, $matInputArr, $matOutputArr)
-    ; cveImgHashBaseCompute using cv::Mat instead of _*Array
+Func _cveImgHashBaseComputeTyped($imgHash, $typeOfInputArr, $inputArr, $typeOfOutputArr, $outputArr)
 
-    Local $iArrInputArr, $vectorOfMatInputArr, $iArrInputArrSize
-    Local $bInputArrIsArray = VarGetType($matInputArr) == "Array"
+    Local $iArrInputArr, $vectorInputArr, $iArrInputArrSize
+    Local $bInputArrIsArray = IsArray($inputArr)
+    Local $bInputArrCreate = IsDllStruct($inputArr) And $typeOfInputArr == "Scalar"
 
-    If $bInputArrIsArray Then
-        $vectorOfMatInputArr = _VectorOfMatCreate()
+    If $typeOfInputArr == Default Then
+        $iArrInputArr = $inputArr
+    ElseIf $bInputArrIsArray Then
+        $vectorInputArr = Call("_VectorOf" & $typeOfInputArr & "Create")
 
-        $iArrInputArrSize = UBound($matInputArr)
+        $iArrInputArrSize = UBound($inputArr)
         For $i = 0 To $iArrInputArrSize - 1
-            _VectorOfMatPush($vectorOfMatInputArr, $matInputArr[$i])
+            Call("_VectorOf" & $typeOfInputArr & "Push", $vectorInputArr, $inputArr[$i])
         Next
 
-        $iArrInputArr = _cveInputArrayFromVectorOfMat($vectorOfMatInputArr)
+        $iArrInputArr = Call("_cveInputArrayFromVectorOf" & $typeOfInputArr, $vectorInputArr)
     Else
-        $iArrInputArr = _cveInputArrayFromMat($matInputArr)
+        If $bInputArrCreate Then
+            $inputArr = Call("_cve" & $typeOfInputArr & "Create", $inputArr)
+        EndIf
+        $iArrInputArr = Call("_cveInputArrayFrom" & $typeOfInputArr, $inputArr)
     EndIf
 
-    Local $oArrOutputArr, $vectorOfMatOutputArr, $iArrOutputArrSize
-    Local $bOutputArrIsArray = VarGetType($matOutputArr) == "Array"
+    Local $oArrOutputArr, $vectorOutputArr, $iArrOutputArrSize
+    Local $bOutputArrIsArray = IsArray($outputArr)
+    Local $bOutputArrCreate = IsDllStruct($outputArr) And $typeOfOutputArr == "Scalar"
 
-    If $bOutputArrIsArray Then
-        $vectorOfMatOutputArr = _VectorOfMatCreate()
+    If $typeOfOutputArr == Default Then
+        $oArrOutputArr = $outputArr
+    ElseIf $bOutputArrIsArray Then
+        $vectorOutputArr = Call("_VectorOf" & $typeOfOutputArr & "Create")
 
-        $iArrOutputArrSize = UBound($matOutputArr)
+        $iArrOutputArrSize = UBound($outputArr)
         For $i = 0 To $iArrOutputArrSize - 1
-            _VectorOfMatPush($vectorOfMatOutputArr, $matOutputArr[$i])
+            Call("_VectorOf" & $typeOfOutputArr & "Push", $vectorOutputArr, $outputArr[$i])
         Next
 
-        $oArrOutputArr = _cveOutputArrayFromVectorOfMat($vectorOfMatOutputArr)
+        $oArrOutputArr = Call("_cveOutputArrayFromVectorOf" & $typeOfOutputArr, $vectorOutputArr)
     Else
-        $oArrOutputArr = _cveOutputArrayFromMat($matOutputArr)
+        If $bOutputArrCreate Then
+            $outputArr = Call("_cve" & $typeOfOutputArr & "Create", $outputArr)
+        EndIf
+        $oArrOutputArr = Call("_cveOutputArrayFrom" & $typeOfOutputArr, $outputArr)
     EndIf
 
     _cveImgHashBaseCompute($imgHash, $iArrInputArr, $oArrOutputArr)
 
     If $bOutputArrIsArray Then
-        _VectorOfMatRelease($vectorOfMatOutputArr)
+        Call("_VectorOf" & $typeOfOutputArr & "Release", $vectorOutputArr)
     EndIf
 
-    _cveOutputArrayRelease($oArrOutputArr)
+    If $typeOfOutputArr <> Default Then
+        _cveOutputArrayRelease($oArrOutputArr)
+        If $bOutputArrCreate Then
+            Call("_cve" & $typeOfOutputArr & "Release", $outputArr)
+        EndIf
+    EndIf
 
     If $bInputArrIsArray Then
-        _VectorOfMatRelease($vectorOfMatInputArr)
+        Call("_VectorOf" & $typeOfInputArr & "Release", $vectorInputArr)
     EndIf
 
-    _cveInputArrayRelease($iArrInputArr)
+    If $typeOfInputArr <> Default Then
+        _cveInputArrayRelease($iArrInputArr)
+        If $bInputArrCreate Then
+            Call("_cve" & $typeOfInputArr & "Release", $inputArr)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveImgHashBaseComputeTyped
+
+Func _cveImgHashBaseComputeMat($imgHash, $inputArr, $outputArr)
+    ; cveImgHashBaseCompute using cv::Mat instead of _*Array
+    _cveImgHashBaseComputeTyped($imgHash, "Mat", $inputArr, "Mat", $outputArr)
 EndFunc   ;==>_cveImgHashBaseComputeMat
 
 Func _cveImgHashBaseCompare($imgHash, $hashOne, $hashTwo)
@@ -104,54 +130,82 @@ Func _cveImgHashBaseCompare($imgHash, $hashOne, $hashTwo)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "double:cdecl", "cveImgHashBaseCompare", $sImgHashDllType, $imgHash, $sHashOneDllType, $hashOne, $sHashTwoDllType, $hashTwo), "cveImgHashBaseCompare", @error)
 EndFunc   ;==>_cveImgHashBaseCompare
 
-Func _cveImgHashBaseCompareMat($imgHash, $matHashOne, $matHashTwo)
-    ; cveImgHashBaseCompare using cv::Mat instead of _*Array
+Func _cveImgHashBaseCompareTyped($imgHash, $typeOfHashOne, $hashOne, $typeOfHashTwo, $hashTwo)
 
-    Local $iArrHashOne, $vectorOfMatHashOne, $iArrHashOneSize
-    Local $bHashOneIsArray = VarGetType($matHashOne) == "Array"
+    Local $iArrHashOne, $vectorHashOne, $iArrHashOneSize
+    Local $bHashOneIsArray = IsArray($hashOne)
+    Local $bHashOneCreate = IsDllStruct($hashOne) And $typeOfHashOne == "Scalar"
 
-    If $bHashOneIsArray Then
-        $vectorOfMatHashOne = _VectorOfMatCreate()
+    If $typeOfHashOne == Default Then
+        $iArrHashOne = $hashOne
+    ElseIf $bHashOneIsArray Then
+        $vectorHashOne = Call("_VectorOf" & $typeOfHashOne & "Create")
 
-        $iArrHashOneSize = UBound($matHashOne)
+        $iArrHashOneSize = UBound($hashOne)
         For $i = 0 To $iArrHashOneSize - 1
-            _VectorOfMatPush($vectorOfMatHashOne, $matHashOne[$i])
+            Call("_VectorOf" & $typeOfHashOne & "Push", $vectorHashOne, $hashOne[$i])
         Next
 
-        $iArrHashOne = _cveInputArrayFromVectorOfMat($vectorOfMatHashOne)
+        $iArrHashOne = Call("_cveInputArrayFromVectorOf" & $typeOfHashOne, $vectorHashOne)
     Else
-        $iArrHashOne = _cveInputArrayFromMat($matHashOne)
+        If $bHashOneCreate Then
+            $hashOne = Call("_cve" & $typeOfHashOne & "Create", $hashOne)
+        EndIf
+        $iArrHashOne = Call("_cveInputArrayFrom" & $typeOfHashOne, $hashOne)
     EndIf
 
-    Local $iArrHashTwo, $vectorOfMatHashTwo, $iArrHashTwoSize
-    Local $bHashTwoIsArray = VarGetType($matHashTwo) == "Array"
+    Local $iArrHashTwo, $vectorHashTwo, $iArrHashTwoSize
+    Local $bHashTwoIsArray = IsArray($hashTwo)
+    Local $bHashTwoCreate = IsDllStruct($hashTwo) And $typeOfHashTwo == "Scalar"
 
-    If $bHashTwoIsArray Then
-        $vectorOfMatHashTwo = _VectorOfMatCreate()
+    If $typeOfHashTwo == Default Then
+        $iArrHashTwo = $hashTwo
+    ElseIf $bHashTwoIsArray Then
+        $vectorHashTwo = Call("_VectorOf" & $typeOfHashTwo & "Create")
 
-        $iArrHashTwoSize = UBound($matHashTwo)
+        $iArrHashTwoSize = UBound($hashTwo)
         For $i = 0 To $iArrHashTwoSize - 1
-            _VectorOfMatPush($vectorOfMatHashTwo, $matHashTwo[$i])
+            Call("_VectorOf" & $typeOfHashTwo & "Push", $vectorHashTwo, $hashTwo[$i])
         Next
 
-        $iArrHashTwo = _cveInputArrayFromVectorOfMat($vectorOfMatHashTwo)
+        $iArrHashTwo = Call("_cveInputArrayFromVectorOf" & $typeOfHashTwo, $vectorHashTwo)
     Else
-        $iArrHashTwo = _cveInputArrayFromMat($matHashTwo)
+        If $bHashTwoCreate Then
+            $hashTwo = Call("_cve" & $typeOfHashTwo & "Create", $hashTwo)
+        EndIf
+        $iArrHashTwo = Call("_cveInputArrayFrom" & $typeOfHashTwo, $hashTwo)
     EndIf
 
     Local $retval = _cveImgHashBaseCompare($imgHash, $iArrHashOne, $iArrHashTwo)
 
     If $bHashTwoIsArray Then
-        _VectorOfMatRelease($vectorOfMatHashTwo)
+        Call("_VectorOf" & $typeOfHashTwo & "Release", $vectorHashTwo)
     EndIf
 
-    _cveInputArrayRelease($iArrHashTwo)
+    If $typeOfHashTwo <> Default Then
+        _cveInputArrayRelease($iArrHashTwo)
+        If $bHashTwoCreate Then
+            Call("_cve" & $typeOfHashTwo & "Release", $hashTwo)
+        EndIf
+    EndIf
 
     If $bHashOneIsArray Then
-        _VectorOfMatRelease($vectorOfMatHashOne)
+        Call("_VectorOf" & $typeOfHashOne & "Release", $vectorHashOne)
     EndIf
 
-    _cveInputArrayRelease($iArrHashOne)
+    If $typeOfHashOne <> Default Then
+        _cveInputArrayRelease($iArrHashOne)
+        If $bHashOneCreate Then
+            Call("_cve" & $typeOfHashOne & "Release", $hashOne)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveImgHashBaseCompareTyped
+
+Func _cveImgHashBaseCompareMat($imgHash, $hashOne, $hashTwo)
+    ; cveImgHashBaseCompare using cv::Mat instead of _*Array
+    Local $retval = _cveImgHashBaseCompareTyped($imgHash, "Mat", $hashOne, "Mat", $hashTwo)
 
     Return $retval
 EndFunc   ;==>_cveImgHashBaseCompareMat

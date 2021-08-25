@@ -4,7 +4,7 @@
 Func _cveHaveImageReader($filename)
     ; CVAPI(bool) cveHaveImageReader(cv::String* filename);
 
-    Local $bFilenameIsString = VarGetType($filename) == "String"
+    Local $bFilenameIsString = IsString($filename)
     If $bFilenameIsString Then
         $filename = _cveStringCreateFromStr($filename)
     EndIf
@@ -28,7 +28,7 @@ EndFunc   ;==>_cveHaveImageReader
 Func _cveHaveImageWriter($filename)
     ; CVAPI(bool) cveHaveImageWriter(cv::String* filename);
 
-    Local $bFilenameIsString = VarGetType($filename) == "String"
+    Local $bFilenameIsString = IsString($filename)
     If $bFilenameIsString Then
         $filename = _cveStringCreateFromStr($filename)
     EndIf
@@ -52,7 +52,7 @@ EndFunc   ;==>_cveHaveImageWriter
 Func _cveImwrite($filename, $img, $params = _VectorOfIntCreate())
     ; CVAPI(bool) cveImwrite(cv::String* filename, cv::_InputArray* img, std::vector<int>* params);
 
-    Local $bFilenameIsString = VarGetType($filename) == "String"
+    Local $bFilenameIsString = IsString($filename)
     If $bFilenameIsString Then
         $filename = _cveStringCreateFromStr($filename)
     EndIf
@@ -72,7 +72,7 @@ Func _cveImwrite($filename, $img, $params = _VectorOfIntCreate())
     EndIf
 
     Local $vecParams, $iArrParamsSize
-    Local $bParamsIsArray = VarGetType($params) == "Array"
+    Local $bParamsIsArray = IsArray($params)
 
     If $bParamsIsArray Then
         $vecParams = _VectorOfIntCreate()
@@ -105,32 +105,49 @@ Func _cveImwrite($filename, $img, $params = _VectorOfIntCreate())
     Return $retval
 EndFunc   ;==>_cveImwrite
 
-Func _cveImwriteMat($filename, $matImg, $params = _VectorOfIntCreate())
-    ; cveImwrite using cv::Mat instead of _*Array
+Func _cveImwriteTyped($filename, $typeOfImg, $img, $params = _VectorOfIntCreate())
 
-    Local $iArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $iArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $iArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $iArrImg = _cveInputArrayFromVectorOfMat($vectorOfMatImg)
+        $iArrImg = Call("_cveInputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $iArrImg = _cveInputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $iArrImg = Call("_cveInputArrayFrom" & $typeOfImg, $img)
     EndIf
 
     Local $retval = _cveImwrite($filename, $iArrImg, $params)
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveInputArrayRelease($iArrImg)
+    If $typeOfImg <> Default Then
+        _cveInputArrayRelease($iArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveImwriteTyped
+
+Func _cveImwriteMat($filename, $img, $params = _VectorOfIntCreate())
+    ; cveImwrite using cv::Mat instead of _*Array
+    Local $retval = _cveImwriteTyped($filename, "Mat", $img, $params)
 
     Return $retval
 EndFunc   ;==>_cveImwriteMat
@@ -138,7 +155,7 @@ EndFunc   ;==>_cveImwriteMat
 Func _cveImwritemulti($filename, $img, $params)
     ; CVAPI(bool) cveImwritemulti(cv::String* filename, cv::_InputArray* img, std::vector<int>* params);
 
-    Local $bFilenameIsString = VarGetType($filename) == "String"
+    Local $bFilenameIsString = IsString($filename)
     If $bFilenameIsString Then
         $filename = _cveStringCreateFromStr($filename)
     EndIf
@@ -158,7 +175,7 @@ Func _cveImwritemulti($filename, $img, $params)
     EndIf
 
     Local $vecParams, $iArrParamsSize
-    Local $bParamsIsArray = VarGetType($params) == "Array"
+    Local $bParamsIsArray = IsArray($params)
 
     If $bParamsIsArray Then
         $vecParams = _VectorOfIntCreate()
@@ -191,32 +208,49 @@ Func _cveImwritemulti($filename, $img, $params)
     Return $retval
 EndFunc   ;==>_cveImwritemulti
 
-Func _cveImwritemultiMat($filename, $matImg, $params)
-    ; cveImwritemulti using cv::Mat instead of _*Array
+Func _cveImwritemultiTyped($filename, $typeOfImg, $img, $params)
 
-    Local $iArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $iArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $iArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $iArrImg = _cveInputArrayFromVectorOfMat($vectorOfMatImg)
+        $iArrImg = Call("_cveInputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $iArrImg = _cveInputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $iArrImg = Call("_cveInputArrayFrom" & $typeOfImg, $img)
     EndIf
 
     Local $retval = _cveImwritemulti($filename, $iArrImg, $params)
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveInputArrayRelease($iArrImg)
+    If $typeOfImg <> Default Then
+        _cveInputArrayRelease($iArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveImwritemultiTyped
+
+Func _cveImwritemultiMat($filename, $img, $params)
+    ; cveImwritemulti using cv::Mat instead of _*Array
+    Local $retval = _cveImwritemultiTyped($filename, "Mat", $img, $params)
 
     Return $retval
 EndFunc   ;==>_cveImwritemultiMat
@@ -228,7 +262,7 @@ Func _cveImread($fileName, $flags = $CV_IMREAD_COLOR, $result = Null)
         $result = _cveMatCreate()
     EndIf
 
-    Local $bFileNameIsString = VarGetType($fileName) == "String"
+    Local $bFileNameIsString = IsString($fileName)
     If $bFileNameIsString Then
         $fileName = _cveStringCreateFromStr($fileName)
     EndIf
@@ -259,7 +293,7 @@ EndFunc   ;==>_cveImread
 Func _cveImreadmulti($filename, $mats, $flags = $CV_IMREAD_ANYCOLOR)
     ; CVAPI(bool) cveImreadmulti(const cv::String* filename, std::vector<cv::Mat>* mats, int flags);
 
-    Local $bFilenameIsString = VarGetType($filename) == "String"
+    Local $bFilenameIsString = IsString($filename)
     If $bFilenameIsString Then
         $filename = _cveStringCreateFromStr($filename)
     EndIf
@@ -272,7 +306,7 @@ Func _cveImreadmulti($filename, $mats, $flags = $CV_IMREAD_ANYCOLOR)
     EndIf
 
     Local $vecMats, $iArrMatsSize
-    Local $bMatsIsArray = VarGetType($mats) == "Array"
+    Local $bMatsIsArray = IsArray($mats)
 
     If $bMatsIsArray Then
         $vecMats = _VectorOfMatCreate()
@@ -325,38 +359,53 @@ Func _cveImdecode($buf, $flags, $dst)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveImdecode", $sBufDllType, $buf, "int", $flags, $sDstDllType, $dst), "cveImdecode", @error)
 EndFunc   ;==>_cveImdecode
 
-Func _cveImdecodeMat($matBuf, $flags, $dst)
-    ; cveImdecode using cv::Mat instead of _*Array
+Func _cveImdecodeTyped($typeOfBuf, $buf, $flags, $dst)
 
-    Local $iArrBuf, $vectorOfMatBuf, $iArrBufSize
-    Local $bBufIsArray = VarGetType($matBuf) == "Array"
+    Local $iArrBuf, $vectorBuf, $iArrBufSize
+    Local $bBufIsArray = IsArray($buf)
+    Local $bBufCreate = IsDllStruct($buf) And $typeOfBuf == "Scalar"
 
-    If $bBufIsArray Then
-        $vectorOfMatBuf = _VectorOfMatCreate()
+    If $typeOfBuf == Default Then
+        $iArrBuf = $buf
+    ElseIf $bBufIsArray Then
+        $vectorBuf = Call("_VectorOf" & $typeOfBuf & "Create")
 
-        $iArrBufSize = UBound($matBuf)
+        $iArrBufSize = UBound($buf)
         For $i = 0 To $iArrBufSize - 1
-            _VectorOfMatPush($vectorOfMatBuf, $matBuf[$i])
+            Call("_VectorOf" & $typeOfBuf & "Push", $vectorBuf, $buf[$i])
         Next
 
-        $iArrBuf = _cveInputArrayFromVectorOfMat($vectorOfMatBuf)
+        $iArrBuf = Call("_cveInputArrayFromVectorOf" & $typeOfBuf, $vectorBuf)
     Else
-        $iArrBuf = _cveInputArrayFromMat($matBuf)
+        If $bBufCreate Then
+            $buf = Call("_cve" & $typeOfBuf & "Create", $buf)
+        EndIf
+        $iArrBuf = Call("_cveInputArrayFrom" & $typeOfBuf, $buf)
     EndIf
 
     _cveImdecode($iArrBuf, $flags, $dst)
 
     If $bBufIsArray Then
-        _VectorOfMatRelease($vectorOfMatBuf)
+        Call("_VectorOf" & $typeOfBuf & "Release", $vectorBuf)
     EndIf
 
-    _cveInputArrayRelease($iArrBuf)
+    If $typeOfBuf <> Default Then
+        _cveInputArrayRelease($iArrBuf)
+        If $bBufCreate Then
+            Call("_cve" & $typeOfBuf & "Release", $buf)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveImdecodeTyped
+
+Func _cveImdecodeMat($buf, $flags, $dst)
+    ; cveImdecode using cv::Mat instead of _*Array
+    _cveImdecodeTyped("Mat", $buf, $flags, $dst)
 EndFunc   ;==>_cveImdecodeMat
 
 Func _cveImencode($ext, $img, $buf, $params = _VectorOfIntCreate())
     ; CVAPI(bool) cveImencode(cv::String* ext, cv::_InputArray* img, std::vector<unsigned char>* buf, std::vector<int>* params);
 
-    Local $bExtIsString = VarGetType($ext) == "String"
+    Local $bExtIsString = IsString($ext)
     If $bExtIsString Then
         $ext = _cveStringCreateFromStr($ext)
     EndIf
@@ -376,7 +425,7 @@ Func _cveImencode($ext, $img, $buf, $params = _VectorOfIntCreate())
     EndIf
 
     Local $vecBuf, $iArrBufSize
-    Local $bBufIsArray = VarGetType($buf) == "Array"
+    Local $bBufIsArray = IsArray($buf)
 
     If $bBufIsArray Then
         $vecBuf = _VectorOfByteCreate()
@@ -397,7 +446,7 @@ Func _cveImencode($ext, $img, $buf, $params = _VectorOfIntCreate())
     EndIf
 
     Local $vecParams, $iArrParamsSize
-    Local $bParamsIsArray = VarGetType($params) == "Array"
+    Local $bParamsIsArray = IsArray($params)
 
     If $bParamsIsArray Then
         $vecParams = _VectorOfIntCreate()
@@ -434,32 +483,49 @@ Func _cveImencode($ext, $img, $buf, $params = _VectorOfIntCreate())
     Return $retval
 EndFunc   ;==>_cveImencode
 
-Func _cveImencodeMat($ext, $matImg, $buf, $params = _VectorOfIntCreate())
-    ; cveImencode using cv::Mat instead of _*Array
+Func _cveImencodeTyped($ext, $typeOfImg, $img, $buf, $params = _VectorOfIntCreate())
 
-    Local $iArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $iArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $iArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $iArrImg = _cveInputArrayFromVectorOfMat($vectorOfMatImg)
+        $iArrImg = Call("_cveInputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $iArrImg = _cveInputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $iArrImg = Call("_cveInputArrayFrom" & $typeOfImg, $img)
     EndIf
 
     Local $retval = _cveImencode($ext, $iArrImg, $buf, $params)
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveInputArrayRelease($iArrImg)
+    If $typeOfImg <> Default Then
+        _cveInputArrayRelease($iArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveImencodeTyped
+
+Func _cveImencodeMat($ext, $img, $buf, $params = _VectorOfIntCreate())
+    ; cveImencode using cv::Mat instead of _*Array
+    Local $retval = _cveImencodeTyped($ext, "Mat", $img, $buf, $params)
 
     Return $retval
 EndFunc   ;==>_cveImencodeMat

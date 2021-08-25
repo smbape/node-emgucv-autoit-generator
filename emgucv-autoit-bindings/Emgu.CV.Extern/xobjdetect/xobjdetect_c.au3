@@ -65,7 +65,7 @@ Func _cveWBDetectorTrain($detector, $posSamples, $negImgs)
         $sDetectorDllType = "ptr"
     EndIf
 
-    Local $bPosSamplesIsString = VarGetType($posSamples) == "String"
+    Local $bPosSamplesIsString = IsString($posSamples)
     If $bPosSamplesIsString Then
         $posSamples = _cveStringCreateFromStr($posSamples)
     EndIf
@@ -77,7 +77,7 @@ Func _cveWBDetectorTrain($detector, $posSamples, $negImgs)
         $sPosSamplesDllType = "ptr"
     EndIf
 
-    Local $bNegImgsIsString = VarGetType($negImgs) == "String"
+    Local $bNegImgsIsString = IsString($negImgs)
     If $bNegImgsIsString Then
         $negImgs = _cveStringCreateFromStr($negImgs)
     EndIf
@@ -118,7 +118,7 @@ Func _cveWBDetectorDetect($detector, $img, $bboxes, $confidences)
     EndIf
 
     Local $vecBboxes, $iArrBboxesSize
-    Local $bBboxesIsArray = VarGetType($bboxes) == "Array"
+    Local $bBboxesIsArray = IsArray($bboxes)
 
     If $bBboxesIsArray Then
         $vecBboxes = _VectorOfRectCreate()
@@ -139,7 +139,7 @@ Func _cveWBDetectorDetect($detector, $img, $bboxes, $confidences)
     EndIf
 
     Local $vecConfidences, $iArrConfidencesSize
-    Local $bConfidencesIsArray = VarGetType($confidences) == "Array"
+    Local $bConfidencesIsArray = IsArray($confidences)
 
     If $bConfidencesIsArray Then
         $vecConfidences = _VectorOfDoubleCreate()

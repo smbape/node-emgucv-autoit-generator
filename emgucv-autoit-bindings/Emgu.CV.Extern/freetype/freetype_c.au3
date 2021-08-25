@@ -49,7 +49,7 @@ Func _cveFreeType2LoadFontData($freetype, $fontFileName, $id)
         $sFreetypeDllType = "ptr"
     EndIf
 
-    Local $bFontFileNameIsString = VarGetType($fontFileName) == "String"
+    Local $bFontFileNameIsString = IsString($fontFileName)
     If $bFontFileNameIsString Then
         $fontFileName = _cveStringCreateFromStr($fontFileName)
     EndIf
@@ -98,7 +98,7 @@ Func _cveFreeType2PutText($freetype, $img, $text, $org, $fontHeight, $color, $th
         $sImgDllType = "ptr"
     EndIf
 
-    Local $bTextIsString = VarGetType($text) == "String"
+    Local $bTextIsString = IsString($text)
     If $bTextIsString Then
         $text = _cveStringCreateFromStr($text)
     EndIf
@@ -131,32 +131,47 @@ Func _cveFreeType2PutText($freetype, $img, $text, $org, $fontHeight, $color, $th
     EndIf
 EndFunc   ;==>_cveFreeType2PutText
 
-Func _cveFreeType2PutTextMat($freetype, $matImg, $text, $org, $fontHeight, $color, $thickness, $lineType, $bottomLeftOrigin)
-    ; cveFreeType2PutText using cv::Mat instead of _*Array
+Func _cveFreeType2PutTextTyped($freetype, $typeOfImg, $img, $text, $org, $fontHeight, $color, $thickness, $lineType, $bottomLeftOrigin)
 
-    Local $ioArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $ioArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $ioArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $ioArrImg = _cveInputOutputArrayFromVectorOfMat($vectorOfMatImg)
+        $ioArrImg = Call("_cveInputOutputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $ioArrImg = _cveInputOutputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $ioArrImg = Call("_cveInputOutputArrayFrom" & $typeOfImg, $img)
     EndIf
 
     _cveFreeType2PutText($freetype, $ioArrImg, $text, $org, $fontHeight, $color, $thickness, $lineType, $bottomLeftOrigin)
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveInputOutputArrayRelease($ioArrImg)
+    If $typeOfImg <> Default Then
+        _cveInputOutputArrayRelease($ioArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveFreeType2PutTextTyped
+
+Func _cveFreeType2PutTextMat($freetype, $img, $text, $org, $fontHeight, $color, $thickness, $lineType, $bottomLeftOrigin)
+    ; cveFreeType2PutText using cv::Mat instead of _*Array
+    _cveFreeType2PutTextTyped($freetype, "Mat", $img, $text, $org, $fontHeight, $color, $thickness, $lineType, $bottomLeftOrigin)
 EndFunc   ;==>_cveFreeType2PutTextMat
 
 Func _cveFreeType2GetTextSize($freetype, $text, $fontHeight, $thickness, $baseLine, $size)
@@ -169,7 +184,7 @@ Func _cveFreeType2GetTextSize($freetype, $text, $fontHeight, $thickness, $baseLi
         $sFreetypeDllType = "ptr"
     EndIf
 
-    Local $bTextIsString = VarGetType($text) == "String"
+    Local $bTextIsString = IsString($text)
     If $bTextIsString Then
         $text = _cveStringCreateFromStr($text)
     EndIf

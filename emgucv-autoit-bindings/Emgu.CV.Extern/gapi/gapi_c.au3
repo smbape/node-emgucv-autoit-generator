@@ -1183,7 +1183,7 @@ Func _cveGapiConcatHorV($v)
     ; CVAPI(cv::GMat*) cveGapiConcatHorV(std::vector<cv::GMat>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfGMatCreate()
@@ -1235,7 +1235,7 @@ Func _cveGapiConcatVertV($v)
     ; CVAPI(cv::GMat*) cveGapiConcatVertV(std::vector<cv::GMat>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfGMatCreate()
@@ -1479,7 +1479,7 @@ Func _cveGComputationCreate5($ins, $outs)
     ; CVAPI(cv::GComputation*) cveGComputationCreate5(std::vector<cv::GMat>* ins, std::vector<cv::GMat>* outs);
 
     Local $vecIns, $iArrInsSize
-    Local $bInsIsArray = VarGetType($ins) == "Array"
+    Local $bInsIsArray = IsArray($ins)
 
     If $bInsIsArray Then
         $vecIns = _VectorOfGMatCreate()
@@ -1500,7 +1500,7 @@ Func _cveGComputationCreate5($ins, $outs)
     EndIf
 
     Local $vecOuts, $iArrOutsSize
-    Local $bOutsIsArray = VarGetType($outs) == "Array"
+    Local $bOutsIsArray = IsArray($outs)
 
     If $bOutsIsArray Then
         $vecOuts = _VectorOfGMatCreate()
@@ -1681,7 +1681,7 @@ Func _cveGComputationApply5($computation, $inputs, $outputs)
     EndIf
 
     Local $vecInputs, $iArrInputsSize
-    Local $bInputsIsArray = VarGetType($inputs) == "Array"
+    Local $bInputsIsArray = IsArray($inputs)
 
     If $bInputsIsArray Then
         $vecInputs = _VectorOfMatCreate()
@@ -1702,7 +1702,7 @@ Func _cveGComputationApply5($computation, $inputs, $outputs)
     EndIf
 
     Local $vecOutputs, $iArrOutputsSize
-    Local $bOutputsIsArray = VarGetType($outputs) == "Array"
+    Local $bOutputsIsArray = IsArray($outputs)
 
     If $bOutputsIsArray Then
         $vecOutputs = _VectorOfMatCreate()

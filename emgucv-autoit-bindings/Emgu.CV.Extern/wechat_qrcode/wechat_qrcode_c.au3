@@ -4,7 +4,7 @@
 Func _cveWeChatQRCodeCreate($detectorPrototxtPath, $detectorCaffeModelPath, $superResolutionPrototxtPath, $superResolutionCaffeModelPath)
     ; CVAPI(cv::wechat_qrcode::WeChatQRCode*) cveWeChatQRCodeCreate(cv::String* detectorPrototxtPath, cv::String* detectorCaffeModelPath, cv::String* superResolutionPrototxtPath, cv::String* superResolutionCaffeModelPath);
 
-    Local $bDetectorPrototxtPathIsString = VarGetType($detectorPrototxtPath) == "String"
+    Local $bDetectorPrototxtPathIsString = IsString($detectorPrototxtPath)
     If $bDetectorPrototxtPathIsString Then
         $detectorPrototxtPath = _cveStringCreateFromStr($detectorPrototxtPath)
     EndIf
@@ -16,7 +16,7 @@ Func _cveWeChatQRCodeCreate($detectorPrototxtPath, $detectorCaffeModelPath, $sup
         $sDetectorPrototxtPathDllType = "ptr"
     EndIf
 
-    Local $bDetectorCaffeModelPathIsString = VarGetType($detectorCaffeModelPath) == "String"
+    Local $bDetectorCaffeModelPathIsString = IsString($detectorCaffeModelPath)
     If $bDetectorCaffeModelPathIsString Then
         $detectorCaffeModelPath = _cveStringCreateFromStr($detectorCaffeModelPath)
     EndIf
@@ -28,7 +28,7 @@ Func _cveWeChatQRCodeCreate($detectorPrototxtPath, $detectorCaffeModelPath, $sup
         $sDetectorCaffeModelPathDllType = "ptr"
     EndIf
 
-    Local $bSuperResolutionPrototxtPathIsString = VarGetType($superResolutionPrototxtPath) == "String"
+    Local $bSuperResolutionPrototxtPathIsString = IsString($superResolutionPrototxtPath)
     If $bSuperResolutionPrototxtPathIsString Then
         $superResolutionPrototxtPath = _cveStringCreateFromStr($superResolutionPrototxtPath)
     EndIf
@@ -40,7 +40,7 @@ Func _cveWeChatQRCodeCreate($detectorPrototxtPath, $detectorCaffeModelPath, $sup
         $sSuperResolutionPrototxtPathDllType = "ptr"
     EndIf
 
-    Local $bSuperResolutionCaffeModelPathIsString = VarGetType($superResolutionCaffeModelPath) == "String"
+    Local $bSuperResolutionCaffeModelPathIsString = IsString($superResolutionCaffeModelPath)
     If $bSuperResolutionCaffeModelPathIsString Then
         $superResolutionCaffeModelPath = _cveStringCreateFromStr($superResolutionCaffeModelPath)
     EndIf
@@ -122,52 +122,78 @@ Func _cveWeChatQRCodeDetectAndDecode($detector, $img, $points, $results)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveWeChatQRCodeDetectAndDecode", $sDetectorDllType, $detector, $sImgDllType, $img, $sPointsDllType, $points, $sResultsDllType, $results), "cveWeChatQRCodeDetectAndDecode", @error)
 EndFunc   ;==>_cveWeChatQRCodeDetectAndDecode
 
-Func _cveWeChatQRCodeDetectAndDecodeMat($detector, $matImg, $matPoints, $results)
-    ; cveWeChatQRCodeDetectAndDecode using cv::Mat instead of _*Array
+Func _cveWeChatQRCodeDetectAndDecodeTyped($detector, $typeOfImg, $img, $typeOfPoints, $points, $results)
 
-    Local $iArrImg, $vectorOfMatImg, $iArrImgSize
-    Local $bImgIsArray = VarGetType($matImg) == "Array"
+    Local $iArrImg, $vectorImg, $iArrImgSize
+    Local $bImgIsArray = IsArray($img)
+    Local $bImgCreate = IsDllStruct($img) And $typeOfImg == "Scalar"
 
-    If $bImgIsArray Then
-        $vectorOfMatImg = _VectorOfMatCreate()
+    If $typeOfImg == Default Then
+        $iArrImg = $img
+    ElseIf $bImgIsArray Then
+        $vectorImg = Call("_VectorOf" & $typeOfImg & "Create")
 
-        $iArrImgSize = UBound($matImg)
+        $iArrImgSize = UBound($img)
         For $i = 0 To $iArrImgSize - 1
-            _VectorOfMatPush($vectorOfMatImg, $matImg[$i])
+            Call("_VectorOf" & $typeOfImg & "Push", $vectorImg, $img[$i])
         Next
 
-        $iArrImg = _cveInputArrayFromVectorOfMat($vectorOfMatImg)
+        $iArrImg = Call("_cveInputArrayFromVectorOf" & $typeOfImg, $vectorImg)
     Else
-        $iArrImg = _cveInputArrayFromMat($matImg)
+        If $bImgCreate Then
+            $img = Call("_cve" & $typeOfImg & "Create", $img)
+        EndIf
+        $iArrImg = Call("_cveInputArrayFrom" & $typeOfImg, $img)
     EndIf
 
-    Local $oArrPoints, $vectorOfMatPoints, $iArrPointsSize
-    Local $bPointsIsArray = VarGetType($matPoints) == "Array"
+    Local $oArrPoints, $vectorPoints, $iArrPointsSize
+    Local $bPointsIsArray = IsArray($points)
+    Local $bPointsCreate = IsDllStruct($points) And $typeOfPoints == "Scalar"
 
-    If $bPointsIsArray Then
-        $vectorOfMatPoints = _VectorOfMatCreate()
+    If $typeOfPoints == Default Then
+        $oArrPoints = $points
+    ElseIf $bPointsIsArray Then
+        $vectorPoints = Call("_VectorOf" & $typeOfPoints & "Create")
 
-        $iArrPointsSize = UBound($matPoints)
+        $iArrPointsSize = UBound($points)
         For $i = 0 To $iArrPointsSize - 1
-            _VectorOfMatPush($vectorOfMatPoints, $matPoints[$i])
+            Call("_VectorOf" & $typeOfPoints & "Push", $vectorPoints, $points[$i])
         Next
 
-        $oArrPoints = _cveOutputArrayFromVectorOfMat($vectorOfMatPoints)
+        $oArrPoints = Call("_cveOutputArrayFromVectorOf" & $typeOfPoints, $vectorPoints)
     Else
-        $oArrPoints = _cveOutputArrayFromMat($matPoints)
+        If $bPointsCreate Then
+            $points = Call("_cve" & $typeOfPoints & "Create", $points)
+        EndIf
+        $oArrPoints = Call("_cveOutputArrayFrom" & $typeOfPoints, $points)
     EndIf
 
     _cveWeChatQRCodeDetectAndDecode($detector, $iArrImg, $oArrPoints, $results)
 
     If $bPointsIsArray Then
-        _VectorOfMatRelease($vectorOfMatPoints)
+        Call("_VectorOf" & $typeOfPoints & "Release", $vectorPoints)
     EndIf
 
-    _cveOutputArrayRelease($oArrPoints)
+    If $typeOfPoints <> Default Then
+        _cveOutputArrayRelease($oArrPoints)
+        If $bPointsCreate Then
+            Call("_cve" & $typeOfPoints & "Release", $points)
+        EndIf
+    EndIf
 
     If $bImgIsArray Then
-        _VectorOfMatRelease($vectorOfMatImg)
+        Call("_VectorOf" & $typeOfImg & "Release", $vectorImg)
     EndIf
 
-    _cveInputArrayRelease($iArrImg)
+    If $typeOfImg <> Default Then
+        _cveInputArrayRelease($iArrImg)
+        If $bImgCreate Then
+            Call("_cve" & $typeOfImg & "Release", $img)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveWeChatQRCodeDetectAndDecodeTyped
+
+Func _cveWeChatQRCodeDetectAndDecodeMat($detector, $img, $points, $results)
+    ; cveWeChatQRCodeDetectAndDecode using cv::Mat instead of _*Array
+    _cveWeChatQRCodeDetectAndDecodeTyped($detector, "Mat", $img, "Mat", $points, $results)
 EndFunc   ;==>_cveWeChatQRCodeDetectAndDecodeMat

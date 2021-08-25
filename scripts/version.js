@@ -1,31 +1,50 @@
 const { spawn } = require("child_process");
 const sysPath = require("path");
 const fs = require("fs");
-const series = require("async/series");
+const waterfall = require("async/waterfall");
 
 const regexEscape = str => {
     return str.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
 };
 
-const version = process.env.npm_package_version || require("./package.json").version;
-const readme = sysPath.join(__dirname, "README.md");
+const version = process.env.npm_package_version || require("../package.json").version;
+const readme = sysPath.join(__dirname, "..", "README.md");
 
-series([
+waterfall([
     next => {
         const oldReadmeContent = fs.readFileSync(readme).toString();
         const pos = oldReadmeContent.indexOf("emgucv-autoit-bindings-v");
-        const oldVersion = oldReadmeContent.slice(pos + "emgucv-autoit-bindings-v".length, oldReadmeContent.indexOf(".zip", pos));
+        if (pos === -1) {
+            next(null, false);
+            return;
+        }
+
+        const start = pos + "emgucv-autoit-bindings-v".length;
+        const end = oldReadmeContent.indexOf(".7z", start);
+        if (end === -1) {
+            next(null, false);
+            return;
+        }
+
+        const oldVersion = oldReadmeContent.slice(start, end);
         const newReadmeContent = oldReadmeContent.replace(new RegExp(regexEscape(oldVersion), "g"), version);
 
         if (newReadmeContent === oldReadmeContent) {
+            next(null, false);
+            return;
+        }
+
+        fs.writeFile(readme, newReadmeContent, err => {
+            next(err, true);
+        });
+    },
+
+    (performed, next) => {
+        if (!performed) {
             next();
             return;
         }
 
-        fs.writeFile(readme, newReadmeContent, next);
-    },
-
-    next => {
         const child = spawn("git", ["add", readme], {
             stdio: "inherit"
         });

@@ -263,7 +263,7 @@ Func _cveDeviceName($obj, $str)
         $sObjDllType = "ptr"
     EndIf
 
-    Local $bStrIsString = VarGetType($str) == "String"
+    Local $bStrIsString = IsString($str)
     If $bStrIsString Then
         $str = _cveStringCreateFromStr($str)
     EndIf
@@ -292,7 +292,7 @@ Func _cveDeviceVersion($obj, $str)
         $sObjDllType = "ptr"
     EndIf
 
-    Local $bStrIsString = VarGetType($str) == "String"
+    Local $bStrIsString = IsString($str)
     If $bStrIsString Then
         $str = _cveStringCreateFromStr($str)
     EndIf
@@ -321,7 +321,7 @@ Func _cveDeviceVendorName($obj, $str)
         $sObjDllType = "ptr"
     EndIf
 
-    Local $bStrIsString = VarGetType($str) == "String"
+    Local $bStrIsString = IsString($str)
     If $bStrIsString Then
         $str = _cveStringCreateFromStr($str)
     EndIf
@@ -350,7 +350,7 @@ Func _cveDeviceDriverVersion($obj, $str)
         $sObjDllType = "ptr"
     EndIf
 
-    Local $bStrIsString = VarGetType($str) == "String"
+    Local $bStrIsString = IsString($str)
     If $bStrIsString Then
         $str = _cveStringCreateFromStr($str)
     EndIf
@@ -379,7 +379,7 @@ Func _cveDeviceExtensions($obj, $str)
         $sObjDllType = "ptr"
     EndIf
 
-    Local $bStrIsString = VarGetType($str) == "String"
+    Local $bStrIsString = IsString($str)
     If $bStrIsString Then
         $str = _cveStringCreateFromStr($str)
     EndIf
@@ -408,7 +408,7 @@ Func _cveDeviceOpenCLVersion($obj, $str)
         $sObjDllType = "ptr"
     EndIf
 
-    Local $bStrIsString = VarGetType($str) == "String"
+    Local $bStrIsString = IsString($str)
     If $bStrIsString Then
         $str = _cveStringCreateFromStr($str)
     EndIf
@@ -437,7 +437,7 @@ Func _cveDeviceOpenCLCVersion($obj, $str)
         $sObjDllType = "ptr"
     EndIf
 
-    Local $bStrIsString = VarGetType($str) == "String"
+    Local $bStrIsString = IsString($str)
     If $bStrIsString Then
         $str = _cveStringCreateFromStr($str)
     EndIf

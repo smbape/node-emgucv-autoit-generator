@@ -66,30 +66,45 @@ Func _cveHfsPerformSegment($hfsSegment, $src, $dst, $ifDraw, $useGpu)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveHfsPerformSegment", $sHfsSegmentDllType, $hfsSegment, $sSrcDllType, $src, $sDstDllType, $dst, "boolean", $ifDraw, "boolean", $useGpu), "cveHfsPerformSegment", @error)
 EndFunc   ;==>_cveHfsPerformSegment
 
-Func _cveHfsPerformSegmentMat($hfsSegment, $matSrc, $dst, $ifDraw, $useGpu)
-    ; cveHfsPerformSegment using cv::Mat instead of _*Array
+Func _cveHfsPerformSegmentTyped($hfsSegment, $typeOfSrc, $src, $dst, $ifDraw, $useGpu)
 
-    Local $iArrSrc, $vectorOfMatSrc, $iArrSrcSize
-    Local $bSrcIsArray = VarGetType($matSrc) == "Array"
+    Local $iArrSrc, $vectorSrc, $iArrSrcSize
+    Local $bSrcIsArray = IsArray($src)
+    Local $bSrcCreate = IsDllStruct($src) And $typeOfSrc == "Scalar"
 
-    If $bSrcIsArray Then
-        $vectorOfMatSrc = _VectorOfMatCreate()
+    If $typeOfSrc == Default Then
+        $iArrSrc = $src
+    ElseIf $bSrcIsArray Then
+        $vectorSrc = Call("_VectorOf" & $typeOfSrc & "Create")
 
-        $iArrSrcSize = UBound($matSrc)
+        $iArrSrcSize = UBound($src)
         For $i = 0 To $iArrSrcSize - 1
-            _VectorOfMatPush($vectorOfMatSrc, $matSrc[$i])
+            Call("_VectorOf" & $typeOfSrc & "Push", $vectorSrc, $src[$i])
         Next
 
-        $iArrSrc = _cveInputArrayFromVectorOfMat($vectorOfMatSrc)
+        $iArrSrc = Call("_cveInputArrayFromVectorOf" & $typeOfSrc, $vectorSrc)
     Else
-        $iArrSrc = _cveInputArrayFromMat($matSrc)
+        If $bSrcCreate Then
+            $src = Call("_cve" & $typeOfSrc & "Create", $src)
+        EndIf
+        $iArrSrc = Call("_cveInputArrayFrom" & $typeOfSrc, $src)
     EndIf
 
     _cveHfsPerformSegment($hfsSegment, $iArrSrc, $dst, $ifDraw, $useGpu)
 
     If $bSrcIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrc)
+        Call("_VectorOf" & $typeOfSrc & "Release", $vectorSrc)
     EndIf
 
-    _cveInputArrayRelease($iArrSrc)
+    If $typeOfSrc <> Default Then
+        _cveInputArrayRelease($iArrSrc)
+        If $bSrcCreate Then
+            Call("_cve" & $typeOfSrc & "Release", $src)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveHfsPerformSegmentTyped
+
+Func _cveHfsPerformSegmentMat($hfsSegment, $src, $dst, $ifDraw, $useGpu)
+    ; cveHfsPerformSegment using cv::Mat instead of _*Array
+    _cveHfsPerformSegmentTyped($hfsSegment, "Mat", $src, $dst, $ifDraw, $useGpu)
 EndFunc   ;==>_cveHfsPerformSegmentMat

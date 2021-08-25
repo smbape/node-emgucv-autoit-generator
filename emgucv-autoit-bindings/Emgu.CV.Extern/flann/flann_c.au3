@@ -252,32 +252,49 @@ Func _cveFlannIndexCreate($features, $p, $distType)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveFlannIndexCreate", $sFeaturesDllType, $features, $sPDllType, $p, "int", $distType), "cveFlannIndexCreate", @error)
 EndFunc   ;==>_cveFlannIndexCreate
 
-Func _cveFlannIndexCreateMat($matFeatures, $p, $distType)
-    ; cveFlannIndexCreate using cv::Mat instead of _*Array
+Func _cveFlannIndexCreateTyped($typeOfFeatures, $features, $p, $distType)
 
-    Local $iArrFeatures, $vectorOfMatFeatures, $iArrFeaturesSize
-    Local $bFeaturesIsArray = VarGetType($matFeatures) == "Array"
+    Local $iArrFeatures, $vectorFeatures, $iArrFeaturesSize
+    Local $bFeaturesIsArray = IsArray($features)
+    Local $bFeaturesCreate = IsDllStruct($features) And $typeOfFeatures == "Scalar"
 
-    If $bFeaturesIsArray Then
-        $vectorOfMatFeatures = _VectorOfMatCreate()
+    If $typeOfFeatures == Default Then
+        $iArrFeatures = $features
+    ElseIf $bFeaturesIsArray Then
+        $vectorFeatures = Call("_VectorOf" & $typeOfFeatures & "Create")
 
-        $iArrFeaturesSize = UBound($matFeatures)
+        $iArrFeaturesSize = UBound($features)
         For $i = 0 To $iArrFeaturesSize - 1
-            _VectorOfMatPush($vectorOfMatFeatures, $matFeatures[$i])
+            Call("_VectorOf" & $typeOfFeatures & "Push", $vectorFeatures, $features[$i])
         Next
 
-        $iArrFeatures = _cveInputArrayFromVectorOfMat($vectorOfMatFeatures)
+        $iArrFeatures = Call("_cveInputArrayFromVectorOf" & $typeOfFeatures, $vectorFeatures)
     Else
-        $iArrFeatures = _cveInputArrayFromMat($matFeatures)
+        If $bFeaturesCreate Then
+            $features = Call("_cve" & $typeOfFeatures & "Create", $features)
+        EndIf
+        $iArrFeatures = Call("_cveInputArrayFrom" & $typeOfFeatures, $features)
     EndIf
 
     Local $retval = _cveFlannIndexCreate($iArrFeatures, $p, $distType)
 
     If $bFeaturesIsArray Then
-        _VectorOfMatRelease($vectorOfMatFeatures)
+        Call("_VectorOf" & $typeOfFeatures & "Release", $vectorFeatures)
     EndIf
 
-    _cveInputArrayRelease($iArrFeatures)
+    If $typeOfFeatures <> Default Then
+        _cveInputArrayRelease($iArrFeatures)
+        If $bFeaturesCreate Then
+            Call("_cve" & $typeOfFeatures & "Release", $features)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveFlannIndexCreateTyped
+
+Func _cveFlannIndexCreateMat($features, $p, $distType)
+    ; cveFlannIndexCreate using cv::Mat instead of _*Array
+    Local $retval = _cveFlannIndexCreateTyped("Mat", $features, $p, $distType)
 
     Return $retval
 EndFunc   ;==>_cveFlannIndexCreateMat
@@ -316,76 +333,113 @@ Func _cveFlannIndexKnnSearch($index, $queries, $indices, $dists, $knn, $checks, 
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cveFlannIndexKnnSearch", $sIndexDllType, $index, $sQueriesDllType, $queries, $sIndicesDllType, $indices, $sDistsDllType, $dists, "int", $knn, "int", $checks, "float", $eps, "boolean", $sorted), "cveFlannIndexKnnSearch", @error)
 EndFunc   ;==>_cveFlannIndexKnnSearch
 
-Func _cveFlannIndexKnnSearchMat($index, $matQueries, $matIndices, $matDists, $knn, $checks, $eps, $sorted)
-    ; cveFlannIndexKnnSearch using cv::Mat instead of _*Array
+Func _cveFlannIndexKnnSearchTyped($index, $typeOfQueries, $queries, $typeOfIndices, $indices, $typeOfDists, $dists, $knn, $checks, $eps, $sorted)
 
-    Local $iArrQueries, $vectorOfMatQueries, $iArrQueriesSize
-    Local $bQueriesIsArray = VarGetType($matQueries) == "Array"
+    Local $iArrQueries, $vectorQueries, $iArrQueriesSize
+    Local $bQueriesIsArray = IsArray($queries)
+    Local $bQueriesCreate = IsDllStruct($queries) And $typeOfQueries == "Scalar"
 
-    If $bQueriesIsArray Then
-        $vectorOfMatQueries = _VectorOfMatCreate()
+    If $typeOfQueries == Default Then
+        $iArrQueries = $queries
+    ElseIf $bQueriesIsArray Then
+        $vectorQueries = Call("_VectorOf" & $typeOfQueries & "Create")
 
-        $iArrQueriesSize = UBound($matQueries)
+        $iArrQueriesSize = UBound($queries)
         For $i = 0 To $iArrQueriesSize - 1
-            _VectorOfMatPush($vectorOfMatQueries, $matQueries[$i])
+            Call("_VectorOf" & $typeOfQueries & "Push", $vectorQueries, $queries[$i])
         Next
 
-        $iArrQueries = _cveInputArrayFromVectorOfMat($vectorOfMatQueries)
+        $iArrQueries = Call("_cveInputArrayFromVectorOf" & $typeOfQueries, $vectorQueries)
     Else
-        $iArrQueries = _cveInputArrayFromMat($matQueries)
+        If $bQueriesCreate Then
+            $queries = Call("_cve" & $typeOfQueries & "Create", $queries)
+        EndIf
+        $iArrQueries = Call("_cveInputArrayFrom" & $typeOfQueries, $queries)
     EndIf
 
-    Local $oArrIndices, $vectorOfMatIndices, $iArrIndicesSize
-    Local $bIndicesIsArray = VarGetType($matIndices) == "Array"
+    Local $oArrIndices, $vectorIndices, $iArrIndicesSize
+    Local $bIndicesIsArray = IsArray($indices)
+    Local $bIndicesCreate = IsDllStruct($indices) And $typeOfIndices == "Scalar"
 
-    If $bIndicesIsArray Then
-        $vectorOfMatIndices = _VectorOfMatCreate()
+    If $typeOfIndices == Default Then
+        $oArrIndices = $indices
+    ElseIf $bIndicesIsArray Then
+        $vectorIndices = Call("_VectorOf" & $typeOfIndices & "Create")
 
-        $iArrIndicesSize = UBound($matIndices)
+        $iArrIndicesSize = UBound($indices)
         For $i = 0 To $iArrIndicesSize - 1
-            _VectorOfMatPush($vectorOfMatIndices, $matIndices[$i])
+            Call("_VectorOf" & $typeOfIndices & "Push", $vectorIndices, $indices[$i])
         Next
 
-        $oArrIndices = _cveOutputArrayFromVectorOfMat($vectorOfMatIndices)
+        $oArrIndices = Call("_cveOutputArrayFromVectorOf" & $typeOfIndices, $vectorIndices)
     Else
-        $oArrIndices = _cveOutputArrayFromMat($matIndices)
+        If $bIndicesCreate Then
+            $indices = Call("_cve" & $typeOfIndices & "Create", $indices)
+        EndIf
+        $oArrIndices = Call("_cveOutputArrayFrom" & $typeOfIndices, $indices)
     EndIf
 
-    Local $oArrDists, $vectorOfMatDists, $iArrDistsSize
-    Local $bDistsIsArray = VarGetType($matDists) == "Array"
+    Local $oArrDists, $vectorDists, $iArrDistsSize
+    Local $bDistsIsArray = IsArray($dists)
+    Local $bDistsCreate = IsDllStruct($dists) And $typeOfDists == "Scalar"
 
-    If $bDistsIsArray Then
-        $vectorOfMatDists = _VectorOfMatCreate()
+    If $typeOfDists == Default Then
+        $oArrDists = $dists
+    ElseIf $bDistsIsArray Then
+        $vectorDists = Call("_VectorOf" & $typeOfDists & "Create")
 
-        $iArrDistsSize = UBound($matDists)
+        $iArrDistsSize = UBound($dists)
         For $i = 0 To $iArrDistsSize - 1
-            _VectorOfMatPush($vectorOfMatDists, $matDists[$i])
+            Call("_VectorOf" & $typeOfDists & "Push", $vectorDists, $dists[$i])
         Next
 
-        $oArrDists = _cveOutputArrayFromVectorOfMat($vectorOfMatDists)
+        $oArrDists = Call("_cveOutputArrayFromVectorOf" & $typeOfDists, $vectorDists)
     Else
-        $oArrDists = _cveOutputArrayFromMat($matDists)
+        If $bDistsCreate Then
+            $dists = Call("_cve" & $typeOfDists & "Create", $dists)
+        EndIf
+        $oArrDists = Call("_cveOutputArrayFrom" & $typeOfDists, $dists)
     EndIf
 
     _cveFlannIndexKnnSearch($index, $iArrQueries, $oArrIndices, $oArrDists, $knn, $checks, $eps, $sorted)
 
     If $bDistsIsArray Then
-        _VectorOfMatRelease($vectorOfMatDists)
+        Call("_VectorOf" & $typeOfDists & "Release", $vectorDists)
     EndIf
 
-    _cveOutputArrayRelease($oArrDists)
+    If $typeOfDists <> Default Then
+        _cveOutputArrayRelease($oArrDists)
+        If $bDistsCreate Then
+            Call("_cve" & $typeOfDists & "Release", $dists)
+        EndIf
+    EndIf
 
     If $bIndicesIsArray Then
-        _VectorOfMatRelease($vectorOfMatIndices)
+        Call("_VectorOf" & $typeOfIndices & "Release", $vectorIndices)
     EndIf
 
-    _cveOutputArrayRelease($oArrIndices)
+    If $typeOfIndices <> Default Then
+        _cveOutputArrayRelease($oArrIndices)
+        If $bIndicesCreate Then
+            Call("_cve" & $typeOfIndices & "Release", $indices)
+        EndIf
+    EndIf
 
     If $bQueriesIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueries)
+        Call("_VectorOf" & $typeOfQueries & "Release", $vectorQueries)
     EndIf
 
-    _cveInputArrayRelease($iArrQueries)
+    If $typeOfQueries <> Default Then
+        _cveInputArrayRelease($iArrQueries)
+        If $bQueriesCreate Then
+            Call("_cve" & $typeOfQueries & "Release", $queries)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveFlannIndexKnnSearchTyped
+
+Func _cveFlannIndexKnnSearchMat($index, $queries, $indices, $dists, $knn, $checks, $eps, $sorted)
+    ; cveFlannIndexKnnSearch using cv::Mat instead of _*Array
+    _cveFlannIndexKnnSearchTyped($index, "Mat", $queries, "Mat", $indices, "Mat", $dists, $knn, $checks, $eps, $sorted)
 EndFunc   ;==>_cveFlannIndexKnnSearchMat
 
 Func _cveFlannIndexRadiusSearch($index, $queries, $indices, $dists, $radius, $maxResults, $checks, $eps, $sorted)
@@ -421,76 +475,115 @@ Func _cveFlannIndexRadiusSearch($index, $queries, $indices, $dists, $radius, $ma
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "int:cdecl", "cveFlannIndexRadiusSearch", $sIndexDllType, $index, $sQueriesDllType, $queries, $sIndicesDllType, $indices, $sDistsDllType, $dists, "double", $radius, "int", $maxResults, "int", $checks, "float", $eps, "boolean", $sorted), "cveFlannIndexRadiusSearch", @error)
 EndFunc   ;==>_cveFlannIndexRadiusSearch
 
-Func _cveFlannIndexRadiusSearchMat($index, $matQueries, $matIndices, $matDists, $radius, $maxResults, $checks, $eps, $sorted)
-    ; cveFlannIndexRadiusSearch using cv::Mat instead of _*Array
+Func _cveFlannIndexRadiusSearchTyped($index, $typeOfQueries, $queries, $typeOfIndices, $indices, $typeOfDists, $dists, $radius, $maxResults, $checks, $eps, $sorted)
 
-    Local $iArrQueries, $vectorOfMatQueries, $iArrQueriesSize
-    Local $bQueriesIsArray = VarGetType($matQueries) == "Array"
+    Local $iArrQueries, $vectorQueries, $iArrQueriesSize
+    Local $bQueriesIsArray = IsArray($queries)
+    Local $bQueriesCreate = IsDllStruct($queries) And $typeOfQueries == "Scalar"
 
-    If $bQueriesIsArray Then
-        $vectorOfMatQueries = _VectorOfMatCreate()
+    If $typeOfQueries == Default Then
+        $iArrQueries = $queries
+    ElseIf $bQueriesIsArray Then
+        $vectorQueries = Call("_VectorOf" & $typeOfQueries & "Create")
 
-        $iArrQueriesSize = UBound($matQueries)
+        $iArrQueriesSize = UBound($queries)
         For $i = 0 To $iArrQueriesSize - 1
-            _VectorOfMatPush($vectorOfMatQueries, $matQueries[$i])
+            Call("_VectorOf" & $typeOfQueries & "Push", $vectorQueries, $queries[$i])
         Next
 
-        $iArrQueries = _cveInputArrayFromVectorOfMat($vectorOfMatQueries)
+        $iArrQueries = Call("_cveInputArrayFromVectorOf" & $typeOfQueries, $vectorQueries)
     Else
-        $iArrQueries = _cveInputArrayFromMat($matQueries)
+        If $bQueriesCreate Then
+            $queries = Call("_cve" & $typeOfQueries & "Create", $queries)
+        EndIf
+        $iArrQueries = Call("_cveInputArrayFrom" & $typeOfQueries, $queries)
     EndIf
 
-    Local $oArrIndices, $vectorOfMatIndices, $iArrIndicesSize
-    Local $bIndicesIsArray = VarGetType($matIndices) == "Array"
+    Local $oArrIndices, $vectorIndices, $iArrIndicesSize
+    Local $bIndicesIsArray = IsArray($indices)
+    Local $bIndicesCreate = IsDllStruct($indices) And $typeOfIndices == "Scalar"
 
-    If $bIndicesIsArray Then
-        $vectorOfMatIndices = _VectorOfMatCreate()
+    If $typeOfIndices == Default Then
+        $oArrIndices = $indices
+    ElseIf $bIndicesIsArray Then
+        $vectorIndices = Call("_VectorOf" & $typeOfIndices & "Create")
 
-        $iArrIndicesSize = UBound($matIndices)
+        $iArrIndicesSize = UBound($indices)
         For $i = 0 To $iArrIndicesSize - 1
-            _VectorOfMatPush($vectorOfMatIndices, $matIndices[$i])
+            Call("_VectorOf" & $typeOfIndices & "Push", $vectorIndices, $indices[$i])
         Next
 
-        $oArrIndices = _cveOutputArrayFromVectorOfMat($vectorOfMatIndices)
+        $oArrIndices = Call("_cveOutputArrayFromVectorOf" & $typeOfIndices, $vectorIndices)
     Else
-        $oArrIndices = _cveOutputArrayFromMat($matIndices)
+        If $bIndicesCreate Then
+            $indices = Call("_cve" & $typeOfIndices & "Create", $indices)
+        EndIf
+        $oArrIndices = Call("_cveOutputArrayFrom" & $typeOfIndices, $indices)
     EndIf
 
-    Local $oArrDists, $vectorOfMatDists, $iArrDistsSize
-    Local $bDistsIsArray = VarGetType($matDists) == "Array"
+    Local $oArrDists, $vectorDists, $iArrDistsSize
+    Local $bDistsIsArray = IsArray($dists)
+    Local $bDistsCreate = IsDllStruct($dists) And $typeOfDists == "Scalar"
 
-    If $bDistsIsArray Then
-        $vectorOfMatDists = _VectorOfMatCreate()
+    If $typeOfDists == Default Then
+        $oArrDists = $dists
+    ElseIf $bDistsIsArray Then
+        $vectorDists = Call("_VectorOf" & $typeOfDists & "Create")
 
-        $iArrDistsSize = UBound($matDists)
+        $iArrDistsSize = UBound($dists)
         For $i = 0 To $iArrDistsSize - 1
-            _VectorOfMatPush($vectorOfMatDists, $matDists[$i])
+            Call("_VectorOf" & $typeOfDists & "Push", $vectorDists, $dists[$i])
         Next
 
-        $oArrDists = _cveOutputArrayFromVectorOfMat($vectorOfMatDists)
+        $oArrDists = Call("_cveOutputArrayFromVectorOf" & $typeOfDists, $vectorDists)
     Else
-        $oArrDists = _cveOutputArrayFromMat($matDists)
+        If $bDistsCreate Then
+            $dists = Call("_cve" & $typeOfDists & "Create", $dists)
+        EndIf
+        $oArrDists = Call("_cveOutputArrayFrom" & $typeOfDists, $dists)
     EndIf
 
     Local $retval = _cveFlannIndexRadiusSearch($index, $iArrQueries, $oArrIndices, $oArrDists, $radius, $maxResults, $checks, $eps, $sorted)
 
     If $bDistsIsArray Then
-        _VectorOfMatRelease($vectorOfMatDists)
+        Call("_VectorOf" & $typeOfDists & "Release", $vectorDists)
     EndIf
 
-    _cveOutputArrayRelease($oArrDists)
+    If $typeOfDists <> Default Then
+        _cveOutputArrayRelease($oArrDists)
+        If $bDistsCreate Then
+            Call("_cve" & $typeOfDists & "Release", $dists)
+        EndIf
+    EndIf
 
     If $bIndicesIsArray Then
-        _VectorOfMatRelease($vectorOfMatIndices)
+        Call("_VectorOf" & $typeOfIndices & "Release", $vectorIndices)
     EndIf
 
-    _cveOutputArrayRelease($oArrIndices)
+    If $typeOfIndices <> Default Then
+        _cveOutputArrayRelease($oArrIndices)
+        If $bIndicesCreate Then
+            Call("_cve" & $typeOfIndices & "Release", $indices)
+        EndIf
+    EndIf
 
     If $bQueriesIsArray Then
-        _VectorOfMatRelease($vectorOfMatQueries)
+        Call("_VectorOf" & $typeOfQueries & "Release", $vectorQueries)
     EndIf
 
-    _cveInputArrayRelease($iArrQueries)
+    If $typeOfQueries <> Default Then
+        _cveInputArrayRelease($iArrQueries)
+        If $bQueriesCreate Then
+            Call("_cve" & $typeOfQueries & "Release", $queries)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveFlannIndexRadiusSearchTyped
+
+Func _cveFlannIndexRadiusSearchMat($index, $queries, $indices, $dists, $radius, $maxResults, $checks, $eps, $sorted)
+    ; cveFlannIndexRadiusSearch using cv::Mat instead of _*Array
+    Local $retval = _cveFlannIndexRadiusSearchTyped($index, "Mat", $queries, "Mat", $indices, "Mat", $dists, $radius, $maxResults, $checks, $eps, $sorted)
 
     Return $retval
 EndFunc   ;==>_cveFlannIndexRadiusSearchMat

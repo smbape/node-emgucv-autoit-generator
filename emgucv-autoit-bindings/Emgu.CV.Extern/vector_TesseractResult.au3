@@ -15,7 +15,7 @@ Func _VectorOfTesseractResultGetSize($v)
     ; CVAPI(int) VectorOfTesseractResultGetSize(std::vector<TesseractResult>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfTesseractResultCreate()
@@ -48,7 +48,7 @@ Func _VectorOfTesseractResultPush($v, $value)
     ; CVAPI(void) VectorOfTesseractResultPush(std::vector<TesseractResult>* v, TesseractResult* value);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfTesseractResultCreate()
@@ -86,7 +86,7 @@ Func _VectorOfTesseractResultPushMulti($v, $values, $count)
     ; CVAPI(void) VectorOfTesseractResultPushMulti(std::vector<TesseractResult>* v, TesseractResult* values, int count);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfTesseractResultCreate()
@@ -124,7 +124,7 @@ Func _VectorOfTesseractResultPushVector($v, $other)
     ; CVAPI(void) VectorOfTesseractResultPushVector(std::vector<TesseractResult>* v, std::vector<TesseractResult>* other);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfTesseractResultCreate()
@@ -145,7 +145,7 @@ Func _VectorOfTesseractResultPushVector($v, $other)
     EndIf
 
     Local $vecOther, $iArrOtherSize
-    Local $bOtherIsArray = VarGetType($other) == "Array"
+    Local $bOtherIsArray = IsArray($other)
 
     If $bOtherIsArray Then
         $vecOther = _VectorOfTesseractResultCreate()
@@ -180,7 +180,7 @@ Func _VectorOfTesseractResultClear($v)
     ; CVAPI(void) VectorOfTesseractResultClear(std::vector<TesseractResult>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfTesseractResultCreate()
@@ -211,7 +211,7 @@ Func _VectorOfTesseractResultRelease($v)
     ; CVAPI(void) VectorOfTesseractResultRelease(std::vector<TesseractResult>** v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfTesseractResultCreate()
@@ -244,7 +244,7 @@ Func _VectorOfTesseractResultCopyData($v, $data)
     ; CVAPI(void) VectorOfTesseractResultCopyData(std::vector<TesseractResult>* v, TesseractResult* data);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfTesseractResultCreate()
@@ -282,7 +282,7 @@ Func _VectorOfTesseractResultGetStartAddress($v)
     ; CVAPI(TesseractResult*) VectorOfTesseractResultGetStartAddress(std::vector<TesseractResult>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfTesseractResultCreate()
@@ -315,7 +315,7 @@ Func _VectorOfTesseractResultGetEndAddress($v)
     ; CVAPI(void*) VectorOfTesseractResultGetEndAddress(std::vector<TesseractResult>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfTesseractResultCreate()
@@ -348,7 +348,7 @@ Func _VectorOfTesseractResultGetItem($vec, $index, $element)
     ; CVAPI(void) VectorOfTesseractResultGetItem(std::vector<TesseractResult>* vec, int index, TesseractResult* element);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfTesseractResultCreate()
@@ -386,7 +386,7 @@ Func _VectorOfTesseractResultGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfTesseractResultGetItemPtr(std::vector<TesseractResult>* vec, int index, TesseractResult** element);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfTesseractResultCreate()
@@ -426,7 +426,7 @@ Func _cveInputArrayFromVectorOfTesseractResult($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfTesseractResult(std::vector<TesseractResult>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfTesseractResultCreate()
@@ -459,7 +459,7 @@ Func _cveOutputArrayFromVectorOfTesseractResult($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfTesseractResult(std::vector<TesseractResult>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfTesseractResultCreate()
@@ -492,7 +492,7 @@ Func _cveInputOutputArrayFromVectorOfTesseractResult($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfTesseractResult(std::vector<TesseractResult>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfTesseractResultCreate()

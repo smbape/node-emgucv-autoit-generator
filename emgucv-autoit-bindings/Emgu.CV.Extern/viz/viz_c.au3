@@ -4,7 +4,7 @@
 Func _cveViz3dCreate($s)
     ; CVAPI(cv::viz::Viz3d*) cveViz3dCreate(cv::String* s);
 
-    Local $bSIsString = VarGetType($s) == "String"
+    Local $bSIsString = IsString($s)
     If $bSIsString Then
         $s = _cveStringCreateFromStr($s)
     EndIf
@@ -35,7 +35,7 @@ Func _cveViz3dShowWidget($viz, $id, $widget, $pose)
         $sVizDllType = "ptr"
     EndIf
 
-    Local $bIdIsString = VarGetType($id) == "String"
+    Local $bIdIsString = IsString($id)
     If $bIdIsString Then
         $id = _cveStringCreateFromStr($id)
     EndIf
@@ -78,7 +78,7 @@ Func _cveViz3dSetWidgetPose($viz, $id, $pose)
         $sVizDllType = "ptr"
     EndIf
 
-    Local $bIdIsString = VarGetType($id) == "String"
+    Local $bIdIsString = IsString($id)
     If $bIdIsString Then
         $id = _cveStringCreateFromStr($id)
     EndIf
@@ -114,7 +114,7 @@ Func _cveViz3dRemoveWidget($viz, $id)
         $sVizDllType = "ptr"
     EndIf
 
-    Local $bIdIsString = VarGetType($id) == "String"
+    Local $bIdIsString = IsString($id)
     If $bIdIsString Then
         $id = _cveStringCreateFromStr($id)
     EndIf
@@ -202,7 +202,7 @@ EndFunc   ;==>_cveViz3dRelease
 Func _cveWTextCreate($text, $pos, $fontSize, $color, $widget2D, $widget)
     ; CVAPI(cv::viz::WText*) cveWTextCreate(cv::String* text, CvPoint* pos, int fontSize, CvScalar* color, cv::viz::Widget2D** widget2D, cv::viz::Widget** widget);
 
-    Local $bTextIsString = VarGetType($text) == "String"
+    Local $bTextIsString = IsString($text)
     If $bTextIsString Then
         $text = _cveStringCreateFromStr($text)
     EndIf
@@ -345,54 +345,82 @@ Func _cveWCloudCreateWithColorArray($cloud, $color, $widget3d, $widget)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWCloudCreateWithColorArray", $sCloudDllType, $cloud, $sColorDllType, $color, $sWidget3dDllType, $widget3d, $sWidgetDllType, $widget), "cveWCloudCreateWithColorArray", @error)
 EndFunc   ;==>_cveWCloudCreateWithColorArray
 
-Func _cveWCloudCreateWithColorArrayMat($matCloud, $matColor, $widget3d, $widget)
-    ; cveWCloudCreateWithColorArray using cv::Mat instead of _*Array
+Func _cveWCloudCreateWithColorArrayTyped($typeOfCloud, $cloud, $typeOfColor, $color, $widget3d, $widget)
 
-    Local $iArrCloud, $vectorOfMatCloud, $iArrCloudSize
-    Local $bCloudIsArray = VarGetType($matCloud) == "Array"
+    Local $iArrCloud, $vectorCloud, $iArrCloudSize
+    Local $bCloudIsArray = IsArray($cloud)
+    Local $bCloudCreate = IsDllStruct($cloud) And $typeOfCloud == "Scalar"
 
-    If $bCloudIsArray Then
-        $vectorOfMatCloud = _VectorOfMatCreate()
+    If $typeOfCloud == Default Then
+        $iArrCloud = $cloud
+    ElseIf $bCloudIsArray Then
+        $vectorCloud = Call("_VectorOf" & $typeOfCloud & "Create")
 
-        $iArrCloudSize = UBound($matCloud)
+        $iArrCloudSize = UBound($cloud)
         For $i = 0 To $iArrCloudSize - 1
-            _VectorOfMatPush($vectorOfMatCloud, $matCloud[$i])
+            Call("_VectorOf" & $typeOfCloud & "Push", $vectorCloud, $cloud[$i])
         Next
 
-        $iArrCloud = _cveInputArrayFromVectorOfMat($vectorOfMatCloud)
+        $iArrCloud = Call("_cveInputArrayFromVectorOf" & $typeOfCloud, $vectorCloud)
     Else
-        $iArrCloud = _cveInputArrayFromMat($matCloud)
+        If $bCloudCreate Then
+            $cloud = Call("_cve" & $typeOfCloud & "Create", $cloud)
+        EndIf
+        $iArrCloud = Call("_cveInputArrayFrom" & $typeOfCloud, $cloud)
     EndIf
 
-    Local $iArrColor, $vectorOfMatColor, $iArrColorSize
-    Local $bColorIsArray = VarGetType($matColor) == "Array"
+    Local $iArrColor, $vectorColor, $iArrColorSize
+    Local $bColorIsArray = IsArray($color)
+    Local $bColorCreate = IsDllStruct($color) And $typeOfColor == "Scalar"
 
-    If $bColorIsArray Then
-        $vectorOfMatColor = _VectorOfMatCreate()
+    If $typeOfColor == Default Then
+        $iArrColor = $color
+    ElseIf $bColorIsArray Then
+        $vectorColor = Call("_VectorOf" & $typeOfColor & "Create")
 
-        $iArrColorSize = UBound($matColor)
+        $iArrColorSize = UBound($color)
         For $i = 0 To $iArrColorSize - 1
-            _VectorOfMatPush($vectorOfMatColor, $matColor[$i])
+            Call("_VectorOf" & $typeOfColor & "Push", $vectorColor, $color[$i])
         Next
 
-        $iArrColor = _cveInputArrayFromVectorOfMat($vectorOfMatColor)
+        $iArrColor = Call("_cveInputArrayFromVectorOf" & $typeOfColor, $vectorColor)
     Else
-        $iArrColor = _cveInputArrayFromMat($matColor)
+        If $bColorCreate Then
+            $color = Call("_cve" & $typeOfColor & "Create", $color)
+        EndIf
+        $iArrColor = Call("_cveInputArrayFrom" & $typeOfColor, $color)
     EndIf
 
     Local $retval = _cveWCloudCreateWithColorArray($iArrCloud, $iArrColor, $widget3d, $widget)
 
     If $bColorIsArray Then
-        _VectorOfMatRelease($vectorOfMatColor)
+        Call("_VectorOf" & $typeOfColor & "Release", $vectorColor)
     EndIf
 
-    _cveInputArrayRelease($iArrColor)
+    If $typeOfColor <> Default Then
+        _cveInputArrayRelease($iArrColor)
+        If $bColorCreate Then
+            Call("_cve" & $typeOfColor & "Release", $color)
+        EndIf
+    EndIf
 
     If $bCloudIsArray Then
-        _VectorOfMatRelease($vectorOfMatCloud)
+        Call("_VectorOf" & $typeOfCloud & "Release", $vectorCloud)
     EndIf
 
-    _cveInputArrayRelease($iArrCloud)
+    If $typeOfCloud <> Default Then
+        _cveInputArrayRelease($iArrCloud)
+        If $bCloudCreate Then
+            Call("_cve" & $typeOfCloud & "Release", $cloud)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveWCloudCreateWithColorArrayTyped
+
+Func _cveWCloudCreateWithColorArrayMat($cloud, $color, $widget3d, $widget)
+    ; cveWCloudCreateWithColorArray using cv::Mat instead of _*Array
+    Local $retval = _cveWCloudCreateWithColorArrayTyped("Mat", $cloud, "Mat", $color, $widget3d, $widget)
 
     Return $retval
 EndFunc   ;==>_cveWCloudCreateWithColorArrayMat
@@ -434,32 +462,49 @@ Func _cveWCloudCreateWithColor($cloud, $color, $widget3d, $widget)
     Return CVEDllCallResult(DllCall($_h_cvextern_dll, "ptr:cdecl", "cveWCloudCreateWithColor", $sCloudDllType, $cloud, $sColorDllType, $color, $sWidget3dDllType, $widget3d, $sWidgetDllType, $widget), "cveWCloudCreateWithColor", @error)
 EndFunc   ;==>_cveWCloudCreateWithColor
 
-Func _cveWCloudCreateWithColorMat($matCloud, $color, $widget3d, $widget)
-    ; cveWCloudCreateWithColor using cv::Mat instead of _*Array
+Func _cveWCloudCreateWithColorTyped($typeOfCloud, $cloud, $color, $widget3d, $widget)
 
-    Local $iArrCloud, $vectorOfMatCloud, $iArrCloudSize
-    Local $bCloudIsArray = VarGetType($matCloud) == "Array"
+    Local $iArrCloud, $vectorCloud, $iArrCloudSize
+    Local $bCloudIsArray = IsArray($cloud)
+    Local $bCloudCreate = IsDllStruct($cloud) And $typeOfCloud == "Scalar"
 
-    If $bCloudIsArray Then
-        $vectorOfMatCloud = _VectorOfMatCreate()
+    If $typeOfCloud == Default Then
+        $iArrCloud = $cloud
+    ElseIf $bCloudIsArray Then
+        $vectorCloud = Call("_VectorOf" & $typeOfCloud & "Create")
 
-        $iArrCloudSize = UBound($matCloud)
+        $iArrCloudSize = UBound($cloud)
         For $i = 0 To $iArrCloudSize - 1
-            _VectorOfMatPush($vectorOfMatCloud, $matCloud[$i])
+            Call("_VectorOf" & $typeOfCloud & "Push", $vectorCloud, $cloud[$i])
         Next
 
-        $iArrCloud = _cveInputArrayFromVectorOfMat($vectorOfMatCloud)
+        $iArrCloud = Call("_cveInputArrayFromVectorOf" & $typeOfCloud, $vectorCloud)
     Else
-        $iArrCloud = _cveInputArrayFromMat($matCloud)
+        If $bCloudCreate Then
+            $cloud = Call("_cve" & $typeOfCloud & "Create", $cloud)
+        EndIf
+        $iArrCloud = Call("_cveInputArrayFrom" & $typeOfCloud, $cloud)
     EndIf
 
     Local $retval = _cveWCloudCreateWithColor($iArrCloud, $color, $widget3d, $widget)
 
     If $bCloudIsArray Then
-        _VectorOfMatRelease($vectorOfMatCloud)
+        Call("_VectorOf" & $typeOfCloud & "Release", $vectorCloud)
     EndIf
 
-    _cveInputArrayRelease($iArrCloud)
+    If $typeOfCloud <> Default Then
+        _cveInputArrayRelease($iArrCloud)
+        If $bCloudCreate Then
+            Call("_cve" & $typeOfCloud & "Release", $cloud)
+        EndIf
+    EndIf
+
+    Return $retval
+EndFunc   ;==>_cveWCloudCreateWithColorTyped
+
+Func _cveWCloudCreateWithColorMat($cloud, $color, $widget3d, $widget)
+    ; cveWCloudCreateWithColor using cv::Mat instead of _*Array
+    Local $retval = _cveWCloudCreateWithColorTyped("Mat", $cloud, $color, $widget3d, $widget)
 
     Return $retval
 EndFunc   ;==>_cveWCloudCreateWithColorMat
@@ -482,7 +527,7 @@ EndFunc   ;==>_cveWCloudRelease
 Func _cveWriteCloud($file, $cloud, $colors, $normals, $binary)
     ; CVAPI(void) cveWriteCloud(cv::String* file, cv::_InputArray* cloud, cv::_InputArray* colors, cv::_InputArray* normals, bool binary);
 
-    Local $bFileIsString = VarGetType($file) == "String"
+    Local $bFileIsString = IsString($file)
     If $bFileIsString Then
         $file = _cveStringCreateFromStr($file)
     EndIf
@@ -522,82 +567,119 @@ Func _cveWriteCloud($file, $cloud, $colors, $normals, $binary)
     EndIf
 EndFunc   ;==>_cveWriteCloud
 
-Func _cveWriteCloudMat($file, $matCloud, $matColors, $matNormals, $binary)
-    ; cveWriteCloud using cv::Mat instead of _*Array
+Func _cveWriteCloudTyped($file, $typeOfCloud, $cloud, $typeOfColors, $colors, $typeOfNormals, $normals, $binary)
 
-    Local $iArrCloud, $vectorOfMatCloud, $iArrCloudSize
-    Local $bCloudIsArray = VarGetType($matCloud) == "Array"
+    Local $iArrCloud, $vectorCloud, $iArrCloudSize
+    Local $bCloudIsArray = IsArray($cloud)
+    Local $bCloudCreate = IsDllStruct($cloud) And $typeOfCloud == "Scalar"
 
-    If $bCloudIsArray Then
-        $vectorOfMatCloud = _VectorOfMatCreate()
+    If $typeOfCloud == Default Then
+        $iArrCloud = $cloud
+    ElseIf $bCloudIsArray Then
+        $vectorCloud = Call("_VectorOf" & $typeOfCloud & "Create")
 
-        $iArrCloudSize = UBound($matCloud)
+        $iArrCloudSize = UBound($cloud)
         For $i = 0 To $iArrCloudSize - 1
-            _VectorOfMatPush($vectorOfMatCloud, $matCloud[$i])
+            Call("_VectorOf" & $typeOfCloud & "Push", $vectorCloud, $cloud[$i])
         Next
 
-        $iArrCloud = _cveInputArrayFromVectorOfMat($vectorOfMatCloud)
+        $iArrCloud = Call("_cveInputArrayFromVectorOf" & $typeOfCloud, $vectorCloud)
     Else
-        $iArrCloud = _cveInputArrayFromMat($matCloud)
+        If $bCloudCreate Then
+            $cloud = Call("_cve" & $typeOfCloud & "Create", $cloud)
+        EndIf
+        $iArrCloud = Call("_cveInputArrayFrom" & $typeOfCloud, $cloud)
     EndIf
 
-    Local $iArrColors, $vectorOfMatColors, $iArrColorsSize
-    Local $bColorsIsArray = VarGetType($matColors) == "Array"
+    Local $iArrColors, $vectorColors, $iArrColorsSize
+    Local $bColorsIsArray = IsArray($colors)
+    Local $bColorsCreate = IsDllStruct($colors) And $typeOfColors == "Scalar"
 
-    If $bColorsIsArray Then
-        $vectorOfMatColors = _VectorOfMatCreate()
+    If $typeOfColors == Default Then
+        $iArrColors = $colors
+    ElseIf $bColorsIsArray Then
+        $vectorColors = Call("_VectorOf" & $typeOfColors & "Create")
 
-        $iArrColorsSize = UBound($matColors)
+        $iArrColorsSize = UBound($colors)
         For $i = 0 To $iArrColorsSize - 1
-            _VectorOfMatPush($vectorOfMatColors, $matColors[$i])
+            Call("_VectorOf" & $typeOfColors & "Push", $vectorColors, $colors[$i])
         Next
 
-        $iArrColors = _cveInputArrayFromVectorOfMat($vectorOfMatColors)
+        $iArrColors = Call("_cveInputArrayFromVectorOf" & $typeOfColors, $vectorColors)
     Else
-        $iArrColors = _cveInputArrayFromMat($matColors)
+        If $bColorsCreate Then
+            $colors = Call("_cve" & $typeOfColors & "Create", $colors)
+        EndIf
+        $iArrColors = Call("_cveInputArrayFrom" & $typeOfColors, $colors)
     EndIf
 
-    Local $iArrNormals, $vectorOfMatNormals, $iArrNormalsSize
-    Local $bNormalsIsArray = VarGetType($matNormals) == "Array"
+    Local $iArrNormals, $vectorNormals, $iArrNormalsSize
+    Local $bNormalsIsArray = IsArray($normals)
+    Local $bNormalsCreate = IsDllStruct($normals) And $typeOfNormals == "Scalar"
 
-    If $bNormalsIsArray Then
-        $vectorOfMatNormals = _VectorOfMatCreate()
+    If $typeOfNormals == Default Then
+        $iArrNormals = $normals
+    ElseIf $bNormalsIsArray Then
+        $vectorNormals = Call("_VectorOf" & $typeOfNormals & "Create")
 
-        $iArrNormalsSize = UBound($matNormals)
+        $iArrNormalsSize = UBound($normals)
         For $i = 0 To $iArrNormalsSize - 1
-            _VectorOfMatPush($vectorOfMatNormals, $matNormals[$i])
+            Call("_VectorOf" & $typeOfNormals & "Push", $vectorNormals, $normals[$i])
         Next
 
-        $iArrNormals = _cveInputArrayFromVectorOfMat($vectorOfMatNormals)
+        $iArrNormals = Call("_cveInputArrayFromVectorOf" & $typeOfNormals, $vectorNormals)
     Else
-        $iArrNormals = _cveInputArrayFromMat($matNormals)
+        If $bNormalsCreate Then
+            $normals = Call("_cve" & $typeOfNormals & "Create", $normals)
+        EndIf
+        $iArrNormals = Call("_cveInputArrayFrom" & $typeOfNormals, $normals)
     EndIf
 
     _cveWriteCloud($file, $iArrCloud, $iArrColors, $iArrNormals, $binary)
 
     If $bNormalsIsArray Then
-        _VectorOfMatRelease($vectorOfMatNormals)
+        Call("_VectorOf" & $typeOfNormals & "Release", $vectorNormals)
     EndIf
 
-    _cveInputArrayRelease($iArrNormals)
+    If $typeOfNormals <> Default Then
+        _cveInputArrayRelease($iArrNormals)
+        If $bNormalsCreate Then
+            Call("_cve" & $typeOfNormals & "Release", $normals)
+        EndIf
+    EndIf
 
     If $bColorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatColors)
+        Call("_VectorOf" & $typeOfColors & "Release", $vectorColors)
     EndIf
 
-    _cveInputArrayRelease($iArrColors)
+    If $typeOfColors <> Default Then
+        _cveInputArrayRelease($iArrColors)
+        If $bColorsCreate Then
+            Call("_cve" & $typeOfColors & "Release", $colors)
+        EndIf
+    EndIf
 
     If $bCloudIsArray Then
-        _VectorOfMatRelease($vectorOfMatCloud)
+        Call("_VectorOf" & $typeOfCloud & "Release", $vectorCloud)
     EndIf
 
-    _cveInputArrayRelease($iArrCloud)
+    If $typeOfCloud <> Default Then
+        _cveInputArrayRelease($iArrCloud)
+        If $bCloudCreate Then
+            Call("_cve" & $typeOfCloud & "Release", $cloud)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveWriteCloudTyped
+
+Func _cveWriteCloudMat($file, $cloud, $colors, $normals, $binary)
+    ; cveWriteCloud using cv::Mat instead of _*Array
+    _cveWriteCloudTyped($file, "Mat", $cloud, "Mat", $colors, "Mat", $normals, $binary)
 EndFunc   ;==>_cveWriteCloudMat
 
 Func _cveReadCloud($file, $cloud, $colors, $normals)
     ; CVAPI(void) cveReadCloud(cv::String* file, cv::Mat* cloud, cv::_OutputArray* colors, cv::_OutputArray* normals);
 
-    Local $bFileIsString = VarGetType($file) == "String"
+    Local $bFileIsString = IsString($file)
     If $bFileIsString Then
         $file = _cveStringCreateFromStr($file)
     EndIf
@@ -637,54 +719,80 @@ Func _cveReadCloud($file, $cloud, $colors, $normals)
     EndIf
 EndFunc   ;==>_cveReadCloud
 
-Func _cveReadCloudMat($file, $cloud, $matColors, $matNormals)
-    ; cveReadCloud using cv::Mat instead of _*Array
+Func _cveReadCloudTyped($file, $cloud, $typeOfColors, $colors, $typeOfNormals, $normals)
 
-    Local $oArrColors, $vectorOfMatColors, $iArrColorsSize
-    Local $bColorsIsArray = VarGetType($matColors) == "Array"
+    Local $oArrColors, $vectorColors, $iArrColorsSize
+    Local $bColorsIsArray = IsArray($colors)
+    Local $bColorsCreate = IsDllStruct($colors) And $typeOfColors == "Scalar"
 
-    If $bColorsIsArray Then
-        $vectorOfMatColors = _VectorOfMatCreate()
+    If $typeOfColors == Default Then
+        $oArrColors = $colors
+    ElseIf $bColorsIsArray Then
+        $vectorColors = Call("_VectorOf" & $typeOfColors & "Create")
 
-        $iArrColorsSize = UBound($matColors)
+        $iArrColorsSize = UBound($colors)
         For $i = 0 To $iArrColorsSize - 1
-            _VectorOfMatPush($vectorOfMatColors, $matColors[$i])
+            Call("_VectorOf" & $typeOfColors & "Push", $vectorColors, $colors[$i])
         Next
 
-        $oArrColors = _cveOutputArrayFromVectorOfMat($vectorOfMatColors)
+        $oArrColors = Call("_cveOutputArrayFromVectorOf" & $typeOfColors, $vectorColors)
     Else
-        $oArrColors = _cveOutputArrayFromMat($matColors)
+        If $bColorsCreate Then
+            $colors = Call("_cve" & $typeOfColors & "Create", $colors)
+        EndIf
+        $oArrColors = Call("_cveOutputArrayFrom" & $typeOfColors, $colors)
     EndIf
 
-    Local $oArrNormals, $vectorOfMatNormals, $iArrNormalsSize
-    Local $bNormalsIsArray = VarGetType($matNormals) == "Array"
+    Local $oArrNormals, $vectorNormals, $iArrNormalsSize
+    Local $bNormalsIsArray = IsArray($normals)
+    Local $bNormalsCreate = IsDllStruct($normals) And $typeOfNormals == "Scalar"
 
-    If $bNormalsIsArray Then
-        $vectorOfMatNormals = _VectorOfMatCreate()
+    If $typeOfNormals == Default Then
+        $oArrNormals = $normals
+    ElseIf $bNormalsIsArray Then
+        $vectorNormals = Call("_VectorOf" & $typeOfNormals & "Create")
 
-        $iArrNormalsSize = UBound($matNormals)
+        $iArrNormalsSize = UBound($normals)
         For $i = 0 To $iArrNormalsSize - 1
-            _VectorOfMatPush($vectorOfMatNormals, $matNormals[$i])
+            Call("_VectorOf" & $typeOfNormals & "Push", $vectorNormals, $normals[$i])
         Next
 
-        $oArrNormals = _cveOutputArrayFromVectorOfMat($vectorOfMatNormals)
+        $oArrNormals = Call("_cveOutputArrayFromVectorOf" & $typeOfNormals, $vectorNormals)
     Else
-        $oArrNormals = _cveOutputArrayFromMat($matNormals)
+        If $bNormalsCreate Then
+            $normals = Call("_cve" & $typeOfNormals & "Create", $normals)
+        EndIf
+        $oArrNormals = Call("_cveOutputArrayFrom" & $typeOfNormals, $normals)
     EndIf
 
     _cveReadCloud($file, $cloud, $oArrColors, $oArrNormals)
 
     If $bNormalsIsArray Then
-        _VectorOfMatRelease($vectorOfMatNormals)
+        Call("_VectorOf" & $typeOfNormals & "Release", $vectorNormals)
     EndIf
 
-    _cveOutputArrayRelease($oArrNormals)
+    If $typeOfNormals <> Default Then
+        _cveOutputArrayRelease($oArrNormals)
+        If $bNormalsCreate Then
+            Call("_cve" & $typeOfNormals & "Release", $normals)
+        EndIf
+    EndIf
 
     If $bColorsIsArray Then
-        _VectorOfMatRelease($vectorOfMatColors)
+        Call("_VectorOf" & $typeOfColors & "Release", $vectorColors)
     EndIf
 
-    _cveOutputArrayRelease($oArrColors)
+    If $typeOfColors <> Default Then
+        _cveOutputArrayRelease($oArrColors)
+        If $bColorsCreate Then
+            Call("_cve" & $typeOfColors & "Release", $colors)
+        EndIf
+    EndIf
+EndFunc   ;==>_cveReadCloudTyped
+
+Func _cveReadCloudMat($file, $cloud, $colors, $normals)
+    ; cveReadCloud using cv::Mat instead of _*Array
+    _cveReadCloudTyped($file, $cloud, "Mat", $colors, "Mat", $normals)
 EndFunc   ;==>_cveReadCloudMat
 
 Func _cveWCubeCreate($minPoint, $maxPoint, $wireFrame, $color, $widget3d, $widget)

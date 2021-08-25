@@ -15,7 +15,7 @@ Func _VectorOfVectorOfDMatchGetSize($v)
     ; CVAPI(int) VectorOfVectorOfDMatchGetSize(std::vector<std::vector<cv::DMatch>>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVectorOfDMatchCreate()
@@ -48,7 +48,7 @@ Func _VectorOfVectorOfDMatchPush($v, $value)
     ; CVAPI(void) VectorOfVectorOfDMatchPush(std::vector<std::vector<cv::DMatch>>* v, std::vector<cv::DMatch>* value);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVectorOfDMatchCreate()
@@ -69,7 +69,7 @@ Func _VectorOfVectorOfDMatchPush($v, $value)
     EndIf
 
     Local $vecValue, $iArrValueSize
-    Local $bValueIsArray = VarGetType($value) == "Array"
+    Local $bValueIsArray = IsArray($value)
 
     If $bValueIsArray Then
         $vecValue = _VectorOfDMatchCreate()
@@ -104,7 +104,7 @@ Func _VectorOfVectorOfDMatchPushVector($v, $other)
     ; CVAPI(void) VectorOfVectorOfDMatchPushVector(std::vector<std::vector<cv::DMatch>>* v, std::vector<std::vector<cv::DMatch>>* other);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVectorOfDMatchCreate()
@@ -125,7 +125,7 @@ Func _VectorOfVectorOfDMatchPushVector($v, $other)
     EndIf
 
     Local $vecOther, $iArrOtherSize
-    Local $bOtherIsArray = VarGetType($other) == "Array"
+    Local $bOtherIsArray = IsArray($other)
 
     If $bOtherIsArray Then
         $vecOther = _VectorOfVectorOfDMatchCreate()
@@ -160,7 +160,7 @@ Func _VectorOfVectorOfDMatchGetStartAddress($v)
     ; CVAPI(std::vector<cv::DMatch>*) VectorOfVectorOfDMatchGetStartAddress(std::vector<std::vector<cv::DMatch>>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVectorOfDMatchCreate()
@@ -193,7 +193,7 @@ Func _VectorOfVectorOfDMatchGetEndAddress($v)
     ; CVAPI(void*) VectorOfVectorOfDMatchGetEndAddress(std::vector<std::vector<cv::DMatch>>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVectorOfDMatchCreate()
@@ -226,7 +226,7 @@ Func _VectorOfVectorOfDMatchClear($v)
     ; CVAPI(void) VectorOfVectorOfDMatchClear(std::vector<std::vector<cv::DMatch>>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVectorOfDMatchCreate()
@@ -257,7 +257,7 @@ Func _VectorOfVectorOfDMatchRelease($v)
     ; CVAPI(void) VectorOfVectorOfDMatchRelease(std::vector<std::vector<cv::DMatch>>** v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVectorOfDMatchCreate()
@@ -290,7 +290,7 @@ Func _VectorOfVectorOfDMatchCopyData($v, $data)
     ; CVAPI(void) VectorOfVectorOfDMatchCopyData(std::vector<std::vector<cv::DMatch>>* v, std::vector<cv::DMatch>* data);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfVectorOfDMatchCreate()
@@ -311,7 +311,7 @@ Func _VectorOfVectorOfDMatchCopyData($v, $data)
     EndIf
 
     Local $vecData, $iArrDataSize
-    Local $bDataIsArray = VarGetType($data) == "Array"
+    Local $bDataIsArray = IsArray($data)
 
     If $bDataIsArray Then
         $vecData = _VectorOfDMatchCreate()
@@ -346,7 +346,7 @@ Func _VectorOfVectorOfDMatchGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfVectorOfDMatchGetItemPtr(std::vector<std::vector<cv::DMatch>>* vec, int index, std::vector<cv::DMatch>** element);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfVectorOfDMatchCreate()
@@ -367,7 +367,7 @@ Func _VectorOfVectorOfDMatchGetItemPtr($vec, $index, $element)
     EndIf
 
     Local $vecElement, $iArrElementSize
-    Local $bElementIsArray = VarGetType($element) == "Array"
+    Local $bElementIsArray = IsArray($element)
 
     If $bElementIsArray Then
         $vecElement = _VectorOfDMatchCreate()
@@ -404,7 +404,7 @@ Func _cveInputArrayFromVectorOfVectorOfDMatch($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfVectorOfDMatch(std::vector<std::vector<cv::DMatch>>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfVectorOfDMatchCreate()
@@ -437,7 +437,7 @@ Func _cveOutputArrayFromVectorOfVectorOfDMatch($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfVectorOfDMatch(std::vector<std::vector<cv::DMatch>>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfVectorOfDMatchCreate()
@@ -470,7 +470,7 @@ Func _cveInputOutputArrayFromVectorOfVectorOfDMatch($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfVectorOfDMatch(std::vector<std::vector<cv::DMatch>>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfVectorOfDMatchCreate()

@@ -56,76 +56,113 @@ Func _cudaStereoBMFindStereoCorrespondence($stereo, $left, $right, $disparity, $
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaStereoBMFindStereoCorrespondence", $sStereoDllType, $stereo, $sLeftDllType, $left, $sRightDllType, $right, $sDisparityDllType, $disparity, $sStreamDllType, $stream), "cudaStereoBMFindStereoCorrespondence", @error)
 EndFunc   ;==>_cudaStereoBMFindStereoCorrespondence
 
-Func _cudaStereoBMFindStereoCorrespondenceMat($stereo, $matLeft, $matRight, $matDisparity, $stream)
-    ; cudaStereoBMFindStereoCorrespondence using cv::Mat instead of _*Array
+Func _cudaStereoBMFindStereoCorrespondenceTyped($stereo, $typeOfLeft, $left, $typeOfRight, $right, $typeOfDisparity, $disparity, $stream)
 
-    Local $iArrLeft, $vectorOfMatLeft, $iArrLeftSize
-    Local $bLeftIsArray = VarGetType($matLeft) == "Array"
+    Local $iArrLeft, $vectorLeft, $iArrLeftSize
+    Local $bLeftIsArray = IsArray($left)
+    Local $bLeftCreate = IsDllStruct($left) And $typeOfLeft == "Scalar"
 
-    If $bLeftIsArray Then
-        $vectorOfMatLeft = _VectorOfMatCreate()
+    If $typeOfLeft == Default Then
+        $iArrLeft = $left
+    ElseIf $bLeftIsArray Then
+        $vectorLeft = Call("_VectorOf" & $typeOfLeft & "Create")
 
-        $iArrLeftSize = UBound($matLeft)
+        $iArrLeftSize = UBound($left)
         For $i = 0 To $iArrLeftSize - 1
-            _VectorOfMatPush($vectorOfMatLeft, $matLeft[$i])
+            Call("_VectorOf" & $typeOfLeft & "Push", $vectorLeft, $left[$i])
         Next
 
-        $iArrLeft = _cveInputArrayFromVectorOfMat($vectorOfMatLeft)
+        $iArrLeft = Call("_cveInputArrayFromVectorOf" & $typeOfLeft, $vectorLeft)
     Else
-        $iArrLeft = _cveInputArrayFromMat($matLeft)
+        If $bLeftCreate Then
+            $left = Call("_cve" & $typeOfLeft & "Create", $left)
+        EndIf
+        $iArrLeft = Call("_cveInputArrayFrom" & $typeOfLeft, $left)
     EndIf
 
-    Local $iArrRight, $vectorOfMatRight, $iArrRightSize
-    Local $bRightIsArray = VarGetType($matRight) == "Array"
+    Local $iArrRight, $vectorRight, $iArrRightSize
+    Local $bRightIsArray = IsArray($right)
+    Local $bRightCreate = IsDllStruct($right) And $typeOfRight == "Scalar"
 
-    If $bRightIsArray Then
-        $vectorOfMatRight = _VectorOfMatCreate()
+    If $typeOfRight == Default Then
+        $iArrRight = $right
+    ElseIf $bRightIsArray Then
+        $vectorRight = Call("_VectorOf" & $typeOfRight & "Create")
 
-        $iArrRightSize = UBound($matRight)
+        $iArrRightSize = UBound($right)
         For $i = 0 To $iArrRightSize - 1
-            _VectorOfMatPush($vectorOfMatRight, $matRight[$i])
+            Call("_VectorOf" & $typeOfRight & "Push", $vectorRight, $right[$i])
         Next
 
-        $iArrRight = _cveInputArrayFromVectorOfMat($vectorOfMatRight)
+        $iArrRight = Call("_cveInputArrayFromVectorOf" & $typeOfRight, $vectorRight)
     Else
-        $iArrRight = _cveInputArrayFromMat($matRight)
+        If $bRightCreate Then
+            $right = Call("_cve" & $typeOfRight & "Create", $right)
+        EndIf
+        $iArrRight = Call("_cveInputArrayFrom" & $typeOfRight, $right)
     EndIf
 
-    Local $oArrDisparity, $vectorOfMatDisparity, $iArrDisparitySize
-    Local $bDisparityIsArray = VarGetType($matDisparity) == "Array"
+    Local $oArrDisparity, $vectorDisparity, $iArrDisparitySize
+    Local $bDisparityIsArray = IsArray($disparity)
+    Local $bDisparityCreate = IsDllStruct($disparity) And $typeOfDisparity == "Scalar"
 
-    If $bDisparityIsArray Then
-        $vectorOfMatDisparity = _VectorOfMatCreate()
+    If $typeOfDisparity == Default Then
+        $oArrDisparity = $disparity
+    ElseIf $bDisparityIsArray Then
+        $vectorDisparity = Call("_VectorOf" & $typeOfDisparity & "Create")
 
-        $iArrDisparitySize = UBound($matDisparity)
+        $iArrDisparitySize = UBound($disparity)
         For $i = 0 To $iArrDisparitySize - 1
-            _VectorOfMatPush($vectorOfMatDisparity, $matDisparity[$i])
+            Call("_VectorOf" & $typeOfDisparity & "Push", $vectorDisparity, $disparity[$i])
         Next
 
-        $oArrDisparity = _cveOutputArrayFromVectorOfMat($vectorOfMatDisparity)
+        $oArrDisparity = Call("_cveOutputArrayFromVectorOf" & $typeOfDisparity, $vectorDisparity)
     Else
-        $oArrDisparity = _cveOutputArrayFromMat($matDisparity)
+        If $bDisparityCreate Then
+            $disparity = Call("_cve" & $typeOfDisparity & "Create", $disparity)
+        EndIf
+        $oArrDisparity = Call("_cveOutputArrayFrom" & $typeOfDisparity, $disparity)
     EndIf
 
     _cudaStereoBMFindStereoCorrespondence($stereo, $iArrLeft, $iArrRight, $oArrDisparity, $stream)
 
     If $bDisparityIsArray Then
-        _VectorOfMatRelease($vectorOfMatDisparity)
+        Call("_VectorOf" & $typeOfDisparity & "Release", $vectorDisparity)
     EndIf
 
-    _cveOutputArrayRelease($oArrDisparity)
+    If $typeOfDisparity <> Default Then
+        _cveOutputArrayRelease($oArrDisparity)
+        If $bDisparityCreate Then
+            Call("_cve" & $typeOfDisparity & "Release", $disparity)
+        EndIf
+    EndIf
 
     If $bRightIsArray Then
-        _VectorOfMatRelease($vectorOfMatRight)
+        Call("_VectorOf" & $typeOfRight & "Release", $vectorRight)
     EndIf
 
-    _cveInputArrayRelease($iArrRight)
+    If $typeOfRight <> Default Then
+        _cveInputArrayRelease($iArrRight)
+        If $bRightCreate Then
+            Call("_cve" & $typeOfRight & "Release", $right)
+        EndIf
+    EndIf
 
     If $bLeftIsArray Then
-        _VectorOfMatRelease($vectorOfMatLeft)
+        Call("_VectorOf" & $typeOfLeft & "Release", $vectorLeft)
     EndIf
 
-    _cveInputArrayRelease($iArrLeft)
+    If $typeOfLeft <> Default Then
+        _cveInputArrayRelease($iArrLeft)
+        If $bLeftCreate Then
+            Call("_cve" & $typeOfLeft & "Release", $left)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaStereoBMFindStereoCorrespondenceTyped
+
+Func _cudaStereoBMFindStereoCorrespondenceMat($stereo, $left, $right, $disparity, $stream)
+    ; cudaStereoBMFindStereoCorrespondence using cv::Mat instead of _*Array
+    _cudaStereoBMFindStereoCorrespondenceTyped($stereo, "Mat", $left, "Mat", $right, "Mat", $disparity, $stream)
 EndFunc   ;==>_cudaStereoBMFindStereoCorrespondenceMat
 
 Func _cudaStereoBMRelease($stereoBM)
@@ -198,76 +235,113 @@ Func _cudaStereoConstantSpaceBPFindStereoCorrespondence($stereo, $left, $right, 
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaStereoConstantSpaceBPFindStereoCorrespondence", $sStereoDllType, $stereo, $sLeftDllType, $left, $sRightDllType, $right, $sDisparityDllType, $disparity, $sStreamDllType, $stream), "cudaStereoConstantSpaceBPFindStereoCorrespondence", @error)
 EndFunc   ;==>_cudaStereoConstantSpaceBPFindStereoCorrespondence
 
-Func _cudaStereoConstantSpaceBPFindStereoCorrespondenceMat($stereo, $matLeft, $matRight, $matDisparity, $stream)
-    ; cudaStereoConstantSpaceBPFindStereoCorrespondence using cv::Mat instead of _*Array
+Func _cudaStereoConstantSpaceBPFindStereoCorrespondenceTyped($stereo, $typeOfLeft, $left, $typeOfRight, $right, $typeOfDisparity, $disparity, $stream)
 
-    Local $iArrLeft, $vectorOfMatLeft, $iArrLeftSize
-    Local $bLeftIsArray = VarGetType($matLeft) == "Array"
+    Local $iArrLeft, $vectorLeft, $iArrLeftSize
+    Local $bLeftIsArray = IsArray($left)
+    Local $bLeftCreate = IsDllStruct($left) And $typeOfLeft == "Scalar"
 
-    If $bLeftIsArray Then
-        $vectorOfMatLeft = _VectorOfMatCreate()
+    If $typeOfLeft == Default Then
+        $iArrLeft = $left
+    ElseIf $bLeftIsArray Then
+        $vectorLeft = Call("_VectorOf" & $typeOfLeft & "Create")
 
-        $iArrLeftSize = UBound($matLeft)
+        $iArrLeftSize = UBound($left)
         For $i = 0 To $iArrLeftSize - 1
-            _VectorOfMatPush($vectorOfMatLeft, $matLeft[$i])
+            Call("_VectorOf" & $typeOfLeft & "Push", $vectorLeft, $left[$i])
         Next
 
-        $iArrLeft = _cveInputArrayFromVectorOfMat($vectorOfMatLeft)
+        $iArrLeft = Call("_cveInputArrayFromVectorOf" & $typeOfLeft, $vectorLeft)
     Else
-        $iArrLeft = _cveInputArrayFromMat($matLeft)
+        If $bLeftCreate Then
+            $left = Call("_cve" & $typeOfLeft & "Create", $left)
+        EndIf
+        $iArrLeft = Call("_cveInputArrayFrom" & $typeOfLeft, $left)
     EndIf
 
-    Local $iArrRight, $vectorOfMatRight, $iArrRightSize
-    Local $bRightIsArray = VarGetType($matRight) == "Array"
+    Local $iArrRight, $vectorRight, $iArrRightSize
+    Local $bRightIsArray = IsArray($right)
+    Local $bRightCreate = IsDllStruct($right) And $typeOfRight == "Scalar"
 
-    If $bRightIsArray Then
-        $vectorOfMatRight = _VectorOfMatCreate()
+    If $typeOfRight == Default Then
+        $iArrRight = $right
+    ElseIf $bRightIsArray Then
+        $vectorRight = Call("_VectorOf" & $typeOfRight & "Create")
 
-        $iArrRightSize = UBound($matRight)
+        $iArrRightSize = UBound($right)
         For $i = 0 To $iArrRightSize - 1
-            _VectorOfMatPush($vectorOfMatRight, $matRight[$i])
+            Call("_VectorOf" & $typeOfRight & "Push", $vectorRight, $right[$i])
         Next
 
-        $iArrRight = _cveInputArrayFromVectorOfMat($vectorOfMatRight)
+        $iArrRight = Call("_cveInputArrayFromVectorOf" & $typeOfRight, $vectorRight)
     Else
-        $iArrRight = _cveInputArrayFromMat($matRight)
+        If $bRightCreate Then
+            $right = Call("_cve" & $typeOfRight & "Create", $right)
+        EndIf
+        $iArrRight = Call("_cveInputArrayFrom" & $typeOfRight, $right)
     EndIf
 
-    Local $oArrDisparity, $vectorOfMatDisparity, $iArrDisparitySize
-    Local $bDisparityIsArray = VarGetType($matDisparity) == "Array"
+    Local $oArrDisparity, $vectorDisparity, $iArrDisparitySize
+    Local $bDisparityIsArray = IsArray($disparity)
+    Local $bDisparityCreate = IsDllStruct($disparity) And $typeOfDisparity == "Scalar"
 
-    If $bDisparityIsArray Then
-        $vectorOfMatDisparity = _VectorOfMatCreate()
+    If $typeOfDisparity == Default Then
+        $oArrDisparity = $disparity
+    ElseIf $bDisparityIsArray Then
+        $vectorDisparity = Call("_VectorOf" & $typeOfDisparity & "Create")
 
-        $iArrDisparitySize = UBound($matDisparity)
+        $iArrDisparitySize = UBound($disparity)
         For $i = 0 To $iArrDisparitySize - 1
-            _VectorOfMatPush($vectorOfMatDisparity, $matDisparity[$i])
+            Call("_VectorOf" & $typeOfDisparity & "Push", $vectorDisparity, $disparity[$i])
         Next
 
-        $oArrDisparity = _cveOutputArrayFromVectorOfMat($vectorOfMatDisparity)
+        $oArrDisparity = Call("_cveOutputArrayFromVectorOf" & $typeOfDisparity, $vectorDisparity)
     Else
-        $oArrDisparity = _cveOutputArrayFromMat($matDisparity)
+        If $bDisparityCreate Then
+            $disparity = Call("_cve" & $typeOfDisparity & "Create", $disparity)
+        EndIf
+        $oArrDisparity = Call("_cveOutputArrayFrom" & $typeOfDisparity, $disparity)
     EndIf
 
     _cudaStereoConstantSpaceBPFindStereoCorrespondence($stereo, $iArrLeft, $iArrRight, $oArrDisparity, $stream)
 
     If $bDisparityIsArray Then
-        _VectorOfMatRelease($vectorOfMatDisparity)
+        Call("_VectorOf" & $typeOfDisparity & "Release", $vectorDisparity)
     EndIf
 
-    _cveOutputArrayRelease($oArrDisparity)
+    If $typeOfDisparity <> Default Then
+        _cveOutputArrayRelease($oArrDisparity)
+        If $bDisparityCreate Then
+            Call("_cve" & $typeOfDisparity & "Release", $disparity)
+        EndIf
+    EndIf
 
     If $bRightIsArray Then
-        _VectorOfMatRelease($vectorOfMatRight)
+        Call("_VectorOf" & $typeOfRight & "Release", $vectorRight)
     EndIf
 
-    _cveInputArrayRelease($iArrRight)
+    If $typeOfRight <> Default Then
+        _cveInputArrayRelease($iArrRight)
+        If $bRightCreate Then
+            Call("_cve" & $typeOfRight & "Release", $right)
+        EndIf
+    EndIf
 
     If $bLeftIsArray Then
-        _VectorOfMatRelease($vectorOfMatLeft)
+        Call("_VectorOf" & $typeOfLeft & "Release", $vectorLeft)
     EndIf
 
-    _cveInputArrayRelease($iArrLeft)
+    If $typeOfLeft <> Default Then
+        _cveInputArrayRelease($iArrLeft)
+        If $bLeftCreate Then
+            Call("_cve" & $typeOfLeft & "Release", $left)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaStereoConstantSpaceBPFindStereoCorrespondenceTyped
+
+Func _cudaStereoConstantSpaceBPFindStereoCorrespondenceMat($stereo, $left, $right, $disparity, $stream)
+    ; cudaStereoConstantSpaceBPFindStereoCorrespondence using cv::Mat instead of _*Array
+    _cudaStereoConstantSpaceBPFindStereoCorrespondenceTyped($stereo, "Mat", $left, "Mat", $right, "Mat", $disparity, $stream)
 EndFunc   ;==>_cudaStereoConstantSpaceBPFindStereoCorrespondenceMat
 
 Func _cudaStereoConstantSpaceBPRelease($stereo)
@@ -340,76 +414,113 @@ Func _cudaDisparityBilateralFilterApply($filter, $disparity, $image, $dst, $stre
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDisparityBilateralFilterApply", $sFilterDllType, $filter, $sDisparityDllType, $disparity, $sImageDllType, $image, $sDstDllType, $dst, $sStreamDllType, $stream), "cudaDisparityBilateralFilterApply", @error)
 EndFunc   ;==>_cudaDisparityBilateralFilterApply
 
-Func _cudaDisparityBilateralFilterApplyMat($filter, $matDisparity, $matImage, $matDst, $stream)
-    ; cudaDisparityBilateralFilterApply using cv::Mat instead of _*Array
+Func _cudaDisparityBilateralFilterApplyTyped($filter, $typeOfDisparity, $disparity, $typeOfImage, $image, $typeOfDst, $dst, $stream)
 
-    Local $iArrDisparity, $vectorOfMatDisparity, $iArrDisparitySize
-    Local $bDisparityIsArray = VarGetType($matDisparity) == "Array"
+    Local $iArrDisparity, $vectorDisparity, $iArrDisparitySize
+    Local $bDisparityIsArray = IsArray($disparity)
+    Local $bDisparityCreate = IsDllStruct($disparity) And $typeOfDisparity == "Scalar"
 
-    If $bDisparityIsArray Then
-        $vectorOfMatDisparity = _VectorOfMatCreate()
+    If $typeOfDisparity == Default Then
+        $iArrDisparity = $disparity
+    ElseIf $bDisparityIsArray Then
+        $vectorDisparity = Call("_VectorOf" & $typeOfDisparity & "Create")
 
-        $iArrDisparitySize = UBound($matDisparity)
+        $iArrDisparitySize = UBound($disparity)
         For $i = 0 To $iArrDisparitySize - 1
-            _VectorOfMatPush($vectorOfMatDisparity, $matDisparity[$i])
+            Call("_VectorOf" & $typeOfDisparity & "Push", $vectorDisparity, $disparity[$i])
         Next
 
-        $iArrDisparity = _cveInputArrayFromVectorOfMat($vectorOfMatDisparity)
+        $iArrDisparity = Call("_cveInputArrayFromVectorOf" & $typeOfDisparity, $vectorDisparity)
     Else
-        $iArrDisparity = _cveInputArrayFromMat($matDisparity)
+        If $bDisparityCreate Then
+            $disparity = Call("_cve" & $typeOfDisparity & "Create", $disparity)
+        EndIf
+        $iArrDisparity = Call("_cveInputArrayFrom" & $typeOfDisparity, $disparity)
     EndIf
 
-    Local $iArrImage, $vectorOfMatImage, $iArrImageSize
-    Local $bImageIsArray = VarGetType($matImage) == "Array"
+    Local $iArrImage, $vectorImage, $iArrImageSize
+    Local $bImageIsArray = IsArray($image)
+    Local $bImageCreate = IsDllStruct($image) And $typeOfImage == "Scalar"
 
-    If $bImageIsArray Then
-        $vectorOfMatImage = _VectorOfMatCreate()
+    If $typeOfImage == Default Then
+        $iArrImage = $image
+    ElseIf $bImageIsArray Then
+        $vectorImage = Call("_VectorOf" & $typeOfImage & "Create")
 
-        $iArrImageSize = UBound($matImage)
+        $iArrImageSize = UBound($image)
         For $i = 0 To $iArrImageSize - 1
-            _VectorOfMatPush($vectorOfMatImage, $matImage[$i])
+            Call("_VectorOf" & $typeOfImage & "Push", $vectorImage, $image[$i])
         Next
 
-        $iArrImage = _cveInputArrayFromVectorOfMat($vectorOfMatImage)
+        $iArrImage = Call("_cveInputArrayFromVectorOf" & $typeOfImage, $vectorImage)
     Else
-        $iArrImage = _cveInputArrayFromMat($matImage)
+        If $bImageCreate Then
+            $image = Call("_cve" & $typeOfImage & "Create", $image)
+        EndIf
+        $iArrImage = Call("_cveInputArrayFrom" & $typeOfImage, $image)
     EndIf
 
-    Local $oArrDst, $vectorOfMatDst, $iArrDstSize
-    Local $bDstIsArray = VarGetType($matDst) == "Array"
+    Local $oArrDst, $vectorDst, $iArrDstSize
+    Local $bDstIsArray = IsArray($dst)
+    Local $bDstCreate = IsDllStruct($dst) And $typeOfDst == "Scalar"
 
-    If $bDstIsArray Then
-        $vectorOfMatDst = _VectorOfMatCreate()
+    If $typeOfDst == Default Then
+        $oArrDst = $dst
+    ElseIf $bDstIsArray Then
+        $vectorDst = Call("_VectorOf" & $typeOfDst & "Create")
 
-        $iArrDstSize = UBound($matDst)
+        $iArrDstSize = UBound($dst)
         For $i = 0 To $iArrDstSize - 1
-            _VectorOfMatPush($vectorOfMatDst, $matDst[$i])
+            Call("_VectorOf" & $typeOfDst & "Push", $vectorDst, $dst[$i])
         Next
 
-        $oArrDst = _cveOutputArrayFromVectorOfMat($vectorOfMatDst)
+        $oArrDst = Call("_cveOutputArrayFromVectorOf" & $typeOfDst, $vectorDst)
     Else
-        $oArrDst = _cveOutputArrayFromMat($matDst)
+        If $bDstCreate Then
+            $dst = Call("_cve" & $typeOfDst & "Create", $dst)
+        EndIf
+        $oArrDst = Call("_cveOutputArrayFrom" & $typeOfDst, $dst)
     EndIf
 
     _cudaDisparityBilateralFilterApply($filter, $iArrDisparity, $iArrImage, $oArrDst, $stream)
 
     If $bDstIsArray Then
-        _VectorOfMatRelease($vectorOfMatDst)
+        Call("_VectorOf" & $typeOfDst & "Release", $vectorDst)
     EndIf
 
-    _cveOutputArrayRelease($oArrDst)
+    If $typeOfDst <> Default Then
+        _cveOutputArrayRelease($oArrDst)
+        If $bDstCreate Then
+            Call("_cve" & $typeOfDst & "Release", $dst)
+        EndIf
+    EndIf
 
     If $bImageIsArray Then
-        _VectorOfMatRelease($vectorOfMatImage)
+        Call("_VectorOf" & $typeOfImage & "Release", $vectorImage)
     EndIf
 
-    _cveInputArrayRelease($iArrImage)
+    If $typeOfImage <> Default Then
+        _cveInputArrayRelease($iArrImage)
+        If $bImageCreate Then
+            Call("_cve" & $typeOfImage & "Release", $image)
+        EndIf
+    EndIf
 
     If $bDisparityIsArray Then
-        _VectorOfMatRelease($vectorOfMatDisparity)
+        Call("_VectorOf" & $typeOfDisparity & "Release", $vectorDisparity)
     EndIf
 
-    _cveInputArrayRelease($iArrDisparity)
+    If $typeOfDisparity <> Default Then
+        _cveInputArrayRelease($iArrDisparity)
+        If $bDisparityCreate Then
+            Call("_cve" & $typeOfDisparity & "Release", $disparity)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaDisparityBilateralFilterApplyTyped
+
+Func _cudaDisparityBilateralFilterApplyMat($filter, $disparity, $image, $dst, $stream)
+    ; cudaDisparityBilateralFilterApply using cv::Mat instead of _*Array
+    _cudaDisparityBilateralFilterApplyTyped($filter, "Mat", $disparity, "Mat", $image, "Mat", $dst, $stream)
 EndFunc   ;==>_cudaDisparityBilateralFilterApplyMat
 
 Func _cudaDisparityBilateralFilterRelease($filter)
@@ -454,52 +565,78 @@ Func _cudaDrawColorDisp($srcDisp, $dstDisp, $ndisp, $stream)
     CVEDllCallResult(DllCall($_h_cvextern_dll, "none:cdecl", "cudaDrawColorDisp", $sSrcDispDllType, $srcDisp, $sDstDispDllType, $dstDisp, "int", $ndisp, $sStreamDllType, $stream), "cudaDrawColorDisp", @error)
 EndFunc   ;==>_cudaDrawColorDisp
 
-Func _cudaDrawColorDispMat($matSrcDisp, $matDstDisp, $ndisp, $stream)
-    ; cudaDrawColorDisp using cv::Mat instead of _*Array
+Func _cudaDrawColorDispTyped($typeOfSrcDisp, $srcDisp, $typeOfDstDisp, $dstDisp, $ndisp, $stream)
 
-    Local $iArrSrcDisp, $vectorOfMatSrcDisp, $iArrSrcDispSize
-    Local $bSrcDispIsArray = VarGetType($matSrcDisp) == "Array"
+    Local $iArrSrcDisp, $vectorSrcDisp, $iArrSrcDispSize
+    Local $bSrcDispIsArray = IsArray($srcDisp)
+    Local $bSrcDispCreate = IsDllStruct($srcDisp) And $typeOfSrcDisp == "Scalar"
 
-    If $bSrcDispIsArray Then
-        $vectorOfMatSrcDisp = _VectorOfMatCreate()
+    If $typeOfSrcDisp == Default Then
+        $iArrSrcDisp = $srcDisp
+    ElseIf $bSrcDispIsArray Then
+        $vectorSrcDisp = Call("_VectorOf" & $typeOfSrcDisp & "Create")
 
-        $iArrSrcDispSize = UBound($matSrcDisp)
+        $iArrSrcDispSize = UBound($srcDisp)
         For $i = 0 To $iArrSrcDispSize - 1
-            _VectorOfMatPush($vectorOfMatSrcDisp, $matSrcDisp[$i])
+            Call("_VectorOf" & $typeOfSrcDisp & "Push", $vectorSrcDisp, $srcDisp[$i])
         Next
 
-        $iArrSrcDisp = _cveInputArrayFromVectorOfMat($vectorOfMatSrcDisp)
+        $iArrSrcDisp = Call("_cveInputArrayFromVectorOf" & $typeOfSrcDisp, $vectorSrcDisp)
     Else
-        $iArrSrcDisp = _cveInputArrayFromMat($matSrcDisp)
+        If $bSrcDispCreate Then
+            $srcDisp = Call("_cve" & $typeOfSrcDisp & "Create", $srcDisp)
+        EndIf
+        $iArrSrcDisp = Call("_cveInputArrayFrom" & $typeOfSrcDisp, $srcDisp)
     EndIf
 
-    Local $oArrDstDisp, $vectorOfMatDstDisp, $iArrDstDispSize
-    Local $bDstDispIsArray = VarGetType($matDstDisp) == "Array"
+    Local $oArrDstDisp, $vectorDstDisp, $iArrDstDispSize
+    Local $bDstDispIsArray = IsArray($dstDisp)
+    Local $bDstDispCreate = IsDllStruct($dstDisp) And $typeOfDstDisp == "Scalar"
 
-    If $bDstDispIsArray Then
-        $vectorOfMatDstDisp = _VectorOfMatCreate()
+    If $typeOfDstDisp == Default Then
+        $oArrDstDisp = $dstDisp
+    ElseIf $bDstDispIsArray Then
+        $vectorDstDisp = Call("_VectorOf" & $typeOfDstDisp & "Create")
 
-        $iArrDstDispSize = UBound($matDstDisp)
+        $iArrDstDispSize = UBound($dstDisp)
         For $i = 0 To $iArrDstDispSize - 1
-            _VectorOfMatPush($vectorOfMatDstDisp, $matDstDisp[$i])
+            Call("_VectorOf" & $typeOfDstDisp & "Push", $vectorDstDisp, $dstDisp[$i])
         Next
 
-        $oArrDstDisp = _cveOutputArrayFromVectorOfMat($vectorOfMatDstDisp)
+        $oArrDstDisp = Call("_cveOutputArrayFromVectorOf" & $typeOfDstDisp, $vectorDstDisp)
     Else
-        $oArrDstDisp = _cveOutputArrayFromMat($matDstDisp)
+        If $bDstDispCreate Then
+            $dstDisp = Call("_cve" & $typeOfDstDisp & "Create", $dstDisp)
+        EndIf
+        $oArrDstDisp = Call("_cveOutputArrayFrom" & $typeOfDstDisp, $dstDisp)
     EndIf
 
     _cudaDrawColorDisp($iArrSrcDisp, $oArrDstDisp, $ndisp, $stream)
 
     If $bDstDispIsArray Then
-        _VectorOfMatRelease($vectorOfMatDstDisp)
+        Call("_VectorOf" & $typeOfDstDisp & "Release", $vectorDstDisp)
     EndIf
 
-    _cveOutputArrayRelease($oArrDstDisp)
+    If $typeOfDstDisp <> Default Then
+        _cveOutputArrayRelease($oArrDstDisp)
+        If $bDstDispCreate Then
+            Call("_cve" & $typeOfDstDisp & "Release", $dstDisp)
+        EndIf
+    EndIf
 
     If $bSrcDispIsArray Then
-        _VectorOfMatRelease($vectorOfMatSrcDisp)
+        Call("_VectorOf" & $typeOfSrcDisp & "Release", $vectorSrcDisp)
     EndIf
 
-    _cveInputArrayRelease($iArrSrcDisp)
+    If $typeOfSrcDisp <> Default Then
+        _cveInputArrayRelease($iArrSrcDisp)
+        If $bSrcDispCreate Then
+            Call("_cve" & $typeOfSrcDisp & "Release", $srcDisp)
+        EndIf
+    EndIf
+EndFunc   ;==>_cudaDrawColorDispTyped
+
+Func _cudaDrawColorDispMat($srcDisp, $dstDisp, $ndisp, $stream)
+    ; cudaDrawColorDisp using cv::Mat instead of _*Array
+    _cudaDrawColorDispTyped("Mat", $srcDisp, "Mat", $dstDisp, $ndisp, $stream)
 EndFunc   ;==>_cudaDrawColorDispMat

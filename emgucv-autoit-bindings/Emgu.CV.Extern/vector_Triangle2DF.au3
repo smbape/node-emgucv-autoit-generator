@@ -15,7 +15,7 @@ Func _VectorOfTriangle2DFGetSize($v)
     ; CVAPI(int) VectorOfTriangle2DFGetSize(std::vector<cv::Vec6f>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfTriangle2DFCreate()
@@ -48,7 +48,7 @@ Func _VectorOfTriangle2DFPush($v, $value)
     ; CVAPI(void) VectorOfTriangle2DFPush(std::vector<cv::Vec6f>* v, cv::Vec6f* value);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfTriangle2DFCreate()
@@ -86,7 +86,7 @@ Func _VectorOfTriangle2DFPushMulti($v, $values, $count)
     ; CVAPI(void) VectorOfTriangle2DFPushMulti(std::vector<cv::Vec6f>* v, cv::Vec6f* values, int count);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfTriangle2DFCreate()
@@ -124,7 +124,7 @@ Func _VectorOfTriangle2DFPushVector($v, $other)
     ; CVAPI(void) VectorOfTriangle2DFPushVector(std::vector<cv::Vec6f>* v, std::vector<cv::Vec6f>* other);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfTriangle2DFCreate()
@@ -145,7 +145,7 @@ Func _VectorOfTriangle2DFPushVector($v, $other)
     EndIf
 
     Local $vecOther, $iArrOtherSize
-    Local $bOtherIsArray = VarGetType($other) == "Array"
+    Local $bOtherIsArray = IsArray($other)
 
     If $bOtherIsArray Then
         $vecOther = _VectorOfTriangle2DFCreate()
@@ -180,7 +180,7 @@ Func _VectorOfTriangle2DFClear($v)
     ; CVAPI(void) VectorOfTriangle2DFClear(std::vector<cv::Vec6f>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfTriangle2DFCreate()
@@ -211,7 +211,7 @@ Func _VectorOfTriangle2DFRelease($v)
     ; CVAPI(void) VectorOfTriangle2DFRelease(std::vector<cv::Vec6f>** v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfTriangle2DFCreate()
@@ -244,7 +244,7 @@ Func _VectorOfTriangle2DFCopyData($v, $data)
     ; CVAPI(void) VectorOfTriangle2DFCopyData(std::vector<cv::Vec6f>* v, cv::Vec6f* data);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfTriangle2DFCreate()
@@ -282,7 +282,7 @@ Func _VectorOfTriangle2DFGetStartAddress($v)
     ; CVAPI(cv::Vec6f*) VectorOfTriangle2DFGetStartAddress(std::vector<cv::Vec6f>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfTriangle2DFCreate()
@@ -315,7 +315,7 @@ Func _VectorOfTriangle2DFGetEndAddress($v)
     ; CVAPI(void*) VectorOfTriangle2DFGetEndAddress(std::vector<cv::Vec6f>* v);
 
     Local $vecV, $iArrVSize
-    Local $bVIsArray = VarGetType($v) == "Array"
+    Local $bVIsArray = IsArray($v)
 
     If $bVIsArray Then
         $vecV = _VectorOfTriangle2DFCreate()
@@ -348,7 +348,7 @@ Func _VectorOfTriangle2DFGetItem($vec, $index, $element)
     ; CVAPI(void) VectorOfTriangle2DFGetItem(std::vector<cv::Vec6f>* vec, int index, cv::Vec6f* element);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfTriangle2DFCreate()
@@ -386,7 +386,7 @@ Func _VectorOfTriangle2DFGetItemPtr($vec, $index, $element)
     ; CVAPI(void) VectorOfTriangle2DFGetItemPtr(std::vector<cv::Vec6f>* vec, int index, cv::Vec6f** element);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfTriangle2DFCreate()
@@ -426,7 +426,7 @@ Func _cveInputArrayFromVectorOfTriangle2DF($vec)
     ; CVAPI(cv::_InputArray*) cveInputArrayFromVectorOfTriangle2DF(std::vector<cv::Vec6f>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfTriangle2DFCreate()
@@ -459,7 +459,7 @@ Func _cveOutputArrayFromVectorOfTriangle2DF($vec)
     ; CVAPI(cv::_OutputArray*) cveOutputArrayFromVectorOfTriangle2DF(std::vector<cv::Vec6f>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfTriangle2DFCreate()
@@ -492,7 +492,7 @@ Func _cveInputOutputArrayFromVectorOfTriangle2DF($vec)
     ; CVAPI(cv::_InputOutputArray*) cveInputOutputArrayFromVectorOfTriangle2DF(std::vector<cv::Vec6f>* vec);
 
     Local $vecVec, $iArrVecSize
-    Local $bVecIsArray = VarGetType($vec) == "Array"
+    Local $bVecIsArray = IsArray($vec)
 
     If $bVecIsArray Then
         $vecVec = _VectorOfTriangle2DFCreate()
