@@ -75,37 +75,37 @@ Run `build.bat` script located in the `autoit-addon` folder.
 
 ### Finding the functions/constants names
 
-For a function named *foo* or *Foo*, there is usually a function named `_cve`*Foo*
+For a function named **foo** or **Foo**, there is usually a function named `_cve`**Foo**
 
-For a constant *FOO*, there is usually a Global Const ending with `_FOO` and starting with `$CV_`
+For a constant **FOO**, there is usually a Global Const ending with `_FOO` and starting with `$CV_`
 
 ### Transform the parameter types
 
-For *cv::Point*, *cv::Range*, *cv::Rect*, *cv::Scalar* and *cv::Size* types, there are `_cv`*Point*, `_cv`*Range*, `_cv`*Rect*, `_cv`*Scalar* and `_cv`*Size* to convert parameters.
+For **cv::Point**, **cv::Range**, **cv::Rect**, **cv::Scalar** and **cv::Size** types, there are `_cv`**Point**, `_cv`**Range**, `_cv`**Rect**, `_cv`**Scalar** and `_cv`**Size** to convert parameters.
 
-For *cv::ScalarAll*, there is *_cvScalarAll*
+For **cv::ScalarAll**, there is **_cvScalarAll**
 
-Types which are *\*Array* like *cv::\_InputArray*, are harder to translate because there is no automatic convertion in AutoIt like in c++.  
+Types which are **\*Array** like **cv::\_InputArray**, are harder to translate because there is no automatic convertion in AutoIt like in c++.  
 For this reason, for functionc which take those type of parameters, there will be 2 additionnal functions.  
-`_cve`*Foo*`Typed` where you specified the type of the Array parameter and  
-`_cve`*Foo*`Mat` where you specified the type of all the Array parameter are `Mat`.
+`_cve`**Foo**`Typed` where you specified the type of the Array parameter and  
+`_cve`**Foo**`Mat` where you specified the type of all the Array parameter are `Mat`.
 
 For *vector*s, there are functions starting with `_VectorOf` that allows to managed.  
 For example, for `std::vector<int>*`, there is
-  - `\_VectorOfInt`
-  - `\_VectorOfIntCreateSize`
-  - `\_VectorOfIntGetSize`
-  - `\_VectorOfIntPush`
-  - `\_VectorOfIntPushMulti`
-  - `\_VectorOfIntPushVector`
-  - `\_VectorOfIntClear`
-  - `\_VectorOfIntRelease`
-  - `\_VectorOfIntCopyData`
-  - `\_VectorOfIntGetStartAddress`
-  - `\_VectorOfIntGetEndAddress`
-  - `\_VectorOfIntGetItem`
-  - `\_VectorOfIntGetItemPtr`
-  - `\_VectorOfIntSizeOfItemInBytes`
+  - `_VectorOfInt`
+  - `_VectorOfIntCreateSize`
+  - `_VectorOfIntGetSize`
+  - `_VectorOfIntPush`
+  - `_VectorOfIntPushMulti`
+  - `_VectorOfIntPushVector`
+  - `_VectorOfIntClear`
+  - `_VectorOfIntRelease`
+  - `_VectorOfIntCopyData`
+  - `_VectorOfIntGetStartAddress`
+  - `_VectorOfIntGetEndAddress`
+  - `_VectorOfIntGetItem`
+  - `_VectorOfIntGetItemPtr`
+  - `_VectorOfIntSizeOfItemInBytes`
 
 ### Example
 
@@ -130,7 +130,7 @@ Func _cveGaussianBlur($src, $dst, $ksize, $sigmaX, $sigmaY = 0, $borderType = $C
     ; CVAPI(void) cveGaussianBlur(cv::_InputArray* src, cv::_OutputArray* dst, CvSize* ksize, double sigmaX, double sigmaY, int borderType);
 ```
 
-The (GaussianBlur)[https://docs.opencv.org/4.5.3/d4/d86/group__imgproc__filter.html#gaabe8c836e97159a9193fb0b11ac52cf1] documentation gives the following information
+The [GaussianBlur](https://docs.opencv.org/4.5.3/d4/d86/group__imgproc__filter.html#gaabe8c836e97159a9193fb0b11ac52cf1) documentation gives the following information
 ```txt
 void cv::GaussianBlur   (   InputArray    src,
     OutputArray   dst,
