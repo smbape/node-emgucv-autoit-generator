@@ -81,17 +81,18 @@ For a constant **FOO**, there is usually a Global Const ending with `_FOO` and s
 
 ### Transform the parameter types
 
-For **cv::Point**, **cv::Range**, **cv::Rect**, **cv::Scalar** and **cv::Size** types, there are `_cv`**Point**, `_cv`**Range**, `_cv`**Rect**, `_cv`**Scalar** and `_cv`**Size** to convert parameters.
+For **cv::Point**, **cv::Range**, **cv::Rect**, **cv::Scalar** and **cv::Size** types,  
+there are `_cv`**Point**, `_cv`**Range**, `_cv`**Rect**, `_cv`**Scalar** and `_cv`**Size** functions to convert parameters.
 
-For **cv::ScalarAll**, there is **_cvScalarAll**
+For **cv::ScalarAll**, there is **_cvScalarAll** function.
 
 Types which are **\*Array** like **cv::\_InputArray**, are harder to translate because there is no automatic convertion in AutoIt like in c++.  
-For this reason, for functionc which take those type of parameters, there will be 2 additionnal functions.  
+For this reason, for functions which take those type of parameters, there will be 2 additionnal functions.  
 `_cve`**Foo**`Typed` where you specified the type of the Array parameter and  
 `_cve`**Foo**`Mat` where you specified the type of all the Array parameter are `Mat`.
 
-For *vector*s, there are functions starting with `_VectorOf` that allows to managed.  
-For example, for `std::vector<int>*`, there is
+For **vector**s, there are functions starting with `_VectorOf` that allows to managed them.  
+As examples, for `std::vector<int>*`, there is
   - `_VectorOfInt`
   - `_VectorOfIntCreateSize`
   - `_VectorOfIntGetSize`
@@ -107,7 +108,23 @@ For example, for `std::vector<int>*`, there is
   - `_VectorOfIntGetItemPtr`
   - `_VectorOfIntSizeOfItemInBytes`
 
-### Example
+As examples, for `std::vector<std::vector<cv::Point>>*`, there is
+  - `_VectorOfVectorOfPoint`
+  - `_VectorOfVectorOfPointCreateSize`
+  - `_VectorOfVectorOfPointGetSize`
+  - `_VectorOfVectorOfPointPush`
+  - `_VectorOfVectorOfPointPushMulti`
+  - `_VectorOfVectorOfPointPushVector`
+  - `_VectorOfVectorOfPointClear`
+  - `_VectorOfVectorOfPointRelease`
+  - `_VectorOfVectorOfPointCopyData`
+  - `_VectorOfVectorOfPointGetStartAddress`
+  - `_VectorOfVectorOfPointGetEndAddress`
+  - `_VectorOfVectorOfPointGetItem`
+  - `_VectorOfVectorOfPointGetItemPtr`
+  - `_VectorOfVectorOfPointSizeOfItemInBytes`
+
+### Python translation example
 
 Let's translate the following python code
 ```python
@@ -124,7 +141,7 @@ cnts, _ = cv2.findContours(thresh_img,
 blurred = cv2.GaussianBlur(image, (3, 3), 0)
 ```
 
-The UDF function is
+The UDF function of `GaussianBlur` is
 ```autoit
 Func _cveGaussianBlur($src, $dst, $ksize, $sigmaX, $sigmaY = 0, $borderType = $CV_BORDER_DEFAULT)
     ; CVAPI(void) cveGaussianBlur(cv::_InputArray* src, cv::_OutputArray* dst, CvSize* ksize, double sigmaX, double sigmaY, int borderType);
@@ -149,9 +166,10 @@ dst output image;
 In python, the returned value `dst`, is the `OutputArray dst` parameter of the c++ function, hence the UDF function.  
 `src` and `dst` are images, that means of type `Mat`
 
-Because there are `Array` parameters, we have to use the `Typed` version of the version which allows to specify the type the `Array` parameters.
+Because there are `Array` parameters, we have to use the `Typed` version of the UDF.  
+It allows to specify the type the `Array` parameters.
 
-The python will therefore become
+The python code will therefore become
 ```autoit
 $blurred = _cveMatCreate()
 _cveGaussianBlurTyped("Mat", $image, "Mat", $blurred, _cvSize(3, 3), 0)
@@ -169,11 +187,11 @@ _cveGaussianBlurMat($image, $blurred, _cvSize(3, 3), 0)
 T, thresh_img = cv2.threshold(blurred, 215, 255, cv2.THRESH_BINARY)
 ```
 
-Applying the same steps give
+Applying the same steps leads to
 
 ```autoit
 $thresh_img = _cveMatCreate()
-_cveThresholdMat($blurred, $thresh_img, 215, 255, $CV_THRESH_BINARY)
+$T = _cveThresholdMat($blurred, $thresh_img, 215, 255, $CV_THRESH_BINARY)
 ```
 
 #### Third line
@@ -185,27 +203,39 @@ cnts, _ = cv2.findContours(thresh_img,
 ```
 
 Accoroding to [findContours](https://docs.opencv.org/4.5.3/d3/dc0/group__imgproc__shape.html#gadf1ad6a0b82947fa1fe3c3d497f260e0) documentation  
-*countours* is a *std::vector\<std::vector\<cv::Point\> \>*  
+**countours** is a **std::vector\<std::vector\<cv::Point\>\>**  
+**hierarchy** Optional output vector (e.g. std::vector\<cv::Vec4i\>):  
+**hierarchy** is harder to translate. `cv::Vec4i` is a `Mat`rix. A vector of `Mat`trix is also a `Mat`rix.
 
 The python code will become
 ```autoit
 $cnts = _VectorOfVectorOfPointCreate()
-$hierarchy = _cveMatCreate()
-_cveFindContoursTyped("Mat", $thresh_img, "VectorOfVectorOfPoint", $cnts, "Mat", $hierarchy, $CV_RETR_EXTERNAL, $CV_CHAIN_APPROX_SIMPLE)
+$_ = _cveMatCreate()
+_cveFindContoursTyped("Mat", $thresh_img, "VectorOfVectorOfPoint", $cnts, "Mat", $_, $CV_RETR_EXTERNAL, $CV_CHAIN_APPROX_SIMPLE)
 ```
 
 #### Final result
 
+Python
+```python
+blurred = cv2.GaussianBlur(image, (3, 3), 0)
+T, thresh_img = cv2.threshold(blurred, 215, 255, cv2.THRESH_BINARY)
+cnts, _ = cv2.findContours(thresh_img, 
+                                cv2.RETR_EXTERNAL, 
+                                cv2.CHAIN_APPROX_SIMPLE)
+```
+
+AutoIt
 ```autoit
 $blurred = _cveMatCreate()
 _cveGaussianBlurTyped("Mat", $image, "Mat", $blurred, _cvSize(3, 3), 0)
 
 $thresh_img = _cveMatCreate()
-_cveThresholdMat($blurred, $thresh_img, 215, 255, $CV_THRESH_BINARY)
+$T = _cveThresholdMat($blurred, $thresh_img, 215, 255, $CV_THRESH_BINARY)
 
 $cnts = _VectorOfVectorOfPointCreate()
-$hierarchy = _cveMatCreate()
-_cveFindContoursTyped("Mat", $thresh_img, "VectorOfVectorOfPoint", $cnts, "Mat", $hierarchy, $CV_RETR_EXTERNAL, $CV_CHAIN_APPROX_SIMPLE)
+$_ = _cveMatCreate()
+_cveFindContoursTyped("Mat", $thresh_img, "VectorOfVectorOfPoint", $cnts, "Mat", $_, $CV_RETR_EXTERNAL, $CV_CHAIN_APPROX_SIMPLE)
 ```
 
 ## Developpement
